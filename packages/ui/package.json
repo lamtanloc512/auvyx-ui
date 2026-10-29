@@ -14,6 +14,7 @@
     "./js": "./dist/auvyx.min.js",
     "./auvyx.js": "./dist/auvyx.js",
     "./bundle": "./dist/auvyx.bundle.css",
+    "./elements/*": "./dist/elements/*.min.js",
     "./auvyx.bundle.css": "./dist/auvyx.bundle.css"
   },
   "scripts": {

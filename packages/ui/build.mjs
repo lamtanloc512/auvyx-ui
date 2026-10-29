@@ -19,7 +19,7 @@ const jsComponents = ['basecoat', 'combobox', 'command', 'copy', 'drawer', 'drop
 
 // Size budgets (gzip bytes). CI fails when a change blows past them.
 // CSS budget sized for the full shadcn component set (~61 components); tighten once complete.
-const budgets = { 'auvyx.min.css': 36_000, 'auvyx.min.js': 12_000 };
+const budgets = { 'auvyx.min.css': 36_000, 'auvyx.min.js': 20_000 };
 
 await fs.rm(dist, { recursive: true, force: true });
 await fs.mkdir(dist, { recursive: true });
@@ -34,10 +34,21 @@ const banner = `/*! @auvyx/ui v${version} | MIT | based on Basecoat (MIT) */\n`;
 await fs.writeFile(path.join(dist, 'auvyx.min.css'), banner + minCss);
 
 // JS: concatenate the IIFE sources, then minify as one script.
-const jsSrc = (await Promise.all(jsComponents.map((c) => fs.readFile(path.join(root, 'src/js', `${c}.js`), 'utf8')))).join('\n');
+const basecoatJs = (await Promise.all(jsComponents.map((c) => fs.readFile(path.join(root, 'src/js', `${c}.js`), 'utf8')))).join('\n');
+// Light-DOM custom elements (@auvyx/elements), bundled as one IIFE.
+const elements = await build({ entryPoints: [path.join(root, 'packages/elements/src/index.js')], bundle: true, format: 'iife', write: false, target: 'es2022' });
+const jsSrc = `${basecoatJs}\n${elements.outputFiles[0].text}`;
 await fs.writeFile(path.join(dist, 'auvyx.js'), banner + jsSrc);
-const { code: minJs } = await transform(jsSrc, { loader: 'js', minify: true, target: 'es2020' });
+const { code: minJs } = await transform(jsSrc, { loader: 'js', minify: true, target: 'es2022' });
 await fs.writeFile(path.join(dist, 'auvyx.min.js'), banner + minJs);
+
+// Elements as standalone ES modules, for picking only what a page uses.
+await fs.mkdir(path.join(dist, 'elements'), { recursive: true });
+for (const file of await fs.readdir(path.join(root, 'packages/elements/src'))) {
+  const { code } = await transform(await fs.readFile(path.join(root, 'packages/elements/src', file), 'utf8'), { loader: 'js', minify: true, format: 'esm', target: 'es2022' });
+  const relinked = code.replace(/(["'])\.\/([\w-]+)\.js\1/g, '$1./$2.min.js$1');
+  await fs.writeFile(path.join(dist, 'elements', file.replace(/\.js$/, '.min.js')), banner + relinked);
+}
 
 // Source channel: inline every relative @import of auvyx.source.css into one
 // uncompiled file for projects that already run Tailwind v4.

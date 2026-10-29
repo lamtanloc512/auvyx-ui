@@ -1,0 +1,64 @@
+/* Resizable (fork addition)
+ *
+ *   <auvyx-resizable class="resizable" data-orientation="horizontal">
+ *     <section style="--size: 30">…</section>
+ *     <div role="separator" tabindex="0" aria-label="Resize" data-handle></div>
+ *     <section style="--size: 70">…</section>
+ *   </auvyx-resizable>
+ * Panels share space by --size (flex-grow weights; JS keeps them as percents).
+ * Without JS the layout renders at the given sizes, just not draggable.
+ * data-min on a panel: minimum size in percent (default 10). data-handle shows a grip.
+ */
+@layer components {
+  .resizable {
+    @apply flex size-full min-h-0 overflow-hidden;
+
+    &[data-orientation='vertical'] {
+      @apply flex-col;
+    }
+
+    > :not([role='separator']) {
+      @apply min-h-0 min-w-0 overflow-auto;
+      flex: var(--size, 1) 1 0px;
+    }
+
+    > [role='separator'] {
+      @apply relative flex flex-none touch-none items-center justify-center outline-none select-none;
+      cursor: col-resize;
+      inline-size: 1px;
+
+      /* Wider invisible hit area */
+      &::after {
+        @apply absolute inset-y-0 content-[''];
+        inset-inline: -0.375rem;
+      }
+
+      &[data-handle]::before {
+        @apply z-10 content-[''];
+      }
+    }
+
+    &[data-orientation='vertical'] > [role='separator'] {
+      cursor: row-resize;
+      inline-size: auto;
+      block-size: 1px;
+
+      &::after {
+        inset: -0.375rem 0;
+      }
+    }
+
+    &[data-dragging] {
+      @apply select-none;
+      cursor: col-resize;
+
+      > :not([role='separator']) {
+        @apply pointer-events-none;
+      }
+    }
+
+    &[data-dragging][data-orientation='vertical'] {
+      cursor: row-resize;
+    }
+  }
+}

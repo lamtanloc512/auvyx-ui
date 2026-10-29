@@ -17,7 +17,7 @@
  * attribute) are unaffected by these rules.
  */
 @layer components {
-  :is(.popover, .dropdown-menu):has(> [data-popover][popover]) {
+  :is(.popover, .dropdown-menu, .date-picker, .navigation-menu > ul > li):has(> [data-popover][popover]) {
     anchor-scope: --bc-popover;
 
     > :is(button, [popovertarget]):first-child {

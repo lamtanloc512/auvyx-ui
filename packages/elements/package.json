@@ -1,0 +1,16 @@
+{
+  "name": "@auvyx/elements",
+  "version": "0.1.0",
+  "description": "Light-DOM custom elements for @auvyx/ui: calendar, date picker, data table, resizable, context menu, menu keyboard model.",
+  "license": "MIT",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./*": "./src/*.js"
+  },
+  "files": ["src/"],
+  "peerDependencies": {
+    "@auvyx/ui": "0.1.x"
+  }
+}

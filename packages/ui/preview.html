@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Auvyx UI Preview</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,8 +25,8 @@
   .pv-controls label { font-size: 0.8125rem; color: var(--muted-foreground); display: flex; gap: 0.5rem; align-items: center; }
   .pv-sec > header h2 { font-size: 1rem; font-weight: 600; margin: 0; text-wrap: balance; }
   .pv-sec > header p { margin: 0.25rem 0 0; font-size: 0.875rem; color: var(--muted-foreground); max-width: 65ch; }
-  .pv-spec { border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; min-width: 0; }
-  .pv-spec-top { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+  .pv-spec { border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; }
+  .pv-spec-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem; }
   .pv-spec-top h3 { font-size: 0.875rem; font-weight: 600; margin: 0; }
   .pv-spec-top code { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted-foreground); }
   .pv-note { font-size: 0.8125rem; color: var(--muted-foreground); margin: 0; }
@@ -39,6 +40,8 @@
   .pv-grow { flex: 1; }
   .pv-pad { padding: 1rem; }
   .pv-chat { block-size: 34rem; border: 1px solid var(--border); border-radius: var(--radius); }
+  .pv-drop { border: 1px dashed var(--border); border-radius: var(--radius); padding: 2rem 1rem; text-align: center; font-size: 0.875rem; color: var(--muted-foreground); }
+  .pv-resize { block-size: 14rem; border: 1px solid var(--border); border-radius: var(--radius); }
   .pv-tile { border: 1px solid var(--border); border-radius: var(--radius); padding: 0.75rem 1rem; font-size: 0.8125rem; min-width: 0; }
   .pv-tile[data-tone='primary'] { background: var(--primary); color: var(--primary-foreground); border-color: transparent; }
   .pv-tile[data-tone='muted'] { background: var(--muted); color: var(--muted-foreground); border-color: transparent; }
@@ -78,8 +81,8 @@
 @import "@auvyx/ui/bundle";</pre>
     </div>
     <div class="auto-grid" data-min="sm" data-gap="3">
-      <div class="pv-stat"><b>31.1 kB</b><span>auvyx.min.css · gzip · không có utility</span></div>
-      <div class="pv-stat"><b>11.5 kB</b><span>auvyx.min.js · gzip · tùy chọn</span></div>
+      <div class="pv-stat"><b>33.3 kB</b><span>auvyx.min.css · gzip · không có utility</span></div>
+      <div class="pv-stat"><b>17.3 kB</b><span>auvyx.min.js · gzip · tùy chọn</span></div>
       <div class="pv-stat"><b>22.9 kB</b><span>upstream basecoat.cdn.min.css</span></div>
     </div>
   </section>
@@ -380,6 +383,155 @@
         </figure>
       </div>
     </div>
+  </section>
+
+  <section class="pv-sec stack" data-gap="4" aria-labelledby="s-js2">
+    <header>
+      <h2 id="s-js2">Mới thêm: component cần JS (@auvyx/elements)</h2>
+      <p>Đợt C. Menubar và Navigation Menu mở/đóng bằng Popover API kể cả không có JS; <code>menu.js</code> thêm phím mũi tên, Navigation Menu mở khi rê chuột. Calendar, Date Picker, Data Table, Resizable, Context Menu là light-DOM custom elements: dùng chung CSS, form submit native, không Shadow DOM.</p>
+    </header>
+
+    <div class="auto-grid" style="--min: 18rem">
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Menubar</h3><span class="badge" data-variant="outline">native + keys</span></div>
+        <nav class="menubar" role="menubar" aria-label="Quản lý eSIM">
+          <div class="dropdown-menu">
+            <button type="button" role="menuitem" aria-haspopup="menu" aria-expanded="false" popovertarget="pv-mb-1">Gói</button>
+            <div id="pv-mb-1" data-popover popover><div role="menu" aria-label="Gói"><button type="button" role="menuitem"><span>Mua gói mới</span><kbd>⌘N</kbd></button><button type="button" role="menuitem"><span>Gia hạn</span><kbd>⌘R</kbd></button><hr role="separator"><button type="button" role="menuitem"><span>Lịch sử</span></button></div></div>
+          </div>
+          <div class="dropdown-menu">
+            <button type="button" role="menuitem" aria-haspopup="menu" aria-expanded="false" popovertarget="pv-mb-2">Thiết bị</button>
+            <div id="pv-mb-2" data-popover popover><div role="menu" aria-label="Thiết bị"><button type="button" role="menuitemcheckbox" aria-checked="true"><span>Tự chuyển vùng</span><span data-indicator><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></button><button type="button" role="menuitemcheckbox" aria-checked="false"><span>Hotspot</span><span data-indicator><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></button></div></div>
+          </div>
+          <div class="dropdown-menu">
+            <button type="button" role="menuitem" aria-haspopup="menu" aria-expanded="false" popovertarget="pv-mb-3">Trợ giúp</button>
+            <div id="pv-mb-3" data-popover popover><div role="menu" aria-label="Trợ giúp"><button type="button" role="menuitem"><span>Cách cài eSIM</span></button><button type="button" role="menuitem"><span>Chat với hỗ trợ</span></button></div></div>
+          </div>
+        </nav>
+        <p class="pv-note">Mở một menu rồi dùng ← → để chuyển, ↑ ↓ để chọn item.</p>
+      </article>
+
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Context Menu</h3><span class="badge" data-variant="outline">JS</span></div>
+        <auvyx-context-menu class="context-menu">
+          <div class="pv-drop" tabindex="0">Nhấn chuột phải (hoặc Shift+F10) vào vùng này</div>
+          <div class="dropdown-menu"><div data-popover popover><div role="menu" aria-label="Thao tác"><button type="button" role="menuitem"><span>Sao chép mã QR</span><kbd>⌘C</kbd></button><button type="button" role="menuitem"><span>Gửi qua email</span></button><hr role="separator"><button type="button" role="menuitem" data-variant="destructive"><span>Xoá eSIM</span></button></div></div></div>
+        </auvyx-context-menu>
+      </article>
+
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Date Picker</h3><span class="badge" data-variant="outline">enhances native</span></div>
+        <form class="stack" data-gap="3" id="pv-dp-form" onsubmit="event.preventDefault(); this.querySelector('output').textContent = 'Gửi: depart=' + new FormData(this).get('depart')">
+          <div role="group" class="field">
+            <label for="pv-depart">Ngày bay</label>
+            <auvyx-date-picker class="date-picker" data-placeholder="Chọn ngày"><input id="pv-depart" type="date" name="depart" min="2026-10-29" required></auvyx-date-picker>
+          </div>
+          <div class="cluster" data-gap="2"><button class="btn" data-size="sm">Gửi form</button><output class="pv-note"></output></div>
+        </form>
+        <p class="pv-note">Không có JS: dùng date picker native của browser. Có JS: popover + calendar, input gốc vẫn submit.</p>
+      </article>
+    </div>
+
+    <article class="pv-spec stack" data-gap="3">
+      <div class="pv-spec-top"><h3>Navigation Menu</h3><span class="badge" data-variant="outline">native + hover</span></div>
+      <nav class="navigation-menu" aria-label="Điều hướng chính">
+        <ul>
+          <li>
+            <button type="button" popovertarget="pv-nm-1">Gói eSIM <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+            <div id="pv-nm-1" data-popover popover data-cols="2">
+              <ul>
+                <li><a href="#s-js2"><strong>Châu Á</strong><span>Nhật, Hàn, Thái, Singapore và 20 nước khác.</span></a></li>
+                <li><a href="#s-js2"><strong>Châu Âu</strong><span>Một gói cho 39 nước khối Schengen.</span></a></li>
+                <li><a href="#s-js2"><strong>Toàn cầu</strong><span>120 quốc gia, phù hợp chuyến đi dài.</span></a></li>
+                <li><a href="#s-js2"><strong>Doanh nghiệp</strong><span>Quản lý nhiều eSIM cho cả đội.</span></a></li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <button type="button" popovertarget="pv-nm-2">Hỗ trợ <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+            <div id="pv-nm-2" data-popover popover>
+              <ul>
+                <li><a href="#s-js2"><strong>Cài đặt</strong><span>Hướng dẫn cho iPhone và Android.</span></a></li>
+                <li><a href="#s-js2"><strong>Thiết bị tương thích</strong><span>Kiểm tra máy của bạn có hỗ trợ eSIM.</span></a></li>
+              </ul>
+            </div>
+          </li>
+          <li><a href="#s-js2">Bảng giá</a></li>
+        </ul>
+      </nav>
+    </article>
+
+    <div class="split" data-gap="4" style="--side: 18rem; --split-min: 60%">
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Calendar</h3><span class="badge" data-variant="outline">JS</span></div>
+        <auvyx-calendar class="calendar" value="2026-11-14" min="2026-10-29" name="pv-cal" id="pv-cal"></auvyx-calendar>
+        <auvyx-calendar class="calendar" mode="range" value="2026-11-10/2026-11-24" id="pv-cal-range"></auvyx-calendar>
+        <p class="pv-note">Phím mũi tên, Home/End, PageUp/PageDown (Shift = năm). Range: chọn ngày đi rồi ngày về.</p>
+      </article>
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Data Table</h3><span class="badge" data-variant="outline">JS</span></div>
+        <auvyx-data-table class="data-table" data-page-size="5" id="pv-dt">
+          <header>
+            <input class="input" type="search" data-filter placeholder="Lọc theo nước, vùng…" aria-label="Lọc gói">
+            <div class="dropdown-menu">
+              <button type="button" class="btn" data-variant="outline" popovertarget="pv-dt-cols">Cột <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+              <div id="pv-dt-cols" data-popover popover data-align="end" style="width: 10rem">
+                <div class="stack" data-gap="2" style="padding: 0.5rem">
+                  <label class="cluster" data-gap="2"><input class="input" type="checkbox" data-column="2" checked> Vùng</label>
+                  <label class="cluster" data-gap="2"><input class="input" type="checkbox" data-column="3" checked> Dung lượng</label>
+                  <label class="cluster" data-gap="2"><input class="input" type="checkbox" data-column="4" checked> Thời hạn</label>
+                </div>
+              </div>
+            </div>
+          </header>
+          <div>
+            <table class="table">
+              <thead><tr>
+                <th><input class="input" type="checkbox" data-select-all aria-label="Chọn tất cả"></th>
+                <th aria-sort="none"><button type="button">Nước</button></th>
+                <th aria-sort="none"><button type="button">Vùng</button></th>
+                <th>Dung lượng</th>
+                <th aria-sort="none" data-type="number"><button type="button">Thời hạn</button></th>
+                <th aria-sort="none" data-type="number"><button type="button">Giá</button></th>
+              </tr></thead>
+              <tbody>
+              <tr><td><input class="input" type="checkbox" data-select aria-label="Chọn Nhật Bản"></td><td>Nhật Bản</td><td>Châu Á</td><td>10 GB</td><td data-value="15">15 ngày</td><td data-value="14.9">$14.90</td></tr>
+              <tr><td><input class="input" type="checkbox" data-select aria-label="Chọn Hàn Quốc"></td><td>Hàn Quốc</td><td>Châu Á</td><td>5 GB</td><td data-value="7">7 ngày</td><td data-value="8.5">$8.50</td></tr>
+              <tr><td><input class="input" type="checkbox" data-select aria-label="Chọn Thái Lan"></td><td>Thái Lan</td><td>Châu Á</td><td>15 GB</td><td data-value="30">30 ngày</td><td data-value="11.0">$11.00</td></tr>
+              <tr><td><input class="input" type="checkbox" data-select aria-label="Chọn Pháp"></td><td>Pháp</td><td>Châu Âu</td><td>10 GB</td><td data-value="15">15 ngày</td><td data-value="16.4">$16.40</td></tr>
+              <tr><td><input class="input" type="checkbox" data-select aria-label="Chọn Mỹ"></td><td>Mỹ</td><td>Bắc Mỹ</td><td>20 GB</td><td data-value="30">30 ngày</td><td data-value="24.0">$24.00</td></tr>
+              <tr><td><input class="input" type="checkbox" data-select aria-label="Chọn Úc"></td><td>Úc</td><td>Châu Đại Dương</td><td>8 GB</td><td data-value="15">15 ngày</td><td data-value="13.2">$13.20</td></tr>
+              <tr><td><input class="input" type="checkbox" data-select aria-label="Chọn Singapore"></td><td>Singapore</td><td>Châu Á</td><td>3 GB</td><td data-value="5">5 ngày</td><td data-value="5.9">$5.90</td></tr>
+              <tr><td><input class="input" type="checkbox" data-select aria-label="Chọn Đức"></td><td>Đức</td><td>Châu Âu</td><td>12 GB</td><td data-value="30">30 ngày</td><td data-value="18.75">$18.75</td></tr>
+                <tr data-empty hidden><td colspan="6">Không có gói phù hợp.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <footer>
+            <span data-selected-count data-template="Đã chọn {selected} / {total} gói"></span>
+            <span data-page-status data-template="Trang {page} / {pages}"></span>
+            <button type="button" class="btn" data-variant="outline" data-size="sm" data-page="prev">Trước</button>
+            <button type="button" class="btn" data-variant="outline" data-size="sm" data-page="next">Sau</button>
+          </footer>
+        </auvyx-data-table>
+      </article>
+    </div>
+
+    <article class="pv-spec stack" data-gap="3">
+      <div class="pv-spec-top"><h3>Resizable</h3><span class="badge" data-variant="outline">JS</span></div>
+      <auvyx-resizable class="resizable pv-resize" data-orientation="horizontal">
+        <section style="--size: 30" data-min="20" id="pv-rz-a"><p class="pv-note pv-pad">Danh sách đơn hàng</p></section>
+        <div role="separator" tabindex="0" aria-label="Đổi kích thước danh sách" data-handle></div>
+        <section style="--size: 70">
+          <auvyx-resizable class="resizable" data-orientation="vertical">
+            <section style="--size: 60"><p class="pv-note pv-pad">Chi tiết đơn</p></section>
+            <div role="separator" tabindex="0" aria-label="Đổi kích thước chi tiết" data-handle></div>
+            <section style="--size: 40"><p class="pv-note pv-pad">Nhật ký kích hoạt</p></section>
+          </auvyx-resizable>
+        </section>
+      </auvyx-resizable>
+      <p class="pv-note">Kéo thanh chia, hoặc Tab tới rồi dùng phím mũi tên (Shift = 10%), Enter để chia đều.</p>
+    </article>
   </section>
 
   <section class="pv-sec stack" data-gap="4" aria-labelledby="s-base">

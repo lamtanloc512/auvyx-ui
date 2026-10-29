@@ -1,0 +1,78 @@
+/* Data Table (fork addition)
+ *
+ * Server-rendered <table class="table"> plus declarative hooks; the
+ * <auvyx-data-table> element wires sorting, filtering, selection, column
+ * visibility and pagination. Without JS it is a normal table.
+ *
+ *   <auvyx-data-table class="data-table" data-page-size="5">
+ *     <header>
+ *       <input class="input" type="search" data-filter placeholder="Filter…" aria-label="Filter rows">
+ *     </header>
+ *     <div><table class="table">
+ *       <thead><tr>
+ *         <th><input class="input" type="checkbox" data-select-all aria-label="Select all"></th>
+ *         <th aria-sort="none"><button type="button">Plan</button></th>
+ *         <th aria-sort="none" data-type="number"><button type="button">Price</button></th>
+ *       </tr></thead>
+ *       <tbody>
+ *         <tr><td><input class="input" type="checkbox" data-select aria-label="Select row"></td><td>Japan</td><td data-value="14.9">$14.90</td></tr>
+ *         <tr data-empty hidden><td colspan="3">No results.</td></tr>
+ *       </tbody>
+ *     </table></div>
+ *     <footer>
+ *       <span data-selected-count></span>
+ *       <span data-page-status></span>
+ *       <button class="btn" data-variant="outline" data-size="sm" data-page="prev">Previous</button>
+ *       <button class="btn" data-variant="outline" data-size="sm" data-page="next">Next</button>
+ *     </footer>
+ *   </auvyx-data-table>
+ * Column toggles anywhere inside: <input type="checkbox" data-column="2" checked>.
+ */
+@layer components {
+  .data-table {
+    @apply flex w-full min-w-0 flex-col;
+
+    > header,
+    > footer {
+      @apply flex flex-wrap items-center;
+    }
+
+    /* .input is w-full by default; let the filter share the row and shrink. */
+    > header > input {
+      @apply w-auto min-w-0;
+      flex: 1 1 12rem;
+    }
+
+    > div:has(> table) {
+      @apply relative w-full overflow-x-auto;
+    }
+
+    th[aria-sort] > button {
+      @apply inline-flex items-center whitespace-nowrap outline-none;
+
+      &::after {
+        @apply ms-1 inline-block size-3.5 shrink-0 opacity-50 content-[''];
+        mask: var(--data-table-sort-icon) center / contain no-repeat;
+        background-color: currentColor;
+      }
+    }
+
+    th[aria-sort='ascending'] > button::after,
+    th[aria-sort='descending'] > button::after {
+      @apply opacity-100;
+    }
+
+    th[aria-sort='descending'] > button::after {
+      @apply rotate-180;
+    }
+
+    [data-page-status],
+    [data-selected-count] {
+      @apply tabular-nums;
+    }
+
+    [data-selected-count] {
+      @apply flex-1;
+    }
+  }
+}

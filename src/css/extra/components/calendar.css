@@ -1,0 +1,76 @@
+/* Calendar + Date Picker (fork addition)
+ *
+ * Calendar is rendered by <auvyx-calendar> (JS), as a real table grid:
+ *   <auvyx-calendar class="calendar" value="2026-11-14" name="date"></auvyx-calendar>
+ *   <auvyx-calendar class="calendar" mode="range" value="2026-11-10/2026-11-24"></auvyx-calendar>
+ * Attributes: value, min, max, mode (single | range), name (adds a hidden
+ * input so it submits with a form), data-week-start (0 = Sunday, default 1).
+ *
+ * Date Picker progressively enhances a native date input; without JS the
+ * browser's own picker is used:
+ *   <auvyx-date-picker class="date-picker"><input type="date" name="depart"></auvyx-date-picker>
+ */
+@layer components {
+  .calendar {
+    --cell-size: 2rem;
+    @apply inline-block w-fit;
+
+    > header {
+      @apply relative flex items-center justify-between;
+      block-size: var(--cell-size);
+
+      > h2 {
+        @apply m-0 select-none;
+      }
+
+      > button {
+        @apply inline-flex items-center justify-center outline-none select-none;
+        inline-size: var(--cell-size);
+        block-size: var(--cell-size);
+
+        > svg {
+          @apply size-4 rtl:rotate-180;
+        }
+      }
+    }
+
+    > table {
+      @apply mt-2 border-collapse;
+
+      th {
+        @apply p-0 font-normal select-none;
+        inline-size: var(--cell-size);
+      }
+
+      td {
+        @apply relative p-0 text-center;
+      }
+
+      td > button {
+        @apply inline-flex items-center justify-center outline-none select-none tabular-nums;
+        inline-size: var(--cell-size);
+        block-size: var(--cell-size);
+
+        &:disabled {
+          @apply pointer-events-none opacity-50;
+        }
+      }
+    }
+  }
+
+  .date-picker {
+    @apply relative inline-flex;
+
+    > input[type='date'][hidden] {
+      display: none;
+    }
+
+    > button:first-child {
+      @apply justify-start text-start;
+    }
+
+    > [data-popover] {
+      @apply w-auto;
+    }
+  }
+}

@@ -303,6 +303,65 @@
   .questionnaire > fieldset > label > kbd { @apply border-input bg-background text-muted-foreground size-5 rounded-md border font-mono text-[0.625rem] font-medium leading-none shadow-xs; }
   .questionnaire > footer { @apply gap-2 sm:min-h-9; }
 
+  /* Menubar */
+  .menubar { @apply bg-background h-9 gap-1 rounded-md border p-1 shadow-xs; }
+  .menubar > .dropdown-menu > :is(button, [popovertarget]):first-child { @apply hover:bg-muted focus-visible:bg-muted rounded-sm px-2 py-1 text-sm font-medium; }
+  .menubar > .dropdown-menu:has(> [data-popover]:popover-open) > :is(button, [popovertarget]):first-child { @apply bg-muted; }
+  .menubar > .dropdown-menu > [data-popover] { @apply min-w-36; margin-block-start: 0.5rem; }
+
+  /* Native menu items: hover highlight */
+  .dropdown-menu > [data-popover][popover] :is([role='menuitem'], [role='menuitemcheckbox'], [role='menuitemradio']):hover { @apply bg-accent text-accent-foreground; }
+  .dropdown-menu > [data-popover][popover] [data-variant='destructive']:hover { @apply bg-destructive/10 text-destructive dark:bg-destructive/20; }
+
+  /* Navigation Menu */
+  .navigation-menu > ul { @apply gap-0; }
+  .navigation-menu > ul > li > :is(a, button) { @apply hover:bg-muted focus-visible:ring-ring/50 h-9 rounded-md px-4 py-2 text-sm font-medium transition-all focus-visible:ring-3 disabled:opacity-50; }
+  .navigation-menu > ul > li:has(> [data-popover]:popover-open) > button { @apply bg-muted/50; }
+  .navigation-menu [data-popover] { @apply rounded-lg p-2 shadow; margin-block-start: 0.375rem; }
+  .navigation-menu [data-popover] > ul { @apply gap-1; }
+  .navigation-menu [data-popover] a { @apply hover:bg-muted focus-visible:bg-muted focus-visible:ring-ring/50 gap-1 rounded-md p-2 text-sm transition-all focus-visible:ring-3; }
+  .navigation-menu [data-popover] a > strong { @apply font-medium; }
+  .navigation-menu [data-popover] a > span { @apply text-muted-foreground leading-snug; }
+
+  /* Context Menu */
+  .context-menu > .dropdown-menu > [data-popover] { @apply min-w-36 shadow-md; }
+
+  /* Resizable */
+  .resizable > [role='separator'] { @apply bg-border focus-visible:ring-ring focus-visible:ring-1 focus-visible:ring-offset-1; }
+  .resizable > [role='separator'][data-handle]::before { @apply bg-border h-6 w-1 rounded-lg; }
+  .resizable[data-orientation='vertical'] > [role='separator'][data-handle]::before { @apply h-1 w-6; }
+  .resizable > [role='separator']:is(:hover, [data-active]) { @apply bg-ring; }
+
+  /* Data Table */
+  .data-table { @apply gap-4; }
+  .data-table > header { @apply gap-2; }
+  .data-table > header > input[type='search'] { @apply max-w-sm; }
+  .data-table > div:has(> table) { @apply rounded-md border; }
+  .data-table th[aria-sort] > button { @apply hover:text-foreground focus-visible:ring-ring/50 -ms-2 h-8 rounded-md px-2 hover:bg-muted focus-visible:ring-3; }
+  .data-table { --data-table-sort-icon: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>'); }
+  .data-table th:is([aria-sort='ascending'], [aria-sort='descending']) { --data-table-sort-icon: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>'); }
+  .data-table tbody tr[aria-selected='true'] { @apply bg-muted; }
+  .data-table > footer { @apply text-muted-foreground gap-2 text-sm; }
+
+  /* Calendar */
+  .calendar { @apply p-3; }
+  .calendar > header > h2 { @apply text-sm font-medium; }
+  .calendar > header > button { @apply hover:bg-muted focus-visible:ring-ring/50 rounded-md focus-visible:ring-3; }
+  .calendar > table th { @apply text-muted-foreground pb-1 text-[0.8rem]; }
+  .calendar > table td > button { @apply hover:bg-muted focus-visible:ring-ring/50 rounded-md text-sm font-normal focus-visible:relative focus-visible:z-10 focus-visible:ring-3; }
+  .calendar > table td[data-outside] > button { @apply text-muted-foreground; }
+  .calendar > table td > button[aria-current='date'] { @apply bg-muted text-foreground; }
+  .calendar > table td:is([aria-selected='true'], [data-range-start], [data-range-end]) > button { @apply bg-primary text-primary-foreground hover:bg-primary/90; }
+  .calendar > table td[data-range-middle] { @apply bg-muted; }
+  .calendar > table td[data-range-middle] > button { @apply text-foreground hover:bg-accent rounded-none bg-transparent; }
+  .calendar > table td[data-range-start]:not([data-range-end]) { @apply bg-muted rounded-s-md; }
+  .calendar > table td[data-range-end]:not([data-range-start]) { @apply bg-muted rounded-e-md; }
+
+  /* Date Picker */
+  .date-picker > button:first-child { @apply w-60 font-normal; }
+  .date-picker > button:first-child:not([data-value]) { @apply text-muted-foreground; }
+  .date-picker > [data-popover] { @apply p-0; }
+
   /* Typography: opt-in prose styles for long-form content */
   .typography {
     @apply text-foreground;
