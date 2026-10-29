@@ -18,7 +18,8 @@ const cssTargets = ['chrome111', 'safari16.4', 'firefox128'];
 const jsComponents = ['basecoat', 'combobox', 'command', 'drawer', 'dropdown-menu', 'range', 'select', 'sidebar', 'tabs', 'toast'];
 
 // Size budgets (gzip bytes). CI fails when a change blows past them.
-const budgets = { 'auvyx.min.css': 28_000, 'auvyx.min.js': 12_000 };
+// CSS budget sized for the full shadcn component set (~61 components); tighten once complete.
+const budgets = { 'auvyx.min.css': 36_000, 'auvyx.min.js': 12_000 };
 
 await fs.rm(dist, { recursive: true, force: true });
 await fs.mkdir(dist, { recursive: true });

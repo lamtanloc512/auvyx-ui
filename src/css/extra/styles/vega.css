@@ -1,0 +1,210 @@
+/* Vega visuals for fork-added components.
+ * Ported from shadcn/ui apps/v4/registry/styles/style-vega.css (cn-* rules),
+ * mapped onto the semantic markup in src/css/extra/components/.
+ * Other style packs: deferred (see TODO.md).
+ */
+@layer components {
+  /* Toggle */
+  .toggle {
+    @apply hover:bg-muted hover:text-foreground gap-1 rounded-md bg-transparent text-sm font-medium transition-[color,box-shadow] [&_svg:not([class*='size-'])]:size-4 h-9 min-w-9 px-2.5;
+  }
+
+  .toggle:is([aria-pressed='true'], :has(> input:checked)) {
+    @apply bg-muted;
+  }
+
+  .toggle:is(:focus-visible, :has(> input:focus-visible)) {
+    @apply border-ring ring-ring/50 ring-[3px];
+  }
+
+  .toggle:is([aria-invalid='true'], :has(> input[aria-invalid='true'])) {
+    @apply ring-destructive/20 dark:ring-destructive/40 border-destructive;
+  }
+
+  .toggle[data-variant='outline'],
+  .toggle-group[data-variant='outline'] > .toggle {
+    @apply border-input hover:bg-muted border shadow-xs;
+  }
+
+  .toggle[data-size='sm'],
+  .toggle-group[data-size='sm'] > .toggle {
+    @apply h-8 min-w-8 px-2.5;
+  }
+
+  .toggle[data-size='lg'],
+  .toggle-group[data-size='lg'] > .toggle {
+    @apply h-10 min-w-10 px-2.5;
+  }
+
+  /* Toggle Group: joined items (no data-spacing) */
+  .toggle-group {
+    @apply rounded-md;
+  }
+
+  .toggle-group[data-variant='outline']:not([data-spacing]) {
+    @apply shadow-xs;
+  }
+
+  .toggle-group:not([data-spacing]) > .toggle {
+    @apply rounded-none px-2 shadow-none;
+  }
+
+  .toggle-group:not([data-spacing]):not([data-orientation='vertical']) > .toggle {
+    &:first-of-type { @apply rounded-s-md; }
+    &:last-of-type { @apply rounded-e-md; }
+    &:not(:first-of-type) { border-inline-start-width: 0; }
+  }
+
+  .toggle-group:not([data-spacing])[data-orientation='vertical'] > .toggle {
+    &:first-of-type { @apply rounded-t-md; }
+    &:last-of-type { @apply rounded-b-md; }
+    &:not(:first-of-type) { border-block-start-width: 0; }
+  }
+
+  /* Sheet */
+  .sheet {
+    @apply bg-popover text-popover-foreground gap-4 bg-clip-padding text-sm shadow-lg duration-200 ease-in-out backdrop:duration-200;
+  }
+
+  .sheet::backdrop {
+    @apply bg-black/10 supports-backdrop-filter:backdrop-blur-xs;
+  }
+
+  .sheet:not([data-side]),
+  .sheet[data-side='right'] {
+    @apply border-s sm:max-w-sm;
+  }
+
+  .sheet[data-side='left'] {
+    @apply border-e sm:max-w-sm;
+  }
+
+  .sheet[data-side='top'] {
+    @apply border-b;
+  }
+
+  .sheet[data-side='bottom'] {
+    @apply border-t;
+  }
+
+  .sheet > header {
+    @apply flex flex-col gap-1.5 p-4;
+  }
+
+  .sheet > header > :is(h1, h2, h3, h4, h5, h6) {
+    @apply text-foreground text-base font-medium;
+  }
+
+  .sheet > header > p {
+    @apply text-muted-foreground text-sm;
+  }
+
+  .sheet > section {
+    @apply px-4;
+  }
+
+  .sheet > footer {
+    @apply gap-2 p-4;
+  }
+
+  .sheet > :is(button, form[method='dialog']):last-child {
+    @apply top-4 end-4 inline-flex size-7 items-center justify-center rounded-md opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-ring/50 focus-visible:ring-[3px] outline-none [&_svg]:size-4;
+  }
+
+  /* Hover Card */
+  .hover-card > [data-popover] {
+    @apply w-64 rounded-lg duration-100;
+  }
+
+  /* Input OTP */
+  .input-otp {
+    --otp-line: var(--input);
+    @apply border-input rounded-md border text-sm shadow-xs transition-[color,box-shadow] dark:bg-input/30;
+    box-sizing: content-box;
+  }
+
+  .input-otp:focus-within {
+    @apply border-ring ring-ring/50 ring-[3px];
+  }
+
+  .input-otp:has(> input[aria-invalid='true']) {
+    --otp-line: var(--destructive);
+    @apply border-destructive ring-destructive/20 dark:ring-destructive/40;
+  }
+
+  /* Carousel */
+  .carousel > :is(ol, ul)::scroll-button(*) {
+    @apply bg-background text-foreground border-input size-8 rounded-full border shadow-xs transition-[opacity,background-color];
+    background-image: var(--carousel-arrow-icon);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 1rem;
+  }
+
+  .carousel > :is(ol, ul)::scroll-button(*):hover {
+    @apply bg-muted;
+  }
+
+  .carousel > :is(ol, ul)::scroll-button(*):focus-visible {
+    @apply ring-ring/50 ring-[3px] outline-none;
+  }
+
+  .carousel > :is(ol, ul)::scroll-button(*):disabled {
+    @apply cursor-default opacity-50;
+  }
+
+  .carousel > :is(ol, ul)::scroll-button(inline-start) {
+    --carousel-arrow-icon: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="oklch(0.556 0 0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>');
+  }
+
+  .carousel > :is(ol, ul)::scroll-button(inline-end) {
+    --carousel-arrow-icon: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="oklch(0.556 0 0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>');
+  }
+
+  .carousel > :is(ol, ul)::scroll-button(block-start) {
+    --carousel-arrow-icon: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="oklch(0.556 0 0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>');
+  }
+
+  .carousel > :is(ol, ul)::scroll-button(block-end) {
+    --carousel-arrow-icon: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="oklch(0.556 0 0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>');
+  }
+
+  .carousel[data-markers] > :is(ol, ul)::scroll-marker-group {
+    @apply mt-3 gap-1.5;
+  }
+
+  .carousel[data-markers] > :is(ol, ul) > li::scroll-marker {
+    @apply bg-muted-foreground/30 size-2 rounded-full transition-colors;
+  }
+
+  .carousel[data-markers] > :is(ol, ul) > li::scroll-marker:target-current {
+    @apply bg-foreground;
+  }
+
+  /* Typography: opt-in prose styles for long-form content */
+  .typography {
+    @apply text-foreground;
+
+    :is(h1) { @apply scroll-m-20 text-4xl font-extrabold tracking-tight text-balance; }
+    :is(h2) { @apply mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0; }
+    :is(h3) { @apply mt-8 scroll-m-20 text-2xl font-semibold tracking-tight; }
+    :is(h4) { @apply mt-6 scroll-m-20 text-xl font-semibold tracking-tight; }
+    p { @apply leading-7 [&:not(:first-child)]:mt-6; }
+    blockquote { @apply mt-6 border-s-2 ps-6 italic; }
+    ul { @apply my-6 ms-6 list-disc [&>li]:mt-2; }
+    ol { @apply my-6 ms-6 list-decimal [&>li]:mt-2; }
+    a { @apply text-primary font-medium underline underline-offset-4; }
+    :not(pre) > code { @apply bg-muted relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold; }
+    pre { @apply bg-muted my-6 overflow-x-auto rounded-lg p-4 font-mono text-sm; }
+    hr { @apply my-8; }
+    table { @apply my-6 w-full text-sm; }
+    th { @apply border px-4 py-2 text-start font-bold [&[align=center]]:text-center [&[align=right]]:text-end; }
+    td { @apply border px-4 py-2 text-start [&[align=center]]:text-center [&[align=right]]:text-end; }
+    tr { @apply even:bg-muted m-0 border-t p-0; }
+    p[data-variant='lead'] { @apply text-muted-foreground text-xl; }
+    p[data-variant='large'] { @apply text-lg font-semibold; }
+    p[data-variant='muted'] { @apply text-muted-foreground text-sm; }
+    small { @apply text-sm leading-none font-medium; }
+    > :is(h1, h2, h3, h4):first-child { @apply mt-0; }
+  }
+}

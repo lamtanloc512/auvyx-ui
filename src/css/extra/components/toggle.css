@@ -1,0 +1,47 @@
+/* Toggle + Toggle Group (fork addition)
+ *
+ * Zero JS: the pressed state lives in a native checkbox (or radio, inside a
+ * group) wrapped by the label, so forms submit it and no script is needed.
+ *   <label class="toggle"><input type="checkbox" name="bold"> Bold</label>
+ * A JS-driven <button class="toggle" aria-pressed="true"> is styled the same.
+ *
+ *   <fieldset class="toggle-group" data-variant="outline">
+ *     <legend>Alignment</legend>
+ *     <label class="toggle"><input type="radio" name="align" value="left" checked> Left</label>
+ *     <label class="toggle"><input type="radio" name="align" value="center"> Center</label>
+ *   </fieldset>
+ * Radios = single select, checkboxes = multiple. Items join by default;
+ * data-spacing="1|2" separates them. data-orientation="vertical" stacks.
+ */
+@layer components {
+  .toggle {
+    @apply relative inline-flex shrink-0 cursor-pointer items-center justify-center whitespace-nowrap outline-none select-none [&_svg]:pointer-events-none [&_svg]:shrink-0;
+
+    > input:is([type='checkbox'], [type='radio']) {
+      @apply sr-only;
+    }
+
+    &:is(:disabled, [aria-disabled='true'], :has(> input:disabled)) {
+      @apply pointer-events-none opacity-50;
+    }
+  }
+
+  .toggle-group {
+    @apply m-0 inline-flex w-fit min-w-0 items-center border-0 p-0;
+
+    > legend {
+      @apply sr-only;
+    }
+
+    > .toggle:is(:focus-visible, :has(> input:focus-visible)) {
+      @apply z-10;
+    }
+
+    &[data-orientation='vertical'] {
+      @apply flex-col items-stretch;
+    }
+
+    &[data-spacing='1'] { @apply gap-1; }
+    &[data-spacing='2'] { @apply gap-2; }
+  }
+}

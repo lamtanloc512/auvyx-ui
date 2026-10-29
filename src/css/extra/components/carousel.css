@@ -1,0 +1,122 @@
+/* Carousel (fork addition)
+ *
+ * Zero JS: the slide list is a CSS scroll-snap scroller. Where supported,
+ * native ::scroll-button() gives previous/next buttons and ::scroll-marker
+ * gives dot navigation, both keyboard accessible. Elsewhere it stays a
+ * swipeable, scrollable list.
+ *   <section class="carousel" aria-roledescription="carousel" aria-label="Plans">
+ *     <ol>
+ *       <li aria-roledescription="slide" aria-label="1 of 3">…</li>
+ *       …
+ *     </ol>
+ *   </section>
+ * data-items: 1 (default) | 2 | 3 | 4 slides per view, or style="--per-view: 1.5".
+ * data-orientation="vertical" scrolls vertically (set a height with --carousel-height).
+ * data-markers adds dot navigation.
+ */
+@layer components {
+  .carousel {
+    --per-view: 1;
+    --carousel-gap: 1rem;
+    @apply relative;
+
+    &[data-items='2'] { --per-view: 2; }
+    &[data-items='3'] { --per-view: 3; }
+    &[data-items='4'] { --per-view: 4; }
+
+    > :is(ol, ul) {
+      @apply m-0 flex list-none overflow-x-auto overscroll-x-contain p-0;
+      gap: var(--carousel-gap);
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      > li {
+        @apply min-w-0 shrink-0 grow-0;
+        flex-basis: calc((100% - var(--carousel-gap) * (var(--per-view) - 1)) / var(--per-view));
+        scroll-snap-align: start;
+      }
+    }
+
+    &[data-orientation='vertical'] > :is(ol, ul) {
+      @apply flex-col overflow-x-hidden overflow-y-auto;
+      block-size: var(--carousel-height, 20rem);
+      scroll-snap-type: y mandatory;
+    }
+
+    /* Native buttons render as siblings of the scroller; position them on
+       .carousel, in a gutter so they never cover slide content. */
+    @supports selector(::scroll-button(*)) {
+      &:not([data-orientation='vertical']) {
+        padding-inline: var(--carousel-gutter, 2.75rem);
+      }
+
+      &[data-orientation='vertical'] {
+        padding-block: var(--carousel-gutter, 2.75rem);
+      }
+    }
+
+    > :is(ol, ul)::scroll-button(*) {
+      @apply absolute z-10 cursor-pointer;
+    }
+
+    > :is(ol, ul)::scroll-button(inline-start) {
+      content: '' / 'Previous slide';
+    }
+
+    > :is(ol, ul)::scroll-button(inline-end) {
+      content: '' / 'Next slide';
+    }
+
+    &:not([data-orientation='vertical']) > :is(ol, ul) {
+      &::scroll-button(inline-start),
+      &::scroll-button(inline-end) {
+        top: 50%;
+        translate: 0 -50%;
+      }
+
+      &::scroll-button(inline-start) {
+        inset-inline-start: 0;
+      }
+
+      &::scroll-button(inline-end) {
+        inset-inline-end: 0;
+      }
+    }
+
+    &[data-orientation='vertical'] > :is(ol, ul) {
+      &::scroll-button(block-start),
+      &::scroll-button(block-end) {
+        left: 50%;
+        translate: -50% 0;
+      }
+
+      &::scroll-button(block-start) {
+        content: '' / 'Previous slide';
+        top: 0;
+      }
+
+      &::scroll-button(block-end) {
+        content: '' / 'Next slide';
+        bottom: 0;
+      }
+    }
+
+    &[data-markers] > :is(ol, ul) {
+      scroll-marker-group: after;
+
+      &::scroll-marker-group {
+        @apply flex justify-center;
+      }
+
+      > li::scroll-marker {
+        content: '' / attr(aria-label);
+        @apply cursor-pointer;
+      }
+    }
+  }
+}

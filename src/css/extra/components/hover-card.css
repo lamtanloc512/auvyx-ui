@@ -1,0 +1,94 @@
+/* Hover Card (fork addition)
+ *
+ * Zero JS: opens on hover or keyboard focus of the trigger, with an open
+ * delay so it does not flash while the pointer passes over. Reuses the
+ * [data-popover] positioning (data-side / data-align) from popover.css.
+ *   <span class="hover-card">
+ *     <a href="/u/ethan">@ethan</a>
+ *     <div data-popover data-side="bottom">…</div>
+ *   </span>
+ * Hover-only content must not hold anything the user needs to act on
+ * (touch screens have no hover): treat it as a preview of the link target.
+ */
+@layer components {
+  .hover-card {
+    @apply relative inline-flex;
+    --hover-card-open-delay: 500ms;
+    --hover-card-close-delay: 150ms;
+
+    /* display:none (not just visibility) so a closed card never adds
+       scrollable overflow; allow-discrete keeps the fade and the delays. */
+    > [data-popover] {
+      @apply opacity-0 scale-95;
+      display: none;
+      min-inline-size: 0;
+      max-inline-size: calc(100vw - 2rem);
+      transition-property: opacity, scale, translate, display;
+      transition-behavior: allow-discrete;
+      transition-delay: var(--hover-card-close-delay);
+    }
+
+    > [data-popover]:not([data-side]),
+    > [data-popover][data-side='bottom'] {
+      translate: 0 -0.5rem;
+    }
+
+    > [data-popover][data-side='top'] {
+      translate: 0 0.5rem;
+    }
+
+    /* After the side offsets: equal specificity, so order decides. */
+    &:is(:hover, :focus-within) > [data-popover] {
+      @apply opacity-100 scale-100;
+      display: flex;
+      translate: 0 0;
+      transition-delay: var(--hover-card-open-delay);
+
+      @starting-style {
+        @apply opacity-0 scale-95;
+      }
+    }
+  }
+
+  /* Keep the card on screen: anchor to the trigger and flip when it would overflow. */
+  @supports (anchor-name: --a) {
+    .hover-card {
+      /* Not a containing block here: a relative .hover-card is only as tall as
+         its trigger, which leaves position-area no room below it. */
+      position: static;
+      anchor-scope: --bc-hover-card;
+
+      > :first-child {
+        anchor-name: --bc-hover-card;
+      }
+
+      > [data-popover] {
+        position-anchor: --bc-hover-card;
+        inset: auto;
+        margin: 0;
+        position-try-fallbacks: flip-inline, flip-block;
+
+        &:not([data-side]),
+        &[data-side='bottom'] {
+          position-area: block-end span-inline-end;
+          margin-block-start: 0.25rem;
+        }
+
+        &[data-side='top'] {
+          position-area: block-start span-inline-end;
+          margin-block-end: 0.25rem;
+        }
+
+        &[data-align='center'] {
+          position-area: block-end;
+        }
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hover-card > [data-popover] {
+      translate: none;
+    }
+  }
+}
