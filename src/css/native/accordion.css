@@ -1,0 +1,41 @@
+/* Native accordion (fork addition)
+ *
+ * Works without accordion.js:
+ * - Single-open: give every <details> the same `name` (exclusive accordion,
+ *   native in all modern browsers). Omit `name` for multiple-open.
+ * - Disabled item: add `inert` to the <details> (blocks pointer + keyboard).
+ * - Open/close animation via ::details-content where supported.
+ *
+ *   <section class="accordion">
+ *     <details name="faq"><summary>Question <svg>…</svg></summary><section>…</section></details>
+ *   </section>
+ */
+@layer components {
+  .accordion > details[inert] > summary {
+    opacity: 0.5;
+  }
+
+  @supports selector(::details-content) {
+    .accordion {
+      interpolate-size: allow-keywords;
+    }
+
+    .accordion > details::details-content {
+      block-size: 0;
+      overflow: hidden;
+      transition:
+        block-size 200ms ease,
+        content-visibility 200ms allow-discrete;
+    }
+
+    .accordion > details[open]::details-content {
+      block-size: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .accordion > details::details-content {
+      transition: none;
+    }
+  }
+}

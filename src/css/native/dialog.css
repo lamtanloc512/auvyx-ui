@@ -1,0 +1,19 @@
+/* Native dialog triggers (fork addition)
+ *
+ * Basecoat's .dialog / .alert-dialog already style native <dialog>.
+ * Open and close them without JS using Invoker Commands:
+ *
+ *   <button class="btn" commandfor="d1" command="show-modal">Open</button>
+ *   <dialog id="d1" class="dialog" closedby="any">…
+ *     <button class="btn" commandfor="d1" command="close">Close</button>
+ *   </dialog>
+ *
+ * `closedby="any"` adds light dismiss (backdrop click) where supported;
+ * Escape always closes a modal dialog. No CSS is needed here beyond making
+ * invoker buttons inside a dialog footer behave like regular actions.
+ */
+@layer components {
+  :is(.dialog, .alert-dialog) [command='close'] {
+    cursor: pointer;
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@auvyx/ui",
+  "version": "0.1.0",
+  "description": "Drop-in CSS design system (shadcn look, Basecoat-based). One CSS file, optional tiny JS.",
+  "license": "MIT",
+  "type": "module",
+  "style": "dist/auvyx.min.css",
+  "main": "dist/auvyx.min.css",
+  "files": ["dist/"],
+  "exports": {
+    ".": "./dist/auvyx.min.css",
+    "./css": "./dist/auvyx.min.css",
+    "./auvyx.css": "./dist/auvyx.css",
+    "./js": "./dist/auvyx.min.js",
+    "./auvyx.js": "./dist/auvyx.js"
+  },
+  "scripts": {
+    "build": "node ./build.mjs"
+  }
+}

@@ -199,7 +199,7 @@
 
   if (window.basecoat) {
     window.basecoat.register('dropdown-menu', {
-      selector: '.dropdown-menu:not([data-dropdown-menu-initialized])',
+      selector: '.dropdown-menu:not([data-dropdown-menu-initialized]):not(:has(> [data-popover][popover]))',
       init: initDropdownMenu,
       refresh: refreshDropdownMenu,
     });
