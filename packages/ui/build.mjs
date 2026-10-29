@@ -18,7 +18,7 @@ const cssTargets = ['chrome111', 'safari16.4', 'firefox128'];
 const jsComponents = ['basecoat', 'combobox', 'command', 'drawer', 'dropdown-menu', 'range', 'select', 'sidebar', 'tabs', 'toast'];
 
 // Size budgets (gzip bytes). CI fails when a change blows past them.
-const budgets = { 'auvyx.min.css': 40_000, 'auvyx.min.js': 12_000 };
+const budgets = { 'auvyx.min.css': 28_000, 'auvyx.min.js': 12_000 };
 
 await fs.rm(dist, { recursive: true, force: true });
 await fs.mkdir(dist, { recursive: true });
@@ -37,6 +37,22 @@ const jsSrc = (await Promise.all(jsComponents.map((c) => fs.readFile(path.join(r
 await fs.writeFile(path.join(dist, 'auvyx.js'), banner + jsSrc);
 const { code: minJs } = await transform(jsSrc, { loader: 'js', minify: true, target: 'es2020' });
 await fs.writeFile(path.join(dist, 'auvyx.min.js'), banner + minJs);
+
+// Source channel: inline every relative @import of auvyx.source.css into one
+// uncompiled file for projects that already run Tailwind v4.
+async function inline(file, seen = new Set()) {
+  const abs = path.resolve(file);
+  if (seen.has(abs)) return '';
+  seen.add(abs);
+  const out = [];
+  for (const line of (await fs.readFile(abs, 'utf8')).split('\n')) {
+    const m = line.match(/^\s*@import\s+["'](\.{1,2}\/[^"']+)["']\s*;\s*$/);
+    out.push(m ? (await inline(path.join(path.dirname(abs), m[1]), seen)).replace(/\n+$/, '') : line);
+  }
+  return out.join('\n');
+}
+const bundleHeader = `/*! @auvyx/ui v${version} source bundle | MIT | import after "tailwindcss" */\n`;
+await fs.writeFile(path.join(dist, 'auvyx.bundle.css'), bundleHeader + (await inline(path.join(here, 'src/auvyx.source.css'))));
 
 // Report + budgets
 let failed = false;

@@ -1,60 +1,10 @@
-/* @auvyx/ui: Bootstrap-style entry.
+/* @auvyx/ui CDN entry (no-build channel) -> dist/auvyx.min.css
  *
- * One compiled file = Tailwind preflight + Basecoat base/components + a style
- * pack + native zero-JS variants + themes + a curated utility set.
- * `source(none)` turns off file scanning, so the output only contains what is
- * declared here. That keeps the CDN file deterministic: the same classes
- * exist for every consumer, regardless of their markup.
+ * Tailwind preflight + components + layout primitives + themes. No utility
+ * classes on purpose: `source(none)` turns off file scanning, and component
+ * styles are inlined via @apply, so the file is deterministic and never ships
+ * class names that would clash with a consumer's own Tailwind build.
+ * Projects with Tailwind should use dist/auvyx.bundle.css instead.
  */
 @import "tailwindcss" source(none);
-
-/* Components: structure + visuals (Vega pack for now, swap for an Auvyx pack later) */
-@import "../../../src/css/basecoat-vega.css";
-
-/* Fork additions */
-@import "../../../src/css/native/index.css";
-@import "./themes.css";
-
-
-/* ---- Curated public utilities (the "Bootstrap" layer) ----------------- */
-
-/* Semantic colors */
-@source inline("{,hover:}{bg,text,border}-{background,foreground,card,card-foreground,popover,popover-foreground,primary,primary-foreground,secondary,secondary-foreground,muted,muted-foreground,accent,accent-foreground,destructive,border,input,ring}");
-@source inline("{bg,text,border}-{primary,muted,accent,destructive}/{10,20,50,80}");
-
-/* Layout */
-@source inline("{,sm:,md:,lg:,xl:}{block,inline-block,inline,flex,inline-flex,grid,hidden,contents}");
-@source inline("{,sm:,md:,lg:,xl:}flex-{row,col,wrap,1,none}");
-@source inline("{,sm:,md:,lg:,xl:}grid-cols-{1,2,3,4,5,6,12}");
-@source inline("{,sm:,md:,lg:,xl:}col-span-{1,2,3,4,6,12,full}");
-@source inline("{items,justify,content,self}-{start,center,end,between,stretch}");
-@source inline("{,sm:,md:,lg:}gap-{0,1,2,3,4,6,8,10,12}");
-@source inline("{,sm:,md:,lg:}{gap-x,gap-y}-{2,4,6,8}");
-@source inline("shrink-0 grow");
-
-/* Spacing */
-@source inline("{,sm:,md:,lg:}{p,px,py,pt,pb,ps,pe}-{0,1,2,3,4,5,6,8,10,12,16}");
-@source inline("{,sm:,md:,lg:}{m,mx,my,mt,mb,ms,me}-{0,1,2,3,4,5,6,8,10,12,16,auto}");
-@source inline("space-y-{1,2,3,4,6,8} space-x-{1,2,3,4}");
-
-/* Sizing */
-@source inline("{w,h}-{full,auto,screen,fit,4,5,6,8,10,12,16,20,24,32,48,64}");
-@source inline("min-h-screen min-w-0 size-{4,5,6,8,10,12}");
-@source inline("max-w-{xs,sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,prose,full,screen-xl}");
-@source inline("container mx-auto");
-@source inline("{,sm:,md:}max-w-{sm,md,lg,xl,2xl}");
-
-/* Typography */
-@source inline("{,sm:,md:,lg:}text-{xs,sm,base,lg,xl,2xl,3xl,4xl,5xl}");
-@source inline("font-{normal,medium,semibold,bold} font-{sans,mono}");
-@source inline("text-{start,center,end} leading-{none,tight,snug,normal,relaxed} tracking-{tight,normal,wide}");
-@source inline("truncate line-clamp-{1,2,3} uppercase lowercase capitalize underline no-underline");
-
-/* Borders, radius, effects */
-@source inline("border border-{0,2,t,b,s,e,x,y} rounded{,-sm,-md,-lg,-xl,-2xl,-full,-none}");
-@source inline("shadow{,-xs,-sm,-md,-lg,-none} ring ring-{0,1,2} opacity-{0,50,75,100}");
-
-/* Position & misc */
-@source inline("{relative,absolute,fixed,sticky,static} {inset,top,bottom,start,end}-0 z-{0,10,20,30,40,50}");
-@source inline("overflow-{auto,hidden,x-auto,y-auto} sr-only not-sr-only cursor-pointer select-none pointer-events-none");
-@source inline("dark:{bg,text,border}-{background,foreground,card,muted,muted-foreground}");
+@import "./auvyx.source.css";

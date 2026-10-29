@@ -1,0 +1,16 @@
+/* @auvyx/ui source: components + layout primitives + themes, no Tailwind import.
+ *
+ * Shared by both channels:
+ * - CDN:    auvyx.css compiles this with `tailwindcss source(none)` -> auvyx.min.css
+ * - Source: inlined into dist/auvyx.bundle.css for projects that already run
+ *           Tailwind v4 (import it after "tailwindcss"; their build generates
+ *           every utility they use).
+ */
+
+/* Components: structure + visuals (Vega pack for now, swap for an Auvyx pack later) */
+@import "../../../src/css/basecoat-vega.css";
+
+/* Fork additions */
+@import "../../../src/css/native/index.css";
+@import "../../../src/css/layout/index.css";
+@import "./themes.css";

@@ -12,7 +12,9 @@
     "./css": "./dist/auvyx.min.css",
     "./auvyx.css": "./dist/auvyx.css",
     "./js": "./dist/auvyx.min.js",
-    "./auvyx.js": "./dist/auvyx.js"
+    "./auvyx.js": "./dist/auvyx.js",
+    "./bundle": "./dist/auvyx.bundle.css",
+    "./auvyx.bundle.css": "./dist/auvyx.bundle.css"
   },
   "scripts": {
     "build": "node ./build.mjs"

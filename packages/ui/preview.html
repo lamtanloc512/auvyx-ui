@@ -17,44 +17,39 @@
   :root { --pv-gap: 2.5rem; color-scheme: light; }
   html.dark { color-scheme: dark; }
   body { background: var(--background); color: var(--foreground); font-family: var(--font-sans); }
-  .pv {
-    max-width: 64rem; margin-inline: auto;
-    padding-left: max(16px, env(safe-area-inset-left, 0px));
-    padding-right: max(16px, env(safe-area-inset-right, 0px));
-    padding-block: 1.5rem 4rem;
-    display: grid; gap: var(--pv-gap);
-  }
-  .pv-head { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; }
+  .pv { padding-block: 1.5rem 4rem; }
+  .pv-head { border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; }
   .pv-head h1 { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.01em; margin: 0; }
   .pv-head p { margin: 0.25rem 0 0; color: var(--muted-foreground); font-size: 0.875rem; }
-  .pv-controls { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
   .pv-controls label { font-size: 0.8125rem; color: var(--muted-foreground); display: flex; gap: 0.5rem; align-items: center; }
-  .pv-sec { display: grid; gap: 1rem; }
   .pv-sec > header h2 { font-size: 1rem; font-weight: 600; margin: 0; text-wrap: balance; }
   .pv-sec > header p { margin: 0.25rem 0 0; font-size: 0.875rem; color: var(--muted-foreground); max-width: 65ch; }
-  .pv-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); }
-  .pv-spec { border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; display: grid; gap: 0.875rem; align-content: start; min-width: 0; }
+  .pv-spec { border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; min-width: 0; }
   .pv-spec-top { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
   .pv-spec-top h3 { font-size: 0.875rem; font-weight: 600; margin: 0; }
   .pv-spec-top code { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted-foreground); }
-  .pv-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
   .pv-note { font-size: 0.8125rem; color: var(--muted-foreground); margin: 0; }
   .pv-code { position: relative; background: var(--muted); border-radius: var(--radius); overflow-x: auto; }
   .pv-code pre { margin: 0; padding: 0.875rem 1rem; font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.6; }
-  .pv-stats { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); }
   .pv-stat { border: 1px solid var(--border); border-radius: var(--radius); padding: 0.75rem 1rem; }
   .pv-stat b { display: block; font-size: 1.25rem; font-weight: 600; font-variant-numeric: tabular-nums; }
   .pv-stat span { font-size: 0.75rem; color: var(--muted-foreground); }
-  .pv-swatch { height: 2.5rem; border-radius: calc(var(--radius) - 2px); }
+  .pv-swatch { height: 2.5rem; flex: 1; border-radius: calc(var(--radius) - 2px); }
+  .pv-price { font-size: 1.875rem; font-weight: 600; margin: 0; font-variant-numeric: tabular-nums; }
+  .pv-grow { flex: 1; }
+  .pv-pad { padding: 1rem; }
+  .pv-tile { border: 1px solid var(--border); border-radius: var(--radius); padding: 0.75rem 1rem; font-size: 0.8125rem; min-width: 0; }
+  .pv-tile[data-tone='primary'] { background: var(--primary); color: var(--primary-foreground); border-color: transparent; }
+  .pv-tile[data-tone='muted'] { background: var(--muted); color: var(--muted-foreground); border-color: transparent; }
 </style>
 
-<div class="pv">
-  <header class="pv-head">
+<div class="wrapper stack pv" data-size="lg" data-gap="12">
+  <header class="pv-head cluster" data-justify="between">
     <div>
       <h1>Auvyx UI <span class="badge" data-variant="secondary">v0.1.0</span></h1>
       <p>Basecoat fork · import 1 file CSS là chạy · JS chỉ khi component thật sự cần</p>
     </div>
-    <div class="pv-controls">
+    <div class="pv-controls cluster" data-gap="3">
       <label for="pv-theme">Theme
         <select id="pv-theme" class="select" aria-label="Brand theme">
           <option value="">Default</option>
@@ -66,38 +61,42 @@
     </div>
   </header>
 
-  <section class="pv-sec" aria-labelledby="s-use">
+  <section class="pv-sec stack" data-gap="4" aria-labelledby="s-use">
     <header>
       <h2 id="s-use">Cách dùng</h2>
-      <p>Giống Bootstrap: một <code>&lt;link&gt;</code> cho CSS, thêm <code>&lt;script defer&gt;</code> chỉ khi dùng Tabs, Select, Combobox, Command, Toast, Sidebar hoặc Slider.</p>
+      <p>Kênh CDN giống Bootstrap: một <code>&lt;link&gt;</code> cho CSS, thêm <code>&lt;script defer&gt;</code> chỉ khi dùng Tabs, Select, Combobox, Command, Toast, Sidebar hoặc Slider. Project đã có Tailwind thì import bản source.</p>
     </header>
     <div class="pv-code">
       <pre id="pv-snippet">&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@auvyx/ui@0.1.0/dist/auvyx.min.css"&gt;
 &lt;script src="https://cdn.jsdelivr.net/npm/@auvyx/ui@0.1.0/dist/auvyx.min.js" defer&gt;&lt;/script&gt;  &lt;!-- tùy chọn --&gt;
 
-&lt;html class="dark" data-theme="ocean"&gt;  &lt;!-- dark mode + brand theme = chỉ CSS variables --&gt;</pre>
+&lt;html class="dark" data-theme="ocean"&gt;  &lt;!-- dark mode + brand theme = chỉ CSS variables --&gt;
+
+/* Đã có Tailwind v4? Dùng kênh source, utility do build của bạn sinh ra */
+@import "tailwindcss";
+@import "@auvyx/ui/bundle";</pre>
     </div>
-    <div class="pv-stats">
-      <div class="pv-stat"><b>32.0 kB</b><span>auvyx.min.css · gzip (budget 39 kB)</span></div>
+    <div class="auto-grid" data-min="sm" data-gap="3">
+      <div class="pv-stat"><b>24.0 kB</b><span>auvyx.min.css · gzip · không có utility</span></div>
       <div class="pv-stat"><b>11.2 kB</b><span>auvyx.min.js · gzip · tùy chọn</span></div>
-      <div class="pv-stat"><b>22.9 kB</b><span>upstream basecoat.cdn.min.css · không có utilities</span></div>
+      <div class="pv-stat"><b>22.9 kB</b><span>upstream basecoat.cdn.min.css</span></div>
     </div>
   </section>
 
-  <section class="pv-sec" aria-labelledby="s-native">
+  <section class="pv-sec stack" data-gap="4" aria-labelledby="s-native">
     <header>
       <h2 id="s-native">Zero JS: chạy bằng tính năng native của browser</h2>
       <p>Trang này không load JS cho các component dưới đây. Popover API, Invoker Commands, <code>&lt;details name&gt;</code> và CSS anchor positioning làm toàn bộ việc mở/đóng, light dismiss, Escape và focus.</p>
     </header>
-    <div class="pv-grid">
+    <div class="auto-grid" style="--min: 18rem">
 
-      <article class="pv-spec">
+      <article class="pv-spec stack" data-gap="3">
         <div class="pv-spec-top"><h3>Popover</h3><span class="badge" data-variant="outline">0 JS</span></div>
         <div class="popover">
           <button type="button" class="btn" data-variant="outline" popovertarget="pv-pop">Kích thước eSIM</button>
-          <div id="pv-pop" data-popover popover data-side="bottom" data-align="start" class="w-64">
+          <div id="pv-pop" data-popover popover data-side="bottom" data-align="start" style="width: 16rem">
             <header><h4>Gói dữ liệu</h4><p>Chọn dung lượng cho chuyến đi.</p></header>
-            <div class="grid gap-2">
+            <div class="stack" data-gap="2">
               <label class="label" for="pv-gb">Dung lượng (GB)</label>
               <input class="input" id="pv-gb" type="number" value="10">
             </div>
@@ -106,11 +105,11 @@
         <p class="pv-note"><code>popover</code> + <code>popovertarget</code>, đặt vị trí bằng <code>position-area</code>.</p>
       </article>
 
-      <article class="pv-spec">
+      <article class="pv-spec stack" data-gap="3">
         <div class="pv-spec-top"><h3>Dropdown menu</h3><span class="badge" data-variant="outline">0 JS</span></div>
         <div class="dropdown-menu">
           <button type="button" class="btn" data-variant="outline" popovertarget="pv-menu" aria-haspopup="menu">Tài khoản</button>
-          <div id="pv-menu" data-popover popover data-side="bottom" data-align="start" class="w-48">
+          <div id="pv-menu" data-popover popover data-side="bottom" data-align="start" style="width: 12rem">
             <div role="menu" aria-label="Tài khoản">
               <button type="button" role="menuitem"><span>Hồ sơ</span><kbd>⇧⌘P</kbd></button>
               <button type="button" role="menuitem"><span>Thanh toán</span><kbd>⌘B</kbd></button>
@@ -122,19 +121,19 @@
         <p class="pv-note">Tab giữa các item. Phím mũi tên sẽ do <code>&lt;auvyx-menu&gt;</code> (light DOM) bổ sung ở bước Web Components.</p>
       </article>
 
-      <article class="pv-spec">
+      <article class="pv-spec stack" data-gap="3">
         <div class="pv-spec-top"><h3>Dialog</h3><span class="badge" data-variant="outline">0 JS</span></div>
-        <div class="pv-row">
+        <div class="cluster" data-gap="2">
           <button type="button" class="btn" commandfor="pv-dlg" command="show-modal">Sửa hồ sơ</button>
         </div>
         <dialog id="pv-dlg" class="dialog" closedby="any" aria-labelledby="pv-dlg-title">
-          <div class="sm:max-w-sm">
+          <div>
             <header>
               <h2 id="pv-dlg-title">Sửa hồ sơ</h2>
               <p>Thay đổi sẽ lưu khi bạn bấm Lưu.</p>
             </header>
             <section>
-              <div class="grid gap-3">
+              <div class="stack" data-gap="2">
                 <label class="label" for="pv-name">Tên</label>
                 <input class="input" id="pv-name" type="text" value="Ethan">
               </div>
@@ -148,7 +147,7 @@
         <p class="pv-note"><code>commandfor</code> + <code>command="show-modal"</code>; <code>closedby="any"</code> cho backdrop click.</p>
       </article>
 
-      <article class="pv-spec">
+      <article class="pv-spec stack" data-gap="3">
         <div class="pv-spec-top"><h3>Accordion</h3><span class="badge" data-variant="outline">0 JS</span></div>
         <section class="accordion">
           <details name="pv-faq" open>
@@ -167,9 +166,9 @@
         <p class="pv-note">Cùng <code>name</code> = chỉ mở một mục. <code>inert</code> = disabled.</p>
       </article>
 
-      <article class="pv-spec">
+      <article class="pv-spec stack" data-gap="3">
         <div class="pv-spec-top"><h3>Tooltip</h3><span class="badge" data-variant="outline">0 JS</span></div>
-        <div class="pv-row">
+        <div class="cluster" data-gap="2">
           <button type="button" class="btn" data-variant="outline" data-tooltip="Copy mã kích hoạt" data-side="top">Top</button>
           <button type="button" class="btn" data-variant="outline" data-tooltip="Mở cài đặt" data-side="bottom">Bottom</button>
         </div>
@@ -178,15 +177,15 @@
     </div>
   </section>
 
-  <section class="pv-sec" aria-labelledby="s-base">
+  <section class="pv-sec stack" data-gap="4" aria-labelledby="s-base">
     <header>
       <h2 id="s-base">Components cơ bản</h2>
       <p>API giữ nguyên Basecoat: một root class cộng <code>data-variant</code>, <code>data-size</code>. Đổi Theme ở góc trên để thấy token thay đổi.</p>
     </header>
-    <div class="pv-grid">
-      <article class="pv-spec">
+    <div class="auto-grid" style="--min: 18rem">
+      <article class="pv-spec stack" data-gap="3">
         <div class="pv-spec-top"><h3>Button</h3><code>.btn</code></div>
-        <div class="pv-row">
+        <div class="cluster" data-gap="2">
           <button type="button" class="btn">Mua gói</button>
           <button type="button" class="btn" data-variant="secondary">So sánh</button>
           <button type="button" class="btn" data-variant="outline">Chi tiết</button>
@@ -195,22 +194,22 @@
           <button type="button" class="btn" data-variant="link">Điều khoản</button>
         </div>
       </article>
-      <article class="pv-spec">
+      <article class="pv-spec stack" data-gap="3">
         <div class="pv-spec-top"><h3>Badge</h3><code>.badge</code></div>
-        <div class="pv-row">
+        <div class="cluster" data-gap="2">
           <span class="badge">Đang hoạt động</span>
           <span class="badge" data-variant="secondary">5G</span>
           <span class="badge" data-variant="outline">Châu Á</span>
           <span class="badge" data-variant="destructive">Hết hạn</span>
         </div>
-        <div class="pv-row">
-          <div class="pv-swatch bg-primary grow"></div>
-          <div class="pv-swatch bg-accent grow"></div>
-          <div class="pv-swatch bg-muted grow"></div>
-          <div class="pv-swatch bg-destructive grow"></div>
+        <div class="cluster" data-gap="2">
+          <div class="pv-swatch" style="background: var(--primary)"></div>
+          <div class="pv-swatch" style="background: var(--accent)"></div>
+          <div class="pv-swatch" style="background: var(--muted)"></div>
+          <div class="pv-swatch" style="background: var(--destructive)"></div>
         </div>
       </article>
-      <article class="pv-spec">
+      <article class="pv-spec stack" data-gap="3">
         <div class="pv-spec-top"><h3>Alert</h3><code>.alert</code></div>
         <div class="alert">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
@@ -218,7 +217,7 @@
           <section>Còn 0.8 GB trên tổng 10 GB.</section>
         </div>
       </article>
-      <article class="pv-spec">
+      <article class="pv-spec stack" data-gap="3">
         <div class="pv-spec-top"><h3>Form</h3><code>.field</code></div>
         <div role="group" class="field">
           <label for="pv-email">Email nhận QR</label>
@@ -243,16 +242,16 @@
           <h2>Nhật Bản · 10 GB</h2>
           <p>30 ngày · mạng Docomo, SoftBank</p>
         </header>
-        <section><p class="text-3xl font-semibold">$14.90</p></section>
-        <footer class="flex gap-2">
-          <button type="button" class="btn grow">Mua ngay</button>
+        <section><p class="pv-price">$14.90</p></section>
+        <footer class="cluster" data-gap="2">
+          <button type="button" class="btn pv-grow">Mua ngay</button>
           <button type="button" class="btn" data-variant="outline">Chi tiết</button>
         </footer>
       </article>
     </div>
   </section>
 
-  <section class="pv-sec" aria-labelledby="s-js">
+  <section class="pv-sec stack" data-gap="4" aria-labelledby="s-js">
     <header>
       <h2 id="s-js">Cần JS (auvyx.min.js)</h2>
       <p>Tabs cần JS cho ARIA roving tabindex và điều hướng bằng phím mũi tên. Không có JS, tab đầu vẫn hiển thị.</p>
@@ -263,22 +262,41 @@
         <button type="button" role="tab" id="pv-t2" aria-controls="pv-p2" aria-selected="false" tabindex="-1">Mức dùng</button>
         <button type="button" role="tab" id="pv-t3" aria-controls="pv-p3" aria-selected="false" tabindex="-1">Hoá đơn</button>
       </nav>
-      <div role="tabpanel" id="pv-p1" aria-labelledby="pv-t1" tabindex="-1"><p class="pv-note p-4">3 eSIM đang hoạt động.</p></div>
-      <div role="tabpanel" id="pv-p2" aria-labelledby="pv-t2" tabindex="-1" hidden><p class="pv-note p-4">Đã dùng 9.2 GB tháng này.</p></div>
-      <div role="tabpanel" id="pv-p3" aria-labelledby="pv-t3" tabindex="-1" hidden><p class="pv-note p-4">Hoá đơn gần nhất: $14.90.</p></div>
+      <div role="tabpanel" id="pv-p1" aria-labelledby="pv-t1" tabindex="-1"><p class="pv-note pv-pad">3 eSIM đang hoạt động.</p></div>
+      <div role="tabpanel" id="pv-p2" aria-labelledby="pv-t2" tabindex="-1" hidden><p class="pv-note pv-pad">Đã dùng 9.2 GB tháng này.</p></div>
+      <div role="tabpanel" id="pv-p3" aria-labelledby="pv-t3" tabindex="-1" hidden><p class="pv-note pv-pad">Hoá đơn gần nhất: $14.90.</p></div>
     </div>
   </section>
 
-  <section class="pv-sec" aria-labelledby="s-util">
+  <section class="pv-sec stack" data-gap="4" aria-labelledby="s-layout">
     <header>
-      <h2 id="s-util">Utilities có sẵn</h2>
-      <p>Bộ utility đã curate (layout, spacing, màu semantic, typography) được build sẵn trong CSS, nên không cần chạy Tailwind ở phía người dùng.</p>
+      <h2 id="s-layout">Layout primitives</h2>
+      <p>Thay cho utility classes ở kênh CDN: 5 layout có tên riêng, cấu hình bằng <code>data-*</code> hoặc CSS variable. Không trùng tên với Tailwind, nên load chung cũng không xung đột. Cả trang này được dàn layout bằng chúng.</p>
     </header>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-      <div class="rounded-lg bg-primary text-primary-foreground p-4 text-sm">bg-primary</div>
-      <div class="rounded-lg bg-secondary text-secondary-foreground p-4 text-sm">bg-secondary</div>
-      <div class="rounded-lg bg-accent text-accent-foreground p-4 text-sm">bg-accent</div>
-      <div class="rounded-lg border border-border text-muted-foreground p-4 text-sm">border-border</div>
+    <div class="split" data-gap="4" style="--side: 12rem">
+      <nav class="pv-tile stack" data-gap="2" data-tone="muted" aria-label="Ví dụ split">
+        <strong>.split</strong>
+        <span>Side 12rem, tự xuống dòng khi hẹp.</span>
+      </nav>
+      <div class="stack" data-gap="3">
+        <div class="auto-grid" data-min="xs" data-gap="2">
+          <div class="pv-tile" data-tone="primary">.auto-grid</div>
+          <div class="pv-tile">data-min="xs"</div>
+          <div class="pv-tile">không cần breakpoint</div>
+          <div class="pv-tile">tự chia cột</div>
+        </div>
+        <div class="cluster" data-gap="2" data-justify="between">
+          <span class="badge" data-variant="outline">.cluster</span>
+          <span class="badge" data-variant="outline">data-justify="between"</span>
+        </div>
+      </div>
+    </div>
+    <div class="pv-code">
+      <pre>&lt;main class="wrapper stack" data-size="lg" data-gap="12"&gt;
+  &lt;div class="split" style="--side: 12rem"&gt;&lt;nav&gt;…&lt;/nav&gt;&lt;section&gt;…&lt;/section&gt;&lt;/div&gt;
+  &lt;div class="auto-grid" data-min="sm"&gt;…&lt;/div&gt;
+  &lt;div class="cluster" data-gap="2" data-justify="between"&gt;…&lt;/div&gt;
+&lt;/main&gt;</pre>
     </div>
   </section>
 </div>
