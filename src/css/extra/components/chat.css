@@ -1,0 +1,175 @@
+/* Chat primitives (fork addition): Message, Bubble, Marker, Message Scroller.
+ *
+ *   <div class="message-scroller">
+ *     <div role="log" aria-label="Conversation" tabindex="0">
+ *       <div>                                    ← messages, in reading order
+ *         <p class="marker" data-variant="separator"><span>Today</span></p>
+ *         <article class="message" data-align="end">
+ *           <span class="avatar"><img src="…" alt="Ethan"></span>
+ *           <section>
+ *             <header>Ethan</header>
+ *             <div class="bubble"><p>Is roaming included?</p></div>
+ *             <footer>Read 9:41</footer>
+ *           </section>
+ *         </article>
+ *       </div>
+ *     </div>
+ *     <a href="#latest" class="btn" data-size="icon" aria-label="Jump to latest">…</a>
+ *   </div>
+ *
+ * Message Scroller is zero JS: a column-reverse scroller starts at the newest
+ * message and stays pinned there as messages are appended; a scroll-driven
+ * animation reveals the jump-to-latest link once the reader scrolls up.
+ */
+@layer components {
+  /* Message */
+  .message-group {
+    @apply flex min-w-0 flex-col;
+  }
+
+  .message {
+    @apply relative flex w-full min-w-0;
+
+    &[data-align='end'] {
+      @apply flex-row-reverse;
+    }
+
+    > .avatar,
+    > img {
+      @apply shrink-0 self-end;
+    }
+
+    > section {
+      @apply flex w-full min-w-0 flex-col wrap-break-word;
+    }
+
+    &[data-align='end'] > section > * {
+      @apply self-end;
+    }
+
+    > section > :is(header, footer) {
+      @apply flex max-w-full min-w-0 items-center;
+    }
+  }
+
+  /* Bubble: first child is the surface (p, div, a or button); aside = reactions */
+  .bubble-group {
+    @apply flex min-w-0 flex-col;
+  }
+
+  .bubble {
+    @apply relative flex w-fit min-w-0 flex-col;
+
+    &[data-align='end'] {
+      @apply self-end;
+    }
+
+    > :not(aside) {
+      @apply w-fit max-w-full min-w-0 overflow-hidden wrap-break-word;
+    }
+
+    > :is(button, a):not(aside) {
+      @apply cursor-pointer text-start transition-colors;
+    }
+
+    > aside {
+      @apply absolute z-10 flex w-fit items-center justify-center;
+    }
+  }
+
+  /* Marker: inline status line or labelled separator */
+  .marker {
+    @apply relative flex w-full items-center;
+
+    > svg {
+      @apply shrink-0;
+    }
+
+    > span {
+      @apply min-w-0 wrap-break-word;
+    }
+
+    &[data-variant='separator'] {
+      &::before,
+      &::after {
+        @apply h-px min-w-0 flex-1 content-[''];
+      }
+
+      > span {
+        @apply flex-none text-center;
+      }
+    }
+  }
+
+  /* Message Scroller */
+  .message-scroller {
+    @apply relative flex min-h-0 flex-col overflow-hidden;
+    timeline-scope: --bc-message-log;
+
+    > [role='log'] {
+      @apply flex size-full min-h-0 min-w-0 flex-col-reverse overflow-y-auto overscroll-contain outline-none;
+      scroll-timeline: --bc-message-log block;
+      scrollbar-width: thin;
+
+      > * {
+        @apply flex flex-col;
+      }
+    }
+
+    > :is(a, button):last-child {
+      @apply absolute start-1/2 z-10 -translate-x-1/2 rtl:translate-x-1/2;
+      bottom: 1rem;
+      animation: bc-message-scroller-jump linear both;
+      animation-timeline: --bc-message-log;
+      /* Fully visible after 4rem of scrolling away from the newest message. */
+      animation-range: 0 4rem;
+    }
+  }
+
+  @keyframes bc-message-scroller-jump {
+    from {
+      opacity: 0;
+      scale: 0.95;
+      visibility: hidden;
+    }
+
+    to {
+      opacity: 1;
+      scale: 1;
+      visibility: visible;
+    }
+  }
+
+  /* Without scroll-driven animations the link stays visible and still works. */
+  @supports not (animation-timeline: scroll()) {
+    .message-scroller > :is(a, button):last-child {
+      animation: none;
+    }
+  }
+
+  /* Shimmer for in-progress text (trace running, attachment uploading) */
+  @keyframes bc-shimmer {
+    from { background-position: 100% 0; }
+    to { background-position: -100% 0; }
+  }
+
+  .bc-shimmer,
+  .trace [data-status='running'] > span,
+  .attachment:is([data-state='uploading'], [data-state='processing']) > div > :first-child {
+    background-image: linear-gradient(90deg, currentColor 0 40%, color-mix(in oklch, currentColor 35%, transparent) 50%, currentColor 60% 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: bc-shimmer 2s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bc-shimmer,
+    .trace [data-status='running'] > span,
+    .attachment:is([data-state='uploading'], [data-state='processing']) > div > :first-child {
+      animation: none;
+      -webkit-text-fill-color: currentColor;
+    }
+  }
+}

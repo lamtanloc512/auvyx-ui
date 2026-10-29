@@ -181,6 +181,128 @@
     @apply bg-foreground;
   }
 
+  /* Message */
+  .message-group { @apply gap-2; }
+  .message { @apply gap-2 text-sm; }
+  .message > :is(.avatar, img) { @apply min-w-8; }
+  .message:has(> section > footer) > :is(.avatar, img) { @apply -translate-y-8; }
+  .message > section { @apply gap-2.5; }
+  .message > section > :is(header, footer) { @apply text-muted-foreground px-3 text-xs font-medium; }
+  .message:has(.bubble[data-variant='ghost']) > section > :is(header, footer) { @apply px-0; }
+
+  /* Bubble */
+  .bubble-group { @apply gap-2; }
+  .bubble { @apply max-w-[80%] gap-1; }
+  .bubble[data-variant='ghost'] { @apply max-w-full; }
+  .message[data-align='end'] .bubble { @apply self-end; }
+  .bubble > :not(aside) {
+    @apply bg-primary text-primary-foreground m-0 rounded-xl border border-transparent px-3 py-2 text-sm leading-relaxed;
+  }
+  .bubble > :is(a, button):not(aside) { @apply hover:bg-primary/80 focus-visible:border-ring focus-visible:ring-ring/50 outline-none focus-visible:ring-3; }
+  .bubble[data-variant='secondary'] > :not(aside) { @apply bg-secondary text-secondary-foreground; }
+  .bubble[data-variant='muted'] > :not(aside) { @apply bg-muted text-foreground; }
+  .bubble[data-variant='tinted'] > :not(aside) {
+    @apply text-foreground;
+    background-color: oklch(from var(--primary) 0.93 calc(c * 0.4) h);
+  }
+  html.dark .bubble[data-variant='tinted'] > :not(aside) { background-color: oklch(from var(--primary) 0.3 calc(c * 0.4) h); }
+  .bubble[data-variant='outline'] > :not(aside) { @apply bg-background border-border text-foreground; }
+  .bubble[data-variant='ghost'] > :not(aside) { @apply text-foreground rounded-none border-none bg-transparent p-0; }
+  .bubble[data-variant='destructive'] > :not(aside) { @apply bg-destructive/10 dark:bg-destructive/20 text-destructive; }
+  .bubble:is([data-variant='secondary'], [data-variant='muted'], [data-variant='outline'], [data-variant='ghost']) > :is(a, button):not(aside) { @apply hover:bg-muted; }
+  .bubble > aside { @apply bg-muted ring-card shrink-0 gap-1 rounded-full px-1.5 py-0.5 text-sm ring-3 end-3 bottom-0 translate-y-3/4; }
+  .bubble > aside[data-side='top'] { @apply top-0 bottom-auto -translate-y-3/4; }
+  .bubble > aside[data-align='start'] { @apply start-3 end-auto; }
+
+  /* Marker */
+  .marker { @apply text-muted-foreground min-h-4 gap-2 text-start text-sm [&_svg:not([class*='size-'])]:size-4; }
+  .marker a { @apply hover:text-foreground underline underline-offset-3; }
+  .marker[data-variant='separator']::before { @apply bg-border me-1; }
+  .marker[data-variant='separator']::after { @apply bg-border ms-1; }
+  .marker[data-variant='border'] { @apply border-b pb-2; }
+
+  /* Message Scroller */
+  .message-scroller > [role='log'] > * { @apply gap-8 p-4; }
+  .message-scroller > :is(a, button):last-child { @apply bg-background text-foreground border-border hover:bg-muted rounded-full border shadow-sm; }
+
+  /* Attachment */
+  .attachment-group { @apply gap-3 py-1; }
+  .attachment { @apply bg-card text-card-foreground w-fit min-w-40 gap-2 rounded-xl text-sm focus-within:ring-1 focus-within:ring-ring/50; }
+  .attachment:has(> div:not([data-actions])) { @apply px-2.5 py-2; }
+  .attachment:not(:has(> div:not([data-actions]))) { @apply p-2; }
+  .attachment:has(a) { @apply hover:bg-muted/50; }
+  .attachment[data-state='idle'] { @apply border-dashed; }
+  .attachment[data-state='error'] { @apply border-destructive/30; }
+  .attachment > figure { @apply bg-muted text-foreground w-10 rounded-lg [&_svg:not([class*='size-'])]:size-4; }
+  .attachment[data-state='error'] > figure { @apply bg-destructive/10 text-destructive; }
+  .attachment > figure:has(> img) { @apply opacity-60; }
+  .attachment:is([data-state='idle'], [data-state='done'], :not([data-state])) > figure:has(> img) { @apply opacity-100; }
+  .attachment > div:not([data-actions]) { @apply leading-tight; }
+  .attachment > div:not([data-actions]) > :first-child { @apply font-medium; }
+  .attachment > div:not([data-actions]) > :is(small, p) { @apply text-muted-foreground mt-0.5 text-xs; }
+  .attachment[data-state='error'] > div:not([data-actions]) > :is(small, p) { @apply text-destructive/80; }
+  .attachment[data-size='sm'] { @apply gap-2.5 text-xs; }
+  .attachment[data-size='sm'] > figure { @apply w-8; }
+  .attachment[data-size='xs'] { @apply gap-1.5 rounded-lg text-xs; }
+  .attachment[data-size='xs'] > figure { @apply w-7 rounded-md; }
+  .attachment[data-orientation='vertical'] { @apply w-30 min-w-0; }
+  .attachment[data-orientation='vertical'] > figure { @apply w-full; }
+  .attachment[data-orientation='vertical'] > div:not([data-actions]) { @apply px-1; }
+  .attachment[data-orientation='vertical'] > [data-actions] { @apply top-3 end-3 gap-1; }
+
+  /* Code Block */
+  .code-block { @apply border-input text-foreground dark:bg-input/30 rounded-lg border text-sm; }
+  .code-block:has(> pre:focus-visible) { @apply border-ring ring-ring/50 ring-3; }
+  .code-block[data-variant='destructive'] { @apply border-destructive/30 text-destructive dark:border-destructive/40; }
+  .code-block[data-size='sm'] { @apply text-xs; }
+  .code-block > figcaption { @apply text-muted-foreground gap-2 px-4 pt-4; }
+  .code-block > figcaption > :first-child { @apply text-foreground font-sans text-sm font-medium [&_svg:not([class*='size-'])]:size-4 [&>svg]:me-1.5; }
+  .code-block[data-variant='destructive'] > figcaption > :first-child { @apply text-destructive; }
+  .code-block > figcaption > :is(button, [data-actions]):last-child { @apply -my-1 -me-1.5 gap-1; }
+  .code-block > :is(button, [data-actions]) { @apply top-3 end-3 bg-background ring-foreground/10 rounded-md ring-1; }
+  .code-block > pre { @apply px-4 py-4 leading-relaxed; }
+  .code-block:has(> figcaption) > pre { @apply pt-2; }
+  .code-block[data-size='sm'] > figcaption { @apply px-3 pt-3; }
+  .code-block[data-size='sm'] > pre { @apply px-3 py-3; }
+  .code-block > pre > code > span { @apply -mx-4 px-4; }
+  .code-block > pre[data-numbered] > code > span::before { @apply text-muted-foreground min-w-6 text-end; }
+  .code-block > pre > code > span[data-line='highlighted'] { @apply bg-muted; }
+  .code-block > pre > code > span[data-line='added'] { @apply bg-muted; }
+  .code-block > pre > code > span[data-line='added']::after { @apply text-muted-foreground start-1 content-['+']; }
+  .code-block > pre > code > span[data-line='removed'] { @apply bg-destructive/10; }
+  .code-block > pre > code > span[data-line='removed']::after { @apply text-destructive start-1 content-['−']; }
+
+  /* Copy feedback: swap a two-icon button (first svg = idle, second = copied) */
+  [data-copy]:has(> svg + svg) > svg:last-child, [data-copy][data-copied]:has(> svg + svg) > svg:first-child { @apply hidden; }
+  [data-copy][data-copied]:has(> svg + svg) > svg:last-child { @apply inline-block; }
+
+  /* Trace */
+  .trace { @apply gap-2; }
+  .trace :is(li, summary) { @apply text-muted-foreground gap-2 text-sm; }
+  .trace > li > :is(a, button), .trace summary { @apply hover:text-foreground focus-visible:ring-ring/50 gap-1 rounded-md focus-visible:ring-3; }
+  .trace [data-status='error'] { @apply text-destructive; }
+  .trace :is(li, summary) > svg { @apply size-4; }
+  .trace :is(li, summary) > small { @apply text-muted-foreground/70 text-sm; }
+  .trace details > :not(summary) { @apply text-muted-foreground mt-2 mb-1 ms-[calc(--spacing(2)-1px)] border-s ps-4 pe-1 text-sm leading-relaxed; }
+
+  /* Questionnaire */
+  .questionnaire { @apply gap-6; }
+  .questionnaire > output { @apply text-muted-foreground text-xs font-medium; }
+  .questionnaire > fieldset { @apply gap-3; }
+  .questionnaire > fieldset > legend { @apply mb-2 text-base font-semibold; }
+  .questionnaire > fieldset > p { @apply text-muted-foreground mb-2 text-sm; }
+  .questionnaire > fieldset > label {
+    @apply border-input dark:bg-input/20 hover:bg-muted/50 gap-3 rounded-md border bg-transparent px-4 py-3.5 text-sm shadow-xs;
+  }
+  .questionnaire > fieldset > label:has(> input:checked) { @apply border-primary/40 bg-muted; }
+  .questionnaire > fieldset > label:has(> input:focus-visible) { @apply border-ring ring-ring/50 ring-3; }
+  .questionnaire > fieldset > label:has(> input[aria-invalid='true']) { @apply border-destructive; }
+  .questionnaire > fieldset > label > input { @apply mt-0.5; }
+  .questionnaire > fieldset > label > span { @apply gap-1; }
+  .questionnaire > fieldset > label > span > small { @apply text-muted-foreground; }
+  .questionnaire > fieldset > label > kbd { @apply border-input bg-background text-muted-foreground size-5 rounded-md border font-mono text-[0.625rem] font-medium leading-none shadow-xs; }
+  .questionnaire > footer { @apply gap-2 sm:min-h-9; }
+
   /* Typography: opt-in prose styles for long-form content */
   .typography {
     @apply text-foreground;

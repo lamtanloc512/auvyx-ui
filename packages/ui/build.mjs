@@ -15,7 +15,7 @@ const cssTargets = ['chrome111', 'safari16.4', 'firefox128'];
 
 // JS is behavior-only and opt-in. accordion/popover are excluded: the native
 // variants in src/css/native/ cover them without JS. chart needs Chart.js.
-const jsComponents = ['basecoat', 'combobox', 'command', 'drawer', 'dropdown-menu', 'range', 'select', 'sidebar', 'tabs', 'toast'];
+const jsComponents = ['basecoat', 'combobox', 'command', 'copy', 'drawer', 'dropdown-menu', 'range', 'select', 'sidebar', 'tabs', 'toast'];
 
 // Size budgets (gzip bytes). CI fails when a change blows past them.
 // CSS budget sized for the full shadcn component set (~61 components); tighten once complete.
