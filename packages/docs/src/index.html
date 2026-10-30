@@ -562,7 +562,7 @@
     // React 19 maps onChange/onInput to these events on custom elements, but onToggle and onSelect are
     // React's own synthetic events: use the lowercase ontoggle / onselect for custom elements.
     const reactProp = (e) => (e === 'toggle' || e === 'select' ? `on${e}` : `on${e[0].toUpperCase()}${e.slice(1)}`);
-    const read = prop === 'open' ? 'e.target.open' : 'e.target.value';
+    const read = prop === 'open' ? 'e.currentTarget.open' : 'e.currentTarget.value';
     let react, vue;
     if (prop) {
       const init = prop === 'open' ? 'false' : '"…"';
@@ -582,6 +582,7 @@
       <div class="d-tablewrap"><table><thead><tr><th>Name</th><th>Kind</th><th>Description</th></tr></thead><tbody>${rows}</tbody></table></div>
       <p>React 19:</p>${codeBox(react, 'Component.jsx')}
       <p>Vue 3 (with <code>isCustomElement</code> set for <code>auvyx-</code> tags):</p>${codeBox(vue, 'Component.vue')}
+      <p>Typed in TypeScript, JSX and Vue templates: see <a href="#installation">Installation → TypeScript</a>.</p>
     </div>`;
   }
 

@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import { gzipSync } from 'node:zlib';
 import { transform, build } from 'esbuild';
+import { writeTypes } from './tools/types.mjs';
+import { ELEMENTS } from '../elements/api.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '../..');
@@ -151,17 +153,17 @@ if (document.readyState !== 'loading') { window.basecoat.initAll(); window.basec
 // behavior and the element, so one script is enough. The HTML edition above
 // is unchanged; this is an opt-in layer for frameworks.
 const WC_MODULES = {
-  tabs: { behavior: 'src/js/tabs.js', element: 'packages/elements/src/wc/tabs.js', tag: 'auvyx-tabs', api: { props: { value: "the selected tab's data-value or id" }, events: { change: 'the user selected a tab' } } },
-  select: { behavior: 'src/js/select.js', element: 'packages/elements/src/wc/select.js', tag: 'auvyx-select', api: { props: { value: "the selected option's data-value (an array when multiple)" }, events: { change: 'the user picked an option' } } },
-  combobox: { behavior: 'src/js/combobox.js', element: 'packages/elements/src/wc/combobox.js', tag: 'auvyx-combobox', api: { props: { value: "the selected option's data-value (an array when multiple)" }, events: { change: 'the user picked an option' } } },
-  command: { behavior: 'src/js/command.js', element: 'packages/elements/src/wc/command.js', tag: 'auvyx-command', api: { events: { select: "the user activated an item; detail.value is its data-value or text" } } },
-  'dropdown-menu': { behavior: 'src/js/dropdown-menu.js', element: 'packages/elements/src/wc/dropdown-menu.js', tag: 'auvyx-dropdown-menu', api: { props: { open: 'whether the menu is shown' }, events: { toggle: 'the menu opened or closed', select: "the user activated an item; detail.value is its data-value or text" } } },
-  popover: { behavior: 'src/js/popover.js', element: 'packages/elements/src/wc/popover.js', tag: 'auvyx-popover', api: { props: { open: 'whether the panel is shown' }, events: { toggle: 'the panel opened or closed' } } },
-  accordion: { behavior: 'src/js/accordion.js', element: 'packages/elements/src/wc/accordion.js', tag: 'auvyx-accordion', api: { props: { value: "the open item's data-value, id or position (an array with data-multiple)" }, events: { change: 'the user opened or closed an item' } } },
-  sidebar: { behavior: 'src/js/sidebar.js', element: 'packages/elements/src/wc/sidebar.js', tag: 'auvyx-sidebar', api: { props: { open: 'whether the sidebar is expanded' }, events: { toggle: 'the sidebar expanded or collapsed' } } },
-  toast: { behavior: 'src/js/toast.js', element: 'packages/elements/src/wc/toaster.js', tag: 'auvyx-toaster', api: { methods: { 'toast(options)': 'show a toast; same options as the HTML edition' } } },
-  slider: { behavior: 'src/js/range.js', element: 'packages/elements/src/wc/slider.js', tag: 'auvyx-slider', api: { props: { value: "the input's value (a string)" }, events: { input: 'the value is changing', change: 'the user finished changing it' } } },
-  drawer: { behavior: 'src/js/drawer.js', element: 'packages/elements/src/wc/drawer.js', tag: 'auvyx-drawer', api: { props: { open: 'whether the drawer is shown' }, events: { toggle: 'the drawer opened or closed' } } },
+  tabs: { behavior: 'src/js/tabs.js', element: 'packages/elements/src/wc/tabs.js', tag: 'auvyx-tabs' },
+  select: { behavior: 'src/js/select.js', element: 'packages/elements/src/wc/select.js', tag: 'auvyx-select' },
+  combobox: { behavior: 'src/js/combobox.js', element: 'packages/elements/src/wc/combobox.js', tag: 'auvyx-combobox' },
+  command: { behavior: 'src/js/command.js', element: 'packages/elements/src/wc/command.js', tag: 'auvyx-command' },
+  'dropdown-menu': { behavior: 'src/js/dropdown-menu.js', element: 'packages/elements/src/wc/dropdown-menu.js', tag: 'auvyx-dropdown-menu' },
+  popover: { behavior: 'src/js/popover.js', element: 'packages/elements/src/wc/popover.js', tag: 'auvyx-popover' },
+  accordion: { behavior: 'src/js/accordion.js', element: 'packages/elements/src/wc/accordion.js', tag: 'auvyx-accordion' },
+  sidebar: { behavior: 'src/js/sidebar.js', element: 'packages/elements/src/wc/sidebar.js', tag: 'auvyx-sidebar' },
+  toast: { behavior: 'src/js/toast.js', element: 'packages/elements/src/wc/toaster.js', tag: 'auvyx-toaster' },
+  slider: { behavior: 'src/js/range.js', element: 'packages/elements/src/wc/slider.js', tag: 'auvyx-slider' },
+  drawer: { behavior: 'src/js/drawer.js', element: 'packages/elements/src/wc/drawer.js', tag: 'auvyx-drawer' },
 };
 {
   const core = await fs.readFile(path.join(root, 'src/js/basecoat.js'), 'utf8');
@@ -174,10 +176,19 @@ const WC_MODULES = {
     const { code } = await transform(src, { loader: 'js', minify: true, target: 'es2022' });
     const file = `wc/${name}.min.js`;
     await fs.writeFile(path.join(dist, file), banner + code);
-    manifest[name] = { file, tag: mod.tag, api: mod.api, gzip: gzipSync(banner + code, { level: 9 }).length };
+    const el = ELEMENTS.find((e) => e.tag === mod.tag);
+    const api = {
+      props: Object.fromEntries(el.properties.map((p) => [p.name, p.description])),
+      events: Object.fromEntries(el.events.map((e) => [e.name, e.description])),
+      methods: Object.fromEntries((el.methods || []).map((m) => [`${m.name}${m.signature.split(' =>')[0]}`, m.description])),
+    };
+    manifest[name] = { file, tag: mod.tag, api, gzip: gzipSync(banner + code, { level: 9 }).length };
   }
   await fs.writeFile(path.join(dist, 'wc/manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
 }
+
+// Custom Elements Manifest and TypeScript types (DOM, React 19, Vue 3) from packages/elements/api.mjs.
+await writeTypes(dist, version);
 
 // Elements as standalone ES modules, for picking only what a page uses.
 await fs.mkdir(path.join(dist, 'elements'), { recursive: true });

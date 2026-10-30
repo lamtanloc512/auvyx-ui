@@ -31,10 +31,10 @@ Auvyx contains no licensing, payment or tier logic. Paid source must never be co
 - [x] Motion layer (`src/css/motion`), squircle corners (native + Monoco fallback).
 - [x] Per-component JS modules (`dist/js/`) and docs labels for components that need JavaScript.
 - [x] Web Components edition for every component with behavior: tabs, select, combobox, command, dropdown-menu, popover, accordion, sidebar, toaster, slider, drawer (`dist/wc/`), tested in React 19 and Vue 3.
+- [x] Custom Elements Manifest (`dist/custom-elements.json`) and generated TypeScript, React 19 JSX and Vue 3 types (`dist/types/`), from `packages/elements/api.mjs`.
 
 ## Next (Auvyx)
 
-- [ ] Custom Elements Manifest and generated TypeScript/JSX/Vue types.
 - [ ] Registry framework variants: React (JSX) output next to HTML, `--framework` in the CLI.
 - [ ] Registry items for components (`registry:ui`), not only blocks.
 - [ ] Workspaces and one build (`ui` → `elements` → `blocks` → registry → docs); CI with the Playwright checks used during development.

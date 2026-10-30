@@ -6,7 +6,9 @@
   "type": "module",
   "style": "dist/auvyx.min.css",
   "main": "dist/auvyx.min.css",
-  "files": ["dist/"],
+  "files": [
+    "dist/"
+  ],
   "exports": {
     ".": "./dist/auvyx.min.css",
     "./css": "./dist/auvyx.min.css",
@@ -19,9 +21,21 @@
     "./elements/*": "./dist/elements/*.min.js",
     "./js/*": "./dist/js/*.min.js",
     "./wc/*": "./dist/wc/*.min.js",
-    "./auvyx.bundle.css": "./dist/auvyx.bundle.css"
+    "./auvyx.bundle.css": "./dist/auvyx.bundle.css",
+    "./custom-elements.json": "./dist/custom-elements.json",
+    "./types": {
+      "types": "./dist/types/elements.d.ts"
+    },
+    "./types/react": {
+      "types": "./dist/types/react.d.ts"
+    },
+    "./types/vue": {
+      "types": "./dist/types/vue.d.ts"
+    }
   },
   "scripts": {
     "build": "node ./build.mjs"
-  }
+  },
+  "customElements": "dist/custom-elements.json",
+  "types": "dist/types/elements.d.ts"
 }
