@@ -18,7 +18,7 @@ CARDS = []
 add = CARDS.append
 
 add(f"""<div class="card">
-  <header><h2>Contribution History</h2><p>Last 6 months of activity</p><div class="card-action"><span class="badge" data-variant="outline">+12% vs last month</span></div></header>
+  <header><h2>Contribution History</h2><p>Last 6 months of activity</p><div class="card-action"><span class="badge" data-variant="outline">+12%</span></div></header>
   <section class="stack" data-gap="4">
     {bars([54, 78, 66, 92, 52, 100], ["Dec", "Jan", "Feb", "Mar", "Apr", "May"])}
     <div class="switcher sc-stats" data-gap="0" style="--threshold: 16rem">
@@ -86,7 +86,7 @@ TXI = {"coffee": '<path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1
        "tv": '<rect width="20" height="15" x="2" y="7" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/>'}
 add(f"""<div class="card sc-wide">
   <header><h2>Recent Transactions</h2><p>Your latest account activity.</p><div class="card-action"><button type="button" class="btn" data-variant="outline" data-size="sm">View All</button></div></header>
-  <section class="stack" data-gap="1">
+  <section class="stack sc-txns" data-gap="1">
 """ + "\n".join(f"""    <article class="item" data-size="sm"><figure class="sc-ico">{I(TXI[k])}</figure><section><h3>{n}</h3><p>{c}</p></section>
       <aside class="cluster" data-gap="4"><span class="sc-muted sc-when">{w}</span><strong class="sc-amt{' sc-pos' if a.startswith('+') else ''}">{a}</strong><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="More">{MORE}</button></aside></article>""" for n, c, w, a, k in TX) + """
   </section>
@@ -174,7 +174,7 @@ add("""<div class="card">
 add(f"""<div class="card">
   <header><h2>Team Members</h2><p>Invite your team members to collaborate.</p></header>
   <section class="stack" data-gap="4">
-""" + "".join(f"""    <div class="cluster" data-justify="between"><div class="cluster" data-gap="3"><span class="avatar"><span>{i}</span></span><div class="sc-person"><strong>{n}</strong><small>{e}</small></div></div>
+""" + "".join(f"""    <div class="sc-member"><div class="cluster" data-gap="3"><span class="avatar"><span>{i}</span></span><div class="sc-person"><strong>{n}</strong><small>{e}</small></div></div>
       <div class="dropdown-menu"><button type="button" class="btn" data-variant="outline" data-size="sm" popovertarget="sc-role-{k}">{r} {ic('chevron-down')}</button>
         <div id="sc-role-{k}" data-popover popover data-align="end" style="width:12rem"><div role="menu" aria-label="Role"><button type="button" role="menuitem"><span>Viewer</span></button><button type="button" role="menuitem"><span>Developer</span></button><button type="button" role="menuitem"><span>Billing</span></button><button type="button" role="menuitem"><span>Owner</span></button></div></div></div></div>
 """ for k, (i, n, e, r) in enumerate([("SD", "Sofia Davis", "m@example.com", "Owner"), ("JL", "Jackson Lee", "p@example.com", "Member"), ("IN", "Isabella Nguyen", "i@example.com", "Member")])) + """  </section>
@@ -206,9 +206,10 @@ HTML = f"""<!doctype html>
   .sc-bar span {{ inline-size: 100%; border-radius: calc(var(--radius) - 4px) calc(var(--radius) - 4px) 0 0; background: var(--chart-2); }}
   .sc-bar:nth-child(3n+1) span {{ background: var(--chart-1); }} .sc-bar:nth-child(3n) span {{ background: var(--chart-3); }}
   .sc-bar small {{ font-size: .6875rem; color: var(--muted-foreground); }}
-  .sc-stats > div {{ display: grid; gap: .25rem; padding: .75rem; border: 1px solid var(--border); }}
-  .sc-stats > div:first-child {{ border-start-start-radius: var(--radius); border-end-start-radius: var(--radius); }}
-  .sc-stats > div:last-child {{ border-start-end-radius: var(--radius); border-end-end-radius: var(--radius); border-inline-start-width: 0; }}
+  /* One framed box; side by side or stacked (switcher), the line between the
+     cells is each cell's top/start shadow, clipped where it meets the frame. */
+  .sc-stats {{ border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }}
+  .sc-stats > div {{ display: grid; gap: .25rem; padding: .75rem; box-shadow: -1px -1px 0 0 var(--border); }}
   .sc-stats small {{ font-size: .6875rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted-foreground); }}
   .sc-stats strong {{ font-size: 1.125rem; font-weight: 600; }}
   .sc-stats span {{ font-size: .8125rem; color: var(--muted-foreground); }}
@@ -237,13 +238,18 @@ HTML = f"""<!doctype html>
   .sc-person small {{ color: var(--muted-foreground); }}
   .card {{ container-type: inline-size; }}
   .card select {{ max-inline-size: 100%; min-inline-size: 0; }}
-  /* Narrow cards: the header action moves under the title instead of overflowing. */
-  @container (width < 20rem) {{
-    .card > header:has(> .card-action) {{ grid-template-columns: minmax(0, 1fr); }}
-    .card > header > .card-action {{ grid-column: 1; grid-row: auto; justify-self: start; }}
-  }}
+  /* The header action stays top-right (title and description wrap beside it). */
+  .card > header:has(> .card-action) {{ column-gap: .75rem; }}
   .sc-pair .sc-big {{ font-size: clamp(1.125rem, 14cqi, 1.75rem); }}
   .item > aside.cluster {{ flex-wrap: nowrap; gap: .5rem; }}
+  /* Transactions: the list sits on the card padding; in narrow cards the row menu goes. */
+  .sc-txns > .item {{ padding-inline: 0; }}
+  @container (width < 22rem) {{ .sc-txns .item > aside > .btn {{ display: none; }} }}
+  /* Team: the role menu stays on the person's row; long emails truncate. */
+  .sc-member {{ display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .75rem; }}
+  .sc-member > .cluster {{ flex-wrap: nowrap; min-inline-size: 0; }}
+  .sc-member .sc-person {{ min-inline-size: 0; }}
+  .sc-member .sc-person > * {{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
   .item > section {{ min-inline-size: 0; }}
   .item > section > :is(h3, p) {{ display: block; min-inline-size: 0; max-inline-size: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
 </style>

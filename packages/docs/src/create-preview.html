@@ -24,9 +24,10 @@
   .sc-bar span { inline-size: 100%; border-radius: calc(var(--radius) - 4px) calc(var(--radius) - 4px) 0 0; background: var(--chart-2); }
   .sc-bar:nth-child(3n+1) span { background: var(--chart-1); } .sc-bar:nth-child(3n) span { background: var(--chart-3); }
   .sc-bar small { font-size: .6875rem; color: var(--muted-foreground); }
-  .sc-stats > div { display: grid; gap: .25rem; padding: .75rem; border: 1px solid var(--border); }
-  .sc-stats > div:first-child { border-start-start-radius: var(--radius); border-end-start-radius: var(--radius); }
-  .sc-stats > div:last-child { border-start-end-radius: var(--radius); border-end-end-radius: var(--radius); border-inline-start-width: 0; }
+  /* One framed box; side by side or stacked (switcher), the line between the
+     cells is each cell's top/start shadow, clipped where it meets the frame. */
+  .sc-stats { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .sc-stats > div { display: grid; gap: .25rem; padding: .75rem; box-shadow: -1px -1px 0 0 var(--border); }
   .sc-stats small { font-size: .6875rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted-foreground); }
   .sc-stats strong { font-size: 1.125rem; font-weight: 600; }
   .sc-stats span { font-size: .8125rem; color: var(--muted-foreground); }
@@ -55,13 +56,18 @@
   .sc-person small { color: var(--muted-foreground); }
   .card { container-type: inline-size; }
   .card select { max-inline-size: 100%; min-inline-size: 0; }
-  /* Narrow cards: the header action moves under the title instead of overflowing. */
-  @container (width < 20rem) {
-    .card > header:has(> .card-action) { grid-template-columns: minmax(0, 1fr); }
-    .card > header > .card-action { grid-column: 1; grid-row: auto; justify-self: start; }
-  }
+  /* The header action stays top-right (title and description wrap beside it). */
+  .card > header:has(> .card-action) { column-gap: .75rem; }
   .sc-pair .sc-big { font-size: clamp(1.125rem, 14cqi, 1.75rem); }
   .item > aside.cluster { flex-wrap: nowrap; gap: .5rem; }
+  /* Transactions: the list sits on the card padding; in narrow cards the row menu goes. */
+  .sc-txns > .item { padding-inline: 0; }
+  @container (width < 22rem) { .sc-txns .item > aside > .btn { display: none; } }
+  /* Team: the role menu stays on the person's row; long emails truncate. */
+  .sc-member { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .75rem; }
+  .sc-member > .cluster { flex-wrap: nowrap; min-inline-size: 0; }
+  .sc-member .sc-person { min-inline-size: 0; }
+  .sc-member .sc-person > * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .item > section { min-inline-size: 0; }
   .item > section > :is(h3, p) { display: block; min-inline-size: 0; max-inline-size: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 </style>
@@ -72,7 +78,7 @@
 <body>
 <main class="sc">
 <div class="card">
-  <header><h2>Contribution History</h2><p>Last 6 months of activity</p><div class="card-action"><span class="badge" data-variant="outline">+12% vs last month</span></div></header>
+  <header><h2>Contribution History</h2><p>Last 6 months of activity</p><div class="card-action"><span class="badge" data-variant="outline">+12%</span></div></header>
   <section class="stack" data-gap="4">
     <div class="sc-bars"><div class="sc-bar"><span style="block-size:54%"></span><small>Dec</small></div><div class="sc-bar"><span style="block-size:78%"></span><small>Jan</small></div><div class="sc-bar"><span style="block-size:66%"></span><small>Feb</small></div><div class="sc-bar"><span style="block-size:92%"></span><small>Mar</small></div><div class="sc-bar"><span style="block-size:52%"></span><small>Apr</small></div><div class="sc-bar"><span style="block-size:100%"></span><small>May</small></div></div>
     <div class="switcher sc-stats" data-gap="0" style="--threshold: 16rem">
@@ -128,7 +134,7 @@
 </div>
 <div class="card sc-wide">
   <header><h2>Recent Transactions</h2><p>Your latest account activity.</p><div class="card-action"><button type="button" class="btn" data-variant="outline" data-size="sm">View All</button></div></header>
-  <section class="stack" data-gap="1">
+  <section class="stack sc-txns" data-gap="1">
     <article class="item" data-size="sm"><figure class="sc-ico"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"/><path d="M6 2v2"/></svg></figure><section><h3>Blue Bottle Coffee</h3><p>Food & Drink</p></section>
       <aside class="cluster" data-gap="4"><span class="sc-muted sc-when">Today, 10:24 AM</span><strong class="sc-amt">-$6.50</strong><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="More"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></aside></article>
     <article class="item" data-size="sm"><figure class="sc-ico"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></figure><section><h3>Whole Foods Market</h3><p>Groceries</p></section>
@@ -208,13 +214,13 @@
 <div class="card">
   <header><h2>Team Members</h2><p>Invite your team members to collaborate.</p></header>
   <section class="stack" data-gap="4">
-    <div class="cluster" data-justify="between"><div class="cluster" data-gap="3"><span class="avatar"><span>SD</span></span><div class="sc-person"><strong>Sofia Davis</strong><small>m@example.com</small></div></div>
+    <div class="sc-member"><div class="cluster" data-gap="3"><span class="avatar"><span>SD</span></span><div class="sc-person"><strong>Sofia Davis</strong><small>m@example.com</small></div></div>
       <div class="dropdown-menu"><button type="button" class="btn" data-variant="outline" data-size="sm" popovertarget="sc-role-0">Owner <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
         <div id="sc-role-0" data-popover popover data-align="end" style="width:12rem"><div role="menu" aria-label="Role"><button type="button" role="menuitem"><span>Viewer</span></button><button type="button" role="menuitem"><span>Developer</span></button><button type="button" role="menuitem"><span>Billing</span></button><button type="button" role="menuitem"><span>Owner</span></button></div></div></div></div>
-    <div class="cluster" data-justify="between"><div class="cluster" data-gap="3"><span class="avatar"><span>JL</span></span><div class="sc-person"><strong>Jackson Lee</strong><small>p@example.com</small></div></div>
+    <div class="sc-member"><div class="cluster" data-gap="3"><span class="avatar"><span>JL</span></span><div class="sc-person"><strong>Jackson Lee</strong><small>p@example.com</small></div></div>
       <div class="dropdown-menu"><button type="button" class="btn" data-variant="outline" data-size="sm" popovertarget="sc-role-1">Member <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
         <div id="sc-role-1" data-popover popover data-align="end" style="width:12rem"><div role="menu" aria-label="Role"><button type="button" role="menuitem"><span>Viewer</span></button><button type="button" role="menuitem"><span>Developer</span></button><button type="button" role="menuitem"><span>Billing</span></button><button type="button" role="menuitem"><span>Owner</span></button></div></div></div></div>
-    <div class="cluster" data-justify="between"><div class="cluster" data-gap="3"><span class="avatar"><span>IN</span></span><div class="sc-person"><strong>Isabella Nguyen</strong><small>i@example.com</small></div></div>
+    <div class="sc-member"><div class="cluster" data-gap="3"><span class="avatar"><span>IN</span></span><div class="sc-person"><strong>Isabella Nguyen</strong><small>i@example.com</small></div></div>
       <div class="dropdown-menu"><button type="button" class="btn" data-variant="outline" data-size="sm" popovertarget="sc-role-2">Member <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
         <div id="sc-role-2" data-popover popover data-align="end" style="width:12rem"><div role="menu" aria-label="Role"><button type="button" role="menuitem"><span>Viewer</span></button><button type="button" role="menuitem"><span>Developer</span></button><button type="button" role="menuitem"><span>Billing</span></button><button type="button" role="menuitem"><span>Owner</span></button></div></div></div></div>
   </section>
