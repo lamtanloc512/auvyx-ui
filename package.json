@@ -133,6 +133,7 @@
     "workers:preview": "npm run build && npm --prefix site clean-install --progress=false && npm --prefix site run workers:preview"
   },
   "devDependencies": {
+    "@monokai/monoco": "^0.3.2",
     "@tailwindcss/cli": "^4.1.17",
     "esbuild": "0.28.2",
     "prettier": "^3.5.3",

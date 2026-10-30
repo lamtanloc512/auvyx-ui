@@ -81,3 +81,28 @@ html.dark [data-theme='forest'] {
   --accent: oklch(0.3 0.06 150);
   --accent-foreground: oklch(0.95 0.03 150);
 }
+
+/* ---- Theme hooks beyond colors ------------------------------------------
+ * --tracking-normal: letter spacing (tweakcn themes set it)
+ * --corner-shape:    round (default) | squircle | superellipse(k) | bevel | scoop | notch
+ *                    Native CSS corner-shape (Chrome 139+). Elsewhere corners stay round,
+ *                    or load auvyx.corners.min.js to draw squircles with Monoco.
+ */
+:root {
+  --corner-shape: round;
+}
+
+body {
+  letter-spacing: var(--tracking-normal, normal);
+}
+
+@supports (corner-shape: squircle) {
+  :where(*, ::before, ::after) {
+    corner-shape: var(--corner-shape);
+  }
+
+  /* Circles stay circles: radios, switch thumbs, avatars, spinners, dots. */
+  :where(input[type='radio'], input[type='radio']::before, [role='switch']::before, [role='switch']::after, .avatar, .avatar *, .avatar::after, [data-indicator], .spinner, .calendar-month td > button[aria-current]::after) {
+    corner-shape: round;
+  }
+}

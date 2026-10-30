@@ -20,3 +20,4 @@ __pycache__/
 packages/docs/out/
 packages/docs/src/data/.scan.json
 packages/docs/src/docs.css
+packages/ui/.tmp/

@@ -22,12 +22,27 @@ const jsComponents = ['basecoat', 'accordion', 'combobox', 'command', 'copy', 'd
 // CSS budget sized for the full shadcn component set (~61 components); tighten once complete.
 const budgets = { 'auvyx.min.css': 41_000, 'auvyx.min.js': 24_000 };
 
+
+// Tailwind inlines shadow values; route them through --shadow-* so themes from
+// tweakcn / the shadcn generator (which define --shadow-2xs … --shadow-2xl) apply.
+// Unset vars fall back to the original value, so nothing changes by default.
+const SHADOWS = [['2xs', /^0 1px var\(/], ['xs', /^0 1px 2px 0 /], ['sm', /^0 1px 3px 0 /], ['md', /^0 4px 6px -1px /],
+  ['lg', /^0 10px 15px -3px /], ['xl', /^0 20px 25px -5px /], ['2xl', /^0 25px 50px -12px /]];
+function linkShadows(css) {
+  return css.replace(/--tw-shadow:\s*([^;}]+)/g, (all, value) => {
+    const v = value.trim();
+    const hit = SHADOWS.find(([, re]) => re.test(v));
+    return hit ? `--tw-shadow: var(--shadow-${hit[0]}, ${v})` : all;
+  });
+}
+
 await fs.rm(dist, { recursive: true, force: true });
 await fs.mkdir(dist, { recursive: true });
 
 // CSS
 const cssOut = path.join(dist, 'auvyx.css');
 execFileSync(path.join(root, 'node_modules/.bin/tailwindcss'), ['-i', path.join(here, 'src/auvyx.css'), '-o', cssOut], { stdio: 'inherit' });
+await fs.writeFile(cssOut, linkShadows(await fs.readFile(cssOut, 'utf8')));
 const { code: minCss, warnings } = await transform(await fs.readFile(cssOut, 'utf8'), { loader: 'css', minify: true, target: cssTargets });
 if (warnings.length) throw new Error(warnings.map((w) => w.text).join('; '));
 const { version } = JSON.parse(await fs.readFile(path.join(here, 'package.json'), 'utf8'));
@@ -42,6 +57,36 @@ const jsSrc = `${basecoatJs}\n${elements.outputFiles[0].text}`;
 await fs.writeFile(path.join(dist, 'auvyx.js'), banner + jsSrc);
 const { code: minJs } = await transform(jsSrc, { loader: 'js', minify: true, target: 'es2022' });
 await fs.writeFile(path.join(dist, 'auvyx.min.js'), banner + minJs);
+
+// Style packs: the same bundle built on each Basecoat style pack (Create page / opt-in).
+// Fork-added components keep Vega visuals for now (see TODO.md).
+{
+  const styles = ['vega', 'nova', 'maia', 'lyra', 'mira', 'luma', 'sera', 'rhea'];
+  const tmp = path.join(here, '.tmp');
+  await fs.mkdir(tmp, { recursive: true });
+  await fs.mkdir(path.join(dist, 'styles'), { recursive: true });
+  for (const style of styles) {
+    const entry = path.join(tmp, `auvyx-${style}.css`);
+    await fs.writeFile(entry, [
+      '@import "tailwindcss" source(none);',
+      `@import "../../../src/css/basecoat-${style}.css";`,
+      '@import "../../../src/css/extra/index.css";',
+      '@import "../../../src/css/native/index.css";',
+      '@import "../../../src/css/layout/index.css";',
+      '@import "../src/themes.css";',
+    ].join('\n'));
+    const raw = path.join(tmp, `auvyx-${style}.out.css`);
+    execFileSync(path.join(root, 'node_modules/.bin/tailwindcss'), ['-i', entry, '-o', raw], { stdio: 'ignore' });
+    const { code } = await transform(linkShadows(await fs.readFile(raw, 'utf8')), { loader: 'css', minify: true, target: cssTargets });
+    await fs.writeFile(path.join(dist, 'styles', `auvyx-${style}.min.css`), banner + code);
+  }
+}
+
+// Corners fallback (Monoco, bundled): only acts where CSS corner-shape is unsupported.
+{
+  const out = await build({ entryPoints: [path.join(root, 'packages/elements/src/corners.js')], bundle: true, format: 'iife', minify: true, write: false, target: 'es2020' });
+  await fs.writeFile(path.join(dist, 'auvyx.corners.min.js'), `/*! @auvyx/ui corners | MIT | includes Monoco (MIT, Monokai) */\n` + out.outputFiles[0].text);
+}
 
 // Chart runtime (needs Chart.js + auvyx.min.js): separate so pages without charts skip it.
 {

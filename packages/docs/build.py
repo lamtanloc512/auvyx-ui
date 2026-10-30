@@ -71,6 +71,10 @@ def guides(sizes):
 <h2 class="d-h2">Brand themes</h2><p>A theme only overrides the tokens that change. Apply it on any element, not just <code>&lt;html&gt;</code>. Try the theme picker in the header.</p>
 {demo('<div class="cluster" data-gap="3">' + ''.join(f'<div data-theme="{t}" class="cluster" data-gap="2"><button class="btn">{t.title() or "Neutral"}</button><span class="badge">Badge</span><input type="checkbox" role="switch" class="input" checked aria-label="{t or "neutral"} switch"></div>' for t in ["", "ocean", "forest"]) + '</div>')}
 {code('[data-theme="ocean"] {' + chr(10) + '  --primary: oklch(0.546 0.185 256);' + chr(10) + '  --primary-foreground: oklch(0.985 0 0);' + chr(10) + '  --ring: oklch(0.707 0.12 256);' + chr(10) + '}')}
+<h2 class="d-h2">Themes from tweakcn</h2><p>Any theme from <a href="https://tweakcn.com" target="_blank" rel="noopener">tweakcn.com</a> works as exported: open the theme, choose <strong>Code → CSS</strong>, and paste the <code>:root</code> and <code>.dark</code> blocks after the Auvyx stylesheet. Colors, fonts (<code>--font-sans</code>, <code>--font-mono</code>), <code>--radius</code>, <code>--shadow-*</code>, <code>--tracking-normal</code> and <code>--spacing</code> all take effect. Skip the <code>@theme inline</code> block: Auvyx already maps the tokens. Load the theme's Google Fonts yourself, or import it on the <a href="#create">Create</a> page, which adds the font link for you.</p>
+{code('<link rel="stylesheet" href="' + CDN + '/auvyx.min.css">' + chr(10) + '<style>' + chr(10) + '  :root { --primary: oklch(0.62 0.19 260); --radius: 0.75rem; --font-sans: Inter, sans-serif; --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.1); }' + chr(10) + '  .dark { --primary: oklch(0.7 0.16 260); }' + chr(10) + '</style>')}
+<h2 class="d-h2">Corner shape (squircles)</h2><p><code>--corner-shape</code> sets the shape of every rounded corner: <code>round</code> (default), <code>squircle</code>, <code>superellipse(1.5)</code>, <code>bevel</code>, <code>scoop</code> or <code>notch</code>. Browsers with CSS <code>corner-shape</code> (Chrome 139+) draw it natively; controls whose shape carries meaning (radios, switches, avatars) stay round. For other browsers, add the optional <code>auvyx.corners.min.js</code> (4 kB, bundles <a href="https://somonoco.com" target="_blank" rel="noopener">Monoco</a>): it clips cards, popovers, dialogs, alerts and sheets to the same shape. Tune it with <code>--corner-smoothing</code> (0–1).</p>
+{code(':root { --corner-shape: squircle; --radius: 0.875rem; }' + chr(10) + chr(10) + '<script src="' + CDN + '/auvyx.corners.min.js" defer></script>  <!-- optional fallback -->')}
 <h2 class="d-h2">Tokens</h2><div class="d-tablewrap"><table><thead><tr><th>Token</th><th>Used for</th></tr></thead><tbody>
 <tr><td><code>--background</code> / <code>--foreground</code></td><td>Page surface and text</td></tr>
 <tr><td><code>--primary</code> / <code>--primary-foreground</code></td><td>Main actions, selected states, focus accents</td></tr>
@@ -79,6 +83,9 @@ def guides(sizes):
 <tr><td><code>--destructive</code></td><td>Errors and dangerous actions</td></tr>
 <tr><td><code>--border</code>, <code>--input</code>, <code>--ring</code></td><td>Lines, form controls, focus rings</td></tr>
 <tr><td><code>--radius</code></td><td>Corner radius scale (sm, md, lg, xl derive from it)</td></tr>
+<tr><td><code>--corner-shape</code></td><td>Corner shape: round, squircle, superellipse(), bevel, scoop, notch</td></tr>
+<tr><td><code>--font-sans</code>, <code>--font-heading</code>, <code>--font-mono</code></td><td>Body, heading and code fonts</td></tr>
+<tr><td><code>--shadow-2xs…2xl</code>, <code>--tracking-normal</code>, <code>--spacing</code></td><td>Shadow scale, letter spacing, spacing unit (tweakcn tokens)</td></tr>
 <tr><td><code>--sidebar-*</code>, <code>--chart-1…5</code></td><td>Sidebar surfaces, chart series</td></tr>
 </tbody></table></div>"""},
         {"slug": "layout", "title": "Layout primitives", "description": "Seven named layouts that replace utility classes on the CDN channel.", "html": f"""
@@ -149,9 +156,12 @@ def main():
     if OUT.exists():
         shutil.rmtree(OUT)
     (OUT / "dist").mkdir(parents=True)
-    for f in ["auvyx.min.css", "auvyx.min.js", "auvyx.chart.min.js"]:
+    for f in ["auvyx.min.css", "auvyx.min.js", "auvyx.chart.min.js", "auvyx.corners.min.js"]:
         shutil.copy(UI / "dist" / f, OUT / "dist" / f)
     shutil.copytree(UI / "dist" / "elements", OUT / "dist" / "elements")
+    shutil.copytree(UI / "dist" / "styles", OUT / "dist" / "styles")
+    run("python3", str(DOCS / "tools/showcase.py"))
+    shutil.copy(DOCS / "src/create-preview.html", OUT / "create-preview.html")
 
     sizes = {"css": gz(UI / "dist/auvyx.min.css"), "js": gz(UI / "dist/auvyx.min.js")}
     comps = json.loads((DOCS / "src/data/components.json").read_text())
@@ -171,12 +181,12 @@ def main():
     scan = DOCS / "src/data/.scan.json"
     scan.write_text(data_json)
     entry = DOCS / "src/docs.css"
-    entry.write_text('@import "tailwindcss" source(none);\n@import "../../ui/src/auvyx.source.css";\n@source "./data/.scan.json";\n@source "./index.html";\n')
+    entry.write_text('@import "tailwindcss" source(none);\n@import "../../ui/src/auvyx.source.css";\n@source "./data/.scan.json";\n@source "./index.html";\n@source "./create.js";\n@source "./create-preview.html";\n')
     # Minify with esbuild, not Tailwind's --minify (Lightning CSS can drop rules, see packages/ui/build.mjs).
     run(str(ROOT / "node_modules/.bin/tailwindcss"), "-i", str(entry), "-o", str(OUT / "docs.css"))
     run(str(ROOT / "node_modules/.bin/esbuild"), str(OUT / "docs.css"), "--minify", "--target=chrome111,safari16.4,firefox128", f"--outfile={OUT / 'docs.css'}", "--allow-overwrite", "--log-level=warning")
 
-    html = (DOCS / "src/index.html").read_text().replace("/*DATA*/", data_json)
+    html = (DOCS / "src/index.html").read_text().replace("/*DATA*/", data_json).replace("/*CREATE*/", (DOCS / "src/create.js").read_text())
     (OUT / "index.html").write_text(html)
 
     (OUT / "blocks").mkdir()
