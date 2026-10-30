@@ -54,6 +54,8 @@ def upstream():
             html = dedent(m.group(3))
             if "{" in html and re.search(r"\{[a-zA-Z_]", html):
                 continue  # JSX expressions, not plain HTML
+            if re.search(r"\shx-[a-z]+=", html):
+                continue  # HTMX + backend fragment (e.g. toast); the docs site is static
             examples.append({"title": heading if examples else "Default", "html": html})
         desc = shadcn_desc(slug)
         if not desc:
