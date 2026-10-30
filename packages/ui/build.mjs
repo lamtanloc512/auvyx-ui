@@ -72,6 +72,7 @@ await fs.writeFile(path.join(dist, 'auvyx.min.js'), banner + minJs);
       `@import "../../../src/css/basecoat-${style}.css";`,
       '@import "../../../src/css/extra/index.css";',
       '@import "../../../src/css/native/index.css";',
+      '@import "../../../src/css/motion/index.css";',
       '@import "../../../src/css/layout/index.css";',
       '@import "../src/themes.css";',
     ].join('\n'));

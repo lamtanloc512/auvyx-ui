@@ -104,6 +104,53 @@ def guides(sizes):
 <tr><td><code>--shadow-2xs…2xl</code>, <code>--tracking-normal</code>, <code>--spacing</code></td><td>Shadow scale, letter spacing, spacing unit (tweakcn tokens)</td></tr>
 <tr><td><code>--sidebar-*</code>, <code>--chart-1…5</code></td><td>Sidebar surfaces, chart series</td></tr>
 </tbody></table></div>"""},
+        {"slug": "motion", "title": "Motion", "description": "One motion language for every component: shared tokens, CSS springs and reduced-motion fallbacks.", "html": f"""
+<p>Every Auvyx component moves the same way. Buttons spring back from a press, menus and popovers scale in from their trigger, dialogs and sheets enter on an ease-out curve and leave faster, tab panels and accordion content fade in and rise. It is all CSS (transitions, <code>@starting-style</code> and <code>linear()</code> springs), so it works on the CDN build with no script.</p>
+{demo("""<div class="cluster" data-gap="3">
+  <button class="btn">Press me</button>
+  <div class="dropdown-menu">
+    <button type="button" class="btn" data-variant="outline" popovertarget="motion-menu">Open menu</button>
+    <div id="motion-menu" data-popover popover data-side="bottom" data-align="start">
+      <div role="menu">
+        <button type="button" role="menuitem">Profile</button>
+        <button type="button" role="menuitem">Billing</button>
+        <button type="button" role="menuitem">Settings</button>
+      </div>
+    </div>
+  </div>
+  <label class="label">
+    <input type="checkbox" role="switch" class="input">
+    Spring switch
+  </label>
+</div>""")}
+<h2 class="d-h2">Tokens</h2>
+<p>Components read these variables. Override them on <code>:root</code>, or on any element to retune a single area.</p>
+<div class="d-tablewrap"><table><thead><tr><th>Variable</th><th>Default</th><th>Used for</th></tr></thead><tbody>
+<tr><td><code>--motion-fast</code></td><td>120ms</td><td>Exits, hover and color changes</td></tr>
+<tr><td><code>--motion-base</code></td><td>200ms</td><td>Popovers, dialogs, tab panels, disclosure</td></tr>
+<tr><td><code>--motion-slow</code></td><td>320ms</td><td>Sheets, drawers, toasts</td></tr>
+<tr><td><code>--motion-ease-standard</code></td><td><code>cubic-bezier(0.2, 0, 0, 1)</code></td><td>Changes in place</td></tr>
+<tr><td><code>--motion-ease-enter</code></td><td><code>cubic-bezier(0.16, 1, 0.3, 1)</code></td><td>Anything appearing</td></tr>
+<tr><td><code>--motion-ease-exit</code></td><td><code>cubic-bezier(0.4, 0, 1, 1)</code></td><td>Anything leaving</td></tr>
+<tr><td><code>--motion-spring-snappy</code></td><td>388ms</td><td>Presses, switch thumbs</td></tr>
+<tr><td><code>--motion-spring-gentle</code>, <code>--motion-spring-playful</code></td><td>520ms, 623ms</td><td>Available for your own transitions</td></tr>
+<tr><td><code>--motion-rise</code>, <code>--motion-scale-from</code></td><td>0.5rem, 0.96</td><td>Distance content rises, scale surfaces start from</td></tr>
+</tbody></table></div>
+<p>Springs are <code>linear()</code> easings sampled from real spring physics (stiffness, damping, mass). Each has a matching <code>-duration</code> variable, the time the spring needs to settle:</p>
+{code('.my-chip {' + chr(10) + '  transition: scale var(--motion-spring-playful-duration) var(--motion-spring-playful);' + chr(10) + '}' + chr(10) + '.my-chip:active {' + chr(10) + '  scale: 0.95;' + chr(10) + '}')}
+<h2 class="d-h2">What moves</h2>
+<div class="d-tablewrap"><table><thead><tr><th>Component</th><th>Enter</th><th>Leave</th></tr></thead><tbody>
+<tr><td>Button, toggle, tab</td><td colspan="2">Press to 0.97 (buttons also sink 1px), spring back. Menu triggers (<code>aria-haspopup</code>) stay still.</td></tr>
+<tr><td>Dropdown, select, combobox, popover, hover card, tooltip</td><td>Fade and scale from 0.96, growing from the side that faces the trigger</td><td>Fade out, 120ms</td></tr>
+<tr><td>Dialog, alert dialog, command dialog</td><td>Panel scales from 0.96, backdrop fades</td><td>120ms</td></tr>
+<tr><td>Sheet, drawer</td><td>Slide in, 320ms</td><td>Slide out, 200ms</td></tr>
+<tr><td>Accordion, collapsible</td><td colspan="2">Height animates to the content's size; content fades and rises</td></tr>
+<tr><td>Tabs, toast</td><td colspan="2">New panel or toast fades and rises 8px</td></tr>
+<tr><td>Switch</td><td colspan="2">Thumb travels on the snappy spring</td></tr>
+</tbody></table></div>
+<h2 class="d-h2">Reduced motion</h2>
+<p>With <code>prefers-reduced-motion: reduce</code> nothing moves or scales; state changes become near-instant fades. To turn motion off entirely, for tests or screenshots, set <code>data-motion="off"</code> on <code>&lt;html&gt;</code>:</p>
+{code('<html data-motion="off">')}"""},
         {"slug": "layout", "title": "Layout primitives", "description": "Seven named layouts that replace utility classes on the CDN channel.", "html": f"""
 <p>The CDN bundle has no utility classes. Pages are laid out with a handful of primitives, configured with <code>data-*</code> attributes or CSS variables for one-off values. None of the names clash with Tailwind.</p>
 <div class="d-tablewrap"><table><thead><tr><th>Class</th><th>Does</th><th>Options</th></tr></thead><tbody>

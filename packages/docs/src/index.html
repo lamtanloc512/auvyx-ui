@@ -239,7 +239,8 @@
   .d-cards a.card:active { translate: 0; }
   :is(.d-topnav a, .d-nav a, .d-toc a, .d-cats a, .d-comp-grid a, .d-hero-badge, .d-cards a.card, .d-crumb a):focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: calc(var(--radius) - 2px); }
   @media (prefers-reduced-motion: no-preference) {
-    :is(.d-header .btn, .d-hero .btn, .d-pager .btn, .d-cr-panel .btn, .d-block-tools .btn, .d-copy, .d-cr-btn):active { transform: scale(0.97); }
+    /* Buttons press via Auvyx Motion (src/css/motion); only the docs' own controls are added here. */
+    .d-cr-btn:active { transform: scale(0.97); }
     .d-nav a:active, .d-topnav a:active { transform: scale(0.98); }
     /* Page enter: each route re-renders #d-main, so its children replay this. */
     .d-main > * { animation: d-enter 260ms var(--d-ease) both; }

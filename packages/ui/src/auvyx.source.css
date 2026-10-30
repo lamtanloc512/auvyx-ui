@@ -13,5 +13,6 @@
 /* Fork additions */
 @import "../../../src/css/extra/index.css";
 @import "../../../src/css/native/index.css";
+@import "../../../src/css/motion/index.css";
 @import "../../../src/css/layout/index.css";
 @import "./themes.css";
