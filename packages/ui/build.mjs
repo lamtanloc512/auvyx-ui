@@ -13,9 +13,10 @@ const dist = path.join(here, 'dist');
 // Lightning CSS --minify can drop rules (parcel-bundler/lightningcss#1235).
 const cssTargets = ['chrome111', 'safari16.4', 'firefox128'];
 
-// JS is behavior-only and opt-in. accordion/popover are excluded: the native
-// variants in src/css/native/ cover them without JS. chart needs Chart.js.
-const jsComponents = ['basecoat', 'combobox', 'command', 'copy', 'drawer', 'dropdown-menu', 'range', 'select', 'sidebar', 'tabs', 'toast'];
+// JS is behavior-only and opt-in. accordion/popover are kept for upstream
+// markup; they skip the native variants (src/css/native/), which need no JS.
+// chart ships separately (auvyx.chart.min.js) because it needs Chart.js.
+const jsComponents = ['basecoat', 'accordion', 'combobox', 'command', 'copy', 'drawer', 'dropdown-menu', 'popover', 'range', 'select', 'sidebar', 'tabs', 'toast'];
 
 // Size budgets (gzip bytes). CI fails when a change blows past them.
 // CSS budget sized for the full shadcn component set (~61 components); tighten once complete.

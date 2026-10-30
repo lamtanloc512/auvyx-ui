@@ -1,0 +1,523 @@
+<meta charset="utf-8">
+<title>Auvyx UI</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Drop-in CSS design system with the shadcn look. One CSS file, optional tiny JS.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="docs.css">
+<script>
+  /* Viewer theme (artifact host sets data-theme on <html>, or OS preference) -> Basecoat's html.dark.
+     Brand themes go on <body data-theme> so they never collide with the host attribute. */
+  (function () {
+    var r = document.documentElement, pref = null;
+    try { pref = localStorage.getItem('auvyx-docs-mode'); } catch (e) {}
+    var host = r.getAttribute('data-theme');
+    var dark = pref ? pref === 'dark' : host ? host === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    r.classList.toggle('dark', dark);
+  })();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="dist/auvyx.min.js" defer></script>
+<script src="dist/auvyx.chart.min.js" defer></script>
+<style>
+  /* Layout: shadcn-style docs: sticky header, left nav, content column, optional TOC; blocks/charts pages full width. */
+  :root { color-scheme: light; --header-h: 3.5rem; --nav-w: 15rem; }
+  html.dark { color-scheme: dark; }
+  body { background: var(--background); color: var(--foreground); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 61; background: var(--background); }
+  /* No global `a` rule: unlayered styles beat @layer components, so it would recolor .btn links. */
+  .d-brand, .d-comp-grid a, .d-block-title a, .d-cards a.card { color: inherit; }
+  .d-prose a:not(.btn) { color: inherit; text-decoration: underline; text-underline-offset: 4px; }
+
+  .d-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 60; border-block-end: 1px solid var(--border); background: color-mix(in oklch, var(--background) 92%, transparent); backdrop-filter: blur(8px); }
+  .d-header-in { display: flex; align-items: center; gap: 0.75rem; block-size: var(--header-h); max-inline-size: 96rem; margin-inline: auto; padding-left: max(1rem, env(safe-area-inset-left, 0px)); padding-right: max(1rem, env(safe-area-inset-right, 0px)); }
+  .d-brand { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; text-decoration: none; letter-spacing: -0.01em; white-space: nowrap; }
+  .d-brand-mark { display: inline-grid; place-items: center; inline-size: 1.75rem; block-size: 1.75rem; border-radius: calc(var(--radius) - 2px); background: var(--primary); color: var(--primary-foreground); }
+  .d-brand-mark svg { inline-size: 1rem; block-size: 1rem; }
+  .d-topnav { display: flex; gap: 0.25rem; margin-inline-start: 0.75rem; }
+  .d-topnav a { padding: 0.375rem 0.625rem; border-radius: calc(var(--radius) - 2px); font-size: 0.875rem; color: var(--muted-foreground); text-decoration: none; }
+  .d-topnav a:hover, .d-topnav a[aria-current='page'] { color: var(--foreground); }
+  .d-topnav a[aria-current='page'] { background: var(--muted); }
+  .d-actions { display: flex; align-items: center; gap: 0.375rem; margin-inline-start: auto; }
+  .d-search { display: inline-flex; align-items: center; gap: 0.5rem; inline-size: 15rem; justify-content: space-between; color: var(--muted-foreground); font-weight: 400; }
+  .d-search kbd { font-family: var(--font-mono); font-size: 0.6875rem; padding: 0.0625rem 0.375rem; border: 1px solid var(--border); border-radius: 0.25rem; background: var(--muted); }
+  .d-theme { inline-size: auto; }
+  .d-menu-btn { display: none; }
+  @media (width < 64rem) { .d-search { inline-size: auto; } .d-search .d-search-label, .d-search kbd { display: none; } }
+  @media (width < 48rem) { .d-topnav { display: none; } .d-menu-btn { display: inline-flex; } .d-theme { display: none; } }
+
+  .d-shell { display: grid; grid-template-columns: var(--nav-w) minmax(0, 1fr); max-inline-size: 96rem; margin-inline: auto; padding-left: max(1rem, env(safe-area-inset-left, 0px)); padding-right: max(1rem, env(safe-area-inset-right, 0px)); }
+  .d-shell[data-wide] { grid-template-columns: minmax(0, 1fr); }
+  .d-shell[data-wide] > .d-nav { display: none; }
+  @media (width < 48rem) { .d-shell { grid-template-columns: minmax(0, 1fr); } .d-shell > .d-nav { display: none; } }
+
+  .d-nav { position: sticky; top: calc(var(--header-h) + env(safe-area-inset-top, 0px)); align-self: start; block-size: calc(100svh - var(--header-h)); overflow-y: auto; padding-block: 1.5rem; padding-inline-end: 1rem; scrollbar-width: thin; }
+  .d-nav h4 { margin: 0 0 0.25rem; padding: 0 0.5rem; font-size: 0.75rem; font-weight: 500; color: var(--muted-foreground); }
+  .d-nav ul { margin: 0 0 1.25rem; padding: 0; list-style: none; display: grid; gap: 1px; }
+  .d-nav a { display: flex; align-items: center; gap: 0.5rem; padding: 0.3125rem 0.5rem; border-radius: calc(var(--radius) - 2px); font-size: 0.875rem; text-decoration: none; color: var(--foreground); }
+  .d-nav a:hover { background: var(--accent); }
+  .d-nav a[aria-current='page'] { background: var(--accent); font-weight: 500; }
+  .d-new { margin-inline-start: auto; font-size: 0.625rem; font-weight: 500; padding: 0 0.375rem; border-radius: 999px; background: color-mix(in oklch, var(--primary) 12%, transparent); color: var(--primary); }
+  html.dark .d-new { color: var(--foreground); }
+
+  .d-main { min-inline-size: 0; padding-block: 1.5rem 4rem; padding-inline-start: 1.5rem; }
+  @media (width < 48rem) { .d-main { padding-inline-start: 0; } }
+  .d-shell[data-wide] .d-main { padding-inline-start: 0; }
+  .d-page { display: grid; grid-template-columns: minmax(0, 1fr) 12rem; gap: 2.5rem; }
+  .d-page > article { min-inline-size: 0; max-inline-size: 48rem; }
+  @media (width < 80rem) { .d-page { grid-template-columns: minmax(0, 1fr); } .d-toc { display: none; } }
+  .d-crumb { display: flex; gap: 0.375rem; align-items: center; font-size: 0.875rem; color: var(--muted-foreground); margin-block-end: 0.75rem; }
+  .d-crumb svg { inline-size: 0.875rem; block-size: 0.875rem; }
+  .d-h1 { margin: 0; font-size: 1.875rem; font-weight: 700; letter-spacing: -0.02em; text-wrap: balance; }
+  .d-lead { margin: 0.5rem 0 0; font-size: 1rem; color: var(--muted-foreground); text-wrap: pretty; max-inline-size: 42rem; }
+  .d-tags { display: flex; flex-wrap: wrap; gap: 0.375rem; margin-block-start: 1rem; }
+  .d-h2 { margin: 2.5rem 0 0.75rem; font-size: 1.25rem; font-weight: 600; letter-spacing: -0.01em; scroll-margin-top: calc(var(--header-h) + 1rem); }
+  .d-h3 { margin: 1.75rem 0 0.5rem; font-size: 1rem; font-weight: 600; scroll-margin-top: calc(var(--header-h) + 1rem); }
+  .d-prose { font-size: 0.9375rem; line-height: 1.7; }
+  .d-prose p { margin: 0.75rem 0; max-inline-size: 65ch; }
+  .d-prose ul { margin: 0.75rem 0; padding-inline-start: 1.25rem; }
+  .d-prose li { margin: 0.25rem 0; }
+  .d-prose code, .d-inline { font-family: var(--font-mono); font-size: 0.8125rem; padding: 0.125rem 0.3rem; border-radius: 0.25rem; background: var(--muted); }
+  .d-prose table { inline-size: 100%; border-collapse: collapse; font-size: 0.875rem; margin: 1rem 0; }
+  .d-prose th, .d-prose td { border-block-end: 1px solid var(--border); padding: 0.5rem 0.75rem 0.5rem 0; text-align: start; vertical-align: top; }
+  .d-prose th { font-weight: 500; }
+  .d-tablewrap { overflow-x: auto; }
+
+  .d-ex { margin-block-start: 1rem; }
+  .d-ex-bar { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-block-end: 0.5rem; }
+  .d-ex-tabs { display: inline-flex; gap: 0.25rem; }
+  .d-ex-tabs button { all: unset; cursor: pointer; padding: 0.25rem 0.625rem; font-size: 0.875rem; color: var(--muted-foreground); border-block-end: 2px solid transparent; }
+  .d-ex-tabs button[aria-selected='true'] { color: var(--foreground); border-color: var(--foreground); font-weight: 500; }
+  .d-ex-tabs button:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: 2px; }
+  .d-preview { position: relative; display: flex; align-items: center; justify-content: center; min-block-size: 20rem; padding: 2.5rem 1.5rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--background); overflow: auto; }
+  .d-preview > .d-stage { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem; inline-size: 100%; min-inline-size: 0; }
+  .d-preview > .d-stage > * { max-inline-size: 100%; }
+  .d-code { position: relative; border: 1px solid var(--border); border-radius: var(--radius); background: var(--muted); overflow: hidden; }
+  .d-code pre { margin: 0; padding: 1rem 1.25rem; max-block-size: 32rem; overflow: auto; font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.65; tab-size: 2; }
+  .d-code .d-copy { position: absolute; top: 0.5rem; inset-inline-end: 0.5rem; z-index: 1; background: var(--background); }
+  .d-code .d-file { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-block-end: 1px solid var(--border); font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted-foreground); background: var(--background); }
+  .t-tag { color: #c2410c; } .t-attr { color: #7c3aed; } .t-str { color: #15803d; } .t-cmt { color: var(--muted-foreground); font-style: italic; }
+  html.dark .t-tag { color: #fdba74; } html.dark .t-attr { color: #c4b5fd; } html.dark .t-str { color: #86efac; }
+
+  .d-toc { position: sticky; top: calc(var(--header-h) + 1.5rem); align-self: start; font-size: 0.8125rem; }
+  .d-toc h4 { margin: 0 0 0.5rem; font-size: 0.8125rem; font-weight: 500; }
+  .d-toc ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.375rem; }
+  .d-toc a { color: var(--muted-foreground); text-decoration: none; }
+  .d-toc a:hover { color: var(--foreground); }
+
+  .d-pager { display: flex; justify-content: space-between; gap: 1rem; margin-block-start: 3rem; }
+
+  /* Home */
+  .d-hero { padding-block: 3rem 2rem; display: grid; gap: 1rem; max-inline-size: 48rem; }
+  .d-hero h1 { margin: 0; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; font-weight: 700; letter-spacing: -0.03em; text-wrap: balance; }
+  .d-hero p { margin: 0; font-size: 1.125rem; color: var(--muted-foreground); text-wrap: pretty; max-inline-size: 40rem; }
+  .d-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: 0.75rem; margin-block: 1.5rem; }
+  .d-stat { border: 1px solid var(--border); border-radius: var(--radius); padding: 0.875rem 1rem; }
+  .d-stat b { display: block; font-size: 1.5rem; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .d-stat span { font-size: 0.8125rem; color: var(--muted-foreground); }
+  .d-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); gap: 1rem; }
+  .d-cards a.card { text-decoration: none; transition: border-color 150ms; }
+  .d-cards a.card:hover { box-shadow: 0 0 0 1px var(--ring); }
+  .d-comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr)); gap: 0.25rem 1.5rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+  .d-comp-grid a { display: flex; align-items: center; gap: 0.5rem; padding: 0.375rem 0; font-size: 0.9375rem; text-decoration: none; }
+  .d-comp-grid a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+  /* Blocks */
+  .d-blocks-head { padding-block: 2rem 1rem; display: grid; gap: 0.75rem; }
+  .d-cats { display: flex; gap: 0.25rem; overflow-x: auto; padding-block-end: 0.25rem; border-block-end: 1px solid var(--border); margin-block-end: 1.5rem; }
+  .d-cats a { padding: 0.5rem 0.75rem; font-size: 0.875rem; text-decoration: none; color: var(--muted-foreground); white-space: nowrap; border-block-end: 2px solid transparent; margin-block-end: -0.3125rem; }
+  .d-cats a[aria-current='page'] { color: var(--foreground); border-color: var(--foreground); font-weight: 500; }
+  .d-block { margin-block-end: 3rem; scroll-margin-top: calc(var(--header-h) + 1rem); }
+  .d-block-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin-block-end: 0.75rem; }
+  .d-block-title { display: grid; gap: 0.125rem; margin-inline-end: auto; min-inline-size: 0; }
+  .d-block-title a { font-weight: 500; text-decoration: none; }
+  .d-block-title a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .d-block-title span { font-size: 0.875rem; color: var(--muted-foreground); }
+  .d-block-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .d-block-tools .toggle-group .toggle { min-inline-size: 2rem; padding-inline: 0.5rem; }
+  .d-block-tools svg { inline-size: 1rem; block-size: 1rem; }
+  .d-frame-wrap { position: relative; border: 1px solid var(--border); border-radius: calc(var(--radius) + 2px); background: var(--muted); padding: 0; overflow: hidden; }
+  .d-frame { display: block; inline-size: 100%; max-inline-size: 100%; min-inline-size: 22rem; resize: horizontal; overflow: hidden; margin-inline: auto; background: var(--background); border-inline: 0 solid var(--border); transition: inline-size 200ms; }
+  .d-frame[data-size='tablet'], .d-frame[data-size='mobile'] { border-inline-width: 1px; }
+  .d-frame iframe { display: block; inline-size: 100%; block-size: var(--h, 46rem); border: 0; background: var(--background); }
+  @media (width < 48rem) { .d-frame { min-inline-size: 0; resize: none; } .d-block-tools .toggle-group { display: none; } }
+  .d-block .d-code pre { max-block-size: 40rem; }
+
+  /* Charts */
+  .d-charts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr)); gap: 1rem; }
+  .d-chart-box { block-size: 14rem; }
+  .d-chart-box > .chart { aspect-ratio: auto !important; block-size: 100%; }
+
+  /* Command palette items */
+  #d-cmd .command [role='menuitem'] svg { inline-size: 1rem; block-size: 1rem; }
+  #d-cmd .command [role='menuitem'] small { margin-inline-start: auto; color: var(--muted-foreground); font-size: 0.75rem; }
+
+  /* Mobile nav sheet */
+  #d-mnav > section { padding-block-end: 1rem; }
+  #d-mnav .d-nav { position: static; block-size: auto; padding: 0; }
+
+  @media (prefers-reduced-motion: reduce) { .d-frame { transition: none; } }
+</style>
+
+<header class="d-header">
+  <div class="d-header-in">
+    <button type="button" class="btn d-menu-btn" data-variant="ghost" data-size="icon-sm" commandfor="d-mnav" command="show-modal" aria-label="Open navigation">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+    </button>
+    <a href="#" class="d-brand"><span class="d-brand-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 21h20Z"/><path d="M7.5 14h9"/></svg></span>Auvyx UI</a>
+    <nav class="d-topnav" aria-label="Main">
+      <a href="#introduction" data-top="docs">Docs</a>
+      <a href="#components" data-top="components">Components</a>
+      <a href="#blocks" data-top="blocks">Blocks</a>
+      <a href="#charts" data-top="charts">Charts</a>
+    </nav>
+    <div class="d-actions">
+      <button type="button" class="btn d-search" data-variant="outline" data-size="sm" commandfor="d-cmd" command="show-modal" aria-label="Search documentation">
+        <span class="d-search-label">Search documentation…</span>
+        <svg class="d-search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="inline-size:1rem;block-size:1rem"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <kbd>⌘K</kbd>
+      </button>
+      <select class="select d-theme" id="d-theme" aria-label="Color theme">
+        <option value="">Neutral</option>
+        <option value="ocean">Ocean</option>
+        <option value="forest">Forest</option>
+      </select>
+      <a class="btn" data-variant="ghost" data-size="icon-sm" href="https://github.com/lamtanloc512/basecoat/tree/ds/native-first" target="_blank" rel="noopener" aria-label="GitHub repository">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" style="inline-size:1rem;block-size:1rem"><path fill="currentColor" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      <button type="button" class="btn" data-variant="ghost" data-size="icon-sm" id="d-mode" aria-label="Toggle dark mode">
+        <svg class="d-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="inline-size:1rem;block-size:1rem"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="d-shell" id="d-shell">
+  <aside class="d-nav" id="d-nav" aria-label="Documentation"></aside>
+  <main class="d-main" id="d-main" tabindex="-1"></main>
+</div>
+
+<dialog id="d-cmd" class="command-dialog" aria-label="Search documentation">
+  <div class="command">
+    <header>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="d-cmd-input" placeholder="Search components, blocks…" autocomplete="off" autocorrect="off" spellcheck="false" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="d-cmd-menu">
+    </header>
+    <div role="menu" id="d-cmd-menu" aria-orientation="vertical" data-empty="No results found."></div>
+  </div>
+</dialog>
+
+<dialog id="d-mnav" class="sheet" data-side="left" closedby="any" aria-label="Navigation">
+  <header><h2>Auvyx UI</h2></header>
+  <section><div class="d-nav" id="d-mnav-body"></div></section>
+  <button type="button" aria-label="Close" commandfor="d-mnav" command="close"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+</dialog>
+
+<script id="d-data" type="application/json">/*DATA*/</script>
+<script>
+(function () {
+  'use strict';
+  const D = JSON.parse(document.getElementById('d-data').textContent);
+  const $ = (s, r = document) => r.querySelector(s);
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const ICON = (d, size = '1rem') => `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="inline-size:${size};block-size:${size}">${d}</svg>`;
+  const I = {
+    copy: '<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+    check: '<path d="M20 6 9 17l-5-5"/>',
+    chev: '<path d="m9 18 6-6-6-6"/>', left: '<path d="m15 18-6-6 6-6"/>',
+    monitor: '<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>',
+    tablet: '<rect width="16" height="20" x="4" y="2" rx="2"/><line x1="12" x2="12.01" y1="18" y2="18"/>',
+    phone: '<rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/>',
+    ext: '<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
+    moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+    file: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/>',
+    box: '<path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>',
+    grid: '<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+    chart: '<path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>',
+  };
+  const COMPONENTS = Object.keys(D.components).sort((a, b) => D.components[a].title.localeCompare(D.components[b].title));
+  const GUIDES = D.guides; // [{slug,title,description,html}]
+  const CDN = D.cdn;
+
+  // ---------------- theme
+  const root = document.documentElement;
+  const isDark = () => root.classList.contains('dark');
+  function brand() { return $('#d-theme').value; }
+  function applyTheme() {
+    if (brand()) document.body.dataset.theme = brand(); else delete document.body.dataset.theme;
+    $('#d-mode').innerHTML = ICON(isDark() ? I.sun : I.moon);
+    document.querySelectorAll('iframe[data-block]').forEach(syncFrame);
+    rerenderCharts();
+  }
+  function syncFrame(f) {
+    try {
+      const doc = f.contentDocument;
+      if (!doc || !doc.documentElement) return;
+      doc.documentElement.classList.toggle('dark', isDark());
+      if (doc.body) { if (brand()) doc.body.dataset.theme = brand(); else delete doc.body.dataset.theme; }
+    } catch (e) {}
+  }
+  $('#d-mode').addEventListener('click', () => {
+    root.classList.toggle('dark');
+    try { localStorage.setItem('auvyx-docs-mode', isDark() ? 'dark' : 'light'); } catch (e) {}
+    applyTheme();
+  });
+  try { const b = localStorage.getItem('auvyx-docs-brand'); if (b) $('#d-theme').value = b; } catch (e) {}
+  $('#d-theme').addEventListener('change', () => { try { localStorage.setItem('auvyx-docs-brand', brand()); } catch (e) {} applyTheme(); });
+  // Follow the host's theme switch when the viewer has not chosen one here.
+  new MutationObserver(() => {
+    let pref = null; try { pref = localStorage.getItem('auvyx-docs-mode'); } catch (e) {}
+    if (pref) return;
+    const t = root.getAttribute('data-theme');
+    if (t === 'dark' || t === 'light') { root.classList.toggle('dark', t === 'dark'); applyTheme(); }
+  }).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+
+  // ---------------- code highlighting (HTML)
+  function highlight(src) {
+    return esc(src)
+      .replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="t-cmt">$1</span>')
+      .replace(/(&lt;\/?)([a-zA-Z][\w-]*)/g, '$1<span class="t-tag">$2</span>')
+      .replace(/\s([a-zA-Z_:@][\w:.-]*)(=)(&quot;[^&]*?&quot;)/g, ' <span class="t-attr">$1</span>$2<span class="t-str">$3</span>')
+      .replace(/\s([a-zA-Z_:@][\w:.-]*)(?=[\s&]|&gt;)(?![^<]*<\/span>)/g, (m, a) => ` <span class="t-attr">${a}</span>`);
+  }
+  async function copyText(text, btn) {
+    let ok = false;
+    try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {
+      const pre = btn.closest('.d-code')?.querySelector('pre');
+      if (pre) { const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+    }
+    if (ok) { btn.innerHTML = ICON(I.check); btn.setAttribute('aria-label', 'Copied'); setTimeout(() => { btn.innerHTML = ICON(I.copy); btn.setAttribute('aria-label', 'Copy code'); }, 1600); }
+  }
+  function codeBox(code, file) {
+    const f = file ? `<div class="d-file">${ICON(I.file, '0.875rem')}${esc(file)}</div>` : '';
+    return `<div class="d-code">${f}<button type="button" class="btn d-copy" data-variant="outline" data-size="icon-sm" aria-label="Copy code">${ICON(I.copy)}</button><pre><code>${highlight(code)}</code></pre></div>`;
+  }
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('.d-copy');
+    if (!b) return;
+    const code = b.dataset.text ?? b.closest('.d-code')?.querySelector('pre')?.textContent ?? '';
+    copyText(code, b);
+  });
+
+  // ---------------- nav
+  function navHTML(active) {
+    const guides = GUIDES.map((g) => `<li><a href="#${g.slug}"${active === g.slug ? ' aria-current="page"' : ''}>${esc(g.title)}</a></li>`).join('');
+    const comps = COMPONENTS.map((k) => {
+      const c = D.components[k];
+      const tag = c.source === 'auvyx' ? '<span class="d-new">New</span>' : '';
+      return `<li><a href="#c-${k}"${active === 'c-' + k ? ' aria-current="page"' : ''}>${esc(c.title)}${tag}</a></li>`;
+    }).join('');
+    const cats = D.blockCats.map((c) => `<li><a href="#blocks-${c.id}"${active === 'blocks-' + c.id ? ' aria-current="page"' : ''}>${esc(c.title)}</a></li>`).join('');
+    return `<h4>Getting Started</h4><ul>${guides}</ul><h4>Blocks</h4><ul>${cats}<li><a href="#charts"${active === 'charts' ? ' aria-current="page"' : ''}>Charts</a></li></ul><h4>Components</h4><ul>${comps}</ul>`;
+  }
+
+  // ---------------- pages
+  const main = $('#d-main');
+  let chartQueue = [];
+  function rerenderCharts() {
+    chartQueue.forEach(({ id, cfg }) => { const c = document.getElementById(id); if (c && window.basecoat?.chart) window.basecoat.chart(c, cfg()); });
+  }
+
+  function pageHome() {
+    const nComp = COMPONENTS.length, nNew = COMPONENTS.filter((k) => D.components[k].source === 'auvyx').length;
+    const nEx = COMPONENTS.reduce((n, k) => n + D.components[k].examples.length, 0);
+    return `<div class="d-hero">
+      <span class="badge" data-variant="outline" style="justify-self:start">v${esc(D.version)} · Basecoat fork</span>
+      <h1>The shadcn look, as one CSS file.</h1>
+      <p>Auvyx UI is a drop-in design system: link one stylesheet and every component works. JavaScript is optional and only for widgets that genuinely need it. Projects on Tailwind v4 can import the source instead and own every line, the shadcn way.</p>
+      <div class="cluster" data-gap="2"><a class="btn" href="#installation">Get started</a><a class="btn" data-variant="outline" href="#blocks">Browse blocks</a></div>
+    </div>
+    <div class="d-stats">
+      <div class="d-stat"><b>${nComp}</b><span>components (${nNew} added in this fork)</span></div>
+      <div class="d-stat"><b>${D.blocks.length}</b><span>blocks: dashboard, sidebars, auth, calendars</span></div>
+      <div class="d-stat"><b>${esc(D.sizes.css)}</b><span>auvyx.min.css, gzip</span></div>
+      <div class="d-stat"><b>${esc(D.sizes.js)}</b><span>auvyx.min.js, gzip, optional</span></div>
+    </div>
+    ${codeBox(`<link rel="stylesheet" href="${CDN}/auvyx.min.css">\n<script src="${CDN}/auvyx.min.js" defer><\/script>  <!-- optional -->\n\n<button class="btn">Button</button>`, 'index.html')}
+    <h2 class="d-h2">Explore</h2>
+    <div class="d-cards">
+      <a class="card" href="#installation"><header><h2>Installation</h2><p>CDN link, npm, or the Tailwind source channel.</p></header></a>
+      <a class="card" href="#theming"><header><h2>Theming</h2><p>Tokens, dark mode and brand themes with CSS variables only.</p></header></a>
+      <a class="card" href="#layout"><header><h2>Layout primitives</h2><p>Stack, cluster, auto-grid, split, switcher, cover.</p></header></a>
+      <a class="card" href="#blocks"><header><h2>Blocks</h2><p>Copy-paste pages: dashboard, 16 sidebars, auth, 32 calendars.</p></header></a>
+    </div>
+    <h2 class="d-h2" id="all-components">Components</h2>
+    <ul class="d-comp-grid">${COMPONENTS.map((k) => `<li><a href="#c-${k}">${esc(D.components[k].title)}${D.components[k].source === 'auvyx' ? '<span class="d-new" style="margin-inline-start:.25rem">New</span>' : ''}</a></li>`).join('')}</ul>`;
+  }
+
+  function pageGuide(g) {
+    const idx = GUIDES.findIndex((x) => x.slug === g.slug);
+    const prev = GUIDES[idx - 1], next = GUIDES[idx + 1] || { slug: 'c-' + COMPONENTS[0], title: D.components[COMPONENTS[0]].title };
+    return `<div class="d-page"><article>
+      <div class="d-crumb">Docs ${ICON(I.chev)} <span>${esc(g.title)}</span></div>
+      <h1 class="d-h1">${esc(g.title)}</h1><p class="d-lead">${esc(g.description)}</p>
+      <div class="d-prose">${g.html}</div>
+      ${pager(prev, next)}
+    </article><aside class="d-toc"></aside></div>`;
+  }
+
+  function pager(prev, next) {
+    const a = (x, dir) => x ? `<a class="btn" data-variant="outline" href="#${x.slug}">${dir === 'prev' ? ICON(I.left) : ''}${esc(x.title)}${dir === 'next' ? ICON(I.chev) : ''}</a>` : '<span></span>';
+    return `<nav class="d-pager" aria-label="Pagination">${a(prev, 'prev')}${a(next, 'next')}</nav>`;
+  }
+
+  function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+
+  function pageComponent(key) {
+    const c = D.components[key];
+    const i = COMPONENTS.indexOf(key);
+    const prev = i > 0 ? { slug: 'c-' + COMPONENTS[i - 1], title: D.components[COMPONENTS[i - 1]].title } : null;
+    const next = i < COMPONENTS.length - 1 ? { slug: 'c-' + COMPONENTS[i + 1], title: D.components[COMPONENTS[i + 1]].title } : null;
+    const needsJs = D.jsComponents.includes(key);
+    const tags = [
+      c.source === 'auvyx' ? '<span class="badge">Added in Auvyx</span>' : '<span class="badge" data-variant="secondary">From Basecoat</span>',
+      needsJs ? '<span class="badge" data-variant="outline">Needs auvyx.min.js</span>' : '<span class="badge" data-variant="outline">CSS only</span>',
+      c.native ? '<span class="badge" data-variant="outline">Zero-JS variant</span>' : '',
+    ].join('');
+    const exs = c.examples.map((ex, n) => {
+      const id = `ex-${n}`;
+      const head = n === 0 ? '' : `<h3 class="d-h3" id="${id}">${esc(ex.title)}</h3>`;
+      return `${head}<div class="d-ex" data-ex="${n}"><div class="d-ex-bar"><div class="d-ex-tabs" role="tablist" aria-label="${esc(ex.title)}">
+        <button type="button" role="tab" aria-selected="true" data-view="preview">Preview</button><button type="button" role="tab" aria-selected="false" data-view="code">Code</button></div></div>
+        <div class="d-preview" data-pane="preview"><div class="d-stage">${ex.html}</div></div>
+        <div data-pane="code" hidden>${codeBox(ex.html)}</div></div>`;
+    }).join('');
+    const toc = c.examples.slice(1).map((ex, n) => `<li><a href="#c-${key}" data-scroll="ex-${n + 1}">${esc(ex.title)}</a></li>`).join('');
+    const install = needsJs
+      ? `<p>This component needs the optional script. Include it once per page:</p>${codeBox(`<script src="${CDN}/auvyx.min.js" defer><\/script>`)}`
+      : `<p>Styles ship in <code>auvyx.min.css</code>. No JavaScript is needed.</p>`;
+    return `<div class="d-page"><article>
+      <div class="d-crumb">Components ${ICON(I.chev)} <span>${esc(c.title)}</span></div>
+      <h1 class="d-h1">${esc(c.title)}</h1><p class="d-lead">${esc(c.description)}</p>
+      <div class="d-tags">${tags}</div>
+      ${exs}
+      <h2 class="d-h2" id="usage">Usage</h2><div class="d-prose">${install}${c.notes || ''}</div>
+      ${pager(prev, next)}
+    </article><aside class="d-toc"><h4>On this page</h4><ul>${toc}<li><a href="#c-${key}" data-scroll="usage">Usage</a></li></ul></aside></div>`;
+  }
+
+  function blockCard(b) {
+    const h = b.height || 46;
+    return `<section class="d-block" id="block-${b.id}">
+      <div class="d-block-bar">
+        <div class="d-block-title"><a href="blocks/${b.id}.html" target="_blank" rel="noopener">${esc(b.title)}</a><span>${esc(b.description)}</span></div>
+        <div class="d-block-tools">
+          <div class="d-ex-tabs" role="tablist" aria-label="${esc(b.title)} view"><button type="button" role="tab" aria-selected="true" data-bview="preview">Preview</button><button type="button" role="tab" aria-selected="false" data-bview="code">Code</button></div>
+          <fieldset class="toggle-group" data-variant="outline" data-size="sm"><legend>Viewport</legend>
+            <label class="toggle" title="Desktop"><input type="radio" name="vp-${b.id}" value="desktop" checked>${ICON(I.monitor)}<span class="sr-only">Desktop</span></label>
+            <label class="toggle" title="Tablet"><input type="radio" name="vp-${b.id}" value="tablet">${ICON(I.tablet)}<span class="sr-only">Tablet</span></label>
+            <label class="toggle" title="Mobile"><input type="radio" name="vp-${b.id}" value="mobile">${ICON(I.phone)}<span class="sr-only">Mobile</span></label>
+          </fieldset>
+          <a class="btn" data-variant="outline" data-size="icon-sm" href="blocks/${b.id}.html" target="_blank" rel="noopener" aria-label="Open ${esc(b.title)} in a new tab">${ICON(I.ext)}</a>
+        </div>
+      </div>
+      <div data-bpane="preview" class="d-frame-wrap"><div class="d-frame" data-size="desktop"><iframe data-block="${b.id}" title="${esc(b.title)} preview" loading="lazy" src="blocks/${b.id}.html" style="--h:${h}rem"></iframe></div></div>
+      <div data-bpane="code" hidden></div>
+    </section>`;
+  }
+
+  function pageBlocks(cat) {
+    const list = cat === 'featured' ? D.featured.map((id) => D.blocks.find((b) => b.id === id)) : D.blocks.filter((b) => b.category === cat);
+    const tabs = [{ id: 'featured', title: 'Featured' }, ...D.blockCats].map((c) => `<a href="#${c.id === 'featured' ? 'blocks' : 'blocks-' + c.id}"${c.id === cat ? ' aria-current="page"' : ''}>${esc(c.title)}</a>`).join('');
+    return `<div class="d-blocks-head"><h1 class="d-h1">Building Blocks for the Web</h1>
+      <p class="d-lead">Clean, modern building blocks. Copy and paste into your apps. Plain HTML on <code class="d-inline">auvyx.min.css</code>: no build step, no utility classes.</p></div>
+      <nav class="d-cats" aria-label="Block categories">${tabs}</nav>${list.map(blockCard).join('')}`;
+  }
+
+  function pageCharts() {
+    chartQueue = D.charts.map((ch, n) => ({ id: `chart-${n}`, cfg: () => ch.config }));
+    return `<div class="d-blocks-head"><h1 class="d-h1">Charts</h1><p class="d-lead">Chart.js with Basecoat defaults: theme colors, external tooltips, legends. Add <code class="d-inline">auvyx.chart.min.js</code> after Chart.js.</p></div>
+      ${codeBox(`<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"><\/script>\n<script src="${CDN}/auvyx.min.js" defer><\/script>\n<script src="${CDN}/auvyx.chart.min.js" defer><\/script>`)}
+      <div class="d-charts" style="margin-top:1.5rem">${D.charts.map((ch, n) => `<div class="card"><header><h2>${esc(ch.title)}</h2><p>${esc(ch.description)}</p></header><section><div class="d-chart-box"><canvas id="chart-${n}" aria-label="${esc(ch.title)}"></canvas></div></section></div>`).join('')}</div>`;
+  }
+
+  // ---------------- router
+  const shell = $('#d-shell');
+  function route() {
+    const h = decodeURIComponent(location.hash.slice(1)) || '';
+    chartQueue = [];
+    let html, active = h, wide = false, top = 'docs', title = 'Auvyx UI';
+    if (!h || h === 'home') { html = pageHome(); active = ''; top = ''; }
+    else if (h === 'components') { html = pageHome(); active = ''; top = 'components'; setTimeout(() => document.getElementById('all-components')?.scrollIntoView({ block: 'start' }), 0); }
+    else if (h.startsWith('c-') && D.components[h.slice(2)]) { html = pageComponent(h.slice(2)); top = 'components'; title = D.components[h.slice(2)].title + ' · Auvyx UI'; }
+    else if (h === 'blocks' || h.startsWith('blocks-')) { const cat = h === 'blocks' ? 'featured' : h.slice(7); html = pageBlocks(cat); wide = true; top = 'blocks'; title = 'Blocks · Auvyx UI'; }
+    else if (h === 'charts') { html = pageCharts(); wide = true; top = 'charts'; title = 'Charts · Auvyx UI'; }
+    else { const g = GUIDES.find((x) => x.slug === h); html = g ? pageGuide(g) : pageHome(); if (!g) active = ''; }
+    if (wide) shell.dataset.wide = ''; else delete shell.dataset.wide;
+    $('#d-nav').innerHTML = navHTML(active);
+    $('#d-mnav-body').innerHTML = navHTML(active);
+    document.querySelectorAll('.d-topnav a').forEach((a) => a.toggleAttribute('aria-current', a.dataset.top === top) || a.removeAttribute('aria-current'));
+    document.querySelectorAll('.d-topnav a').forEach((a) => { if (a.dataset.top === top) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+    main.innerHTML = html;
+    document.title = title;
+    if (!(h === 'components')) window.scrollTo({ top: 0 });
+    const cur = $('#d-nav [aria-current="page"]'); if (cur) cur.scrollIntoView({ block: 'nearest' });
+    if ($('#d-mnav').open) $('#d-mnav').close();
+    window.basecoat?.initAll?.();
+    if (chartQueue.length) { const go = () => rerenderCharts(); if (window.basecoat?.chart && window.Chart) go(); else window.addEventListener('load', go, { once: true }); }
+  }
+  window.addEventListener('hashchange', route);
+
+  // ---------------- interactions
+  main.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-view]');
+    if (t) {
+      const ex = t.closest('.d-ex');
+      ex.querySelectorAll('[data-view]').forEach((b) => b.setAttribute('aria-selected', String(b === t)));
+      ex.querySelectorAll('[data-pane]').forEach((p) => { p.hidden = p.dataset.pane !== t.dataset.view; });
+      return;
+    }
+    const s = e.target.closest('[data-scroll]');
+    if (s) { e.preventDefault(); document.getElementById(s.dataset.scroll)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+    const bv = e.target.closest('[data-bview]');
+    if (bv) {
+      const sec = bv.closest('.d-block');
+      sec.querySelectorAll('[data-bview]').forEach((b) => b.setAttribute('aria-selected', String(b === bv)));
+      sec.querySelectorAll('[data-bpane]').forEach((p) => { p.hidden = p.dataset.bpane !== bv.dataset.bview; });
+      if (bv.dataset.bview === 'code') loadBlockCode(sec);
+    }
+  });
+  main.addEventListener('change', (e) => {
+    if (e.target.name?.startsWith('vp-')) {
+      const frame = e.target.closest('.d-block').querySelector('.d-frame');
+      const w = { desktop: '100%', tablet: '48rem', mobile: '24.375rem' }[e.target.value];
+      frame.dataset.size = e.target.value;
+      frame.style.inlineSize = w;
+    }
+  });
+  main.addEventListener('load', (e) => { if (e.target.matches?.('iframe[data-block]')) syncFrame(e.target); }, true);
+  async function loadBlockCode(sec) {
+    const pane = sec.querySelector('[data-bpane="code"]');
+    if (pane.dataset.loaded) return;
+    const id = sec.id.replace('block-', '');
+    try {
+      const res = await fetch(`blocks/${id}.html`);
+      let txt = await res.text();
+      txt = txt.replaceAll('../dist/', CDN + '/');
+      pane.innerHTML = codeBox(txt, `${id}.html`);
+      pane.dataset.loaded = '1';
+    } catch (err) {
+      pane.innerHTML = `<p class="d-lead">Could not load the source. Open <a href="blocks/${id}.html" target="_blank" rel="noopener">${id}.html</a> instead.</p>`;
+    }
+  }
+
+  // ---------------- command palette
+  function cmdItems() {
+    const g = (label, items) => `<div role="group" aria-labelledby="cmd-${slugify(label)}"><span role="heading" id="cmd-${slugify(label)}">${label}</span>${items}</div>`;
+    const it = (href, text, icon, hint = '', kw = '') => `<a role="menuitem" href="#${href}" data-keywords="${esc(kw)}">${ICON(icon)}<span>${esc(text)}</span>${hint ? `<small>${esc(hint)}</small>` : ''}</a>`;
+    return g('Docs', GUIDES.map((x) => it(x.slug, x.title, I.file)).join(''))
+      + g('Components', COMPONENTS.map((k) => it('c-' + k, D.components[k].title, I.box, D.components[k].source === 'auvyx' ? 'New' : '', k)).join(''))
+      + g('Blocks', D.blockCats.map((c) => it('blocks-' + c.id, c.title + ' blocks', I.grid, String(D.blocks.filter((b) => b.category === c.id).length))).join('') + it('charts', 'Charts', I.chart));
+  }
+  $('#d-cmd-menu').innerHTML = cmdItems();
+  $('#d-cmd').addEventListener('click', (e) => { if (e.target.closest('[role="menuitem"]')) $('#d-cmd').close(); if (e.target === $('#d-cmd')) $('#d-cmd').close(); });
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); const d = $('#d-cmd'); if (d.open) d.close(); else { d.showModal(); $('#d-cmd-input').focus(); } }
+  });
+
+  applyTheme();
+  route();
+})();
+</script>
