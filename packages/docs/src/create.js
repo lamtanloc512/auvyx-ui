@@ -81,7 +81,7 @@
     function tokens() {
       const light = { ...baseVars(false), ...themeVars(false), ...chartVars(false) };
       const dark = { ...baseVars(true), ...themeVars(true), ...chartVars(true) };
-      const shared = { radius: pick('radius') + 'rem', 'corner-shape': CORNER_CSS[pick('corners')], 'font-sans': fontStack(pick('font')) };
+      const shared = { radius: boxy() ? '0' : pick('radius') + 'rem', 'corner-shape': CORNER_CSS[pick('corners')], 'font-sans': fontStack(pick('font')) };
       if (state.heading) shared['font-heading'] = fontStack(pick('heading'));
       if (state.imported) {
         Object.assign(shared, state.imported.theme);
@@ -90,6 +90,7 @@
         // tweakcn puts fonts/radius in :root next to the colors; keep them shared.
         for (const k of Object.keys(light)) if (/^(font-|radius$|tracking-|letter-spacing$|spacing$|shadow)/.test(k)) { shared[k] = light[k]; delete light[k]; }
         for (const k of Object.keys(dark)) if (/^(font-|radius$|tracking-|letter-spacing$|spacing$)/.test(k)) delete dark[k];
+        if (boxy()) shared.radius = '0';
       }
       return { shared, light, dark };
     }
@@ -185,14 +186,19 @@
       const o = OPTS[k];
       const v = pick(k);
       const items = o.items.map((it, n) => `<button type="button" role="menuitemradio" aria-checked="${n === state[k]}" data-opt="${k}" data-val="${n}" popovertarget="cr-${k}" popovertargetaction="hide">${swatch(k, it)}<span>${esc(fmt(k, it))}</span>${n === state[k] ? ICON(CHECK, '0.875rem') : ''}</button>`).join('');
-      const locked = state.imported && /^(base|theme|font|heading|radius)$/.test(k) && hasImported(k);
+      // Square styles (Lyra, Sera) draw every component with square corners: radius follows.
+      const square = k === 'radius' && boxy();
+      const locked = square || (state.imported && /^(base|theme|font|heading|radius)$/.test(k) && hasImported(k));
       return `<div class="dropdown-menu d-cr-row">
-        <button type="button" class="d-cr-btn" popovertarget="cr-${k}" aria-haspopup="menu"${locked ? ' data-locked' : ''}>
-          <span class="d-cr-text"><span class="d-cr-label">${esc(o.label)}</span><span class="d-cr-val">${esc(locked ? 'From import' : fmt(k, v))}</span></span>
+        <button type="button" class="d-cr-btn" popovertarget="cr-${k}" aria-haspopup="menu"${locked ? ' data-locked' : ''}${square ? ' disabled title="Square style: corners stay square"' : ''}>
+          <span class="d-cr-text"><span class="d-cr-label">${esc(o.label)}</span><span class="d-cr-val">${esc(square ? `None (${pick('style')})` : locked ? 'From import' : fmt(k, v))}</span></span>
           <span class="d-cr-icon">${swatch(k, v) || ICON(ROW_ICON[k])}</span>
         </button>
         <div id="cr-${k}" data-popover popover data-side="bottom" data-align="start" class="d-cr-pop"><div role="menu" aria-label="${esc(o.label)}">${items}</div></div>
       </div>`;
+    }
+    function boxy() {
+      return ['Lyra', 'Sera'].includes(pick('style'));
     }
     function hasImported(k) {
       const all = { ...state.imported.theme, ...state.imported.light };

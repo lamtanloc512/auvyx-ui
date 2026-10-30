@@ -82,7 +82,11 @@ await fs.writeFile(path.join(dist, 'auvyx.min.js'), banner + minJs);
     const raw = path.join(tmp, `auvyx-${style}.out.css`);
     execFileSync(path.join(root, 'node_modules/.bin/tailwindcss'), ['-i', entry, '-o', raw], { stdio: 'ignore' });
     const { code } = await transform(linkShadows(await fs.readFile(raw, 'utf8')), { loader: 'css', minify: true, target: cssTargets });
-    await fs.writeFile(path.join(dist, 'styles', `auvyx-${style}.min.css`), banner + code);
+    // Lyra and Sera are square styles (rounded-none throughout): set the radius
+    // token too, so components outside the pack and page CSS using var(--radius)
+    // match. A later --radius from the page still wins.
+    const square = ['lyra', 'sera'].includes(style) ? ':root{--radius:0}' : '';
+    await fs.writeFile(path.join(dist, 'styles', `auvyx-${style}.min.css`), banner + code + square);
   }
 }
 
