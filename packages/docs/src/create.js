@@ -24,7 +24,7 @@
     };
     const KEYS = Object.keys(OPTS);
     const CORNER_CSS = { Round: 'round', Squircle: 'squircle', Smooth: 'superellipse(1.5)', Bevel: 'bevel', Scoop: 'scoop', Notch: 'notch' };
-    const DEFAULT = { style: 0, base: 0, theme: 0, chart: 0, heading: 0, font: 0, radius: 3, corners: 1, menu: 0, accent: 0 };
+    const DEFAULT = { style: 0, base: 0, theme: 0, chart: 0, heading: 0, font: 1, radius: 3, corners: 1, menu: 0, accent: 0 };
     const STORE = 'auvyx-create';
     let state = { ...DEFAULT, imported: null };
     try { const s = JSON.parse(localStorage.getItem(STORE) || 'null'); if (s) state = { ...state, ...s }; } catch (e) {}
@@ -209,7 +209,7 @@
         <aside class="d-cr-panel dark" id="cr-panel" aria-label="Preset options">${panel()}</aside>
         <div class="d-cr-stage"><iframe id="cr-frame" data-preview title="Theme preview" src="create-preview.html"></iframe></div>
       </div>
-      ${dlg('cr-open', 'Open Preset', 'Paste a preset code to load its options.', `<input class="input" id="cr-code" placeholder="--preset 0000003100" autocomplete="off" spellcheck="false" aria-label="Preset code"><p class="d-cr-err" id="cr-code-err" hidden>That code is not valid.</p>`, '<button type="button" class="btn" data-cr="open">Open</button>')}
+      ${dlg('cr-open', 'Open Preset', 'Paste a preset code to load its options.', `<input class="input" id="cr-code" placeholder="--preset 0000013100" autocomplete="off" spellcheck="false" aria-label="Preset code"><p class="d-cr-err" id="cr-code-err" hidden>That code is not valid.</p>`, '<button type="button" class="btn" data-cr="open">Open</button>')}
       ${dlg('cr-import', 'Import theme', 'Paste the CSS from tweakcn.com (Code → CSS, the <code>:root</code> and <code>.dark</code> blocks) or a shadcn registry JSON. Colors, fonts, radius, shadows, tracking and spacing apply.', `<textarea class="textarea d-cr-ta" id="cr-theme-src" rows="10" spellcheck="false" placeholder=":root {&#10;  --background: oklch(1 0 0);&#10;  --primary: oklch(0.62 0.19 260);&#10;  …&#10;}&#10;.dark { … }" aria-label="Theme CSS or JSON"></textarea><p class="d-cr-err" id="cr-theme-err" hidden></p>`, '<button type="button" class="btn" data-cr="import">Apply theme</button>')}
       ${dlg('cr-css', 'Theme CSS', 'Paste after the Auvyx stylesheet.', '<div id="cr-css-body"></div>')}
       ${dlg('cr-init', 'Initialize Project', 'Put this in your <code>&lt;head&gt;</code>. Everything is CDN-hosted; no build step.', '<div id="cr-init-body"></div>')}`;
