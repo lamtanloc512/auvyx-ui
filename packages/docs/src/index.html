@@ -114,6 +114,8 @@
   .d-ex:has(:is([aria-expanded='true'], :popover-open, [data-popover]:not([aria-hidden='true']))) .d-preview { z-index: 5; }
   .d-preview > .d-stage { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem; inline-size: 100%; min-inline-size: 0; }
   .d-preview > .d-stage > * { max-inline-size: 100%; }
+  /* Field examples are form layouts; upstream renders them at w-full max-w-md. */
+  .d-page[data-component='field'] .d-preview > .d-stage > * { inline-size: 100%; max-inline-size: 28rem; }
   .d-code { position: relative; border: 1px solid var(--border); border-radius: var(--radius); background: var(--muted); overflow: hidden; }
   .d-code pre { margin: 0; padding: 1rem 1.25rem; max-block-size: 32rem; overflow: auto; font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.65; tab-size: 2; }
   .d-code .d-copy { position: absolute; top: 0.5rem; inset-inline-end: 0.5rem; z-index: 1; background: var(--background); }
@@ -508,7 +510,7 @@
     const install = needsJs
       ? `<p>This component needs the optional script. Include it once per page:</p>${codeBox(`<script src="${CDN}/auvyx.min.js" defer><\/script>`)}`
       : `<p>Styles ship in <code>auvyx.min.css</code>. No JavaScript is needed.</p>`;
-    return `<div class="d-page"><article>
+    return `<div class="d-page" data-component="${esc(key)}"><article>
       <div class="d-crumb">Components ${ICON(I.chev)} <span>${esc(c.title)}</span></div>
       <h1 class="d-h1">${esc(c.title)}</h1><p class="d-lead">${esc(c.description)}</p>
       <div class="d-tags">${tags}</div>
