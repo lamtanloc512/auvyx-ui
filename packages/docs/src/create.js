@@ -24,7 +24,7 @@
     };
     const KEYS = Object.keys(OPTS);
     const CORNER_CSS = { Round: 'round', Squircle: 'squircle', Smooth: 'superellipse(1.5)', Bevel: 'bevel', Scoop: 'scoop', Notch: 'notch' };
-    const DEFAULT = { style: 0, base: 0, theme: 0, chart: 0, heading: 0, font: 0, radius: 3, corners: 0, menu: 0, accent: 0 };
+    const DEFAULT = { style: 0, base: 0, theme: 0, chart: 0, heading: 0, font: 0, radius: 3, corners: 1, menu: 0, accent: 0 };
     const STORE = 'auvyx-create';
     let state = { ...DEFAULT, imported: null };
     try { const s = JSON.parse(localStorage.getItem(STORE) || 'null'); if (s) state = { ...state, ...s }; } catch (e) {}
@@ -209,7 +209,7 @@
         <aside class="d-cr-panel dark" id="cr-panel" aria-label="Preset options">${panel()}</aside>
         <div class="d-cr-stage"><iframe id="cr-frame" title="Theme preview" src="create-preview.html"></iframe></div>
       </div>
-      ${dlg('cr-open', 'Open Preset', 'Paste a preset code to load its options.', `<input class="input" id="cr-code" placeholder="--preset 0000003000" autocomplete="off" spellcheck="false" aria-label="Preset code"><p class="d-cr-err" id="cr-code-err" hidden>That code is not valid.</p>`, '<button type="button" class="btn" data-cr="open">Open</button>')}
+      ${dlg('cr-open', 'Open Preset', 'Paste a preset code to load its options.', `<input class="input" id="cr-code" placeholder="--preset 0000003100" autocomplete="off" spellcheck="false" aria-label="Preset code"><p class="d-cr-err" id="cr-code-err" hidden>That code is not valid.</p>`, '<button type="button" class="btn" data-cr="open">Open</button>')}
       ${dlg('cr-import', 'Import theme', 'Paste the CSS from tweakcn.com (Code → CSS, the <code>:root</code> and <code>.dark</code> blocks) or a shadcn registry JSON. Colors, fonts, radius, shadows, tracking and spacing apply.', `<textarea class="textarea d-cr-ta" id="cr-theme-src" rows="10" spellcheck="false" placeholder=":root {&#10;  --background: oklch(1 0 0);&#10;  --primary: oklch(0.62 0.19 260);&#10;  …&#10;}&#10;.dark { … }" aria-label="Theme CSS or JSON"></textarea><p class="d-cr-err" id="cr-theme-err" hidden></p>`, '<button type="button" class="btn" data-cr="import">Apply theme</button>')}
       ${dlg('cr-css', 'Theme CSS', 'Paste after the Auvyx stylesheet.', '<div id="cr-css-body"></div>')}
       ${dlg('cr-init', 'Initialize Project', 'Put this in your <code>&lt;head&gt;</code>. Everything is CDN-hosted; no build step.', '<div id="cr-init-body"></div>')}`;
@@ -217,22 +217,28 @@
 
     let frame, mounted = false;
     function save() { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} }
-    // The docs chrome takes the preset too while Create is open, like shadcn's /create.
-    function syncSite() {
-      const head = document.head;
-      let st = document.getElementById('d-cr-site'), fl = document.getElementById('d-cr-site-fonts');
-      if (!st) { st = document.createElement('style'); st.id = 'd-cr-site'; head.append(st); }
-      if (!fl) { fl = document.createElement('link'); fl.id = 'd-cr-site-fonts'; fl.rel = 'stylesheet'; head.append(fl); }
-      st.textContent = css();
-      const fh = fontsHref();
-      if (fh) { if (fl.getAttribute('href') !== fh) fl.href = fh; } else fl.removeAttribute('href');
+    // The preset themes the whole docs app (chrome, component demos, block frames), like shadcn's /create.
+    function headTag(doc, id, tag) {
+      let el = doc.getElementById(id);
+      if (!el) { el = doc.createElement(tag); el.id = id; if (tag === 'link') el.rel = 'stylesheet'; doc.head.append(el); }
+      return el;
     }
-    function unmount() {
-      document.getElementById('d-cr-site')?.remove();
-      document.getElementById('d-cr-site-fonts')?.remove();
+    function setHref(el, href) { if (href) { if (el.getAttribute('href') !== href) el.setAttribute('href', href); } else el.removeAttribute('href'); }
+    // docs.css and auvyx.min.css are the Vega bundle; other styles load their own bundle on top.
+    const stylePack = (prefix) => (state.style ? `${prefix}dist/styles/${styleFile()}` : '');
+    function syncSite() {
+      setHref(headTag(document, 'd-cr-site-style', 'link'), stylePack(''));
+      setHref(headTag(document, 'd-cr-site-fonts', 'link'), fontsHref());
+      headTag(document, 'd-cr-site', 'style').textContent = css();
+    }
+    function syncBlock(doc) {
+      if (!doc?.head) return;
+      setHref(headTag(doc, 'd-cr-style', 'link'), stylePack('../'));
+      setHref(headTag(doc, 'd-cr-fonts', 'link'), fontsHref());
+      headTag(doc, 'd-cr-theme', 'style').textContent = css();
     }
     function sync() {
-      if ($('#cr-panel')) syncSite();
+      syncSite();
       const doc = frame?.contentDocument;
       if (!doc || !doc.getElementById('sc-theme')) return;
       doc.getElementById('sc-theme').textContent = css();
@@ -249,7 +255,7 @@
       save();
       const p = $('#cr-panel');
       if (p) p.innerHTML = panel();
-      sync();
+      applyTheme(); // re-syncs this page, block frames and charts
     }
     function mount() {
       frame = $('#cr-frame');
@@ -281,6 +287,6 @@
         }
       });
     }
-    return { page, mount, unmount, sync, parseTheme, css, encode, decode, get state() { return state; } };
+    return { page, mount, sync, syncBlock, parseTheme, css, encode, decode, get state() { return state; } };
   })();
   window.auvyxCreate = Create;

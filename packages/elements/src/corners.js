@@ -9,7 +9,9 @@
 //
 // Only surfaces are clipped (cards, popovers, dialogs, alerts, items, sheets):
 // clip-path also clips box-shadow, so focusable controls keep native round
-// corners and their focus rings. Override with data-corners-selector on <html>.
+// corners and their focus rings. A surface's border or 1px ring is redrawn by
+// Monoco on the squircle path so it stays continuous at the corners; surfaces
+// with drop shadows get an SVG fill and drop-shadow filters instead of a clip. Override with data-corners-selector on <html>.
 // Set data-corners="force" on <html> to use Monoco even with native support.
 import { addCorners, unobserve, Squircle, FigmaSquircle, Flat, Inset, RoundInverse, Round } from '@monokai/monoco';
 
@@ -34,12 +36,33 @@ function wanted() {
   return !(window.CSS && CSS.supports('corner-shape', 'squircle'));
 }
 
+// Inline styles we set on a surface, restored by clear().
+const SET = ['clipPath', 'borderColor', 'backgroundColor', 'backgroundImage', 'backgroundOrigin', 'backgroundRepeat', 'boxShadow', 'filter'];
+
 function clear() {
   for (const el of tracked) {
     unobserve(el);
-    el.style.clipPath = '';
+    for (const k of SET) el.style[k] = '';
   }
   tracked.clear();
+}
+
+const TRANSPARENT = /^(transparent|rgba\(0, 0, 0, 0\))$/;
+
+// Split a computed box-shadow into its 1px-style ring (spread only, how the
+// style packs draw card/popover edges) and the remaining drop shadows.
+function shadows(value) {
+  const ring = [], drop = [];
+  if (!value || value === 'none') return { ring, drop };
+  for (const layer of value.split(/,(?![^(]*\))/)) {
+    const color = layer.match(/^\s*((?:[a-z-]+\([^)]*\))|#\w+|[a-z]+)/i)?.[1] ?? '';
+    const nums = (layer.slice(layer.indexOf(color) + color.length).match(/-?[\d.]+px/g) || []).map(parseFloat);
+    if (!color || TRANSPARENT.test(color) || layer.includes('inset')) continue;
+    const [x = 0, y = 0, blur = 0, spread = 0] = nums;
+    if (!x && !y && !blur && spread > 0) ring.push([spread, color]);
+    else if (blur || x || y) drop.push(`drop-shadow(${x}px ${y}px ${blur / 2}px ${color})`);
+  }
+  return { ring, drop };
 }
 
 function apply() {
@@ -49,10 +72,34 @@ function apply() {
   if (!wanted() || !type || type === Round) return;
   const smoothing = parseFloat(getComputedStyle(root).getPropertyValue('--corner-smoothing')) || 1;
   const selector = root.dataset.cornersSelector || DEFAULT_SELECTOR;
+  // Read every surface first, then write, so styles are measured before any change.
+  const jobs = [];
   for (const el of document.querySelectorAll(selector)) {
-    const radius = parseFloat(getComputedStyle(el).borderTopLeftRadius);
+    const cs = getComputedStyle(el);
+    const radius = parseFloat(cs.borderTopLeftRadius);
     if (!radius) continue;
-    addCorners(el, { borderRadius: radius, smoothing, cornerType: type, clip: true });
+    const width = parseFloat(cs.borderTopWidth);
+    const { ring, drop } = shadows(cs.boxShadow);
+    const border = width && cs.borderTopStyle !== 'none' && !TRANSPARENT.test(cs.borderTopColor) ? [[width, cs.borderTopColor]] : [];
+    jobs.push({ el, radius, border: [...border, ...ring], drop, background: cs.backgroundColor });
+  }
+  for (const { el, radius, border, drop, background } of jobs) {
+    const opts = { borderRadius: radius, smoothing, cornerType: type };
+    // A CSS border or ring would be cut at the corners, so Monoco redraws it as
+    // an SVG stroke on the squircle path; the CSS border keeps its width for layout.
+    if (border.length) {
+      Object.assign(el.style, { borderColor: 'transparent', boxShadow: 'none', backgroundOrigin: 'border-box', backgroundRepeat: 'no-repeat' });
+      opts.border = border.length === 1 ? border[0] : border;
+    }
+    if (drop.length) {
+      // clip-path would also clip the shadow: paint the fill as SVG instead and
+      // turn the box-shadows into drop-shadow filters that follow the shape.
+      Object.assign(el.style, { backgroundColor: 'transparent', filter: drop.join(' ') });
+      opts.background = background;
+    } else {
+      opts.clip = true;
+    }
+    addCorners(el, opts);
     tracked.add(el);
   }
 }

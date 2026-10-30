@@ -20,12 +20,15 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="dist/auvyx.min.js" defer></script>
 <script src="dist/auvyx.chart.min.js" defer></script>
+<!-- Squircle corners: native corner-shape where supported, Monoco elsewhere. -->
+<script src="dist/auvyx.corners.min.js" defer></script>
 <style>
   /* Layout: shadcn-style docs: sticky header, left nav, content column, optional TOC; blocks/charts pages full width. */
   :root { color-scheme: light; --header-h: 3.5rem; --nav-w: 15rem; }
   html.dark { color-scheme: dark; }
   body { background: var(--background); color: var(--foreground); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
   body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 61; background: var(--background); }
+  :root { --corner-shape: squircle; }
   /* No global `a` rule: unlayered styles beat @layer components, so it would recolor .btn links. */
   .d-brand, .d-comp-grid a, .d-block-title a, .d-cards a.card { color: inherit; }
   .d-prose a:not(.btn) { color: inherit; text-decoration: underline; text-underline-offset: 4px; }
@@ -185,7 +188,7 @@
   .d-cr-panel .btn[data-variant='outline']:hover { background: var(--accent); }
   .d-cr-pop { min-inline-size: 13rem; max-block-size: 20rem; overflow-y: auto; }
   .d-cr-pop [role=menuitemradio] > svg:last-child { margin-inline-start: auto; }
-  .d-sw { inline-size: 0.875rem; block-size: 0.875rem; border-radius: 999px; flex: none; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 15%, transparent); }
+  .d-sw { corner-shape: round; inline-size: 0.875rem; block-size: 0.875rem; border-radius: 999px; flex: none; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 15%, transparent); }
   .d-sw-font { font-size: 0.8125rem; font-weight: 600; inline-size: 1.25rem; text-align: center; flex: none; }
   .d-cr-wide { inline-size: 100%; }
   .d-cr-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
@@ -307,6 +310,7 @@
       if (!doc || !doc.documentElement) return;
       doc.documentElement.classList.toggle('dark', isDark());
       if (doc.body) { if (brand()) doc.body.dataset.theme = brand(); else delete doc.body.dataset.theme; }
+      Create.syncBlock(doc);
     } catch (e) {}
   }
   $('#d-mode').addEventListener('click', () => {
@@ -515,7 +519,6 @@
     else { const g = GUIDES.find((x) => x.slug === h); html = g ? pageGuide(g) : pageHome(); if (!g) active = ''; }
     if (wide) shell.dataset.wide = ''; else delete shell.dataset.wide;
     document.body.dataset.page = top;
-    if (h !== 'create') Create.unmount();
     $('#d-nav').innerHTML = navHTML(active);
     $('#d-mnav-body').innerHTML = navHTML(active);
     document.querySelectorAll('.d-topnav a').forEach((a) => a.toggleAttribute('aria-current', a.dataset.top === top) || a.removeAttribute('aria-current'));
