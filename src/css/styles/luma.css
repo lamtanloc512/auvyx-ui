@@ -926,10 +926,6 @@
     @apply text-muted-foreground text-start text-sm [[data-variant=legend]+&]:-mt-1.5;
   }
 
-  .fieldset > legend[data-variant='label'] {
-    @apply mb-0;
-  }
-
   .fieldset > legend:not([data-variant]) + p,
   .fieldset > legend[data-variant='legend'] + p {
     @apply -mt-1.5;

@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Restored the space under a Fieldset `<legend data-variant="label">`. Every style pack set its bottom margin to 0, so the label sat flush against the radio group, checkboxes or description below it; it now uses the same margin as other legends, matching upstream shadcn/ui.
 - Fixed charts with `surface: "gradient"` resolving their colors on every draw, which forced a full style recalculation per frame and made resizes (such as opening or closing a Sidebar next to a chart) stutter. The gradient colors are now resolved once per chart render.
 
 ## [1.1.0] - 2026-10-23
