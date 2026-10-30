@@ -97,6 +97,7 @@ await fs.writeFile(path.join(dist, 'auvyx.min.js'), banner + minJs);
 // Elements as standalone ES modules, for picking only what a page uses.
 await fs.mkdir(path.join(dist, 'elements'), { recursive: true });
 for (const file of await fs.readdir(path.join(root, 'packages/elements/src'))) {
+  if (file === 'corners.js') continue; // bundled with Monoco as auvyx.corners.min.js
   const { code } = await transform(await fs.readFile(path.join(root, 'packages/elements/src', file), 'utf8'), { loader: 'js', minify: true, format: 'esm', target: 'es2022' });
   const relinked = code.replace(/(["'])\.\/([\w-]+)\.js\1/g, '$1./$2.min.js$1');
   await fs.writeFile(path.join(dist, 'elements', file.replace(/\.js$/, '.min.js')), banner + relinked);
