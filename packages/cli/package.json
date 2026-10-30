@@ -1,0 +1,14 @@
+{
+  "name": "@auvyx/cli",
+  "version": "0.1.0",
+  "description": "Add Auvyx UI blocks to your project from free and licensed registries.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "auvyx": "bin/auvyx.mjs"
+  },
+  "files": ["bin/"],
+  "engines": {
+    "node": ">=18"
+  }
+}

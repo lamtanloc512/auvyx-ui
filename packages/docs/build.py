@@ -194,6 +194,9 @@ def main():
     for f in BLOCKS.glob("*.html"):
         (OUT / "blocks" / f.name).write_text(f.read_text().replace("../ui/dist/", "../dist/"))
 
+    # Public registry served at /r/<name>.json for `auvyx add`.
+    run("node", str(BLOCKS / "tools/build_registry.mjs"), "--out", str(OUT / "r"))
+
     files = sorted(p.relative_to(OUT).as_posix() for p in OUT.rglob("*") if p.is_file())
     total = sum((OUT / f).stat().st_size for f in files)
     print(f"docs: {len(comps)} components, {len(blocks)} blocks, {len(data['charts'])} charts; {len(files)} files, {total / 1024:.0f} kB; docs.css {gz(OUT / 'docs.css')}")
