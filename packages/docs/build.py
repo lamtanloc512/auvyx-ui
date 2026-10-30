@@ -241,6 +241,8 @@ def main():
     shutil.copytree(UI / "dist" / "js", OUT / "dist" / "js")
     shutil.copytree(UI / "dist" / "wc", OUT / "dist" / "wc")
     shutil.copytree(UI / "dist" / "styles", OUT / "dist" / "styles")
+    shutil.copytree(UI / "dist" / "types", OUT / "dist" / "types")
+    shutil.copy(UI / "dist" / "custom-elements.json", OUT / "dist" / "custom-elements.json")
     run("python3", str(DOCS / "tools/showcase.py"))
     shutil.copy(DOCS / "src/create-preview.html", OUT / "create-preview.html")
 
