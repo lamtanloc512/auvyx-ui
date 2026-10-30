@@ -126,7 +126,8 @@
     "check": "npm run build && node ./scripts/check.js && npm pack --dry-run --ignore-scripts",
     "auvyx:build": "npm run build -w @auvyx/docs",
     "auvyx:test": "npm test -w @auvyx/tests",
-    "auvyx:check": "npm run auvyx:build && npm run auvyx:test"
+    "auvyx:check": "npm run auvyx:build && npm run auvyx:test",
+    "auvyx:publish": "npm publish -w @auvyx/ui -w @auvyx/cli"
   },
   "devDependencies": {
     "@iconify-json/hugeicons": "^1.2.35",

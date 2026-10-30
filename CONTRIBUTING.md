@@ -18,27 +18,15 @@ The docs site is `packages/docs` (built to `packages/docs/out` by `npm run auvyx
 
 ## Releasing
 
-The site at basecoatui.com deploys from the `release` branch, not `main`, so the docs always match the version on npm. Nobody commits to `release` directly.
+`@auvyx/ui` and `@auvyx/cli` are published to npm from GitHub releases, one package per release:
 
-To cut a release:
+1. Bump the version on `main`: `npm version 0.1.1 -w @auvyx/ui --no-git-tag-version`, commit and push.
+2. Publish a GitHub release tagged `<package>@<version>`: `ui@0.1.1` or `cli@0.1.1`.
 
-1. Bump the version on `main`: `npm version 1.1.0 --no-git-tag-version`, then commit (for example "Prepare 1.1.0 release") and push.
-2. Tag that commit with the same version, with no `v` prefix, and push: `git tag 1.1.0 && git push origin 1.1.0`.
-3. Publish a GitHub release for the tag: `gh release create 1.1.0 --generate-notes --latest --verify-tag`.
-4. Approve the staged version on npmjs.com, in the package's Staged Packages tab, or with `npm stage approve <stage-id>`. Both ask for 2FA.
+`.github/workflows/release-auvyx.yml` checks that the tag matches the package version, builds, and runs `npm publish --provenance` with npm trusted publishing (no token). Each package's trusted publisher is set on npmjs.com (Settings → Trusted Publisher → GitHub Actions: `lamtanloc512/basecoat`, `release-auvyx.yml`).
 
-Publishing the release runs `.github/workflows/release.yml`:
+The very first version of a package has to be published by hand, because npm only accepts a trusted publisher for a package that exists: `npm login`, then `npm run auvyx:publish` (builds and publishes both, asking for 2FA).
 
-- **publish** checks that the tag is on `main` and matches the version in `package.json`, runs `npm run check`, and stages the version on npm with `npm stage publish`, using trusted publishing. A staged version is not installable until a maintainer approves it. If the version is already staged or published, this step is skipped.
-- **deploy-site** waits until the version is live on npm, then points `release` at the tag, and Cloudflare builds and deploys the site. It checks every 30 seconds for up to about 5h50m. If you approve later than that, the job fails with a message: after approving, use Re-run failed jobs on that run, which re-runs deploy-site and then announce. If staging fails or you reject the version, the site is not deployed.
-- **announce** posts the release notes to Discord, only after deploy-site succeeded. By then the version is installable from npm and `release` has moved, so Cloudflare is building the new site (that takes a few minutes).
-
-Do not run `npm publish` by hand. Versions reach npm only through this workflow and your approval. The workflow needs no npm token and adds a provenance statement linking each version to the commit it was built from. Prereleases are not staged, deployed or announced.
-
-You can also run the Release workflow manually from the Actions tab, with a tag and a mode. A manual run never publishes to npm.
-
-- `deploy` (default) redeploys or rolls back the site: it moves `release` to the tag, only if that version is already on npm. It doesn't post to Discord.
-- `announce` posts the tag's GitHub release to Discord again, for example after a failed post. It doesn't deploy.
-- `deploy and announce` does both, and announces only if the deploy succeeded.
+The upstream `basecoat-css` package is not published from this fork.
 
 Thanks for helping!

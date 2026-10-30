@@ -131,7 +131,7 @@
     }
 
     // Blocks come from the registry with the chosen icon library already inlined.
-    const cliSnippet = () => `# @auvyx/cli is not on npm yet; run packages/cli/bin/auvyx.mjs from the repo.\nnpx @auvyx/cli init --icons ${iconLib()}\nnpx @auvyx/cli add dashboard-01`;
+    const cliSnippet = () => `npx @auvyx/cli init --icons ${iconLib()}\nnpx @auvyx/cli add dashboard-01`;
 
     // ---- tweakcn / shadcn theme import (CSS or registry JSON)
     function parseVars(body) {

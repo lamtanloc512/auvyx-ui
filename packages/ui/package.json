@@ -35,8 +35,30 @@
   },
   "scripts": {
     "build": "node ./build.mjs",
-    "deps": "node ./tools/ui-deps.mjs"
+    "deps": "node ./tools/ui-deps.mjs",
+    "prepublishOnly": "node ./build.mjs"
   },
   "customElements": "dist/custom-elements.json",
-  "types": "dist/types/elements.d.ts"
+  "types": "dist/types/elements.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lamtanloc512/basecoat.git",
+    "directory": "packages/ui"
+  },
+  "homepage": "https://auvyx-ui.vercel.app",
+  "bugs": {
+    "url": "https://github.com/lamtanloc512/basecoat/issues"
+  },
+  "keywords": [
+    "css",
+    "design system",
+    "shadcn",
+    "tailwind",
+    "html",
+    "components",
+    "web components"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }

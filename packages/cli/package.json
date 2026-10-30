@@ -7,8 +7,29 @@
   "bin": {
     "auvyx": "bin/auvyx.mjs"
   },
-  "files": ["bin/"],
+  "files": [
+    "bin/"
+  ],
   "engines": {
     "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lamtanloc512/basecoat.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://auvyx-ui.vercel.app",
+  "bugs": {
+    "url": "https://github.com/lamtanloc512/basecoat/issues"
+  },
+  "keywords": [
+    "cli",
+    "shadcn",
+    "registry",
+    "components",
+    "blocks"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }

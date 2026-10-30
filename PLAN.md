@@ -39,7 +39,7 @@ Auvyx contains no licensing, payment or tier logic. Paid source must never be co
 
 ## Next (Auvyx)
 
-- [ ] Publish `@auvyx/ui` and `@auvyx/cli` to npm.
+- [ ] Publish `@auvyx/ui` and `@auvyx/cli` to npm. Ready: LICENSE (with Basecoat's notice) and README in each package, `npm run auvyx:publish` for the first version, then `.github/workflows/release-auvyx.yml` (tags `ui@x.y.z` / `cli@x.y.z`, trusted publishing). `@auvyx/elements` stays private (bundled into `@auvyx/ui`); the upstream `basecoat-css` release workflow is removed.
 
 ## Beamui (tracked there, listed for context)
 
