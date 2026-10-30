@@ -2,15 +2,19 @@
 //
 //   node packages/blocks/tools/build_registry.mjs [--src dir] [--out dir] [--tier free|pro] [--cdn url]
 //
-// Each block page becomes r/<name>.json with two files:
+// Each block page becomes r/<icons>/<name>.json, one per icon library
+// (lucide, tabler, hugeicons, ph, ri), with two files:
 //   - blocks/<name>.html       fragment: block <style>, <body> markup, block scripts
 //   - pages/<name>.html        standalone page with CDN links
-// plus r/index.json listing every item. The same script builds a private
+// plus r/<icons>/index.json listing every item. r/<name>.json and r/index.json
+// stay as the Lucide copies for registries configured before icon libraries
+// existed. The same script builds a private
 // (pro) registry: point --src at the private blocks folder and --out at the
 // directory your authenticated endpoint serves.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { convertIcons, ICON_SETS } from '../../docs/tools/icon-convert.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '../../..');
@@ -59,12 +63,12 @@ const meta = JSON.parse(await fs.readFile(path.join(src, 'registry.json'), 'utf8
 await fs.rm(out, { recursive: true, force: true });
 await fs.mkdir(out, { recursive: true });
 
-const index = [];
+const items = [];
 for (const [name, info] of Object.entries(meta).sort(([a], [b]) => a.localeCompare(b))) {
   const html = await fs.readFile(path.join(src, `${name}.html`), 'utf8');
   const page = parse(html);
   const scripts = page.scripts.filter((s) => !BASE_ASSETS.has(path.basename(s))).map(toCdn);
-  const item = {
+  items.push({
     name,
     type: 'registry:block',
     title: info.title ?? page.title ?? name,
@@ -76,10 +80,25 @@ for (const [name, info] of Object.entries(meta).sort(([a], [b]) => a.localeCompa
       { path: `blocks/${name}.html`, type: 'registry:block', target: `blocks/${name}.html`, content: fragment(page) },
       { path: `pages/${name}.html`, type: 'registry:page', target: `pages/${name}.html`, content: toCdn(html) },
     ],
-  };
-  await fs.writeFile(path.join(out, `${name}.json`), JSON.stringify(item, null, 2) + '\n');
-  index.push({ name, type: item.type, title: item.title, description: item.description, categories: item.categories, meta: { tier: item.meta.tier } });
+  });
 }
 
-await fs.writeFile(path.join(out, 'index.json'), JSON.stringify({ name: 'auvyx', version, items: index }, null, 2) + '\n');
-console.log(`registry: ${index.length} ${tier} items -> ${path.relative(root, out)}`);
+const json = (v) => JSON.stringify(v, null, 2) + '\n';
+for (const icons of ICON_SETS) {
+  const dir = path.join(out, icons);
+  await fs.mkdir(dir, { recursive: true });
+  const index = [];
+  for (const item of items) {
+    const variant = {
+      ...item,
+      meta: { ...item.meta, icons },
+      files: item.files.map((f) => ({ ...f, content: convertIcons(f.content, icons) })),
+    };
+    await fs.writeFile(path.join(dir, `${item.name}.json`), json(variant));
+    if (icons === 'lucide') await fs.writeFile(path.join(out, `${item.name}.json`), json(variant));
+    index.push({ name: item.name, type: item.type, title: item.title, description: item.description, categories: item.categories, meta: { tier: item.meta.tier, icons } });
+  }
+  await fs.writeFile(path.join(dir, 'index.json'), json({ name: 'auvyx', version, icons, items: index }));
+  if (icons === 'lucide') await fs.writeFile(path.join(out, 'index.json'), json({ name: 'auvyx', version, icons, items: index }));
+}
+console.log(`registry: ${items.length} ${tier} items x ${ICON_SETS.length} icon libraries -> ${path.relative(root, out)}`);

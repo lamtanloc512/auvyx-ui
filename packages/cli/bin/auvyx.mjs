@@ -1,18 +1,21 @@
 #!/usr/bin/env node
 // Auvyx CLI: copy blocks from a registry into your project (shadcn-style open code).
 //
-//   auvyx init [--registry <url-template>] [--dir <dir>]
-//   auvyx add <item...> [--page] [--overwrite] [--dry-run]
+//   auvyx init [--registry <url-template>] [--icons <library>] [--dir <dir>]
+//   auvyx add <item...> [--icons <library>] [--page] [--overwrite] [--dry-run]
 //   auvyx list [@namespace]
 //
 // Items: `login-01` (default namespace), `@auvyx-pro/dashboard-02`, a URL, or a
-// local .json path. Registries map a namespace to a URL template with `{name}`;
+// local .json path. Registries map a namespace to a URL template with `{name}`
+// and optionally `{icons}` (the icon library: lucide, tabler, hugeicons, ph, ri);
 // headers may reference env vars as ${VAR}, so license keys stay out of the file.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
 const CONFIG = 'auvyx.json';
 const DEFAULT_NS = '@auvyx';
+const DEFAULT_REGISTRY = 'https://auvyx-ui.vercel.app/r/{icons}/{name}.json';
+const ICON_LIBRARIES = ['lucide', 'tabler', 'hugeicons', 'ph', 'ri'];
 
 const argv = process.argv.slice(2);
 const flags = new Set(argv.filter((a) => a.startsWith('--')));
@@ -20,7 +23,7 @@ const opt = (name) => {
   const i = argv.indexOf(`--${name}`);
   return i >= 0 ? argv[i + 1] : undefined;
 };
-const positional = argv.filter((a, i) => !a.startsWith('--') && !['--registry', '--dir'].includes(argv[i - 1]));
+const positional = argv.filter((a, i) => !a.startsWith('--') && !['--registry', '--dir', '--icons'].includes(argv[i - 1]));
 const [command, ...rest] = positional;
 
 const fail = (msg) => {
@@ -45,6 +48,12 @@ function expandEnv(value, where) {
   });
 }
 
+function iconLibrary(config) {
+  const lib = opt('icons') ?? config.icons ?? 'lucide';
+  if (!ICON_LIBRARIES.includes(lib)) fail(`unknown icon library "${lib}". Use one of: ${ICON_LIBRARIES.join(', ')}.`);
+  return lib;
+}
+
 function resolve(config, spec) {
   if (/^https?:\/\//.test(spec) || spec.endsWith('.json')) return { source: spec, headers: {} };
   const m = spec.match(/^(@[\w-]+)\/(.+)$/);
@@ -53,7 +62,7 @@ function resolve(config, spec) {
   if (!entry) fail(`unknown registry ${ns}. Add it to "registries" in ${CONFIG}.`);
   const { url, headers = {} } = typeof entry === 'string' ? { url: entry } : entry;
   return {
-    source: url.replace('{name}', encodeURIComponent(name)),
+    source: url.replace('{icons}', iconLibrary(config)).replace('{name}', encodeURIComponent(name)),
     headers: Object.fromEntries(Object.entries(headers).map(([k, v]) => [k, expandEnv(v, ns)])),
     ns,
   };
@@ -69,8 +78,7 @@ async function fetchJson({ source, headers, ns }) {
 }
 
 async function init() {
-  const registry = opt('registry') ?? process.env.AUVYX_REGISTRY;
-  if (!registry) fail('pass --registry <url-template>, e.g. https://example.com/r/{name}.json');
+  const registry = opt('registry') ?? process.env.AUVYX_REGISTRY ?? DEFAULT_REGISTRY;
   try {
     await fs.access(CONFIG);
     if (!flags.has('--overwrite')) fail(`${CONFIG} already exists (use --overwrite).`);
@@ -79,6 +87,7 @@ async function init() {
   }
   const config = {
     dir: opt('dir') ?? 'auvyx',
+    icons: iconLibrary({}),
     registries: { [DEFAULT_NS]: registry },
   };
   await fs.writeFile(CONFIG, JSON.stringify(config, null, 2) + '\n');

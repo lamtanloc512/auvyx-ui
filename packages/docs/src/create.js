@@ -125,10 +125,12 @@
       lines.push(`<link rel="stylesheet" href="${CDN}/styles/${styleFile()}">`);
       lines.push('<style>', css().replace(/^/gm, '  '), '</style>');
       lines.push(`<script src="${CDN}/auvyx.min.js" defer><\/script>`);
-      if (iconLib() !== 'lucide') lines.push(`<!-- Icons: ${pick('icons')}. Copied blocks use inline Lucide SVGs; swap them for ${pick('icons')} icons. -->`);
       if (tokens().shared['corner-shape'] !== 'round') lines.push(`<!-- corner-shape is native in Chrome 139+; Monoco draws it elsewhere -->`, `<script src="${CDN}/auvyx.corners.min.js" defer><\/script>`);
       return lines.join('\n');
     }
+
+    // Blocks come from the registry with the chosen icon library already inlined.
+    const cliSnippet = () => `# @auvyx/cli is not on npm yet; run packages/cli/bin/auvyx.mjs from the repo.\nnpx @auvyx/cli init --icons ${iconLib()}\nnpx @auvyx/cli add dashboard-01`;
 
     // ---- tweakcn / shadcn theme import (CSS or registry JSON)
     function parseVars(body) {
@@ -289,7 +291,7 @@
         else if (act === 'reset') { state = { ...DEFAULT, imported: null }; refresh(); }
         else if (act === 'clear-import') { state.imported = null; refresh(); }
         else if (act === 'show-css') $('#cr-css-body').innerHTML = codeBox(css(), 'theme.css');
-        else if (act === 'show-init') $('#cr-init-body').innerHTML = codeBox(headSnippet(), 'index.html');
+        else if (act === 'show-init') $('#cr-init-body').innerHTML = codeBox(headSnippet(), 'index.html') + '<p class="d-cr-note">Add blocks with your icon library:</p>' + codeBox(cliSnippet(), 'terminal');
         else if (act === 'open') {
           const v = decode($('#cr-code').value);
           $('#cr-code-err').hidden = !!v;

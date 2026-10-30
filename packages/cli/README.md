@@ -3,8 +3,10 @@
 Copy Auvyx UI blocks into your project, shadcn-style: you own the code after `add`.
 
 ```bash
-npx @auvyx/cli init --registry https://<docs-domain>/r/{name}.json
+npx @auvyx/cli init --icons tabler
 ```
+
+`init` points `@auvyx` at `https://auvyx-ui.vercel.app/r/{icons}/{name}.json`; pass `--registry` to use another one. `--icons` picks the icon library the blocks are delivered with: `lucide` (default), `tabler`, `hugeicons`, `ph` (Phosphor) or `ri` (Remix). It is saved in `auvyx.json`, and `add --icons <library>` overrides it for one install.
 
 ```bash
 npx @auvyx/cli add login-01 sidebar-07
@@ -18,15 +20,16 @@ npx @auvyx/cli list
 
 ## Registries
 
-`auvyx.json` maps a namespace to a URL template. Items without a namespace use `@auvyx`.
+`auvyx.json` maps a namespace to a URL template. `{name}` is the item and `{icons}` the icon library. Items without a namespace use `@auvyx`.
 
 ```json
 {
   "dir": "auvyx",
+  "icons": "tabler",
   "registries": {
-    "@auvyx": "https://<docs-domain>/r/{name}.json",
+    "@auvyx": "https://auvyx-ui.vercel.app/r/{icons}/{name}.json",
     "@auvyx-pro": {
-      "url": "https://<pro-domain>/r/{name}.json",
+      "url": "https://<pro-domain>/r/{icons}/{name}.json",
       "headers": { "Authorization": "Bearer ${AUVYX_LICENSE_KEY}" }
     }
   }
@@ -50,6 +53,7 @@ Built by `packages/blocks/tools/build_registry.mjs`. A subset of the shadcn regi
 | `name`, `title`, `description`, `categories` | Item metadata |
 | `type` | `registry:block` |
 | `meta.tier` | `free` or `pro` |
+| `meta.icons` | Icon library the item's inline SVGs use |
 | `meta.scripts` | Extra scripts the block needs besides `auvyx.min.css`/`auvyx.min.js` |
 | `registryDependencies` | Other items to install; unqualified names resolve in the same registry |
 | `files[]` | `{ path, type, target, content }`; `target` is relative to `dir` and may not leave it |
