@@ -1,6 +1,6 @@
 // Find each component's dependencies for dist/ui/ and write tools/ui-deps.json.
 //
-//   node packages/ui/build.mjs && node packages/ui/tools/ui-deps.mjs
+//   node packages/ui/build.mjs && node packages/ui/tools/ui-deps.mjs [--check]
 //
 // For every component, its docs examples are rendered in Chromium with
 // base.css and every component's CSS as separate stylesheets (and
@@ -8,7 +8,8 @@
 // element in the examples, ignoring states (:hover, :checked, open…) so rules
 // for those count too. The result is what the examples need to render as on
 // the docs. Run it again when components or examples change; the ui build
-// reads the JSON and fails when a component is missing from it.
+// reads the JSON (and warns about components missing from it). --check writes
+// nothing and exits 1 when the JSON is out of date (CI runs it).
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -77,5 +78,19 @@ for (const name of Object.keys(components)) {
 }
 await browser.close();
 await fs.rm(path.join(root, 'packages/ui/.tmp'), { recursive: true, force: true });
-await fs.writeFile(path.join(here, 'ui-deps.json'), JSON.stringify(deps, null, 2) + '\n');
-console.log(Object.entries(deps).map(([k, v]) => `${k}: ${v.join(' ')}`).join('\n'));
+const json = JSON.stringify(deps, null, 2) + '\n';
+if (process.argv.includes('--check')) {
+  const saved = await fs.readFile(path.join(here, 'ui-deps.json'), 'utf8').catch(() => '');
+  if (saved !== json) {
+    const old = saved ? JSON.parse(saved) : {};
+    for (const k of new Set([...Object.keys(old), ...Object.keys(deps)])) {
+      if (JSON.stringify(old[k]) !== JSON.stringify(deps[k])) console.error(`${k}: recorded ${JSON.stringify(old[k] ?? null)}, found ${JSON.stringify(deps[k] ?? null)}`);
+    }
+    console.error('ui-deps.json is out of date: run node packages/ui/tools/ui-deps.mjs');
+    process.exit(1);
+  }
+  console.log(`ui-deps.json is up to date (${Object.keys(deps).length} components)`);
+} else {
+  await fs.writeFile(path.join(here, 'ui-deps.json'), json);
+  console.log(Object.entries(deps).map(([k, v]) => `${k}: ${v.join(' ')}`).join('\n'));
+}

@@ -34,7 +34,8 @@
     }
   },
   "scripts": {
-    "build": "node ./build.mjs"
+    "build": "node ./build.mjs",
+    "deps": "node ./tools/ui-deps.mjs"
   },
   "customElements": "dist/custom-elements.json",
   "types": "dist/types/elements.d.ts"

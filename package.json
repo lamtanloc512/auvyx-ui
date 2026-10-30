@@ -130,7 +130,10 @@
     "docs:preview": "npm run docs:build && npm --prefix site run preview",
     "workers:dev": "npm run build && npm --prefix site clean-install --progress=false && npm --prefix site run workers:dev",
     "workers:deploy": "npm run build && npm --prefix site clean-install --progress=false && npm --prefix site run workers:deploy",
-    "workers:preview": "npm run build && npm --prefix site clean-install --progress=false && npm --prefix site run workers:preview"
+    "workers:preview": "npm run build && npm --prefix site clean-install --progress=false && npm --prefix site run workers:preview",
+    "auvyx:build": "npm run build -w @auvyx/docs",
+    "auvyx:test": "npm test -w @auvyx/tests",
+    "auvyx:check": "npm run auvyx:build && npm run auvyx:test"
   },
   "devDependencies": {
     "@iconify-json/hugeicons": "^1.2.35",
@@ -144,5 +147,8 @@
     "prettier": "^3.5.3",
     "tailwindcss": "^4.1.17",
     "terser": "^5.42.0"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

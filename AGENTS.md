@@ -88,6 +88,7 @@
 ## Validation
 - Run `npm run build` after source/package changes.
 - Run `npm run docs:build` after docs or docs asset changes.
+- Run `npm run auvyx:build` and `npm run auvyx:test` after changes to `packages/*` or to CSS/JS they bundle; run `npm run deps -w @auvyx/ui` when components or their docs examples change.
 - Manually verify changed components in docs across light/dark mode, style packs, variants, RTL when supported, and relevant interaction states.
 
 ## Change Management

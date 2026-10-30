@@ -113,6 +113,27 @@ npm run build
 npm run docs:build
 ```
 
+### Auvyx packages
+
+`packages/*` are npm workspaces: `ui` (CSS, JS, types, `dist/ui/`), `elements` (custom elements), `blocks` (block pages and the registry builder), `cli`, `docs` (the docs site and public registry, `packages/docs/out`) and `tests` (private, the checks). The build needs Python 3 for the block and docs generators.
+
+```bash
+# ui -> registry -> docs, as on Vercel.
+npm run auvyx:build
+
+# Types, CLI, React blocks against the HTML, split CSS against the bundle,
+# ui-deps.json freshness (Chromium via Playwright; about 15 minutes).
+npm run auvyx:test
+
+# Only some blocks while working on them.
+AUVYX_BLOCKS=login-01,sidebar-07 npm run auvyx:test
+
+# After changing components or their docs examples.
+npm run deps -w @auvyx/ui
+```
+
+CI runs the same, plus a check that `packages/blocks/*.html` match their generators (`npm run build -w @auvyx/blocks`). Screenshots of failed comparisons are uploaded as the `auvyx-failures` artifact.
+
 ## License
 
 [MIT](LICENSE.md)
