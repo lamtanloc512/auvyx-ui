@@ -95,6 +95,57 @@ await fs.writeFile(path.join(dist, 'auvyx.min.js'), banner + minJs);
   await fs.writeFile(path.join(dist, 'auvyx.chart.min.js'), banner + code);
 }
 
+// Per-component JS modules: load only the behavior a page uses.
+// Each file is a classic script that works on its own: Basecoat components
+// carry the core registry (skipped when another module already set it up),
+// elements carry their dependencies. `detect` finds a module's components in a
+// page once it has run; the docs use it to label pages that need JavaScript.
+// `kind: "enhance"` modules are optional: the markup works without them.
+const JS_MODULES = {
+  accordion: { src: 'src/js/accordion.js', core: true, detect: '[data-accordion-initialized]', note: 'Only for the upstream markup; <details name> accordions need no JS.' },
+  combobox: { src: 'src/js/combobox.js', core: true, detect: '[data-combobox-initialized]' },
+  command: { src: 'src/js/command.js', core: true, detect: '[data-command-initialized]' },
+  drawer: { src: 'src/js/drawer.js', core: true, detect: '[data-drawer-initialized]' },
+  'dropdown-menu': { src: 'src/js/dropdown-menu.js', core: true, detect: '[data-dropdown-menu-initialized]', note: 'Only for the upstream markup; the native popover variant needs no JS.' },
+  popover: { src: 'src/js/popover.js', core: true, detect: '[data-popover-initialized]', note: 'Only for the upstream markup; the native popover variant needs no JS.' },
+  select: { src: 'src/js/select.js', core: true, detect: '[data-select-initialized]' },
+  sidebar: { src: 'src/js/sidebar.js', core: true, detect: '[data-sidebar-initialized]' },
+  slider: { src: 'src/js/range.js', core: true, detect: '[data-range-initialized]' },
+  tabs: { src: 'src/js/tabs.js', core: true, detect: '[data-tabs-initialized]' },
+  // Toast demos call the page's #toaster, which sits outside the demo.
+  toast: { src: 'src/js/toast.js', core: true, detect: '[data-toaster-initialized], [data-toast-initialized], [onclick*="toast("], [hx-target="#toaster"]' },
+  copy: { src: 'src/js/copy.js', detect: '[data-copy]' },
+  calendar: { src: 'packages/elements/src/calendar.js', element: true, detect: 'auvyx-calendar' },
+  'context-menu': { src: 'packages/elements/src/context-menu.js', element: true, detect: 'auvyx-context-menu' },
+  'data-table': { src: 'packages/elements/src/data-table.js', element: true, detect: 'auvyx-data-table' },
+  'date-picker': { src: 'packages/elements/src/date-picker.js', element: true, detect: 'auvyx-date-picker' },
+  resizable: { src: 'packages/elements/src/resizable.js', element: true, detect: 'auvyx-resizable' },
+  menu: { src: 'packages/elements/src/menu.js', element: true, kind: 'enhance', detect: '[data-popover][popover]:has([role="menu"]), .navigation-menu', note: 'Adds arrow-key navigation and focus handling to native menus; they open and close without it.' },
+};
+{
+  const core = await fs.readFile(path.join(root, 'src/js/basecoat.js'), 'utf8');
+  if (!core.trimStart().startsWith('(() => {')) throw new Error('basecoat.js must start with its IIFE so modules can guard it');
+  await fs.mkdir(path.join(dist, 'js'), { recursive: true });
+  const manifest = {};
+  for (const [name, mod] of Object.entries(JS_MODULES)) {
+    let src;
+    if (mod.element) {
+      src = (await build({ entryPoints: [path.join(root, mod.src)], bundle: true, format: 'iife', write: false, target: 'es2022' })).outputFiles[0].text;
+    } else {
+      src = await fs.readFile(path.join(root, mod.src), 'utf8');
+      // Core once per page, then this component; init right away when loaded after the DOM is ready.
+      if (mod.core) src = `if (!window.basecoat) ${core.trim()}
+${src}
+if (document.readyState !== 'loading') { window.basecoat.initAll(); window.basecoat.start(); }`;
+    }
+    const { code } = await transform(src, { loader: 'js', minify: true, target: 'es2022' });
+    const file = `js/${name}.min.js`;
+    await fs.writeFile(path.join(dist, file), banner + code);
+    manifest[name] = { file, kind: mod.kind || 'required', detect: mod.detect, gzip: gzipSync(banner + code, { level: 9 }).length, ...(mod.note && { note: mod.note }) };
+  }
+  await fs.writeFile(path.join(dist, 'js/manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
+}
+
 // Elements as standalone ES modules, for picking only what a page uses.
 await fs.mkdir(path.join(dist, 'elements'), { recursive: true });
 for (const file of await fs.readdir(path.join(root, 'packages/elements/src'))) {

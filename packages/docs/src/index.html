@@ -101,6 +101,7 @@
   .d-prose table { inline-size: 100%; border-collapse: collapse; font-size: 0.875rem; margin: 0.5rem 0 1rem; }
   .d-prose th, .d-prose td { border-block-end: 1px solid var(--border); padding: 0.625rem 1rem 0.625rem 0; text-align: start; vertical-align: top; }
   .d-prose th { font-weight: 500; }
+  .d-prose td:first-child > code { white-space: nowrap; }
   .d-tablewrap { overflow-x: auto; }
 
   .d-ex { margin-block-start: 1.25rem; }
@@ -492,10 +493,10 @@
     const i = COMPONENTS.indexOf(key);
     const prev = i > 0 ? { slug: 'c-' + COMPONENTS[i - 1], title: D.components[COMPONENTS[i - 1]].title } : null;
     const next = i < COMPONENTS.length - 1 ? { slug: 'c-' + COMPONENTS[i + 1], title: D.components[COMPONENTS[i + 1]].title } : null;
-    const needsJs = D.jsComponents.includes(key);
+    // The JavaScript badge and install notes are filled by labelJs() once the demos have run.
     const tags = [
       c.source === 'auvyx' ? '<span class="badge">Added in Auvyx</span>' : '<span class="badge" data-variant="secondary">From Basecoat</span>',
-      needsJs ? '<span class="badge" data-variant="outline">Needs auvyx.min.js</span>' : '<span class="badge" data-variant="outline">CSS only</span>',
+      '<span id="d-js-tag"></span>',
       c.native ? '<span class="badge" data-variant="outline">Zero-JS variant</span>' : '',
     ].join('');
     const exs = c.examples.map((ex, n) => {
@@ -507,17 +508,40 @@
         <div data-pane="code" hidden>${codeBox(ex.html)}</div></div>`;
     }).join('');
     const toc = c.examples.slice(1).map((ex, n) => `<li><a href="#c-${key}" data-scroll="ex-${n + 1}">${esc(ex.title)}</a></li>`).join('');
-    const install = needsJs
-      ? `<p>This component needs the optional script. Include it once per page:</p>${codeBox(`<script src="${CDN}/auvyx.min.js" defer><\/script>`)}`
-      : `<p>Styles ship in <code>auvyx.min.css</code>. No JavaScript is needed.</p>`;
     return `<div class="d-page" data-component="${esc(key)}"><article>
       <div class="d-crumb">Components ${ICON(I.chev)} <span>${esc(c.title)}</span></div>
       <h1 class="d-h1">${esc(c.title)}</h1><p class="d-lead">${esc(c.description)}</p>
       <div class="d-tags">${tags}</div>
       ${exs}
-      <h2 class="d-h2" id="usage">Usage</h2><div class="d-prose">${install}${c.notes || ''}</div>
+      <h2 class="d-h2" id="usage">Usage</h2><div class="d-prose"><div id="d-js-usage"></div>${c.notes || ''}</div>
       ${pager(prev, next)}
     </article><aside class="d-toc"><h4>On this page</h4><ul>${toc}<li><a href="#c-${key}" data-scroll="usage">Usage</a></li></ul></aside></div>`;
+  }
+
+  // Which JS modules do this page's demos use? Each module's `detect` selector
+  // matches what it initialized (or the custom element it defines).
+  function labelJs() {
+    const tag = $('#d-js-tag'), usage = $('#d-js-usage');
+    if (!tag || !usage) return;
+    const stages = [...document.querySelectorAll('#d-main .d-stage')];
+    const used = Object.entries(D.jsModules).filter(([, m]) => stages.some((st) => st.querySelector(m.detect)));
+    const required = used.filter(([, m]) => m.kind === 'required');
+    const enhance = used.filter(([, m]) => m.kind === 'enhance');
+    const script = ([, m]) => `<script src="${CDN}/${m.file}" defer><\/script>`;
+    const notes = used.filter(([, m]) => m.note).map(([n, m]) => `<li><code>${esc(n)}</code>: ${esc(m.note)}</li>`).join('');
+    if (required.length) {
+      tag.outerHTML = '<span class="badge" data-variant="outline">Requires JavaScript</span>';
+      usage.innerHTML = `<div class="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><h2>This component needs JavaScript</h2><section><p>Styles ship in <code>auvyx.min.css</code>, but the behavior shown above runs only with ${required.map(([n]) => `<code>${esc(n)}</code>`).join(', ')} loaded. Without it the markup renders but does not respond.</p></section></div>
+        <p>Load just the module${required.length + enhance.length > 1 ? 's' : ''} this component needs:</p>${codeBox([...required, ...enhance].map(script).join('\n'))}
+        <p>Or load <code>auvyx.min.js</code> once for every component.</p>${notes ? `<ul>${notes}</ul>` : ''}`;
+    } else if (enhance.length) {
+      tag.outerHTML = '<span class="badge" data-variant="outline">JavaScript optional</span>';
+      usage.innerHTML = `<p>Works with <code>auvyx.min.css</code> alone. For keyboard navigation, add:</p>${codeBox(enhance.map(script).join('\n'))}${notes ? `<ul>${notes}</ul>` : ''}`;
+    } else {
+      tag.outerHTML = '<span class="badge" data-variant="outline">No JavaScript</span>';
+      usage.innerHTML = '<p>Styles ship in <code>auvyx.min.css</code>. No JavaScript is needed.</p>';
+    }
+    usage.querySelectorAll('.d-code pre code').forEach((c) => { if (!c.querySelector('span')) c.innerHTML = highlight(c.textContent); });
   }
 
   function blockCard(b) {
@@ -584,6 +608,11 @@
     if ($('#d-mnav').open) $('#d-mnav').close();
     window.basecoat?.initAll?.();
     if (h === 'create') Create.mount();
+    if (h.startsWith('c-')) {
+      // Demos initialize on DOMContentLoaded on first load, right away after that.
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => requestAnimationFrame(labelJs), { once: true });
+      else requestAnimationFrame(labelJs);
+    }
     if (chartQueue.length) { const go = () => rerenderCharts(); if (window.basecoat?.chart && window.Chart) go(); else window.addEventListener('load', go, { once: true }); }
   }
   window.addEventListener('hashchange', route);

@@ -7,6 +7,7 @@ utilities the upstream examples use), assemble index.html with embedded data,
 copy dist files and blocks (paths rewritten for the site layout).
 """
 import json, pathlib, re, shutil, subprocess, gzip
+from html import escape as html_escape
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 DOCS = ROOT / "packages/docs"
@@ -54,7 +55,7 @@ BLOCK_PRESET = """<script>
     <script src="../icons.js" defer></script>"""
 
 
-def guides(sizes):
+def guides(sizes, js_modules):
     t = lambda s: TILE.format(s)
     return [
         {"slug": "introduction", "title": "Introduction", "description": "A drop-in design system with the shadcn look, built on a fork of Basecoat.", "html": f"""
@@ -72,8 +73,14 @@ def guides(sizes):
 </ul>
 <p>Current build: <code>auvyx.min.css</code> {sizes['css']} gzip, optional <code>auvyx.min.js</code> {sizes['js']} gzip.</p>"""},
         {"slug": "installation", "title": "Installation", "description": "Link the CDN files, install from npm, or import the source into Tailwind v4.", "html": f"""
-<h2 class="d-h2">CDN</h2><p>Add the stylesheet. Add the script only if you use Tabs, Select, Combobox, Command, Toast, Sidebar, Slider or any element from <code>@auvyx/elements</code>.</p>
-{code(f'<link rel="stylesheet" href="{CDN}/auvyx.min.css">' + chr(10) + f'<script src="{CDN}/auvyx.min.js" defer></script>')}
+<h2 class="d-h2">CDN</h2><p>Add the stylesheet. Most components need nothing else.</p>
+{code(f'<link rel="stylesheet" href="{CDN}/auvyx.min.css">')}
+<h2 class="d-h2">JavaScript</h2><p>Some components need JavaScript for their behavior; each component page says so and shows the script to add. Load one module per component you use, or <code>auvyx.min.js</code> ({sizes['js']} gzip) for all of them:</p>
+{code(f'<!-- only what the page uses -->' + chr(10) + f'<script src="{CDN}/js/tabs.min.js" defer></script>' + chr(10) + f'<script src="{CDN}/js/select.min.js" defer></script>' + chr(10) + chr(10) + f'<!-- or everything -->' + chr(10) + f'<script src="{CDN}/auvyx.min.js" defer></script>')}
+<p>Modules are independent: load any combination, in any order, even after the page has loaded. Basecoat components share a small core that only the first module sets up.</p>
+<div class="d-tablewrap"><table><thead><tr><th>Module</th><th>Size (gzip)</th><th>Needed for</th></tr></thead><tbody>
+{"".join(f'<tr><td><code>js/{n}.min.js</code></td><td>{m["gzip"] / 1024:.1f} kB</td><td>{"Optional: " if m["kind"] == "enhance" else ""}{n.replace("-", " ").capitalize()}{(". " + html_escape(m["note"])) if m.get("note") else ""}</td></tr>' for n, m in js_modules.items())}
+</tbody></table></div>
 <h2 class="d-h2">npm</h2>{code('npm install @auvyx/ui' + chr(10) + chr(10) + '/* in your CSS entry */' + chr(10) + '@import "@auvyx/ui";')}
 <h2 class="d-h2">Tailwind v4 (source channel)</h2><p>Import after Tailwind. Your build compiles the components and generates the utilities your markup uses.</p>
 {code('@import "tailwindcss";' + chr(10) + '@import "@auvyx/ui/bundle";')}
@@ -210,7 +217,6 @@ BLOCK_CATS = [("dashboard", "Dashboard"), ("sidebar", "Sidebar"), ("login", "Log
 FEATURED = ["dashboard-01", "sidebar-07", "sidebar-03", "login-03", "login-04", "calendar-20"]
 HEIGHTS = {"dashboard": 58, "sidebar": 50, "login": 46, "signup": 50, "otp": 40, "calendar": 34}
 TALL = {"calendar-20": 36, "calendar-21": 38, "calendar-27": 38, "calendar-31": 44, "calendar-03": 34, "signup-02": 54, "signup-03": 54, "signup-01": 54}
-JS_COMPONENTS = ["select", "combobox", "command", "tabs", "toast", "slider", "sidebar", "drawer", "context-menu", "resizable", "data-table", "calendar", "range-calendar", "date-picker"]
 
 
 def main():
@@ -222,6 +228,7 @@ def main():
     for f in ["auvyx.min.css", "auvyx.min.js", "auvyx.chart.min.js", "auvyx.corners.min.js"]:
         shutil.copy(UI / "dist" / f, OUT / "dist" / f)
     shutil.copytree(UI / "dist" / "elements", OUT / "dist" / "elements")
+    shutil.copytree(UI / "dist" / "js", OUT / "dist" / "js")
     shutil.copytree(UI / "dist" / "styles", OUT / "dist" / "styles")
     run("python3", str(DOCS / "tools/showcase.py"))
     shutil.copy(DOCS / "src/create-preview.html", OUT / "create-preview.html")
@@ -234,10 +241,11 @@ def main():
         for bid, meta in sorted(reg.items()):
             if meta["category"] == cat:
                 blocks.append({"id": bid, **meta, "height": TALL.get(bid, HEIGHTS[cat])})
-    gd = guides(sizes)
+    js_modules = json.loads((UI / "dist/js/manifest.json").read_text())
+    gd = guides(sizes, js_modules)
     data = {"version": VERSION, "cdn": CDN, "sizes": sizes, "components": comps, "guides": gd,
             "blocks": blocks, "blockCats": [{"id": c, "title": t} for c, t in BLOCK_CATS], "featured": FEATURED,
-            "charts": charts(), "jsComponents": JS_COMPONENTS}
+            "charts": charts(), "jsModules": js_modules}
     data_json = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 
     # docs.css: bundle + utilities used by examples/guides (scanned from the data file).
