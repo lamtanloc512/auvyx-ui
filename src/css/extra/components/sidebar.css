@@ -1,0 +1,261 @@
+/* Sidebar extensions (fork addition), on top of Basecoat's .sidebar.
+ *
+ *   <aside class="sidebar" data-collapsible="icon" data-variant="floating" id="app-sidebar">…</aside>
+ *   <main>…<button class="btn" data-variant="ghost" data-size="icon" data-sidebar-toggle="app-sidebar">…</button></main>
+ *
+ * data-collapsible="icon"   desktop collapse shrinks to an icon rail instead of hiding
+ * data-variant="floating"   detached, rounded panel
+ * data-variant="inset"      page takes the sidebar color, content sits in a rounded card
+ * data-position="static"    in-flow sidebar (inside a dialog, popover or layout cell)
+ * --sidebar-top             offset for a sticky site header above the sidebar
+ *
+ * Collapsed-icon rules: an item shows only its first child (icon, avatar,
+ * logo mark); everything else is hidden. Put data-tooltip on items to label
+ * them while collapsed. [data-sidebar-hide-collapsed] hides any element.
+ */
+@layer components {
+  /* On :root, not .sidebar: the content element is a sibling of the aside
+     and reads these for its margin. */
+  :root {
+    --sidebar-width-icon: 3rem;
+  }
+
+  .sidebar {
+    --sidebar-gap: 0px;
+
+    > nav {
+      top: var(--sidebar-top, 0px);
+      transition-property: translate, width, inset;
+    }
+
+    /* Tooltips only make sense when labels are hidden. */
+    &:not([data-collapsible='icon'][data-state='collapsed']) [data-tooltip]::before {
+      display: none;
+    }
+  }
+
+  /* Floating + inset reserve a gap around the panel. */
+  .sidebar:is([data-variant='floating'], [data-variant='inset']) {
+    --sidebar-gap: 0.5rem;
+  }
+
+  @media (width >= 48rem) {
+    .sidebar[data-variant='floating'] > nav {
+      inset-block: calc(var(--sidebar-top, 0px) + var(--sidebar-gap)) var(--sidebar-gap);
+      inline-size: calc(var(--sidebar-width) - var(--sidebar-gap) * 2);
+      block-size: auto;
+    }
+
+    .sidebar[data-variant='floating']:is(:not([data-side]), [data-side='left']) > nav {
+      left: var(--sidebar-gap);
+    }
+
+    .sidebar[data-variant='floating'][data-side='right'] > nav {
+      right: var(--sidebar-gap);
+    }
+
+    .sidebar[data-variant='inset'] > nav {
+      border-inline-width: 0;
+    }
+
+    .sidebar[data-variant='inset'] + * {
+      margin-block: 0.5rem;
+      min-block-size: calc(100svh - 1rem);
+      overflow: hidden;
+    }
+
+    .sidebar[data-variant='inset']:is(:not([data-side]), [data-side='left']) + * {
+      margin-right: 0.5rem;
+    }
+
+    .sidebar[data-variant='inset'][aria-hidden='true'] + * {
+      margin-left: 0.5rem;
+    }
+
+    /* Icon rail */
+    .sidebar[data-collapsible='icon'][data-state='collapsed'] {
+      > nav {
+        translate: none;
+        inline-size: var(--sidebar-width-icon);
+        overflow: hidden;
+      }
+
+      &:is(:not([data-side]), [data-side='left']) + * {
+        margin-left: var(--sidebar-width-icon);
+      }
+
+      &[data-side='right'] + * {
+        margin-right: var(--sidebar-width-icon);
+      }
+
+      &[data-variant='floating']:is(:not([data-side]), [data-side='left']) + * {
+        margin-left: calc(var(--sidebar-width-icon) + 1rem);
+      }
+
+      &[data-variant='floating'][data-side='right'] + * {
+        margin-right: calc(var(--sidebar-width-icon) + 1rem);
+      }
+
+      /* :not([data-popover] *) keeps dropdown menus opened from the rail intact. */
+      nav h3,
+      nav ul ul,
+      nav details::details-content,
+      nav summary::after,
+      nav [data-sidebar-hide-collapsed]:not([data-popover] *),
+      nav :is(header, footer, section) :is(a, button, summary):not([data-popover] *) > :not(:first-child) {
+        display: none;
+      }
+
+      nav :is(header, footer, section) :is(li > a, li > button, li > details > summary, [data-sidebar-item]):not([data-popover] *) {
+        inline-size: 2rem;
+        block-size: 2rem;
+        padding: 0.5rem;
+        justify-content: center;
+        overflow: visible;
+      }
+
+      nav :is(header, footer) :is(li > a, li > button, [data-sidebar-item])[data-size='lg'] {
+        padding: 0;
+      }
+    }
+
+    /* Rail tooltips: fixed + anchored so the section's scroll box cannot clip them. */
+    @supports (anchor-name: --a) {
+      .sidebar[data-collapsible='icon'][data-state='collapsed'] > nav li {
+        anchor-scope: --bc-sidebar-item;
+
+        /* summary sits under details, so it needs its own branch */
+        > :is(a, button)[data-tooltip],
+        > details > summary[data-tooltip] {
+          anchor-name: --bc-sidebar-item;
+
+          &::before {
+            position: fixed;
+            inset: auto;
+            position-anchor: --bc-sidebar-item;
+            position-area: inline-end;
+            margin-inline-start: 0.5rem;
+            translate: none;
+          }
+        }
+      }
+    }
+
+    /* Two sidebars: the left one's margin must reach past the right <aside>. */
+    .sidebar:is(:not([data-side]), [data-side='left']):not([aria-hidden='true']) ~ .sidebar[data-side='right'] + * {
+      margin-left: var(--sidebar-width);
+    }
+
+    .sidebar:is(:not([data-side]), [data-side='left'])[data-collapsible='icon'][data-state='collapsed'] ~ .sidebar[data-side='right'] + * {
+      margin-left: var(--sidebar-width-icon);
+    }
+  }
+
+  /* Static: an in-flow sidebar inside another container. */
+  .sidebar[data-position='static'] {
+    display: flex;
+    min-block-size: 0;
+    block-size: 100%;
+    background: none;
+    position: static;
+    inset: auto;
+
+    > nav {
+      position: relative;
+      inset: auto;
+      translate: none;
+      inline-size: var(--sidebar-width);
+      block-size: 100%;
+      z-index: auto;
+    }
+
+    & + * {
+      margin: 0;
+    }
+  }
+
+  @media (width < 48rem) {
+    .sidebar[data-position='static'] {
+      display: flex !important; /* override the upstream max-md:hidden pre-init rule */
+    }
+  }
+
+  /* Inset page background */
+  @media (width >= 48rem) {
+    body:has(> .sidebar[data-variant='inset']) {
+      background: var(--sidebar);
+    }
+  }
+
+  /* Two-line items (team switcher, user menu): <span><strong>Acme</strong><small>Pro</small></span> */
+  .sidebar > nav :is(li > a, li > button, [data-sidebar-item]) {
+    > span:has(> strong, > small) {
+      display: grid;
+      flex: 1;
+      min-inline-size: 0;
+      text-align: start;
+      line-height: 1.25;
+
+      > :is(strong, small) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    > svg:last-child:not(:first-child) {
+      margin-inline-start: auto;
+    }
+  }
+
+  /* Header/footer menus reuse the item look without a list. */
+  .sidebar > nav [data-sidebar-item] {
+    display: flex;
+    inline-size: 100%;
+    align-items: center;
+    overflow: hidden;
+    text-align: start;
+    outline: none;
+  }
+
+  /* Badge at the end of an item (counts) */
+  .sidebar > nav li > :is(a, button) > [data-badge] {
+    margin-inline-start: auto;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Lists in header/footer get the same item structure as section lists
+     (upstream only styles section > ul). */
+  .sidebar > nav > :is(header, footer) ul {
+    display: flex;
+    inline-size: 100%;
+    min-inline-size: 0;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    > li {
+      position: relative;
+
+      > :is(a, button) {
+        display: flex;
+        inline-size: 100%;
+        align-items: center;
+        overflow: hidden;
+        text-align: start;
+        outline: none;
+
+        > svg {
+          flex-shrink: 0;
+        }
+
+        > span:last-child:not(:has(> strong, > small)) {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+}

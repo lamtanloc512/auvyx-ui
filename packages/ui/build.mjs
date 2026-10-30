@@ -19,7 +19,7 @@ const jsComponents = ['basecoat', 'combobox', 'command', 'copy', 'drawer', 'drop
 
 // Size budgets (gzip bytes). CI fails when a change blows past them.
 // CSS budget sized for the full shadcn component set (~61 components); tighten once complete.
-const budgets = { 'auvyx.min.css': 36_000, 'auvyx.min.js': 20_000 };
+const budgets = { 'auvyx.min.css': 41_000, 'auvyx.min.js': 20_000 };
 
 await fs.rm(dist, { recursive: true, force: true });
 await fs.mkdir(dist, { recursive: true });

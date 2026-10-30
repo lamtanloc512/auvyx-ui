@@ -362,6 +362,20 @@
   .date-picker > button:first-child:not([data-value]) { @apply text-muted-foreground; }
   .date-picker > [data-popover] { @apply p-0; }
 
+  /* Sidebar extensions */
+  @media (width >= 48rem) {
+    .sidebar[data-variant='floating'] > nav { @apply border-sidebar-border rounded-lg border shadow-sm; }
+    .sidebar[data-variant='inset'] + * { @apply bg-background rounded-xl shadow-sm; }
+  }
+  .sidebar > nav [data-sidebar-item] { @apply ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground gap-2 rounded-md p-2 text-sm focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0; }
+  .sidebar > nav [data-sidebar-item][data-size='lg'] { @apply h-12; }
+  .sidebar > nav :is(li > a, li > button, [data-sidebar-item]) > span:has(> strong, > small) > strong { @apply font-medium; }
+  .sidebar > nav :is(li > a, li > button, [data-sidebar-item]) > span:has(> strong, > small) > small { @apply text-xs opacity-70; }
+  .sidebar > nav li > :is(a, button) > [data-badge] { @apply text-sidebar-foreground text-xs font-medium; }
+  .sidebar[data-position='static'] > nav { @apply border-e; }
+  .sidebar > nav > :is(header, footer) ul { @apply gap-1; }
+  .sidebar > nav .dropdown-menu:has(> [data-sidebar-item]) { @apply flex w-full; }
+
   /* Typography: opt-in prose styles for long-form content */
   .typography {
     @apply text-foreground;

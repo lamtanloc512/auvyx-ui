@@ -49,6 +49,86 @@
     "description": "A simple centered OTP page.",
     "category": "otp"
   },
+  "sidebar-01": {
+    "title": "Sidebar 01",
+    "description": "A simple sidebar with navigation grouped by section.",
+    "category": "sidebar"
+  },
+  "sidebar-02": {
+    "title": "Sidebar 02",
+    "description": "A sidebar with collapsible sections.",
+    "category": "sidebar"
+  },
+  "sidebar-03": {
+    "title": "Sidebar 03",
+    "description": "A sidebar with submenus.",
+    "category": "sidebar"
+  },
+  "sidebar-04": {
+    "title": "Sidebar 04",
+    "description": "A floating sidebar with submenus.",
+    "category": "sidebar"
+  },
+  "sidebar-05": {
+    "title": "Sidebar 05",
+    "description": "A sidebar with collapsible submenus.",
+    "category": "sidebar"
+  },
+  "sidebar-06": {
+    "title": "Sidebar 06",
+    "description": "A sidebar with submenus shown as dropdowns.",
+    "category": "sidebar"
+  },
+  "sidebar-07": {
+    "title": "Sidebar 07",
+    "description": "A sidebar that collapses to icons.",
+    "category": "sidebar"
+  },
+  "sidebar-08": {
+    "title": "Sidebar 08",
+    "description": "An inset sidebar with secondary navigation.",
+    "category": "sidebar"
+  },
+  "sidebar-09": {
+    "title": "Sidebar 09",
+    "description": "Collapsible nested sidebars.",
+    "category": "sidebar"
+  },
+  "sidebar-10": {
+    "title": "Sidebar 10",
+    "description": "A sidebar in a popover.",
+    "category": "sidebar"
+  },
+  "sidebar-11": {
+    "title": "Sidebar 11",
+    "description": "A sidebar with a collapsible file tree.",
+    "category": "sidebar"
+  },
+  "sidebar-12": {
+    "title": "Sidebar 12",
+    "description": "A sidebar with a calendar.",
+    "category": "sidebar"
+  },
+  "sidebar-13": {
+    "title": "Sidebar 13",
+    "description": "A sidebar in a dialog.",
+    "category": "sidebar"
+  },
+  "sidebar-14": {
+    "title": "Sidebar 14",
+    "description": "A sidebar on the right.",
+    "category": "sidebar"
+  },
+  "sidebar-15": {
+    "title": "Sidebar 15",
+    "description": "A left and a right sidebar.",
+    "category": "sidebar"
+  },
+  "sidebar-16": {
+    "title": "Sidebar 16",
+    "description": "A sidebar with a sticky site header.",
+    "category": "sidebar"
+  },
   "signup-01": {
     "title": "Signup 01",
     "description": "A simple signup form.",
