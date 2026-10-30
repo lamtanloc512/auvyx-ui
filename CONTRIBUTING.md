@@ -27,6 +27,8 @@ The docs site is `packages/docs` (built to `packages/docs/out` by `npm run auvyx
 
 The very first version of a package has to be published by hand, because npm only accepts a trusted publisher for a package that exists: `npm login`, then `npm run auvyx:publish` (builds and publishes both, asking for 2FA).
 
+npm stages these versions: until a maintainer approves them (npmjs.com → Staged Packages, or `npm stage approve <stage-id>`, with 2FA) the package only holds a `0.0.0-stage` placeholder, and `npm install`, `npx` and the CDN do not serve the new version.
+
 The upstream `basecoat-css` package is not published from this fork.
 
 Thanks for helping!

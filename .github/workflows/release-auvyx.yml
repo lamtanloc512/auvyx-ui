@@ -8,6 +8,9 @@ name: Release Auvyx
 # Settings -> Trusted Publisher -> GitHub Actions: repository
 # lamtanloc512/basecoat, workflow release-auvyx.yml, no environment.
 # Renaming this file breaks publishing.
+#
+# npm stages the version: approve it on npmjs.com (Staged Packages) or with
+# `npm stage approve <stage-id>` before it can be installed.
 
 on:
   release:
