@@ -14,6 +14,7 @@
     var host = r.getAttribute('data-theme');
     var dark = pref ? pref === 'dark' : host ? host === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
     r.classList.toggle('dark', dark);
+    try { if (localStorage.getItem('auvyx-docs-layout') === 'fixed') r.dataset.layout = 'fixed'; } catch (e) {}
   })();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -37,7 +38,9 @@
   .d-brand { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; text-decoration: none; letter-spacing: -0.01em; white-space: nowrap; }
   .d-brand-mark { display: inline-grid; place-items: center; inline-size: 1.75rem; block-size: 1.75rem; border-radius: calc(var(--radius) - 2px); background: var(--primary); color: var(--primary-foreground); }
   .d-brand-mark svg { inline-size: 1rem; block-size: 1rem; }
-  .d-topnav { display: flex; gap: 0.25rem; margin-inline-start: 0.75rem; }
+  .d-topnav { display: flex; gap: 0.25rem; margin-inline-start: 0.75rem; min-inline-size: 0; overflow-x: auto; scrollbar-width: none; }
+  .d-topnav a { flex: none; }
+  .d-actions { flex: none; }
   .d-topnav a { padding: 0.375rem 0.625rem; border-radius: calc(var(--radius) - 2px); font-size: 0.875rem; color: var(--muted-foreground); text-decoration: none; }
   .d-topnav a:hover, .d-topnav a[aria-current='page'] { color: var(--foreground); }
   .d-topnav a[aria-current='page'] { background: var(--muted); }
@@ -49,8 +52,12 @@
   body:not([data-page='create']) .d-init, body[data-page='create'] .d-new-btn { display: none; }
   .d-menu-btn { display: none; }
   @media (width < 64rem) { .d-search { inline-size: auto; } .d-search .d-search-label, .d-search kbd { display: none; } }
-  @media (width < 48rem) { .d-topnav { display: none; } .d-menu-btn { display: inline-flex; } }
+  @media (width < 48rem) { .d-topnav { display: none; } .d-menu-btn { display: inline-flex; } .d-layout-btn, .d-sep, .d-header .d-init { display: none; } }
+  @media (width < 30rem) { .d-new-label { display: none; } }
+  @media (width < 22.5rem) { .d-brand-name { display: none; } }
 
+  /* Layout toggle: full width (default) or a fixed, centered container. */
+  html[data-layout='fixed'] :is(.d-header-in, .d-shell) { max-inline-size: 96rem; margin-inline: auto; }
   .d-shell { display: grid; grid-template-columns: var(--nav-w) minmax(0, 1fr); padding-left: max(1rem, env(safe-area-inset-left, 0px)); padding-right: max(1rem, env(safe-area-inset-right, 0px)); }
   .d-shell[data-wide] { grid-template-columns: minmax(0, 1fr); }
   .d-shell[data-wide] > .d-nav { display: none; }
@@ -212,7 +219,7 @@
     <button type="button" class="btn d-menu-btn" data-variant="ghost" data-size="icon-sm" commandfor="d-mnav" command="show-modal" aria-label="Open navigation">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
     </button>
-    <a href="#" class="d-brand"><span class="d-brand-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 21h20Z"/><path d="M7.5 14h9"/></svg></span>Auvyx UI</a>
+    <a href="#" class="d-brand"><span class="d-brand-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 21h20Z"/><path d="M7.5 14h9"/></svg></span><span class="d-brand-name">Auvyx UI</span></a>
     <nav class="d-topnav" aria-label="Main">
       <a href="#" data-top="home">Home</a>
       <a href="#introduction" data-top="docs">Docs</a>
@@ -231,11 +238,12 @@
       <a class="btn" data-variant="ghost" data-size="icon-sm" href="https://github.com/lamtanloc512/basecoat/tree/ds/native-first" target="_blank" rel="noopener" aria-label="GitHub repository">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" style="inline-size:1rem;block-size:1rem"><path fill="currentColor" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
       </a>
+      <button type="button" class="btn d-layout-btn" data-variant="ghost" data-size="icon-sm" id="d-layout" aria-label="Toggle layout width" title="Toggle layout width" aria-pressed="false"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="inline-size:1rem;block-size:1rem"><path d="M2 3v18"/><rect width="12" height="18" x="6" y="3" rx="2"/><path d="M22 3v18"/></svg></button>
       <button type="button" class="btn" data-variant="ghost" data-size="icon-sm" id="d-mode" aria-label="Toggle dark mode">
         <svg class="d-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="inline-size:1rem;block-size:1rem"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
       </button>
       <span class="d-sep" aria-hidden="true"></span>
-      <a class="btn d-new-btn" data-size="sm" href="#create"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>New</a>
+      <a class="btn d-new-btn" data-size="sm" href="#create"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg><span class="d-new-label">New</span></a>
       <button type="button" class="btn d-init" data-size="sm" commandfor="cr-init" command="show-modal" data-cr="show-init"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m7 11 2-2-2-2"/><path d="M11 13h4"/></svg>Initialize Project</button>
     </div>
   </div>
@@ -306,6 +314,15 @@
       Create.syncBlock(doc);
     } catch (e) {}
   }
+  // aria-pressed = full width, matching the icon (content reaching both edges).
+  const layoutBtn = $('#d-layout');
+  const syncLayout = () => layoutBtn.setAttribute('aria-pressed', String(root.dataset.layout !== 'fixed'));
+  layoutBtn.addEventListener('click', () => {
+    if (root.dataset.layout === 'fixed') delete root.dataset.layout; else root.dataset.layout = 'fixed';
+    try { localStorage.setItem('auvyx-docs-layout', root.dataset.layout || 'full'); } catch (e) {}
+    syncLayout();
+  });
+  syncLayout();
   $('#d-mode').addEventListener('click', () => {
     root.classList.toggle('dark');
     try { localStorage.setItem('auvyx-docs-mode', isDark() ? 'dark' : 'light'); } catch (e) {}

@@ -227,7 +227,8 @@ HTML = f"""<!doctype html>
   .sc-danger {{ color: var(--destructive); }}
   .sc-pair {{ display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }}
   .sc-pair .card > header > p {{ margin: 0; font-size: .8125rem; color: var(--muted-foreground); }}
-  .sc-radios {{ display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }}
+  /* Two choices side by side, stacked once the card is too narrow for both. */
+  .sc-radios {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); gap: .75rem; }}
   .sc-navcard {{ padding: 0; overflow: hidden; }}
   .sc-navcard .sidebar > nav {{ --sidebar-width: 100%; border: 0; background: transparent; }}
   .sc-cal {{ display: flex; justify-content: center; }}
@@ -236,6 +237,11 @@ HTML = f"""<!doctype html>
   .sc-person small {{ color: var(--muted-foreground); }}
   .card {{ container-type: inline-size; }}
   .card select {{ max-inline-size: 100%; min-inline-size: 0; }}
+  /* Narrow cards: the header action moves under the title instead of overflowing. */
+  @container (width < 20rem) {{
+    .card > header:has(> .card-action) {{ grid-template-columns: minmax(0, 1fr); }}
+    .card > header > .card-action {{ grid-column: 1; grid-row: auto; justify-self: start; }}
+  }}
   .sc-pair .sc-big {{ font-size: clamp(1.125rem, 14cqi, 1.75rem); }}
   .item > aside.cluster {{ flex-wrap: nowrap; gap: .5rem; }}
   .item > section {{ min-inline-size: 0; }}

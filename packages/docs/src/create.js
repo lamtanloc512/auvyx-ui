@@ -226,7 +226,12 @@
     function setHref(el, href) { if (href) { if (el.getAttribute('href') !== href) el.setAttribute('href', href); } else el.removeAttribute('href'); }
     // docs.css and auvyx.min.css are the Vega bundle; other styles load their own bundle on top.
     const stylePack = (prefix) => (state.style ? `${prefix}dist/styles/${styleFile()}` : '');
+    // Standalone block pages (opened in a new tab) read this to apply the same preset.
+    function publish() {
+      try { localStorage.setItem('auvyx-preset', JSON.stringify({ css: css(), style: state.style ? styleFile() : '', fonts: fontsHref() })); } catch (e) {}
+    }
     function syncSite() {
+      publish();
       setHref(headTag(document, 'd-cr-site-style', 'link'), stylePack(''));
       setHref(headTag(document, 'd-cr-site-fonts', 'link'), fontsHref());
       headTag(document, 'd-cr-site', 'style').textContent = css();

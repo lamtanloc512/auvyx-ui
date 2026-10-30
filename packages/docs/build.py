@@ -38,6 +38,21 @@ def demo(html):
 TILE = '<div style="padding:.75rem 1rem;border:1px solid var(--border);border-radius:calc(var(--radius) - 2px);font-size:.875rem;background:var(--card)">{}</div>'
 
 
+# Same element ids as Create.syncBlock(), so the docs iframe sync updates them in place.
+BLOCK_PRESET = """<script>
+      (function () {
+        var d = document, r = d.documentElement, p = null, m = null;
+        try { p = JSON.parse(localStorage.getItem("auvyx-preset") || "null"); m = localStorage.getItem("auvyx-docs-mode"); } catch (e) {}
+        if (m && !/[?&]theme=/.test(location.search)) r.classList.toggle("dark", m === "dark");
+        if (!p) return;
+        function add(tag, id, attrs) { var el = d.createElement(tag); el.id = id; for (var k in attrs) el[k] = attrs[k]; d.head.appendChild(el); }
+        if (p.style) add("link", "d-cr-style", { rel: "stylesheet", href: "../dist/styles/" + p.style });
+        if (p.fonts) add("link", "d-cr-fonts", { rel: "stylesheet", href: p.fonts });
+        add("style", "d-cr-theme", { textContent: p.css });
+      })();
+    </script>"""
+
+
 def guides(sizes):
     t = lambda s: TILE.format(s)
     return [
@@ -192,7 +207,11 @@ def main():
     (OUT / "blocks").mkdir()
     shutil.copytree(BLOCKS / "assets", OUT / "blocks" / "assets")
     for f in BLOCKS.glob("*.html"):
-        (OUT / "blocks" / f.name).write_text(f.read_text().replace("../ui/dist/", "../dist/"))
+        html = f.read_text().replace("../ui/dist/", "../dist/")
+        # Opened directly from the docs, a block follows the docs preset and dark mode.
+        # Before </head>: after the block's own theme script, so the docs dark mode wins.
+        html = html.replace("  </head>", "    " + BLOCK_PRESET + "\n  </head>", 1)
+        (OUT / "blocks" / f.name).write_text(html)
 
     # Public registry served at /r/<name>.json for `auvyx add`.
     run("node", str(BLOCKS / "tools/build_registry.mjs"), "--out", str(OUT / "r"))
