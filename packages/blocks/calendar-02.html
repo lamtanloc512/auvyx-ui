@@ -1,33 +1,44 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Calendar 02 · Auvyx UI</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="../ui/dist/auvyx.min.css">
-<script src="../ui/dist/auvyx.min.js" defer></script>
-<script>(function(){var r=document.documentElement,t=null;try{t=new URLSearchParams(location.search).get('theme')}catch(e){}var d=t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.classList.toggle('dark',d)})()</script>
-<style>
-  body { background: var(--background); }
-  .cal-box { border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
-  .cal-note { margin: 0; font-size: 0.875rem; color: var(--muted-foreground); text-align: center; text-wrap: balance; }
-  .cal-card { inline-size: fit-content; max-inline-size: 100%; }
-  .cal-card > section { display: flex; justify-content: center; }
-  .cal-card > section > .calendar { padding: 0; }
-  .cal-center { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
-  .cover > .cal-center, .cover > .card, .cover > form, .cover > .calendar { inline-size: auto; }
-  .cal-row { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; }
-  .cal-row > .field { inline-size: auto; }
-  .cal-times { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; inline-size: 100%; }
-  .cal-times .field input { inline-size: 100%; }
-  input[type='time']::-webkit-calendar-picker-indicator { display: none; }
-
-</style>
-</head>
-<body>
-<main class="cover"><auvyx-calendar class="calendar cal-box" months="2" value="2026-06-12"></auvyx-calendar></main>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calendar 02 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .cal-box {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      }
+      input[type="time"]::-webkit-calendar-picker-indicator {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="cover">
+      <auvyx-calendar class="calendar cal-box" months="2" value="2026-06-12"></auvyx-calendar>
+    </main>
+  </body>
 </html>

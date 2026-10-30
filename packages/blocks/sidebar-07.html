@@ -1,40 +1,381 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sidebar 07 · Auvyx UI</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="../ui/dist/auvyx.min.css">
-<script src="../ui/dist/auvyx.min.js" defer></script>
-<script>(function(){var r=document.documentElement,t=null;try{t=new URLSearchParams(location.search).get('theme')}catch(e){}var d=t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.classList.toggle('dark',d)})()</script>
-<style>
-  body { min-block-size: 100svh; }
-  .sb-mark { display: inline-flex; flex: none; align-items: center; justify-content: center; inline-size: 2rem; block-size: 2rem; border-radius: calc(var(--radius) + 2px); background: var(--sidebar-primary); color: var(--sidebar-primary-foreground); }
-  .sb-mark svg { inline-size: 1rem; block-size: 1rem; }
-  .sb-mini { display: inline-flex; align-items: center; justify-content: center; inline-size: 1.5rem; block-size: 1.5rem; border: 1px solid var(--border); border-radius: calc(var(--radius) - 2px); }
-  .sb-mini svg { inline-size: 0.875rem; block-size: 0.875rem; }
-  .sb-user-head { display: flex; align-items: center; gap: 0.5rem; padding: 0.375rem 0.5rem; font-size: 0.875rem; }
-  .sb-user-head > span:last-child { display: grid; line-height: 1.25; }
-  .sb-user-head small { color: var(--muted-foreground); font-size: 0.75rem; }
-  .sb-search .input-group { block-size: 2rem; background: var(--background); }
-  .sb-push { margin-block-start: auto; }
-  .sb-strong { font-weight: 500; }
-  .sidebar > nav li > a.sb-strong + ul { display: flex; }
-  .app-header { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 0.5rem; block-size: 4rem; padding-inline: 1rem; border-block-end: 1px solid var(--border); background: var(--background); }
-  .app-header > hr[aria-orientation='vertical'] { block-size: 1rem; margin-inline-end: 0.5rem; }
-  .app-body { display: flex; flex-direction: column; gap: 1rem; padding: 1rem; }
-  .app-tiles { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); }
-  .app-tile { aspect-ratio: 16 / 9; border-radius: 0.75rem; background: color-mix(in oklch, var(--muted) 60%, transparent); }
-  .app-panel { flex: 1; min-block-size: 60svh; border-radius: 0.75rem; background: color-mix(in oklch, var(--muted) 60%, transparent); }
-  @media (width < 48rem) { .sb-hide-sm { display: none; } }
-  .sidebar > nav > header .dropdown-menu, .sidebar > nav > footer .dropdown-menu { display: flex; inline-size: 100%; }
-
-</style>
-</head>
-<body>
-<aside id="app-sidebar" class="sidebar" data-collapsible="icon"><nav aria-label="Sidebar"><header><div class="dropdown-menu"><button type="button" data-sidebar-item data-size="lg" popovertarget="team20" aria-haspopup="menu"><span class="sb-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span><span><strong>Acme Inc</strong><small>Enterprise</small></span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></button><div id="team20" data-popover popover data-side="bottom" data-align="start" style="min-width:14rem"><div role="menu" aria-label="Teams"><div role="heading">Teams</div><button type="button" role="menuitem"><span class="sb-mini"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span><span>Acme Inc</span><kbd>⌘1</kbd></button><button type="button" role="menuitem"><span class="sb-mini"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/></svg></span><span>Acme Corp.</span><kbd>⌘2</kbd></button><button type="button" role="menuitem"><span class="sb-mini"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></svg></span><span>Evil Corp.</span><kbd>⌘3</kbd></button><hr role="separator"><button type="button" role="menuitem"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg><span>Add team</span></button></div></div></div></header><section><div role="group" aria-labelledby="g21"><h3 id="g21">Platform</h3><ul><li><details open><summary data-tooltip="Playground" data-side="right"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg><span>Playground</span></summary><ul><li><a href="#"><span>History</span></a></li><li><a href="#"><span>Starred</span></a></li><li><a href="#"><span>Settings</span></a></li></ul></details></li><li><details><summary data-tooltip="Models" data-side="right"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg><span>Models</span></summary><ul><li><a href="#"><span>Genesis</span></a></li><li><a href="#"><span>Explorer</span></a></li><li><a href="#"><span>Quantum</span></a></li></ul></details></li><li><details><summary data-tooltip="Documentation" data-side="right"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></svg><span>Documentation</span></summary><ul><li><a href="#"><span>Introduction</span></a></li><li><a href="#"><span>Get Started</span></a></li><li><a href="#"><span>Tutorials</span></a></li><li><a href="#"><span>Changelog</span></a></li></ul></details></li><li><details><summary data-tooltip="Settings" data-side="right"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg><span>Settings</span></summary><ul><li><a href="#"><span>General</span></a></li><li><a href="#"><span>Team</span></a></li><li><a href="#"><span>Billing</span></a></li><li><a href="#"><span>Limits</span></a></li></ul></details></li></ul></div><div role="group" aria-labelledby="g22" data-sidebar-hide-collapsed><h3 id="g22">Projects</h3><ul><li><a href="#" data-tooltip="Design Engineering" data-side="right"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" x2="2" y1="6" y2="6"/><line x1="22" x2="2" y1="18" y2="18"/><line x1="6" x2="6" y1="2" y2="22"/><line x1="18" x2="18" y1="2" y2="22"/></svg><span>Design Engineering</span></a></li><li><a href="#" data-tooltip="Sales & Marketing" data-side="right"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"/><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/></svg><span>Sales & Marketing</span></a></li><li><a href="#" data-tooltip="Travel" data-side="right"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg><span>Travel</span></a></li><li><a href="#" data-tooltip="More" data-side="right"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg><span>More</span></a></li></ul></div></section><footer><div class="dropdown-menu"><button type="button" data-sidebar-item data-size="lg" popovertarget="user23" aria-haspopup="menu"><span class="avatar" data-size="sm"><span>CN</span></span><span><strong>shadcn</strong><small>m@example.com</small></span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></button><div id="user23" data-popover popover data-side="right" data-align="end" style="min-width:14rem"><div role="menu" aria-label="Account"><div class="sb-user-head"><span class="avatar" data-size="sm"><span>CN</span></span><span><strong>shadcn</strong><small>m@example.com</small></span></div><hr role="separator"><button type="button" role="menuitem"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg><span>Upgrade to Pro</span></button><hr role="separator"><button type="button" role="menuitem"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Account</span></button><button type="button" role="menuitem"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg><span>Billing</span></button><button type="button" role="menuitem"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg><span>Notifications</span></button><hr role="separator"><button type="button" role="menuitem"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg><span>Log out</span></button></div></div></div></footer></nav></aside><main><header class="app-header"><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" data-sidebar-toggle="app-sidebar" aria-controls="app-sidebar" aria-label="Toggle sidebar"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></svg></button><hr role="separator" aria-orientation="vertical"><nav class="breadcrumb sb-crumb" aria-label="Breadcrumb"><ol><li class="sb-hide-sm"><a href="#">Build Your Application</a></li><li aria-hidden="true" class="sb-hide-sm"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></li><li><span aria-current="page">Data Fetching</span></li></ol></nav></header><div class="app-body"><div class="app-tiles"><div class="app-tile"></div><div class="app-tile"></div><div class="app-tile"></div></div><div class="app-panel"></div></div></main>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sidebar 07 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        min-block-size: 100svh;
+      }
+      .sb-mark {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        inline-size: 2rem;
+        block-size: 2rem;
+        border-radius: calc(var(--radius) + 2px);
+        background: var(--sidebar-primary);
+        color: var(--sidebar-primary-foreground);
+      }
+      .sb-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .sb-mini {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border: 1px solid var(--border);
+        border-radius: calc(var(--radius) - 2px);
+      }
+      .sb-mini svg {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+      }
+      .sb-user-head {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.375rem 0.5rem;
+        font-size: 0.875rem;
+      }
+      .sb-user-head > span:last-child {
+        display: grid;
+        line-height: 1.25;
+      }
+      .sb-user-head small {
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+      }
+      .app-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        block-size: 4rem;
+        padding-inline: 1rem;
+        border-block-end: 1px solid var(--border);
+        background: var(--background);
+      }
+      .app-header > hr[aria-orientation="vertical"] {
+        block-size: 1rem;
+        margin-inline-end: 0.5rem;
+      }
+      .app-body {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+      }
+      .app-tiles {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+      }
+      .app-tile {
+        aspect-ratio: 16 / 9;
+        border-radius: 0.75rem;
+        background: color-mix(in oklch, var(--muted) 60%, transparent);
+      }
+      .app-panel {
+        flex: 1;
+        min-block-size: 60svh;
+        border-radius: 0.75rem;
+        background: color-mix(in oklch, var(--muted) 60%, transparent);
+      }
+      @media (width < 48rem) {
+        .sb-hide-sm {
+          display: none;
+        }
+      }
+      .sidebar > nav > header .dropdown-menu,
+      .sidebar > nav > footer .dropdown-menu {
+        display: flex;
+        inline-size: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <aside id="app-sidebar" class="sidebar" data-collapsible="icon">
+      <nav aria-label="Sidebar">
+        <header>
+          <div class="dropdown-menu">
+            <button
+              type="button"
+              data-sidebar-item
+              data-size="lg"
+              popovertarget="team20"
+              aria-haspopup="menu">
+              <span class="sb-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+              <span>
+                <strong>Acme Inc</strong>
+                <small>Enterprise</small>
+              </span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+            </button>
+            <div
+              id="team20"
+              data-popover
+              popover
+              data-side="bottom"
+              data-align="start"
+              style="min-width: 14rem">
+              <div role="menu" aria-label="Teams">
+                <div role="heading">Teams</div>
+                <button type="button" role="menuitem">
+                  <span class="sb-mini"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+                  <span>Acme Inc</span>
+                  <kbd>⌘1</kbd>
+                </button>
+                <button type="button" role="menuitem">
+                  <span class="sb-mini"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/></svg></span>
+                  <span>Acme Corp.</span>
+                  <kbd>⌘2</kbd>
+                </button>
+                <button type="button" role="menuitem">
+                  <span class="sb-mini"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></svg></span>
+                  <span>Evil Corp.</span>
+                  <kbd>⌘3</kbd>
+                </button>
+                <hr role="separator" />
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                  <span>Add team</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+        <section>
+          <div role="group" aria-labelledby="g21">
+            <h3 id="g21">Platform</h3>
+            <ul>
+              <li>
+                <details open>
+                  <summary data-tooltip="Playground" data-side="right">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+                    <span>Playground</span>
+                  </summary>
+                  <ul>
+                    <li>
+                      <a href="#"><span>History</span></a>
+                    </li>
+                    <li>
+                      <a href="#"><span>Starred</span></a>
+                    </li>
+                    <li>
+                      <a href="#"><span>Settings</span></a>
+                    </li>
+                  </ul>
+                </details>
+              </li>
+              <li>
+                <details>
+                  <summary data-tooltip="Models" data-side="right">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+                    <span>Models</span>
+                  </summary>
+                  <ul>
+                    <li>
+                      <a href="#"><span>Genesis</span></a>
+                    </li>
+                    <li>
+                      <a href="#"><span>Explorer</span></a>
+                    </li>
+                    <li>
+                      <a href="#"><span>Quantum</span></a>
+                    </li>
+                  </ul>
+                </details>
+              </li>
+              <li>
+                <details>
+                  <summary data-tooltip="Documentation" data-side="right">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></svg>
+                    <span>Documentation</span>
+                  </summary>
+                  <ul>
+                    <li>
+                      <a href="#"><span>Introduction</span></a>
+                    </li>
+                    <li>
+                      <a href="#"><span>Get Started</span></a>
+                    </li>
+                    <li>
+                      <a href="#"><span>Tutorials</span></a>
+                    </li>
+                    <li>
+                      <a href="#"><span>Changelog</span></a>
+                    </li>
+                  </ul>
+                </details>
+              </li>
+              <li>
+                <details>
+                  <summary data-tooltip="Settings" data-side="right">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
+                    <span>Settings</span>
+                  </summary>
+                  <ul>
+                    <li>
+                      <a href="#"><span>General</span></a>
+                    </li>
+                    <li>
+                      <a href="#"><span>Team</span></a>
+                    </li>
+                    <li>
+                      <a href="#"><span>Billing</span></a>
+                    </li>
+                    <li>
+                      <a href="#"><span>Limits</span></a>
+                    </li>
+                  </ul>
+                </details>
+              </li>
+            </ul>
+          </div>
+          <div role="group" aria-labelledby="g22" data-sidebar-hide-collapsed>
+            <h3 id="g22">Projects</h3>
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Design Engineering" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" x2="2" y1="6" y2="6"/><line x1="22" x2="2" y1="18" y2="18"/><line x1="6" x2="6" y1="2" y2="22"/><line x1="18" x2="18" y1="2" y2="22"/></svg>
+                  <span>Design Engineering</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Sales & Marketing" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"/><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/></svg>
+                  <span>Sales & Marketing</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Travel" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>
+                  <span>Travel</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="More" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                  <span>More</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </section>
+        <footer>
+          <div class="dropdown-menu">
+            <button
+              type="button"
+              data-sidebar-item
+              data-size="lg"
+              popovertarget="user23"
+              aria-haspopup="menu">
+              <span class="avatar" data-size="sm"><span>CN</span></span>
+              <span>
+                <strong>shadcn</strong>
+                <small>m@example.com</small>
+              </span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+            </button>
+            <div
+              id="user23"
+              data-popover
+              popover
+              data-side="right"
+              data-align="end"
+              style="min-width: 14rem">
+              <div role="menu" aria-label="Account">
+                <div class="sb-user-head">
+                  <span class="avatar" data-size="sm"><span>CN</span></span>
+                  <span>
+                    <strong>shadcn</strong>
+                    <small>m@example.com</small>
+                  </span>
+                </div>
+                <hr role="separator" />
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+                  <span>Upgrade to Pro</span>
+                </button>
+                <hr role="separator" />
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <span>Account</span>
+                </button>
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                  <span>Billing</span>
+                </button>
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>
+                  <span>Notifications</span>
+                </button>
+                <hr role="separator" />
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                  <span>Log out</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </nav>
+    </aside>
+    <main>
+      <header class="app-header">
+        <button
+          type="button"
+          class="btn"
+          data-variant="ghost"
+          data-size="icon-sm"
+          data-sidebar-toggle="app-sidebar"
+          aria-controls="app-sidebar"
+          aria-label="Toggle sidebar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></svg>
+        </button>
+        <hr role="separator" aria-orientation="vertical" />
+        <nav class="breadcrumb sb-crumb" aria-label="Breadcrumb">
+          <ol>
+            <li class="sb-hide-sm"><a href="#">Build Your Application</a></li>
+            <li aria-hidden="true" class="sb-hide-sm"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></li>
+            <li><span aria-current="page">Data Fetching</span></li>
+          </ol>
+        </nav>
+      </header>
+      <div class="app-body">
+        <div class="app-tiles">
+          <div class="app-tile"></div>
+          <div class="app-tile"></div>
+          <div class="app-tile"></div>
+        </div>
+        <div class="app-panel"></div>
+      </div>
+    </main>
+  </body>
 </html>

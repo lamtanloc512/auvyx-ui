@@ -1,44 +1,281 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Calendar 20 · Auvyx UI</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="../ui/dist/auvyx.min.css">
-<script src="../ui/dist/auvyx.min.js" defer></script>
-<script>(function(){var r=document.documentElement,t=null;try{t=new URLSearchParams(location.search).get('theme')}catch(e){}var d=t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.classList.toggle('dark',d)})()</script>
-<style>
-  body { background: var(--background); }
-  .cal-box { border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
-  .cal-note { margin: 0; font-size: 0.875rem; color: var(--muted-foreground); text-align: center; text-wrap: balance; }
-  .cal-card { inline-size: fit-content; max-inline-size: 100%; }
-  .cal-card > section { display: flex; justify-content: center; }
-  .cal-card > section > .calendar { padding: 0; }
-  .cal-center { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
-  .cover > .cal-center, .cover > .card, .cover > form, .cover > .calendar { inline-size: auto; }
-  .cal-row { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; }
-  .cal-row > .field { inline-size: auto; }
-  .cal-times { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; inline-size: 100%; }
-  .cal-times .field input { inline-size: 100%; }
-  input[type='time']::-webkit-calendar-picker-indicator { display: none; }
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calendar 20 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      input[type="time"]::-webkit-calendar-picker-indicator {
+        display: none;
+      }
 
-  .cal-booking { padding: 0; gap: 0; max-inline-size: 100%; }
-  .cal-booking-body { display: flex; flex-wrap: wrap; padding: 0 !important; }
-  .cal-booking-body > div:first-child { padding: 1.25rem; }
-  .cal-booking-body .calendar { padding: 0; }
-  .cal-slots { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.25rem; overflow-y: auto; max-block-size: 18rem; inline-size: 9rem; border-inline-start: 1px solid var(--border); }
-  .cal-slots .toggle { inline-size: 100%; }
-  @media (width < 32rem) { .cal-slots { inline-size: 100%; flex-direction: row; flex-wrap: wrap; max-block-size: 10rem; border-inline-start: 0; border-block-start: 1px solid var(--border); } .cal-slots .toggle { inline-size: auto; } }
-  .cal-booking-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; padding: 1.25rem !important; border-block-start: 1px solid var(--border); }
-  .cal-sum { margin: 0; flex: 1; font-size: 0.875rem; }
-
-</style>
-</head>
-<body>
-<main class="cover"><div class="card cal-booking"><section class="cal-booking-body"><div><auvyx-calendar class="calendar" id="cal" value="2026-06-12" month="2026-06" disabled-days="0"></auvyx-calendar></div><div class="cal-slots" role="radiogroup" aria-label="Time"><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="09:00">09:00</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="09:15">09:15</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="09:30">09:30</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="09:45">09:45</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="10:00" disabled>10:00</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="10:15">10:15</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="10:30" disabled>10:30</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="10:45">10:45</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="11:00">11:00</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="11:15" disabled>11:15</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="11:30" checked>11:30</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="11:45">11:45</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="12:00">12:00</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="12:15">12:15</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="12:30">12:30</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="12:45">12:45</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="13:00">13:00</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="13:15">13:15</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="13:30" disabled>13:30</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="13:45">13:45</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="14:00">14:00</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="14:15">14:15</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="14:30">14:30</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="14:45" disabled>14:45</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="15:00">15:00</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="15:15">15:15</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="15:30">15:30</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="15:45">15:45</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="16:00" disabled>16:00</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="16:15" disabled>16:15</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="16:30">16:30</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="16:45">16:45</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="17:00">17:00</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="17:15">17:15</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="17:30">17:30</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="17:45">17:45</label><label class="toggle" data-variant="outline"><input type="radio" name="slot" value="18:00">18:00</label></div></section><footer class="cal-booking-foot"><p id="summary" class="cal-sum"></p><button type="button" class="btn" id="go">Continue</button></footer></div></main>
-<script>const c=document.getElementById('cal'),s=document.getElementById('summary'),fmt=new Intl.DateTimeFormat(undefined,{weekday:'long',day:'numeric',month:'long'});function upd(){const t=document.querySelector('[name=slot]:checked');const d=c.dates[0];s.innerHTML=d&&t?`Your meeting is booked for <strong>${fmt.format(d)}</strong> at <strong>${t.value}</strong>.`:'Select a date and time for your meeting.';document.getElementById('go').disabled=!(d&&t);}c.addEventListener('change',upd);document.querySelector('.cal-slots').addEventListener('change',upd);customElements.whenDefined('auvyx-calendar').then(upd);</script>
-</body>
+      .cal-booking {
+        padding: 0;
+        gap: 0;
+        max-inline-size: 100%;
+      }
+      .cal-booking-body {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 0 !important;
+      }
+      .cal-booking-body > div:first-child {
+        padding: 1.25rem;
+      }
+      .cal-booking-body .calendar {
+        padding: 0;
+      }
+      .cal-slots {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 1.25rem;
+        overflow-y: auto;
+        max-block-size: 18rem;
+        inline-size: 9rem;
+        border-inline-start: 1px solid var(--border);
+      }
+      .cal-slots .toggle {
+        inline-size: 100%;
+      }
+      @media (width < 32rem) {
+        .cal-slots {
+          inline-size: 100%;
+          flex-direction: row;
+          flex-wrap: wrap;
+          max-block-size: 10rem;
+          border-inline-start: 0;
+          border-block-start: 1px solid var(--border);
+        }
+        .cal-slots .toggle {
+          inline-size: auto;
+        }
+      }
+      .cal-booking-foot {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.25rem !important;
+        border-block-start: 1px solid var(--border);
+      }
+      .cal-sum {
+        margin: 0;
+        flex: 1;
+        font-size: 0.875rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="cover">
+      <div class="card cal-booking">
+        <section class="cal-booking-body">
+          <div>
+            <auvyx-calendar
+              class="calendar"
+              id="cal"
+              value="2026-06-12"
+              month="2026-06"
+              disabled-days="0"></auvyx-calendar>
+          </div>
+          <div class="cal-slots" role="radiogroup" aria-label="Time">
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="09:00" />
+              09:00
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="09:15" />
+              09:15
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="09:30" />
+              09:30
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="09:45" />
+              09:45
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="10:00" disabled />
+              10:00
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="10:15" />
+              10:15
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="10:30" disabled />
+              10:30
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="10:45" />
+              10:45
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="11:00" />
+              11:00
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="11:15" disabled />
+              11:15
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="11:30" checked />
+              11:30
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="11:45" />
+              11:45
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="12:00" />
+              12:00
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="12:15" />
+              12:15
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="12:30" />
+              12:30
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="12:45" />
+              12:45
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="13:00" />
+              13:00
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="13:15" />
+              13:15
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="13:30" disabled />
+              13:30
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="13:45" />
+              13:45
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="14:00" />
+              14:00
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="14:15" />
+              14:15
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="14:30" />
+              14:30
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="14:45" disabled />
+              14:45
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="15:00" />
+              15:00
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="15:15" />
+              15:15
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="15:30" />
+              15:30
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="15:45" />
+              15:45
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="16:00" disabled />
+              16:00
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="16:15" disabled />
+              16:15
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="16:30" />
+              16:30
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="16:45" />
+              16:45
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="17:00" />
+              17:00
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="17:15" />
+              17:15
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="17:30" />
+              17:30
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="17:45" />
+              17:45
+            </label>
+            <label class="toggle" data-variant="outline">
+              <input type="radio" name="slot" value="18:00" />
+              18:00
+            </label>
+          </div>
+        </section>
+        <footer class="cal-booking-foot">
+          <p id="summary" class="cal-sum"></p>
+          <button type="button" class="btn" id="go">Continue</button>
+        </footer>
+      </div>
+    </main>
+    <script>
+      const c = document.getElementById("cal"),
+        s = document.getElementById("summary"),
+        fmt = new Intl.DateTimeFormat(undefined, {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+        });
+      function upd() {
+        const t = document.querySelector("[name=slot]:checked");
+        const d = c.dates[0];
+        s.innerHTML =
+          d && t
+            ? `Your meeting is booked for <strong>${fmt.format(d)}</strong> at <strong>${t.value}</strong>.`
+            : "Select a date and time for your meeting.";
+        document.getElementById("go").disabled = !(d && t);
+      }
+      c.addEventListener("change", upd);
+      document.querySelector(".cal-slots").addEventListener("change", upd);
+      customElements.whenDefined("auvyx-calendar").then(upd);
+    </script>
+  </body>
 </html>

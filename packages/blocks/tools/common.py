@@ -6,6 +6,7 @@ blocks). These helpers only remove repetition while authoring; the generated
 """
 import json
 import pathlib
+import re
 import textwrap
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -109,7 +110,36 @@ LEGAL_CSS = """
   .block-legal a:hover { color: var(--primary); }"""
 
 
+PREFIXES = ("block-", "sb-", "cal-", "app-", "db-")
+
+
+def prune_css(css, html):
+    """Drop shared one-line rules whose block-local classes don't occur in this block."""
+    used = set(re.findall(r'[\w-]+', " ".join(re.findall(r'class="([^"]*)"', html))))
+
+    def keep(rule):
+        sel = rule.split("{", 1)[0]
+        return all(c in used for c in re.findall(r'\.((?:%s)[\w-]+)' % "|".join(PREFIXES), sel))
+
+    out = []
+    for line in css.split("\n"):
+        t = line.strip()
+        if t.startswith("@media") and t.endswith("}") and t.count("{") >= 2:
+            head, inner = t.split("{", 1)
+            rules = [r.strip() + " }" for r in inner.rstrip("}").strip().split("}") if r.strip()]
+            rules = [r for r in rules if keep(r)]
+            if rules:
+                out.append(f"  {head.strip()} {{ {' '.join(rules)} }}")
+        elif "{" in t and t.endswith("}") and not t.startswith("@"):
+            if keep(t):
+                out.append(line)
+        else:
+            out.append(line)
+    return "\n".join(out)
+
+
 def page(block_id, title, body, css="", body_class="", scripts="", head_extra=""):
+    css = prune_css(css, body + scripts)
     style = f"<style>{css}\n</style>\n" if css.strip() else ""
     bc = f' class="{body_class}"' if body_class else ""
     html = f"""<!doctype html>

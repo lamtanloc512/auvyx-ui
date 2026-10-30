@@ -1,36 +1,99 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Calendar 19 · Auvyx UI</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="../ui/dist/auvyx.min.css">
-<script src="../ui/dist/auvyx.min.js" defer></script>
-<script>(function(){var r=document.documentElement,t=null;try{t=new URLSearchParams(location.search).get('theme')}catch(e){}var d=t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.classList.toggle('dark',d)})()</script>
-<style>
-  body { background: var(--background); }
-  .cal-box { border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
-  .cal-note { margin: 0; font-size: 0.875rem; color: var(--muted-foreground); text-align: center; text-wrap: balance; }
-  .cal-card { inline-size: fit-content; max-inline-size: 100%; }
-  .cal-card > section { display: flex; justify-content: center; }
-  .cal-card > section > .calendar { padding: 0; }
-  .cal-center { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
-  .cover > .cal-center, .cover > .card, .cover > form, .cover > .calendar { inline-size: auto; }
-  .cal-row { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; }
-  .cal-row > .field { inline-size: auto; }
-  .cal-times { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; inline-size: 100%; }
-  .cal-times .field input { inline-size: 100%; }
-  input[type='time']::-webkit-calendar-picker-indicator { display: none; }
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calendar 19 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .cal-card {
+        inline-size: fit-content;
+        max-inline-size: 100%;
+      }
+      .cal-card > section {
+        display: flex;
+        justify-content: center;
+      }
+      .cal-card > section > .calendar {
+        padding: 0;
+      }
+      input[type="time"]::-webkit-calendar-picker-indicator {
+        display: none;
+      }
 
-  .cal-foot { border-block-start: 1px solid var(--border); padding-block-start: 1rem; }
-  #presets { max-inline-size: 16rem; }
-</style>
-</head>
-<body>
-<main class="cover"><div class="card cal-card" data-size="sm"><section><auvyx-calendar class="calendar" id="cal" value="2026-06-12" month="2026-06"></auvyx-calendar></section><footer class="cal-foot"><div class="cluster" data-gap="2" id="presets"><button type="button" class="btn" data-variant="outline" data-size="sm" data-days="0">Today</button><button type="button" class="btn" data-variant="outline" data-size="sm" data-days="1">Tomorrow</button><button type="button" class="btn" data-variant="outline" data-size="sm" data-days="3">In 3 days</button><button type="button" class="btn" data-variant="outline" data-size="sm" data-days="7">In a week</button><button type="button" class="btn" data-variant="outline" data-size="sm" data-days="14">In 2 weeks</button></div></footer></div></main>
-<script>const pad=n=>String(n).padStart(2,'0');const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;const addDays=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);const today=new Date();const c=document.getElementById('cal');document.getElementById('presets').onclick=e=>{const b=e.target.closest('[data-days]');if(!b)return;const d=addDays(today,+b.dataset.days);c.value=iso(d);c.goTo(d);};</script>
-</body>
+      .cal-foot {
+        border-block-start: 1px solid var(--border);
+        padding-block-start: 1rem;
+      }
+      #presets {
+        max-inline-size: 16rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="cover">
+      <div class="card cal-card" data-size="sm">
+        <section>
+          <auvyx-calendar
+            class="calendar"
+            id="cal"
+            value="2026-06-12"
+            month="2026-06"></auvyx-calendar>
+        </section>
+        <footer class="cal-foot">
+          <div class="cluster" data-gap="2" id="presets">
+            <button type="button" class="btn" data-variant="outline" data-size="sm" data-days="0">
+              Today
+            </button>
+            <button type="button" class="btn" data-variant="outline" data-size="sm" data-days="1">
+              Tomorrow
+            </button>
+            <button type="button" class="btn" data-variant="outline" data-size="sm" data-days="3">
+              In 3 days
+            </button>
+            <button type="button" class="btn" data-variant="outline" data-size="sm" data-days="7">
+              In a week
+            </button>
+            <button type="button" class="btn" data-variant="outline" data-size="sm" data-days="14">
+              In 2 weeks
+            </button>
+          </div>
+        </footer>
+      </div>
+    </main>
+    <script>
+      const pad = (n) => String(n).padStart(2, "0");
+      const iso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+      const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+      const today = new Date();
+      const c = document.getElementById("cal");
+      document.getElementById("presets").onclick = (e) => {
+        const b = e.target.closest("[data-days]");
+        if (!b) return;
+        const d = addDays(today, +b.dataset.days);
+        c.value = iso(d);
+        c.goTo(d);
+      };
+    </script>
+  </body>
 </html>

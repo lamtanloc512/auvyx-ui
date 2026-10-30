@@ -1,70 +1,88 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Login 01 · Auvyx UI</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="../ui/dist/auvyx.min.css">
-<script src="../ui/dist/auvyx.min.js" defer></script>
-<script>(function(){var r=document.documentElement,t=null;try{t=new URLSearchParams(location.search).get('theme')}catch(e){}var d=t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.classList.toggle('dark',d)})()</script>
-<style>
-  body { background: var(--background); }
-  .block-muted { background: var(--muted); }
-  .block-narrow { max-inline-size: 24rem; }
-  .block-wide { max-inline-size: 56rem; }
-  .block-title { margin: 0; font-size: 1.5rem; font-weight: 700; text-wrap: balance; }
-  .block-title[data-size='xl'] { font-size: 1.25rem; }
-  .block-lead { margin: 0; color: var(--muted-foreground); font-size: 0.875rem; text-wrap: balance; }
-  .block-head { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; text-align: center; }
-  .block-center { text-align: center; }
-  .block-link { margin-inline-start: auto; font-size: 0.875rem; color: inherit; text-underline-offset: 4px; text-decoration: none; }
-  .block-link:hover { text-decoration: underline; }
-  .field > p.block-center a, .block-foot a { color: inherit; text-decoration: underline; text-underline-offset: 4px; }
-  .block-foot { margin: 0; text-align: center; font-size: 0.875rem; color: var(--muted-foreground); }
-  .block-label-row { display: flex; align-items: center; }
-  .block-image { position: relative; background: var(--muted); min-block-size: 0; }
-  .block-image > img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
-  html.dark .block-image > img { filter: brightness(0.2) grayscale(1); }
-  .block-socials { display: grid; gap: 1rem; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); }
-  .block-socials > .btn { inline-size: 100%; }
-  .card > .field-separator > span, .card .field-separator > span { background: var(--card); }
-
-  .block-logo { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 500; color: inherit; text-decoration: none; }
-  .block-logo-mark { display: inline-flex; align-items: center; justify-content: center; inline-size: 1.5rem; block-size: 1.5rem; border-radius: calc(var(--radius) - 2px); background: var(--primary); color: var(--primary-foreground); }
-  .block-logo-mark svg { inline-size: 1rem; block-size: 1rem; }
-  .block-legal { margin: 0; padding-inline: 1.5rem; text-align: center; font-size: 0.75rem; color: var(--muted-foreground); text-wrap: balance; }
-  .block-legal a { color: inherit; text-decoration: underline; text-underline-offset: 4px; }
-  .block-legal a:hover { color: var(--primary); }
-</style>
-</head>
-<body>
-<main class="cover" data-pad="lg">
-  <div class="card block-narrow">
-    <header>
-      <h2>Login to your account</h2>
-      <p>Enter your email below to login to your account</p>
-    </header>
-    <section>
-      <form class="fieldset" onsubmit="event.preventDefault()">
-        <div role="group" class="field">
-    <label for="email">Email</label>
-    <input id="email" type="email" placeholder="m@example.com" required>
-  </div>
-  <div role="group" class="field">
-    <div class="block-label-row"><label for="password">Password</label><a href="#" class="block-link">Forgot your password?</a></div>
-    <input id="password" type="password" required>
-  </div>
-        <div role="group" class="field">
-          <button type="submit" class="btn">Login</button>
-          <button type="button" class="btn" data-variant="outline">Login with Google</button>
-          <p class="block-center">Don't have an account? <a href="#">Sign up</a></p>
-        </div>
-      </form>
-    </section>
-  </div>
-</main>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login 01 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .block-narrow {
+        max-inline-size: 24rem;
+      }
+      .block-center {
+        text-align: center;
+      }
+      .block-link {
+        margin-inline-start: auto;
+        font-size: 0.875rem;
+        color: inherit;
+        text-underline-offset: 4px;
+        text-decoration: none;
+      }
+      .block-link:hover {
+        text-decoration: underline;
+      }
+      .block-label-row {
+        display: flex;
+        align-items: center;
+      }
+      .card > .field-separator > span,
+      .card .field-separator > span {
+        background: var(--card);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="cover" data-pad="lg">
+      <div class="card block-narrow">
+        <header>
+          <h2>Login to your account</h2>
+          <p>Enter your email below to login to your account</p>
+        </header>
+        <section>
+          <form class="fieldset" onsubmit="event.preventDefault()">
+            <div role="group" class="field">
+              <label for="email">Email</label>
+              <input id="email" type="email" placeholder="m@example.com" required />
+            </div>
+            <div role="group" class="field">
+              <div class="block-label-row">
+                <label for="password">Password</label>
+                <a href="#" class="block-link">Forgot your password?</a>
+              </div>
+              <input id="password" type="password" required />
+            </div>
+            <div role="group" class="field">
+              <button type="submit" class="btn">Login</button>
+              <button type="button" class="btn" data-variant="outline">Login with Google</button>
+              <p class="block-center">
+                Don't have an account?
+                <a href="#">Sign up</a>
+              </p>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+  </body>
 </html>

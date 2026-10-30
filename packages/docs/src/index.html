@@ -78,7 +78,8 @@
   .d-prose p { margin: 0.75rem 0; max-inline-size: 65ch; }
   .d-prose ul { margin: 0.75rem 0; padding-inline-start: 1.25rem; }
   .d-prose li { margin: 0.25rem 0; }
-  .d-prose code, .d-inline { font-family: var(--font-mono); font-size: 0.8125rem; padding: 0.125rem 0.3rem; border-radius: 0.25rem; background: var(--muted); }
+  .d-prose pre code, .d-code code { padding: 0; background: none; border-radius: 0; font-size: inherit; }
+  .d-prose :not(pre) > code, .d-inline { font-family: var(--font-mono); font-size: 0.8125rem; padding: 0.125rem 0.3rem; border-radius: 0.25rem; background: var(--muted); }
   .d-prose table { inline-size: 100%; border-collapse: collapse; font-size: 0.875rem; margin: 1rem 0; }
   .d-prose th, .d-prose td { border-block-end: 1px solid var(--border); padding: 0.5rem 0.75rem 0.5rem 0; text-align: start; vertical-align: top; }
   .d-prose th { font-weight: 500; }
@@ -90,7 +91,9 @@
   .d-ex-tabs button { all: unset; cursor: pointer; padding: 0.25rem 0.625rem; font-size: 0.875rem; color: var(--muted-foreground); border-block-end: 2px solid transparent; }
   .d-ex-tabs button[aria-selected='true'] { color: var(--foreground); border-color: var(--foreground); font-weight: 500; }
   .d-ex-tabs button:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: 2px; }
-  .d-preview { position: relative; display: flex; align-items: center; justify-content: center; min-block-size: 20rem; padding: 2.5rem 1.5rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--background); overflow: auto; }
+  /* overflow stays visible: upstream select/combobox/dropdown popovers are position:absolute and must not be clipped. */
+  .d-preview { position: relative; display: flex; align-items: center; justify-content: center; min-block-size: 20rem; padding: 2.5rem 1.5rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--background); overflow: visible; }
+  .d-ex:has(:is([aria-expanded='true'], :popover-open, [data-popover]:not([aria-hidden='true']))) .d-preview { z-index: 5; }
   .d-preview > .d-stage { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem; inline-size: 100%; min-inline-size: 0; }
   .d-preview > .d-stage > * { max-inline-size: 100%; }
   .d-code { position: relative; border: 1px solid var(--border); border-radius: var(--radius); background: var(--muted); overflow: hidden; }
@@ -276,11 +279,26 @@
 
   // ---------------- code highlighting (HTML)
   function highlight(src) {
-    return esc(src)
-      .replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="t-cmt">$1</span>')
-      .replace(/(&lt;\/?)([a-zA-Z][\w-]*)/g, '$1<span class="t-tag">$2</span>')
-      .replace(/\s([a-zA-Z_:@][\w:.-]*)(=)(&quot;[^&]*?&quot;)/g, ' <span class="t-attr">$1</span>$2<span class="t-str">$3</span>')
-      .replace(/\s([a-zA-Z_:@][\w:.-]*)(?=[\s&]|&gt;)(?![^<]*<\/span>)/g, (m, a) => ` <span class="t-attr">${a}</span>`);
+    // Tokenize: comments and tags get colored; text between tags stays plain.
+    let out = '';
+    const re = /<!--[\s\S]*?-->|<\/?[a-zA-Z][^>]*>/g;
+    let last = 0, m;
+    while ((m = re.exec(src))) {
+      out += esc(src.slice(last, m.index));
+      const t = m[0];
+      if (t.startsWith('<!--')) out += `<span class="t-cmt">${esc(t)}</span>`;
+      else {
+        const tm = /^<(\/?)([a-zA-Z][\w-]*)([\s\S]*?)(\/?)>$/.exec(t);
+        if (!tm) out += esc(t);
+        else {
+          const attrs = tm[3].replace(/([^\s=]+)(?:(=)("[^"]*"|'[^']*'|[^\s"'>]+))?/g, (all, name, eq, val) =>
+            `<span class="t-attr">${esc(name)}</span>` + (eq ? `=<span class="t-str">${esc(val)}</span>` : ''));
+          out += `&lt;${tm[1]}<span class="t-tag">${tm[2]}</span>${attrs}${tm[4]}&gt;`;
+        }
+      }
+      last = m.index + t.length;
+    }
+    return out + esc(src.slice(last));
   }
   async function copyText(text, btn) {
     let ok = false;
@@ -451,6 +469,7 @@
     document.querySelectorAll('.d-topnav a').forEach((a) => a.toggleAttribute('aria-current', a.dataset.top === top) || a.removeAttribute('aria-current'));
     document.querySelectorAll('.d-topnav a').forEach((a) => { if (a.dataset.top === top) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
     main.innerHTML = html;
+    main.querySelectorAll('.d-code pre code').forEach((c) => { if (!c.querySelector('span')) c.innerHTML = highlight(c.textContent); });
     document.title = title;
     if (!(h === 'components')) window.scrollTo({ top: 0 });
     const cur = $('#d-nav [aria-current="page"]'); if (cur) cur.scrollIntoView({ block: 'nearest' });

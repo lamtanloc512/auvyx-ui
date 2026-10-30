@@ -63,6 +63,34 @@ def upstream():
     return out
 
 
+from bs4.formatter import HTMLFormatter
+
+
+class _Keep(HTMLFormatter):
+    """Keep source attribute order (bs4 sorts by default) and boolean attributes bare."""
+    def attributes(self, tag):
+        return list(tag.attrs.items())
+
+
+KEEP = _Keep(empty_attributes_are_booleans=True, void_element_close_prefix="")
+
+SVG_ATTRS = {"viewbox": "viewBox", "preserveaspectratio": "preserveAspectRatio", "gradientunits": "gradientUnits", "gradienttransform": "gradientTransform"}
+
+
+def prettify(data):
+    """Format every example with Prettier (tools/format-html.mjs), icons kept on one line."""
+    import subprocess, tempfile
+    items = [ex["html"] for v in data.values() for ex in v["examples"]]
+    with tempfile.TemporaryDirectory() as tmp:
+        src, dst = pathlib.Path(tmp, "in.json"), pathlib.Path(tmp, "out.json")
+        src.write_text(json.dumps(items))
+        subprocess.run(["node", str(ROOT / "packages/docs/tools/format-html.mjs"), "--json", str(src), str(dst)], check=True)
+        out = iter(json.loads(dst.read_text()))
+    for v in data.values():
+        for ex in v["examples"]:
+            ex["html"] = next(out)
+
+
 def preview_demos():
     """Map h3 title -> inner HTML of each .pv-spec article in preview.html."""
     soup = BeautifulSoup(PREVIEW.read_text(), "html.parser")
@@ -74,7 +102,11 @@ def preview_demos():
         title = h.get_text(strip=True)
         for el in art.select(":scope > .pv-spec-top, :scope > .pv-note"):
             el.decompose()
-        demos[title] = to_en(dedent("".join(str(c) for c in art.children if str(c).strip())))
+        html = "".join(c.decode(formatter=KEEP) if hasattr(c, "decode") else str(c) for c in art.children if str(c).strip())
+        # html.parser lowercases attribute names; restore the SVG ones that are case-sensitive in source.
+        for low, real in SVG_ATTRS.items():
+            html = html.replace(f' {low}="', f' {real}="')
+        demos[title] = to_en(dedent(html))
     return demos
 
 
@@ -302,6 +334,7 @@ def main():
         if slug in data and demo_title in demos:
             data[slug]["examples"].insert(0, {"title": "Zero JS (native)", "html": demos[demo_title]})
             data[slug]["native"] = True
+    prettify(data)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(dict(sorted(data.items())), ensure_ascii=False, indent=1))
     n = sum(len(v["examples"]) for v in data.values())
