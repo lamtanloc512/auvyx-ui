@@ -23,7 +23,9 @@ The docs site is `packages/docs` (built to `packages/docs/out` by `npm run auvyx
 1. Bump the version on `main`: `npm version 0.1.1 -w @auvyx/ui --no-git-tag-version`, commit and push.
 2. Publish a GitHub release tagged `<package>@<version>`: `ui@0.1.1` or `cli@0.1.1`.
 
-`.github/workflows/release-auvyx.yml` checks that the tag matches the package version, builds, and runs `npm publish --provenance` with npm trusted publishing (no token). Each package's trusted publisher is set on npmjs.com (Settings → Trusted Publisher → GitHub Actions: `lamtanloc512/basecoat`, `release-auvyx.yml`).
+3. Approve the staged version on npmjs.com (Staged Packages) or with `npm stage approve <stage-id>`, with 2FA.
+
+`.github/workflows/release-auvyx.yml` checks that the tag matches the package version, builds, and runs `npm stage publish --provenance` with npm trusted publishing (no token). Each package's trusted publisher is set on npmjs.com (Settings → Trusted Publisher → GitHub Actions: `lamtanloc512/basecoat`, `release-auvyx.yml`, "Allow npm publish" off), so nothing reaches npm without a maintainer's approval.
 
 The very first version of a package has to be published by hand, because npm only accepts a trusted publisher for a package that exists: `npm login`, then `npm run auvyx:publish` (builds and publishes both, asking for 2FA).
 

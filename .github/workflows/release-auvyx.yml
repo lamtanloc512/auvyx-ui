@@ -6,11 +6,12 @@ name: Release Auvyx
 #
 # npm trusted publishing (OIDC): no token. On npmjs.com, each package's
 # Settings -> Trusted Publisher -> GitHub Actions: repository
-# lamtanloc512/basecoat, workflow release-auvyx.yml, no environment.
-# Renaming this file breaks publishing.
+# lamtanloc512/basecoat, workflow release-auvyx.yml, no environment, "Allow
+# npm publish" off. Renaming this file breaks publishing.
 #
-# npm stages the version: approve it on npmjs.com (Staged Packages) or with
-# `npm stage approve <stage-id>` before it can be installed.
+# The workflow only stages the version (npm stage publish). It is installable
+# once a maintainer approves it on npmjs.com (Staged Packages) or with
+# `npm stage approve <stage-id>`, with 2FA.
 
 on:
   release:
@@ -55,4 +56,4 @@ jobs:
       # @auvyx/ui builds dist/ in prepublishOnly; the docs build also checks the registry.
       - run: npm run auvyx:build
 
-      - run: npm publish -w "@auvyx/$PKG" --provenance --access public
+      - run: npm stage publish -w "@auvyx/$PKG" --provenance --access public
