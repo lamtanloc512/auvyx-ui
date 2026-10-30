@@ -135,6 +135,42 @@ async function reactTypes() {
 const ownRegistry = args.src === undefined;
 const typesItem = ownRegistry ? await reactTypes() : null;
 
+// Components (registry:ui) from packages/ui/dist/ui: their CSS split from the
+// bundle, their behavior, and the components their examples use. `base`
+// (tokens, preflight, layout, motion) comes with every one. The same items
+// serve every framework and icon library.
+async function uiItems() {
+  const ui = path.join(root, 'packages/ui/dist/ui');
+  const { components } = JSON.parse(await fs.readFile(path.join(ui, 'manifest.json'), 'utf8'));
+  const docs = JSON.parse(await fs.readFile(path.join(root, 'packages/docs/src/data/components.json'), 'utf8'));
+  const file = async (rel, type) => ({ path: rel, type, target: rel, content: await fs.readFile(path.join(ui, '..', rel), 'utf8') });
+  const items = [{
+    name: 'base',
+    type: 'registry:style',
+    title: 'Base',
+    description: 'Tokens, themes, preflight, layout primitives and motion. Every component needs it.',
+    categories: ['ui'],
+    meta: { version, order: 0 },
+    registryDependencies: [],
+    files: [await file('ui/base.css', 'registry:style')],
+  }];
+  for (const [name, c] of Object.entries(components)) {
+    const files = await Promise.all([...c.css, ...c.js].map((f) => file(f, 'registry:ui')));
+    items.push({
+      name,
+      type: 'registry:ui',
+      title: docs[name]?.title ?? 'Chart',
+      description: docs[name]?.description ?? 'Chart.js styles: tooltips and legends.',
+      categories: ['ui'],
+      meta: { version, docs: `https://auvyx-ui.vercel.app/#c-${name}` },
+      registryDependencies: ['base', ...c.dependencies],
+      files,
+    });
+  }
+  return items;
+}
+const uiList = ownRegistry ? await uiItems() : [];
+
 for (const framework of FRAMEWORKS) {
   for (const icons of ICON_SETS) {
     const index = [];
@@ -152,6 +188,10 @@ for (const framework of FRAMEWORKS) {
       }
       index.push({ name: v.name, type: v.type, title: v.title, description: v.description, categories: v.categories, meta: { ...meta[item.name].meta, framework, icons } });
     }
+    for (const item of uiList) {
+      await write(path.join(out, framework, icons, `${item.name}.json`), { ...item, meta: { ...item.meta, framework, icons } });
+      index.push({ name: item.name, type: item.type, title: item.title, description: item.description, categories: item.categories, meta: { framework, icons } });
+    }
     if (framework === 'react' && typesItem) {
       await write(path.join(out, framework, icons, `${typesItem.name}.json`), { ...typesItem, meta: { ...typesItem.meta, icons } });
       index.push({ name: typesItem.name, type: typesItem.type, title: typesItem.title, description: typesItem.description, categories: [], meta: { framework, icons } });
@@ -164,4 +204,4 @@ for (const framework of FRAMEWORKS) {
     }
   }
 }
-console.log(`registry: ${items.length} items x ${FRAMEWORKS.length} frameworks x ${ICON_SETS.length} icon libraries -> ${path.relative(root, out)}`);
+console.log(`registry: ${items.length} blocks + ${uiList.length} ui items x ${FRAMEWORKS.length} frameworks x ${ICON_SETS.length} icon libraries -> ${path.relative(root, out)}`);

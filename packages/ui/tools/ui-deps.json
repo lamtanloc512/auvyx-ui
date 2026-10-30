@@ -1,0 +1,241 @@
+{
+  "accordion": [
+    "card"
+  ],
+  "alert": [
+    "button"
+  ],
+  "alert-dialog": [
+    "button",
+    "dialog"
+  ],
+  "aspect-ratio": [],
+  "attachment": [
+    "button"
+  ],
+  "avatar": [],
+  "badge": [],
+  "breadcrumb": [
+    "button",
+    "dropdown-menu",
+    "popover"
+  ],
+  "bubble": [],
+  "button": [],
+  "button-group": [
+    "button",
+    "dropdown-menu",
+    "input",
+    "input-group",
+    "popover"
+  ],
+  "calendar": [],
+  "card": [
+    "badge",
+    "button",
+    "input",
+    "label"
+  ],
+  "carousel": [
+    "card"
+  ],
+  "checkbox": [
+    "field",
+    "label",
+    "table"
+  ],
+  "code-block": [
+    "button"
+  ],
+  "combobox": [
+    "button",
+    "field",
+    "input-group",
+    "label",
+    "popover",
+    "scroll-area"
+  ],
+  "command": [
+    "button",
+    "dialog"
+  ],
+  "context-menu": [
+    "dropdown-menu",
+    "popover"
+  ],
+  "data-table": [
+    "button",
+    "checkbox",
+    "dropdown-menu",
+    "input",
+    "popover",
+    "table"
+  ],
+  "date-picker": [
+    "button",
+    "calendar",
+    "field",
+    "label",
+    "popover"
+  ],
+  "dialog": [
+    "button",
+    "input",
+    "label",
+    "scroll-area"
+  ],
+  "drawer": [
+    "button",
+    "dialog"
+  ],
+  "dropdown-menu": [
+    "button",
+    "popover"
+  ],
+  "empty": [
+    "button",
+    "input-group",
+    "kbd"
+  ],
+  "field": [
+    "button",
+    "checkbox",
+    "input",
+    "label",
+    "native-select",
+    "radio-group",
+    "slider",
+    "textarea"
+  ],
+  "hover-card": [
+    "popover"
+  ],
+  "input": [
+    "button",
+    "field",
+    "label"
+  ],
+  "input-group": [
+    "button",
+    "field",
+    "label"
+  ],
+  "input-otp": [
+    "field",
+    "label"
+  ],
+  "item": [
+    "avatar",
+    "button"
+  ],
+  "kbd": [
+    "button",
+    "input-group"
+  ],
+  "label": [
+    "checkbox"
+  ],
+  "marker": [],
+  "menubar": [
+    "dropdown-menu",
+    "popover"
+  ],
+  "message": [
+    "avatar",
+    "bubble"
+  ],
+  "message-scroller": [
+    "bubble",
+    "button",
+    "message"
+  ],
+  "native-select": [
+    "field",
+    "label"
+  ],
+  "navigation-menu": [
+    "popover"
+  ],
+  "pagination": [
+    "button"
+  ],
+  "popover": [
+    "button",
+    "input",
+    "label"
+  ],
+  "progress": [
+    "field"
+  ],
+  "questionnaire": [
+    "button",
+    "radio-group"
+  ],
+  "radio-group": [
+    "field",
+    "label"
+  ],
+  "range-calendar": [
+    "calendar"
+  ],
+  "resizable": [],
+  "scroll-area": [
+    "card"
+  ],
+  "select": [
+    "field",
+    "label",
+    "popover",
+    "scroll-area"
+  ],
+  "separator": [],
+  "sheet": [
+    "button"
+  ],
+  "sidebar": [],
+  "skeleton": [
+    "card"
+  ],
+  "slider": [
+    "label"
+  ],
+  "spinner": [
+    "badge",
+    "button",
+    "empty",
+    "input-group",
+    "item"
+  ],
+  "switch": [
+    "field",
+    "label"
+  ],
+  "table": [
+    "button"
+  ],
+  "tabs": [
+    "button",
+    "card",
+    "field",
+    "input",
+    "label"
+  ],
+  "textarea": [
+    "button",
+    "field",
+    "label"
+  ],
+  "toast": [
+    "button"
+  ],
+  "toggle": [],
+  "toggle-group": [
+    "toggle"
+  ],
+  "tooltip": [
+    "button"
+  ],
+  "trace": [],
+  "typography": [],
+  "chart": []
+}

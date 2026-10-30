@@ -94,6 +94,9 @@ def guides(sizes, js_modules, wc_modules):
 <h2 class="d-h2">npm</h2>{code('npm install @auvyx/ui' + chr(10) + chr(10) + '/* in your CSS entry */' + chr(10) + '@import "@auvyx/ui";')}
 <h2 class="d-h2">Tailwind v4 (source channel)</h2><p>Import after Tailwind. Your build compiles the components and generates the utilities your markup uses.</p>
 {code('@import "tailwindcss";' + chr(10) + '@import "@auvyx/ui/bundle";')}
+<h2 class="d-h2">Only the components you use</h2><p>Instead of the whole <code>auvyx.min.css</code>, copy single components into your project with the CLI. Each one is its CSS split from the bundle (plain CSS, no Tailwind needed), its JavaScript if it has behavior, and the components its examples use; <code>base.css</code> (tokens, themes, preflight, layout, motion) comes with the first.</p>
+{code('npx @auvyx/cli add combobox tabs')}
+<p>The CLI keeps <code>ui/index.css</code> importing every installed file in the order they cascade in the bundle, so load that one file (and the <code>ui/*.js</code> files it lists). Components override each other at equal specificity, so that order matters: link files by hand only in the order of the <code>order</code> number on their first line. The same files are on the CDN under <code>dist/ui/</code>, listed in <code>dist/ui/manifest.json</code>.</p>
 <h2 class="d-h2">Pick only the elements you use</h2><p>Each custom element also ships as an ES module:</p>
 {code(f'<script type="module" src="{CDN}/elements/calendar.min.js"></script>' + chr(10) + f'<script type="module" src="{CDN}/elements/date-picker.min.js"></script>')}
 <h2 class="d-h2">Charts</h2>{code('<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>' + chr(10) + f'<script src="{CDN}/auvyx.chart.min.js" defer></script>')}"""},
@@ -242,6 +245,7 @@ def main():
     shutil.copytree(UI / "dist" / "wc", OUT / "dist" / "wc")
     shutil.copytree(UI / "dist" / "styles", OUT / "dist" / "styles")
     shutil.copytree(UI / "dist" / "types", OUT / "dist" / "types")
+    shutil.copytree(UI / "dist" / "ui", OUT / "dist" / "ui")
     shutil.copy(UI / "dist" / "custom-elements.json", OUT / "dist" / "custom-elements.json")
     run("python3", str(DOCS / "tools/showcase.py"))
     shutil.copy(DOCS / "src/create-preview.html", OUT / "create-preview.html")
@@ -256,10 +260,11 @@ def main():
                 blocks.append({"id": bid, **meta, "height": TALL.get(bid, HEIGHTS[cat])})
     js_modules = json.loads((UI / "dist/js/manifest.json").read_text())
     wc_modules = json.loads((UI / "dist/wc/manifest.json").read_text())
+    ui_modules = json.loads((UI / "dist/ui/manifest.json").read_text())["components"]
     gd = guides(sizes, js_modules, wc_modules)
     data = {"version": VERSION, "cdn": CDN, "sizes": sizes, "components": comps, "guides": gd,
             "blocks": blocks, "blockCats": [{"id": c, "title": t} for c, t in BLOCK_CATS], "featured": FEATURED,
-            "charts": charts(), "jsModules": js_modules, "wcModules": wc_modules}
+            "charts": charts(), "jsModules": js_modules, "wcModules": wc_modules, "uiModules": ui_modules}
     data_json = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 
     # docs.css: bundle + utilities used by examples/guides (scanned from the data file).

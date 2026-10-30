@@ -33,10 +33,10 @@ Auvyx contains no licensing, payment or tier logic. Paid source must never be co
 - [x] Web Components edition for every component with behavior: tabs, select, combobox, command, dropdown-menu, popover, accordion, sidebar, toaster, slider, drawer (`dist/wc/`), tested in React 19 and Vue 3.
 - [x] Custom Elements Manifest (`dist/custom-elements.json`) and generated TypeScript, React 19 JSX and Vue 3 types (`dist/types/`), from `packages/elements/api.mjs`.
 - [x] React registry: every block also ships as a React 19 component (`r/react/<icons>/`), converted from the HTML (`packages/blocks/tools/html-to-react.mjs`) and checked pixel for pixel against it; `--framework` in the CLI.
+- [x] Components in the registry (`registry:ui`): `auvyx.min.css` split per component (`dist/ui/`, `packages/ui/tools/ui-split.mjs`), dependencies found in a browser (`tools/ui-deps.mjs`), `ui/index.css` kept in cascade order by the CLI. Layout and motion now come before the components in the bundle.
 
 ## Next (Auvyx)
 
-- [ ] Registry items for components (`registry:ui`), not only blocks.
 - [ ] Workspaces and one build (`ui` → `elements` → `blocks` → registry → docs); CI with the Playwright checks used during development.
 - [ ] Publish `@auvyx/ui` and `@auvyx/cli` to npm.
 - [ ] Retire or merge `site/` (upstream Basecoat docs) into `packages/docs`.

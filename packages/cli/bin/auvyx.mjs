@@ -128,19 +128,30 @@ async function add() {
   const root = path.resolve(config.dir ?? 'auvyx');
   const seen = new Set();
   const scripts = new Set();
-  const queue = [...rest];
+  const uiScripts = new Set();
+  let uiCss = false;
+  const qualify = (spec, ns = DEFAULT_NS) => (/^https?:\/\//.test(spec) || spec.endsWith('.json') || spec.startsWith('@') ? spec : `${ns}/${spec}`);
+  // [spec, shallow]: a component's dependencies are already complete for it,
+  // so theirs are not followed (they list what their own examples use).
+  const queue = rest.map((spec) => [qualify(spec), false]);
   while (queue.length) {
-    const spec = queue.shift();
+    const [spec, shallow] = queue.shift();
     if (seen.has(spec)) continue;
     seen.add(spec);
     const ref = resolve(config, spec);
     const item = await fetchJson(ref);
-    for (const dep of item.registryDependencies ?? []) {
-      // Unqualified deps belong to the registry the item came from.
-      queue.push(ref.ns && !dep.startsWith('@') && !/^https?:/.test(dep) ? `${ref.ns}/${dep}` : dep);
+    if (!shallow) {
+      for (const dep of item.registryDependencies ?? []) {
+        // Unqualified deps belong to the registry the item came from.
+        queue.push([ref.ns ? qualify(dep, ref.ns) : dep, item.type === 'registry:ui']);
+      }
     }
     for (const s of item.meta?.scripts ?? []) scripts.add(s);
     for (const file of item.files ?? []) {
+      if (/^registry:(ui|style)$/.test(file.type)) {
+        if (file.target.endsWith('.css')) uiCss = true;
+        else uiScripts.add(file.target);
+      }
       if (file.type === 'registry:page' && !flags.has('--page')) continue;
       const target = path.resolve(root, file.target ?? file.path);
       // Never let a registry write outside the configured directory.
@@ -160,10 +171,35 @@ async function add() {
       console.log(`write   ${rel}`);
     }
   }
+  if (uiCss && !flags.has('--dry-run')) await writeUiIndex(root);
+  if (uiCss || uiScripts.size) {
+    const rel = (f) => path.relative(process.cwd(), path.join(root, f)).split(path.sep).join('/');
+    const react = framework(config) === 'react';
+    console.log(`\nComponents: load ${rel('ui/index.css')} once${react ? ' (import it in your root layout or entry file)' : ''}, instead of auvyx.min.css.`);
+    if (uiScripts.size) console.log(react ? 'And import these once from your entry file (they register their behavior):' : 'And add:');
+    for (const f of uiScripts) console.log(react ? `  ${rel(f)}` : `  <script src="${rel(f)}" defer></script>`);
+  }
   if (scripts.size) {
     console.log(`\nThese blocks also need${framework(config) === 'react' ? ', loaded once in your root layout or index.html' : ''}:`);
     for (const s of scripts) console.log(`  <script src="${s}" defer></script>`);
   }
+}
+
+// ui/index.css imports every installed component in the bundle's order (each
+// file's first line says `order N`), so they cascade as in auvyx.min.css.
+async function writeUiIndex(root) {
+  const dir = path.join(root, 'ui');
+  const entries = [];
+  for (const name of await fs.readdir(dir)) {
+    if (!name.endsWith('.css') || name === 'index.css') continue;
+    const first = (await fs.readFile(path.join(dir, name), 'utf8')).split('\n', 1)[0];
+    const order = Number(first.match(/\border (\d+)/)?.[1] ?? Infinity);
+    entries.push({ name, order });
+  }
+  entries.sort((a, b) => a.order - b.order || a.name.localeCompare(b.name));
+  const text = `/* Auvyx UI components, in the order they cascade. Written by \`auvyx add\`; files you add yourself go last. */\n${entries.map((e) => `@import "./${e.name}";`).join('\n')}\n`;
+  await fs.writeFile(path.join(dir, 'index.css'), text);
+  console.log(`write   ${path.relative(process.cwd(), path.join(dir, 'index.css'))}`);
 }
 
 async function list() {

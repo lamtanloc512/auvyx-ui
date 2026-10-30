@@ -7,12 +7,17 @@
  *           every utility they use).
  */
 
+/* Layout primitives and motion come before the components, so a component's
+   own rules win over them at equal specificity. dist/ui/ splits this file per
+   component with base first; the order here keeps the bundle and the split
+   files rendering the same. */
+@import "../../../src/css/layout/index.css";
+@import "../../../src/css/motion/index.css";
+
 /* Components: structure + visuals (Vega pack for now, swap for an Auvyx pack later) */
 @import "../../../src/css/basecoat-vega.css";
 
 /* Fork additions */
 @import "../../../src/css/extra/index.css";
 @import "../../../src/css/native/index.css";
-@import "../../../src/css/motion/index.css";
-@import "../../../src/css/layout/index.css";
 @import "./themes.css";

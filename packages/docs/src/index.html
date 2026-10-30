@@ -517,10 +517,11 @@
       <h1 class="d-h1">${esc(c.title)}</h1><p class="d-lead">${esc(c.description)}</p>
       <div class="d-tags">${tags}</div>
       ${exs}
+      ${installDocs(key)}
       <h2 class="d-h2" id="usage">Usage</h2><div class="d-prose"><div id="d-js-usage"></div>${c.notes || ''}</div>
       ${wcSection}
       ${pager(prev, next)}
-    </article><aside class="d-toc"><h4>On this page</h4><ul>${toc}<li><a href="#c-${key}" data-scroll="usage">Usage</a></li>${wc ? `<li><a href="#c-${key}" data-scroll="web-component">Web Component</a></li>` : ''}</ul></aside></div>`;
+    </article><aside class="d-toc"><h4>On this page</h4><ul>${toc}<li><a href="#c-${key}" data-scroll="installation">Installation</a></li><li><a href="#c-${key}" data-scroll="usage">Usage</a></li>${wc ? `<li><a href="#c-${key}" data-scroll="web-component">Web Component</a></li>` : ''}</ul></aside></div>`;
   }
 
   // Which JS modules do this page's demos use? Each module's `detect` selector
@@ -585,6 +586,19 @@
       <p>React 19:</p>${codeBox(react, 'Component.jsx')}
       <p>Vue 3 (with <code>isCustomElement</code> set for <code>auvyx-</code> tags):</p>${codeBox(vue, 'Component.vue')}
       <p>Typed in TypeScript, JSX and Vue templates: see <a href="#installation">Installation → TypeScript</a>.</p>
+    </div>`;
+  }
+
+  // Copying one component with the CLI (dist/ui/manifest.json).
+  function installDocs(key) {
+    const m = D.uiModules[key];
+    if (!m) return '';
+    const files = ['base.css', ...m.css.map((f) => f.slice(3)), ...m.js.map((f) => f.slice(3))];
+    const deps = m.dependencies.length ? ` and the components its examples use: ${m.dependencies.map((d) => `<a href="#c-${d}">${esc(D.components[d]?.title ?? d)}</a>`).join(', ')}` : '';
+    return `<h2 class="d-h2" id="installation">Installation</h2><div class="d-prose">
+      <p><code>auvyx.min.css</code> already includes it. To copy only this component into your project:</p>
+      ${codeBox(`npx @auvyx/cli add ${key}`)}
+      <p>Writes ${files.map((f) => `<code>ui/${esc(f)}</code>`).join(', ')}${deps}, and updates <code>ui/index.css</code>. See <a href="#installation">Installation → Only the components you use</a>.</p>
     </div>`;
   }
 

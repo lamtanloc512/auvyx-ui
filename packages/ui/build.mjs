@@ -6,6 +6,7 @@ import { execFileSync } from 'node:child_process';
 import { gzipSync } from 'node:zlib';
 import { transform, build } from 'esbuild';
 import { writeTypes } from './tools/types.mjs';
+import { splitCss } from './tools/ui-split.mjs';
 import { ELEMENTS } from '../elements/api.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -71,11 +72,11 @@ await fs.writeFile(path.join(dist, 'auvyx.min.js'), banner + minJs);
     const entry = path.join(tmp, `auvyx-${style}.css`);
     await fs.writeFile(entry, [
       '@import "tailwindcss" source(none);',
+      '@import "../../../src/css/layout/index.css";',
+      '@import "../../../src/css/motion/index.css";',
       `@import "../../../src/css/basecoat-${style}.css";`,
       '@import "../../../src/css/extra/index.css";',
       '@import "../../../src/css/native/index.css";',
-      '@import "../../../src/css/motion/index.css";',
-      '@import "../../../src/css/layout/index.css";',
       '@import "../src/themes.css";',
     ].join('\n'));
     const raw = path.join(tmp, `auvyx-${style}.out.css`);
@@ -189,6 +190,43 @@ const WC_MODULES = {
 
 // Custom Elements Manifest and TypeScript types (DOM, React 19, Vue 3) from packages/elements/api.mjs.
 await writeTypes(dist, version);
+
+// Per-component files (dist/ui/): the bundle's CSS split per component, each
+// component's behavior as readable JS, and a manifest with dependencies.
+// `auvyx add <component>` installs these (see packages/blocks/tools/build_registry.mjs).
+{
+  const docs = JSON.parse(await fs.readFile(path.join(root, 'packages/docs/src/data/components.json'), 'utf8'));
+  const names = [...Object.keys(docs), 'chart'];
+  const sizes = await splitCss(root, dist, names, linkShadows);
+  // Behavior per component, from the same sources as dist/js/ (not minified).
+  const UI_JS = { 'code-block': ['copy'], menubar: ['menu'], 'navigation-menu': ['menu'], 'range-calendar': ['calendar'] };
+  const jsFor = (name) => UI_JS[name] ?? (JS_MODULES[name] ? [name] : []);
+  const core = await fs.readFile(path.join(root, 'src/js/basecoat.js'), 'utf8');
+  for (const mod of new Set(names.flatMap(jsFor))) {
+    const m = JS_MODULES[mod];
+    let src;
+    if (m.element) src = (await build({ entryPoints: [path.join(root, m.src)], bundle: true, format: 'iife', write: false, target: 'es2022' })).outputFiles[0].text;
+    else {
+      src = await fs.readFile(path.join(root, m.src), 'utf8');
+      if (m.core) src = `// Basecoat core, once per page.\nif (!window.basecoat) ${core.trim()}\n\n${src.trim()}\n\n// Loaded after the DOM is ready: initialize now.\nif (document.readyState !== 'loading') { window.basecoat.initAll(); window.basecoat.start(); }\n`;
+    }
+    await fs.writeFile(path.join(dist, 'ui', `${mod}.js`), `/* @auvyx/ui v${version} | MIT | based on Basecoat (MIT) */\n${src}`);
+  }
+  // Dependencies: the components whose rules the examples use (tools/ui-deps.mjs finds them in a browser).
+  const deps = JSON.parse(await fs.readFile(path.join(here, 'tools/ui-deps.json'), 'utf8'));
+  const stale = names.filter((n) => !deps[n]);
+  if (stale.length) console.warn(`ui: no dependencies recorded for ${stale.join(', ')}; run node packages/ui/tools/ui-deps.mjs`);
+  const manifest = {};
+  for (const name of names) {
+    manifest[name] = {
+      // The component's file, then its zero-JS variant's (popover.native.css…).
+      css: Object.keys(sizes).filter((f) => f === name || f.startsWith(`${name}.`)).map((f) => `ui/${f}.css`),
+      js: jsFor(name).map((m) => `ui/${m}.js`),
+      dependencies: deps[name] ?? [],
+    };
+  }
+  await fs.writeFile(path.join(dist, 'ui/manifest.json'), JSON.stringify({ base: 'ui/base.css', components: manifest }, null, 2) + '\n');
+}
 
 // Elements as standalone ES modules, for picking only what a page uses.
 await fs.mkdir(path.join(dist, 'elements'), { recursive: true });
