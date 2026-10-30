@@ -35,11 +35,11 @@ Auvyx contains no licensing, payment or tier logic. Paid source must never be co
 - [x] React registry: every block also ships as a React 19 component (`r/react/<icons>/`), converted from the HTML (`packages/blocks/tools/html-to-react.mjs`) and checked pixel for pixel against it; `--framework` in the CLI.
 - [x] Components in the registry (`registry:ui`): `auvyx.min.css` split per component (`dist/ui/`, `packages/ui/tools/ui-split.mjs`), dependencies found in a browser (`tools/ui-deps.mjs`), `ui/index.css` kept in cascade order by the CLI. Layout and motion now come before the components in the bundle.
 - [x] npm workspaces (`packages/*`), one build (`npm run auvyx:build`: ui → registry → docs) and the checks in `packages/tests` (`npm run auvyx:test`), run by the `auvyx` CI job.
+- [x] Upstream docs site (`site/`) merged into `packages/docs` and removed: component reference notes (`src/data/notes/`), the Templates guide, JavaScript lifecycle and fonts, `llms.txt` / `llms-full.txt` with Markdown exports (`md/`).
 
 ## Next (Auvyx)
 
 - [ ] Publish `@auvyx/ui` and `@auvyx/cli` to npm.
-- [ ] Retire or merge `site/` (upstream Basecoat docs) into `packages/docs`.
 
 ## Beamui (tracked there, listed for context)
 

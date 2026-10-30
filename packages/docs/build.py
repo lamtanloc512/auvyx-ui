@@ -19,6 +19,35 @@ VERSION = json.loads((UI / "package.json").read_text())["version"]
 CDN = f"https://cdn.jsdelivr.net/npm/@auvyx/ui@{VERSION}/dist"
 
 
+SITE = "https://auvyx-ui.vercel.app"
+
+
+def write_llms(guides_list, comps, blocks):
+    """llms.txt (llmstxt.org) plus a Markdown export of every guide and component under md/."""
+    md = OUT / "md"
+    (md / "components").mkdir(parents=True, exist_ok=True)
+    lines = ["# Auvyx UI", "", "> A drop-in design system with the shadcn look: plain HTML and CSS classes, optional JavaScript, a Web Components edition, React blocks and a shadcn-style registry and CLI.", ""]
+    lines += ["## Docs", ""]
+    for g in guides_list:
+        (md / f"{g['slug']}.md").write_text(f"# {g['title']}\n\n> {g['description']}\n\n{g['html'].strip()}\n")
+        lines.append(f"- [{g['title']}]({SITE}/md/{g['slug']}.md): {g['description']}")
+    lines += ["", "## Components", ""]
+    for key, c in comps.items():
+        parts = [f"# {c['title']}", "", c["description"], "", f"Install: `npx @auvyx/cli add {key}` (or load auvyx.min.css for every component).", "", "## Examples", ""]
+        for ex in c["examples"]:
+            parts += [f"### {ex['title']}", "", "```html", ex["html"].strip(), "```", ""]
+        if c.get("notes"):
+            parts += ["## Usage", "", c["notes"].strip(), ""]
+        (md / "components" / f"{key}.md").write_text("\n".join(parts))
+        lines.append(f"- [{c['title']}]({SITE}/md/components/{key}.md): {c['description']}")
+    lines += ["", "## Blocks", "", f"- [Registry index, HTML]({SITE}/r/html/lucide/index.json): every block and component as a registry item ({len(blocks)} blocks)",
+              f"- [Registry index, React]({SITE}/r/react/lucide/index.json): the same items as React 19 components", ""]
+    (OUT / "llms.txt").write_text("\n".join(lines))
+    # Every export in one file, guides first.
+    full = [(md / f"{g['slug']}.md").read_text() for g in guides_list] + [(md / "components" / f"{k}.md").read_text() for k in comps]
+    (OUT / "llms-full.txt").write_text("\n\n".join(full))
+
+
 def run(*cmd, **kw):
     subprocess.run(cmd, check=True, cwd=ROOT, **kw)
 
@@ -81,6 +110,8 @@ def guides(sizes, js_modules, wc_modules):
 <div class="d-tablewrap"><table><thead><tr><th>Module</th><th>Size (gzip)</th><th>Needed for</th></tr></thead><tbody>
 {"".join(f'<tr><td><code>js/{n}.min.js</code></td><td>{m["gzip"] / 1024:.1f} kB</td><td>{"Optional: " if m["kind"] == "enhance" else ""}{n.replace("-", " ").capitalize()}{(". " + html_escape(m["note"])) if m.get("note") else ""}</td></tr>' for n, m in js_modules.items())}
 </tbody></table></div>
+<h2 class="d-h2">JavaScript lifecycle</h2><p>Components initialize on page load and whenever new markup is inserted (a <code>MutationObserver</code> watches the page), so HTML swapped in by HTMX, Turbo or your own code works without extra calls. After inserting markup by hand you can also call <code>window.basecoat.initAll()</code>; it only initializes components that are not initialized yet.</p>
+<p>When a library restores previously initialized markup from a cache (HTMX history restore, Turbo snapshots), call <code>window.basecoat.initAll({{ force: true }})</code>: it destroys the existing instances and initializes them again, which also resets open menus, focus and other transient state.</p>
 <h2 class="d-h2">Editions</h2><p>Auvyx comes in two editions that share the same CSS and the same behavior code. Pick per component; they mix on one page.</p>
 <div class="d-tablewrap"><table><thead><tr><th>Edition</th><th>Markup</th><th>Best for</th></tr></thead><tbody>
 <tr><td>HTML (default)</td><td>Classes and ARIA, plus a script from <code>js/</code></td><td>Server templates, static sites, HTMX, copy-paste blocks</td></tr>
@@ -111,6 +142,8 @@ def guides(sizes, js_modules, wc_modules):
 {code('<link rel="stylesheet" href="' + CDN + '/auvyx.min.css">' + chr(10) + '<style>' + chr(10) + '  :root { --primary: oklch(0.62 0.19 260); --radius: 0.75rem; --font-sans: Inter, sans-serif; --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.1); }' + chr(10) + '  .dark { --primary: oklch(0.7 0.16 260); }' + chr(10) + '</style>')}
 <h2 class="d-h2">Corner shape (squircles)</h2><p><code>--corner-shape</code> sets the shape of every rounded corner: <code>round</code> (default), <code>squircle</code>, <code>superellipse(1.5)</code>, <code>bevel</code>, <code>scoop</code> or <code>notch</code>. Browsers with CSS <code>corner-shape</code> (Chrome 139+) draw it natively; controls whose shape carries meaning (radios, switches, avatars) stay round. For other browsers, add the optional <code>auvyx.corners.min.js</code> (4 kB, bundles <a href="https://somonoco.com" target="_blank" rel="noopener">Monoco</a>): it clips cards, popovers, dialogs, alerts and sheets to the same shape and redraws their borders on that path, so borders stay continuous at the corners. Tune it with <code>--corner-smoothing</code> (0–1).</p>
 {code(':root { --corner-shape: squircle; --radius: 0.875rem; }' + chr(10) + chr(10) + '<script src="' + CDN + '/auvyx.corners.min.js" defer></script>  <!-- optional fallback -->')}
+<h2 class="d-h2">Fonts</h2><p>Auvyx ships no font files. <code>--font-sans</code>, <code>--font-heading</code> and <code>--font-mono</code> prefer Geist and Geist Mono when the page has them, then fall back to system stacks. Load the fonts you want (Google Fonts, Fontsource, your own files) and point the tokens at them; the Create page does both for its font presets.</p>
+{code(':root {' + chr(10) + '  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;' + chr(10) + '  --font-heading: "Inter", ui-sans-serif, system-ui, sans-serif;' + chr(10) + '  --font-mono: "IBM Plex Mono", ui-monospace, monospace;' + chr(10) + '}')}
 <h2 class="d-h2">Tokens</h2><div class="d-tablewrap"><table><thead><tr><th>Token</th><th>Used for</th></tr></thead><tbody>
 <tr><td><code>--background</code> / <code>--foreground</code></td><td>Page surface and text</td></tr>
 <tr><td><code>--primary</code> / <code>--primary-foreground</code></td><td>Main actions, selected states, focus accents</td></tr>
@@ -199,6 +232,7 @@ def guides(sizes, js_modules, wc_modules):
 <tr><td>Date Picker</td><td>Without JS: the browser's native date input</td></tr>
 </tbody></table></div>
 <p>Scripts add keyboard models (arrow keys in menus, roving focus in calendars), hover-to-open for the navigation menu, and the widgets that need state: Select, Combobox, Command, Tabs, Toast, Data Table, Resizable, Calendar.</p>"""},
+        {"slug": "templates", "title": "Templates", "description": "Nunjucks and Jinja macros for components with larger markup.", "html": (DOCS / "src/data/guides/templates.html").read_text()},
     ]
 
 
@@ -252,6 +286,12 @@ def main():
 
     sizes = {"css": gz(UI / "dist/auvyx.min.css"), "js": gz(UI / "dist/auvyx.min.js")}
     comps = json.loads((DOCS / "src/data/components.json").read_text())
+    # Reference notes (markup structure, JS API) live as HTML next to the extracted data,
+    # so re-running tools/extract.py keeps them.
+    for f in sorted((DOCS / "src/data/notes").glob("*.html")):
+        if f.stem not in comps:
+            raise SystemExit(f"notes for unknown component: {f.name}")
+        comps[f.stem]["notes"] = f.read_text()
     reg = json.loads((BLOCKS / "registry.json").read_text())
     blocks = []
     for cat, _ in BLOCK_CATS:
@@ -294,6 +334,8 @@ def main():
 
     # Public registry served at /r/<name>.json for `auvyx add`.
     run("node", str(BLOCKS / "tools/build_registry.mjs"), "--out", str(OUT / "r"))
+
+    write_llms(gd, comps, blocks)
 
     files = sorted(p.relative_to(OUT).as_posix() for p in OUT.rglob("*") if p.is_file())
     total = sum((OUT / f).stat().st_size for f in files)

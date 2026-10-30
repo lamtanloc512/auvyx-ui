@@ -1,0 +1,84 @@
+<h4 class="d-h4">HTML structure</h4>
+<dl>
+  <dt><code>&lt;article class="item"&gt;</code> or <code>&lt;a class="item"&gt;</code></dt>
+  <dd>
+    The item root. Use <code>data-variant="outline|muted"</code> and <code>data-size="sm|xs"</code> when needed.
+    <dl>
+      <dt><code>&lt;figure&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+      <dd>Media: icon, avatar, or image.</dd>
+      <dt><code>&lt;section&gt;</code></dt>
+      <dd>
+        Primary content. Headings and paragraphs are styled automatically.
+        <dl>
+          <dt><code>&lt;h2&gt;</code>, <code>&lt;h3&gt;</code>, or <code>&lt;h4&gt;</code></dt>
+          <dd>The item title.</dd>
+          <dt><code>&lt;p&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+          <dd>The item description.</dd>
+        </dl>
+      </dd>
+      <dt><code>&lt;aside&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+      <dd>Actions or trailing metadata.</dd>
+      <dt><code>&lt;header&gt;</code>, <code>&lt;footer&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+      <dd>Full-width item regions.</dd>
+    </dl>
+  </dd>
+  <dt><code>&lt;div class="item-group" role="list"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>Groups related items. Use <code>role="listitem"</code> on child items when they are not native list items.</dd>
+</dl>
+
+<h3 class="d-h3">Item vs Field</h3>
+<p>Use <code>field</code> for form controls and validation. Use <code>item</code> for display content, actions, and navigation rows.</p>
+<h3 class="d-h3">Variant</h3>
+<div class="d-preview"><div class="d-stage">
+<div class="flex w-full flex-col gap-6">
+  <article class="item">
+    <figure><svg class="lucide lucide-inbox" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></svg></figure>
+    <section>
+      <h3>Default Variant</h3>
+      <p>Transparent background with no border.</p>
+    </section>
+  </article>
+  <article class="item" data-variant="outline">
+    <figure><svg class="lucide lucide-inbox" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></svg></figure>
+    <section>
+      <h3>Outline Variant</h3>
+      <p>Outlined style with a visible border.</p>
+    </section>
+  </article>
+  <article class="item" data-variant="muted">
+    <figure><svg class="lucide lucide-inbox" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></svg></figure>
+    <section>
+      <h3>Muted Variant</h3>
+      <p>Muted background for secondary content.</p>
+    </section>
+  </article>
+</div>
+</div></div>
+
+
+<h3 class="d-h3">Size</h3>
+<div class="d-preview"><div class="d-stage">
+<div class="flex w-full flex-col gap-6">
+  <article class="item" data-variant="outline">
+    <figure><svg class="lucide lucide-inbox" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></svg></figure>
+    <section>
+      <h3>Default Size</h3>
+      <p>The standard size for most use cases.</p>
+    </section>
+  </article>
+  <article class="item" data-variant="outline" data-size="sm">
+    <figure><svg class="lucide lucide-inbox" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></svg></figure>
+    <section>
+      <h3>Small Size</h3>
+      <p>A compact size for dense layouts.</p>
+    </section>
+  </article>
+  <article class="item" data-variant="outline" data-size="xs">
+    <figure><svg class="lucide lucide-inbox" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></svg></figure>
+    <section>
+      <h3>Extra Small Size</h3>
+      <p>The most compact size available.</p>
+    </section>
+  </article>
+</div>
+</div></div>

@@ -25,17 +25,12 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            site/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - run: npm ci
 
       # Package: build, check every export exists and the JS parses, list the tarball.
       - run: npm run check
-
-      # Docs site: build it and check llms.txt links to the .md exports.
-      - run: npm run check:site
 
   # Auvyx packages (packages/*): one build, then the browser checks.
   auvyx:

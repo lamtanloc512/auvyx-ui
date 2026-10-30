@@ -1,6 +1,5 @@
 // Cheap sanity checks. Run after a build.
 //   node scripts/check.js        package: every export target exists, JS parses, min CSS keeps all selectors
-//   node scripts/check.js site   docs site: site/dist built, llms.txt links to .md exports
 import fs from 'fs';
 import path from 'path';
 import { execFileSync } from 'child_process';
@@ -141,28 +140,13 @@ function checkMinifiedCss() {
   }
 }
 
-function checkSite() {
-  const dist = path.join(root, 'site', 'dist');
-  for (const file of ['index.html', 'llms.txt', 'llms-full.txt']) {
-    if (!fs.existsSync(path.join(dist, file))) errors.push(`site/dist/${file} is missing`);
-  }
-  const llms = path.join(dist, 'llms.txt');
-  if (!fs.existsSync(llms)) return;
-  const links = [...fs.readFileSync(llms, 'utf8').matchAll(/^- \[[^\]]*\]\(([^)]+)\)/gm)].map((m) => m[1]);
-  if (links.length === 0) errors.push('site/dist/llms.txt has no links');
-  for (const link of links) {
-    if (!link.endsWith('.md')) errors.push(`site/dist/llms.txt links to ${link}, not a .md export`);
-  }
-}
-
 const target = process.argv[2] || 'package';
 if (target === 'package') {
   checkPackage();
   checkMinifiedCss();
 }
-else if (target === 'site') checkSite();
 else {
-  console.error(`Unknown target "${target}". Use "package" or "site".`);
+  console.error(`Unknown target "${target}". Use "package".`);
   process.exit(2);
 }
 

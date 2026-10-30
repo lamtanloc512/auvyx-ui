@@ -9,24 +9,12 @@
   - Issues are addressed in `issue/123-main-issue` branches.
   - When ready, open a PR against `main`.
 - Keep changes focused: one feature or fix per PR.
-- Test locally before submitting: `npm run check` (package) and `npm run check:site` (docs site). CI runs both on every PR.
+- Test locally before submitting: `npm run check` (package), and `npm run auvyx:build` plus `npm run auvyx:test` for `packages/*` and the docs. CI runs them on every PR.
 - Follow existing code style.
 
-## Cloudflare Workers deploys
+## Docs deploys
 
-Docs are built with ReallySimpleDocs/Astro and deployed as Workers Static Assets from `site/dist`.
-
-- Local preview: `npm run workers:dev`
-- Production deploy: `npm run workers:deploy`
-- Preview version upload: `npm run workers:preview`
-
-Workers Builds settings:
-
-- Build command: `npm run docs:build`
-- Deploy command: `npx wrangler deploy`
-- Non-production branch deploy command: `npx wrangler versions upload`
-- Production branch: `release`
-- Enable builds for non-production branches for branch preview URLs.
+The docs site is `packages/docs` (built to `packages/docs/out` by `npm run auvyx:build`). Vercel deploys `main` to https://auvyx-ui.vercel.app and every other branch to a preview URL (see `vercel.json`). The upstream ReallySimpleDocs/Astro site (`site/`) was merged into it and removed.
 
 ## Releasing
 

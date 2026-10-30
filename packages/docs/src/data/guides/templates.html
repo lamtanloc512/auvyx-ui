@@ -1,0 +1,804 @@
+<p>The macros generate the same markup as the component examples, which Auvyx styles unchanged, and keep repeated server-rendered markup easy to maintain. The macros come from Basecoat: they ship with the <code>basecoat-css</code> package and live in this repository under <a href="https://github.com/lamtanloc512/basecoat/tree/main/src/templates" target="_blank" rel="noopener">src/templates</a>.</p>
+<h2 class="d-h2" id="t-macros">Macros</h2>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Macro</th>
+<th>Nunjucks</th>
+<th>Jinja</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="#c-combobox">Combobox</a></td>
+<td><code>combobox()</code></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/nunjucks/combobox.njk" target="_blank" rel="noopener">combobox.njk</a></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/jinja/combobox.html.jinja" target="_blank" rel="noopener">combobox.html.jinja</a></td>
+</tr>
+<tr>
+<td><a href="#c-command">Command</a></td>
+<td><code>command()</code></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/nunjucks/command.njk" target="_blank" rel="noopener">command.njk</a></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/jinja/command.html.jinja" target="_blank" rel="noopener">command.html.jinja</a></td>
+</tr>
+<tr>
+<td><a href="#c-command">Command</a></td>
+<td><code>command_dialog()</code></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/nunjucks/command.njk" target="_blank" rel="noopener">command.njk</a></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/jinja/command.html.jinja" target="_blank" rel="noopener">command.html.jinja</a></td>
+</tr>
+<tr>
+<td><a href="#c-dialog">Dialog</a></td>
+<td><code>dialog()</code></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/nunjucks/dialog.njk" target="_blank" rel="noopener">dialog.njk</a></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/jinja/dialog.html.jinja" target="_blank" rel="noopener">dialog.html.jinja</a></td>
+</tr>
+<tr>
+<td><a href="#c-dropdown-menu">Dropdown Menu</a></td>
+<td><code>dropdown_menu()</code></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/nunjucks/dropdown-menu.njk" target="_blank" rel="noopener">dropdown-menu.njk</a></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/jinja/dropdown-menu.html.jinja" target="_blank" rel="noopener">dropdown-menu.html.jinja</a></td>
+</tr>
+<tr>
+<td><a href="#c-popover">Popover</a></td>
+<td><code>popover()</code></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/nunjucks/popover.njk" target="_blank" rel="noopener">popover.njk</a></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/jinja/popover.html.jinja" target="_blank" rel="noopener">popover.html.jinja</a></td>
+</tr>
+<tr>
+<td><a href="#c-select">Select</a></td>
+<td><code>select()</code></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/nunjucks/select.njk" target="_blank" rel="noopener">select.njk</a></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/jinja/select.html.jinja" target="_blank" rel="noopener">select.html.jinja</a></td>
+</tr>
+<tr>
+<td><a href="#c-sidebar">Sidebar</a></td>
+<td><code>sidebar()</code></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/nunjucks/sidebar.njk" target="_blank" rel="noopener">sidebar.njk</a></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/jinja/sidebar.html.jinja" target="_blank" rel="noopener">sidebar.html.jinja</a></td>
+</tr>
+<tr>
+<td><a href="#c-tabs">Tabs</a></td>
+<td><code>tabs()</code></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/nunjucks/tabs.njk" target="_blank" rel="noopener">tabs.njk</a></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/jinja/tabs.html.jinja" target="_blank" rel="noopener">tabs.html.jinja</a></td>
+</tr>
+<tr>
+<td><a href="#c-toast">Toast</a></td>
+<td><code>toaster()</code></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/nunjucks/toast.njk" target="_blank" rel="noopener">toast.njk</a></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/jinja/toast.html.jinja" target="_blank" rel="noopener">toast.html.jinja</a></td>
+</tr>
+<tr>
+<td><a href="#c-toast">Toast</a></td>
+<td><code>toast()</code></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/nunjucks/toast.njk" target="_blank" rel="noopener">toast.njk</a></td>
+<td><a href="https://github.com/lamtanloc512/basecoat/blob/main/src/templates/jinja/toast.html.jinja" target="_blank" rel="noopener">toast.html.jinja</a></td>
+</tr>
+</tbody></table>
+</div>
+<p>Some macro files include internal recursive helpers such as <code>render_select_items()</code>. Those helpers are implementation details and are not part of the public API.</p>
+<h2 class="d-h2" id="t-usage">Usage</h2>
+<h3 class="d-h3" id="t-install-templates">Install Templates</h3>
+<p>Copy the template folder for your template engine from <code>basecoat-css</code>. Templates are meant to be app-owned, so you can edit them after copying.</p>
+<div class="d-code"><div class="d-file">Nunjucks</div><pre><code>cp -R node_modules/basecoat-css/templates/nunjucks ./templates/basecoat</code></pre></div>
+<div class="d-code"><div class="d-file">Jinja</div><pre><code>cp -R node_modules/basecoat-css/templates/jinja ./templates/basecoat</code></pre></div>
+<p>Copy only the files you use if you do not want the full template folder.</p>
+<p>You can also copy the <a href="https://github.com/lamtanloc512/basecoat/tree/main/src/templates/nunjucks" target="_blank" rel="noopener">Nunjucks templates</a> or <a href="https://github.com/lamtanloc512/basecoat/tree/main/src/templates/jinja" target="_blank" rel="noopener">Jinja templates</a> from GitHub.</p>
+<h3 class="d-h3" id="t-use-a-macro">Use a Macro</h3>
+<p>Import a macro from the copied template file, then call it with the props for that component.</p>
+<div class="d-code"><div class="d-file">Nunjucks</div><pre><code>{% from "basecoat/select.njk" import select %}
+{{ select(
+  name="fruit",
+  items=[
+    { value: "apple", label: "Apple" },
+    { value: "banana", label: "Banana" },
+    { value: "blueberry", label: "Blueberry" }
+  ]
+) }}</code></pre></div>
+<div class="d-code"><div class="d-file">Jinja</div><pre><code>{% from "basecoat/select.html.jinja" import select %}
+{{ select(
+  name="fruit",
+  items=[
+    { "value": "apple", "label": "Apple" },
+    { "value": "banana", "label": "Banana" },
+    { "value": "blueberry", "label": "Blueberry" }
+  ]
+) }}</code></pre></div>
+<h2 class="d-h2" id="t-macro-reference">Macro Reference</h2>
+<h3 class="d-h3" id="t-combobox"><code>combobox()</code></h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>generated</td>
+<td>Unique combobox id.</td>
+</tr>
+<tr>
+<td><code>selected</code></td>
+<td><code>string | array | object</code></td>
+<td><code>None</code> / <code>none</code></td>
+<td>Initial selected value or values. Objects can include <code>value</code> and <code>label</code>.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td><code>None</code> / <code>none</code></td>
+<td>Hidden input name.</td>
+</tr>
+<tr>
+<td><code>multiple</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Enables chip-based multiple selection.</td>
+</tr>
+<tr>
+<td><code>placeholder</code></td>
+<td><code>string</code></td>
+<td><code>None</code> / <code>none</code></td>
+<td>Visible input placeholder.</td>
+</tr>
+<tr>
+<td><code>close_on_select</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Closes the popover after each option selection in multiple mode.</td>
+</tr>
+<tr>
+<td><code>clear</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Shows a clear button in single-select mode.</td>
+</tr>
+<tr>
+<td><code>auto_highlight</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Highlights the first matching option while filtering.</td>
+</tr>
+<tr>
+<td><code>format</code></td>
+<td><code>&quot;value&quot; | &quot;object&quot;</code></td>
+<td><code>&quot;value&quot;</code></td>
+<td>Hidden input serialization format.</td>
+</tr>
+<tr>
+<td><code>main_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the <code>.combobox</code> root.</td>
+</tr>
+<tr>
+<td><code>input_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the visible input or chip input wrapper.</td>
+</tr>
+<tr>
+<td><code>popover_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the popover element.</td>
+</tr>
+<tr>
+<td><code>listbox_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the listbox.</td>
+</tr>
+<tr>
+<td><code>hidden_input_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the hidden input.</td>
+</tr>
+</tbody></table>
+</div>
+<h3 class="d-h3" id="t-command"><code>command()</code></h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>generated</td>
+<td>Unique command id.</td>
+</tr>
+<tr>
+<td><code>items</code></td>
+<td><code>array</code></td>
+<td><code>None</code> / <code>none</code></td>
+<td>Optional structured item data. Use caller content when omitted.</td>
+</tr>
+<tr>
+<td><code>placeholder</code></td>
+<td><code>string</code></td>
+<td><code>&quot;Type a command or search...&quot;</code></td>
+<td>Search input placeholder.</td>
+</tr>
+<tr>
+<td><code>empty_text</code></td>
+<td><code>string</code></td>
+<td><code>&quot;No results found.&quot;</code></td>
+<td>Empty-state text.</td>
+</tr>
+<tr>
+<td><code>main_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the <code>.command</code> root.</td>
+</tr>
+<tr>
+<td><code>input_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the search input.</td>
+</tr>
+<tr>
+<td><code>menu_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the command menu.</td>
+</tr>
+</tbody></table>
+</div>
+<h3 class="d-h3" id="t-command_dialog"><code>command_dialog()</code></h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>generated</td>
+<td>Unique command dialog id.</td>
+</tr>
+<tr>
+<td><code>items</code></td>
+<td><code>array</code></td>
+<td><code>None</code> / <code>none</code></td>
+<td>Optional structured item data. Use caller content when omitted.</td>
+</tr>
+<tr>
+<td><code>placeholder</code></td>
+<td><code>string</code></td>
+<td><code>&quot;Type a command or search...&quot;</code></td>
+<td>Search input placeholder.</td>
+</tr>
+<tr>
+<td><code>empty_text</code></td>
+<td><code>string</code></td>
+<td><code>&quot;No results found.&quot;</code></td>
+<td>Empty-state text.</td>
+</tr>
+<tr>
+<td><code>dialog_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the native dialog.</td>
+</tr>
+<tr>
+<td><code>input_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the search input.</td>
+</tr>
+<tr>
+<td><code>menu_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the command menu.</td>
+</tr>
+<tr>
+<td><code>open</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Renders the dialog open by default.</td>
+</tr>
+</tbody></table>
+</div>
+<h3 class="d-h3" id="t-dialog"><code>dialog()</code></h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>generated</td>
+<td>Unique dialog id.</td>
+</tr>
+<tr>
+<td><code>trigger</code></td>
+<td><code>string</code></td>
+<td><code>None</code> / <code>none</code></td>
+<td>Text or HTML for a generated trigger button.</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td><code>string</code></td>
+<td><code>None</code> / <code>none</code></td>
+<td>Dialog title.</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>string</code></td>
+<td><code>None</code> / <code>none</code></td>
+<td>Dialog description.</td>
+</tr>
+<tr>
+<td><code>footer</code></td>
+<td><code>string</code></td>
+<td><code>None</code> / <code>none</code></td>
+<td>HTML for the dialog footer.</td>
+</tr>
+<tr>
+<td><code>dialog_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the native dialog.</td>
+</tr>
+<tr>
+<td><code>trigger_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the generated trigger button.</td>
+</tr>
+<tr>
+<td><code>header_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the dialog header.</td>
+</tr>
+<tr>
+<td><code>body_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the dialog body section.</td>
+</tr>
+<tr>
+<td><code>footer_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the dialog footer.</td>
+</tr>
+<tr>
+<td><code>open</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Renders the dialog open by default.</td>
+</tr>
+<tr>
+<td><code>close_button</code></td>
+<td><code>boolean</code></td>
+<td><code>true</code></td>
+<td>Includes the generated close button.</td>
+</tr>
+<tr>
+<td><code>close_on_overlay_click</code></td>
+<td><code>boolean</code></td>
+<td><code>true</code></td>
+<td>Adds backdrop-click close behavior.</td>
+</tr>
+</tbody></table>
+</div>
+<h3 class="d-h3" id="t-dropdown_menu"><code>dropdown_menu()</code></h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>trigger</code></td>
+<td><code>string</code></td>
+<td>required</td>
+<td>HTML for the trigger button.</td>
+</tr>
+<tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>generated</td>
+<td>Unique dropdown menu id.</td>
+</tr>
+<tr>
+<td><code>items</code></td>
+<td><code>array</code></td>
+<td><code>None</code> / <code>none</code></td>
+<td>Optional structured menu item data. Use caller content when omitted.</td>
+</tr>
+<tr>
+<td><code>main_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the <code>.dropdown-menu</code> root.</td>
+</tr>
+<tr>
+<td><code>trigger_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the trigger button.</td>
+</tr>
+<tr>
+<td><code>popover_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the popover element.</td>
+</tr>
+<tr>
+<td><code>menu_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the menu element.</td>
+</tr>
+</tbody></table>
+</div>
+<h3 class="d-h3" id="t-popover"><code>popover()</code></h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>trigger</code></td>
+<td><code>string</code></td>
+<td>required</td>
+<td>HTML for the trigger button.</td>
+</tr>
+<tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>generated</td>
+<td>Unique popover id.</td>
+</tr>
+<tr>
+<td><code>main_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the <code>.popover</code> root.</td>
+</tr>
+<tr>
+<td><code>trigger_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the trigger button.</td>
+</tr>
+<tr>
+<td><code>popover_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the popover element.</td>
+</tr>
+</tbody></table>
+</div>
+<h3 class="d-h3" id="t-select"><code>select()</code></h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>generated</td>
+<td>Unique select id.</td>
+</tr>
+<tr>
+<td><code>selected</code></td>
+<td><code>string | array</code></td>
+<td><code>None</code> / <code>none</code></td>
+<td>Initial selected value or values.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>generated from <code>id</code></td>
+<td>Hidden input name.</td>
+</tr>
+<tr>
+<td><code>items</code></td>
+<td><code>array</code></td>
+<td><code>None</code> / <code>none</code></td>
+<td>Optional structured item data. Use caller content when omitted.</td>
+</tr>
+<tr>
+<td><code>multiple</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Enables multiple selection.</td>
+</tr>
+<tr>
+<td><code>placeholder</code></td>
+<td><code>string</code></td>
+<td><code>None</code> / <code>none</code></td>
+<td>Placeholder text for multiple mode with no selection.</td>
+</tr>
+<tr>
+<td><code>close_on_select</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Closes the popover after each option selection in multiple mode.</td>
+</tr>
+<tr>
+<td><code>format</code></td>
+<td><code>&quot;value&quot; | &quot;object&quot;</code></td>
+<td><code>&quot;value&quot;</code></td>
+<td>Hidden input serialization format.</td>
+</tr>
+<tr>
+<td><code>main_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the <code>.select</code> root.</td>
+</tr>
+<tr>
+<td><code>trigger_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the trigger button.</td>
+</tr>
+<tr>
+<td><code>popover_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the popover element.</td>
+</tr>
+<tr>
+<td><code>listbox_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the listbox.</td>
+</tr>
+<tr>
+<td><code>input_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the hidden input.</td>
+</tr>
+</tbody></table>
+</div>
+<h3 class="d-h3" id="t-sidebar"><code>sidebar()</code></h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td><code>None</code> / <code>none</code></td>
+<td>Optional sidebar id. Use one when multiple sidebars exist.</td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td><code>string</code></td>
+<td><code>&quot;Sidebar navigation&quot;</code></td>
+<td>Navigation landmark label.</td>
+</tr>
+<tr>
+<td><code>open</code></td>
+<td><code>boolean</code></td>
+<td><code>true</code></td>
+<td>Initial open state.</td>
+</tr>
+<tr>
+<td><code>side</code></td>
+<td><code>&quot;left&quot; | &quot;right&quot;</code></td>
+<td><code>&quot;left&quot;</code></td>
+<td>Side of the viewport.</td>
+</tr>
+<tr>
+<td><code>header</code></td>
+<td><code>string</code></td>
+<td><code>None</code> / <code>none</code></td>
+<td>HTML for the sidebar header.</td>
+</tr>
+<tr>
+<td><code>footer</code></td>
+<td><code>string</code></td>
+<td><code>None</code> / <code>none</code></td>
+<td>HTML for the sidebar footer.</td>
+</tr>
+<tr>
+<td><code>menu</code></td>
+<td><code>array</code></td>
+<td><code>None</code> / <code>none</code></td>
+<td>Optional structured menu data. Use caller content when omitted.</td>
+</tr>
+<tr>
+<td><code>main_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the <code>.sidebar</code> root.</td>
+</tr>
+<tr>
+<td><code>header_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the header.</td>
+</tr>
+<tr>
+<td><code>content_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the scrollable content section.</td>
+</tr>
+<tr>
+<td><code>footer_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the footer.</td>
+</tr>
+</tbody></table>
+</div>
+<h3 class="d-h3" id="t-tabs"><code>tabs()</code></h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>generated</td>
+<td>Unique tabs id.</td>
+</tr>
+<tr>
+<td><code>tabsets</code></td>
+<td><code>array</code></td>
+<td><code>[]</code></td>
+<td>Tab definitions. Each item can include <code>tab</code>, <code>panel</code>, <code>tab_attrs</code>, and <code>panel_attrs</code>.</td>
+</tr>
+<tr>
+<td><code>main_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the <code>.tabs</code> root.</td>
+</tr>
+<tr>
+<td><code>tablist_attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the tablist. Use <code>aria-orientation=&quot;vertical&quot;</code> or <code>data-variant=&quot;line&quot;</code> here.</td>
+</tr>
+<tr>
+<td><code>default_tab_index</code></td>
+<td><code>number</code></td>
+<td><code>1</code></td>
+<td>One-based index of the initially selected tab.</td>
+</tr>
+</tbody></table>
+</div>
+<h3 class="d-h3" id="t-toaster"><code>toaster()</code></h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td><code>&quot;toaster&quot;</code></td>
+<td>Toaster container id.</td>
+</tr>
+<tr>
+<td><code>toasts</code></td>
+<td><code>array</code></td>
+<td><code>[]</code></td>
+<td>Initial toast objects rendered inside the toaster.</td>
+</tr>
+<tr>
+<td><code>attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the <code>.toaster</code> container.</td>
+</tr>
+</tbody></table>
+</div>
+<h3 class="d-h3" id="t-toast"><code>toast()</code></h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>category</code></td>
+<td><code>&quot;success&quot; | &quot;error&quot; | &quot;info&quot; | &quot;warning&quot;</code></td>
+<td><code>&quot;success&quot;</code></td>
+<td>Toast category. Controls icon and ARIA role.</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td><code>string</code></td>
+<td><code>&quot;&quot;</code></td>
+<td>Toast title.</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>string</code></td>
+<td><code>&quot;&quot;</code></td>
+<td>Toast description.</td>
+</tr>
+<tr>
+<td><code>duration</code></td>
+<td><code>number</code></td>
+<td>default timeout</td>
+<td>Timeout in milliseconds. Use <code>-1</code> to keep the toast open.</td>
+</tr>
+<tr>
+<td><code>icon</code></td>
+<td><code>string</code></td>
+<td>category icon</td>
+<td>Custom icon HTML.</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td><code>object</code></td>
+<td><code>None</code> / <code>none</code></td>
+<td>Action button/link config. Supports <code>label</code>, <code>onclick</code>, and <code>href</code>.</td>
+</tr>
+<tr>
+<td><code>cancel</code></td>
+<td><code>object</code></td>
+<td><code>None</code> / <code>none</code></td>
+<td>Cancel button/link config. Supports <code>label</code>, <code>onclick</code>, and <code>href</code>.</td>
+</tr>
+<tr>
+<td><code>attrs</code></td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>Extra attributes for the <code>.toast</code> element.</td>
+</tr>
+</tbody></table>
+</div>

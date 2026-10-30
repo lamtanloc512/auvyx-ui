@@ -1,8 +1,11 @@
 """Collect component docs data for the docs site.
 
-- Upstream Basecoat components: examples from site/src/docs/components/*.mdx
-  (the <Preview> blocks), descriptions from shadcn/ui when a local checkout is
-  available (SHADCN_DOCS env var), else the first prose line of the mdx.
+- Upstream Basecoat components: examples from the <Preview> blocks of an
+  upstream Basecoat checkout's site/src/docs/components/*.mdx (BASECOAT_DOCS
+  env var; this fork no longer has site/), descriptions from shadcn/ui when a
+  local checkout is available (SHADCN_DOCS env var), else the first prose line
+  of the mdx. Reference sections (HTML structure, JavaScript API) are not
+  extracted: they live in packages/docs/src/data/notes/<component>.html.
 - Fork components: demos lifted from packages/ui/preview.html (already
   covered by the Playwright suites) plus a few hand-written examples.
 Writes packages/docs/src/data/components.json.
@@ -11,7 +14,9 @@ import json, os, re, pathlib, textwrap
 from bs4 import BeautifulSoup
 
 ROOT = pathlib.Path(__file__).resolve().parents[3]
-MDX = ROOT / "site/src/docs/components"
+MDX = pathlib.Path(os.environ.get("BASECOAT_DOCS", "/nonexistent"))
+if not MDX.is_dir():
+    raise SystemExit("Set BASECOAT_DOCS to <basecoat checkout>/site/src/docs/components (upstream Basecoat).")
 PREVIEW = ROOT / "packages/ui/preview.html"
 OUT = ROOT / "packages/docs/src/data/components.json"
 SHADCN = pathlib.Path(os.environ.get("SHADCN_DOCS", "/nonexistent"))

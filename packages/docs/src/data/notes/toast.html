@@ -1,0 +1,86 @@
+<p class="d-note">This component ships <code>toaster()</code> and <code>toast()</code> macros for Jinja and Nunjucks. See <a href="#templates">Templates</a>.</p>
+
+
+
+<h3 class="d-h3">HTML structure</h3>
+<dl>
+  <dt><code>&lt;div id="toaster" class="toaster"&gt;</code></dt>
+  <dd>Toast container. Optional <code>data-align</code> values are <code>start</code>, <code>center</code>, and <code>end</code>.</dd>
+  <dt><code>&lt;div class="toast"&gt;</code></dt>
+  <dd>
+    Toast item. Use <code>data-category="success|info|warning|error"</code> for category styling and <code>data-duration</code> to override the timeout in milliseconds. Use <code>data-duration="-1"</code> to keep it open.
+    <dl>
+      <dt><code>&lt;div class="toast-content"&gt;</code></dt>
+      <dd>
+        Content wrapper.
+        <dl>
+          <dt><code>&lt;svg aria-hidden="true"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+          <dd>Icon.</dd>
+          <dt><code>&lt;section&gt;</code></dt>
+          <dd>
+            Message region.
+            <dl>
+              <dt><code>&lt;h2&gt;</code></dt>
+              <dd>Title.</dd>
+              <dt><code>&lt;p&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+              <dd>Description.</dd>
+            </dl>
+          </dd>
+          <dt><code>&lt;footer&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+          <dd>Action buttons or links. Clicking a footer button or link closes the toast.</dd>
+        </dl>
+      </dd>
+    </dl>
+  </dd>
+</dl>
+
+<h3 class="d-h3">JavaScript API</h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>API</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>toaster.toast(config)</code></td>
+<td>Method</td>
+<td>Creates a toast from a config object and returns the inserted <code>.toast</code> element. See &quot;Config object&quot; below.</td>
+</tr>
+<tr>
+<td><code>toaster.closeAll()</code></td>
+<td>Method</td>
+<td>Closes every toast inside the toaster.</td>
+</tr>
+<tr>
+<td><code>toast.close()</code></td>
+<td>Method</td>
+<td>Closes one initialized toast element.</td>
+</tr>
+</tbody></table>
+</div>
+<h3 class="d-h3">Config object</h3>
+<div class="alert" data-variant="warning"><h2>Text is escaped by default</h2><section><code>title</code>, <code>description</code>, and action labels are inserted as plain text. With <code>html: true</code> they are inserted as HTML, so never pass untrusted user input with it. <code>onclick</code> is JavaScript code and must never contain user input. <code>icon</code> is always inserted as raw HTML (it is meant for SVG markup).</section></div>
+
+
+<dl>
+  <dt><code>duration</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>Timeout in milliseconds. Defaults to <code>3000</code>, or <code>5000</code> for error toasts. Use <code>-1</code> to keep it open.</dd>
+  <dt><code>category</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>Category of the toast, either <code>success</code>, <code>info</code>, <code>warning</code>, or <code>error</code>.</dd>
+  <dt><code>title</code></dt>
+  <dd>The title of the toast.</dd>
+  <dt><code>description</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>The description of the toast.</dd>
+  <dt><code>action</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>Primary action. Supports <code>label</code> with either <code>href</code> or <code>onclick</code>.</dd>
+  <dt><code>cancel</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>Secondary action. Supports <code>label</code> and optional <code>onclick</code>.</dd>
+  <dt><code>icon</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>Custom icon markup, usually an SVG. Inserted as raw HTML. Defaults to the category icon.</dd>
+  <dt><code>html</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>Set to <code>true</code> to insert <code>title</code>, <code>description</code>, and action labels as HTML instead of plain text. Defaults to <code>false</code>. Only use it with trusted content.</dd>
+</dl>
+
+<p>The Jinja and Nunjucks <code>toast()</code> macros render on your server, so your template engine&#39;s autoescaping applies to <code>title</code>, <code>description</code>, and labels there when it is enabled. Nunjucks enables it by default. With Jinja, make sure your environment&#39;s <code>autoescape</code> setting covers the Basecoat template files (for example <code>.html.jinja</code>). <code>icon</code> is output with <code>safe</code>, and <code>onclick</code> is output as an attribute, so neither should contain user input.</p>

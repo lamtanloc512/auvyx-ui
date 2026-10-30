@@ -1,0 +1,79 @@
+<p class="d-note">This component ships a <code>sidebar()</code> macro for Jinja and Nunjucks. See <a href="#templates">Templates</a>.</p>
+
+
+<p>Sidebar uses a native <code>&lt;aside&gt;</code> next to your page content. Auvyx owns the fixed positioning, overlay behavior, active states, nested lists, and <code>details</code> submenu styling. Your app still owns the navigation data and current route.</p>
+<h3 class="d-h3">RTL</h3>
+<p>Set <code>dir=&quot;rtl&quot;</code> on the sidebar or a parent element. Logical spacing, nested borders, and item content follow document direction. <code>data-side</code> is physical: <code>left</code> and <code>right</code> refer to viewport sides.</p>
+<div class="alert"><h2>Differences with shadcn/ui</h2><section>Auvyx keeps the sidebar plain HTML: no React provider, menu actions or skeleton API. On top of Basecoat's fixed left/right sidebars, mobile overlay, groups, active states and <code>details</code> submenus it adds <code>data-collapsible="icon"</code> (collapse to an icon rail), <code>data-variant="floating"</code> and <code>data-variant="inset"</code>, <code>data-position="static"</code> (in-flow sidebar) and <code>--sidebar-top</code> for a sticky site header. See the examples.</section></div>
+
+
+<h3 class="d-h3">HTML structure</h3>
+<p>Auvyx maps shadcn/ui&#39;s sidebar composition to regular navigation HTML: an <code>&lt;aside&gt;</code> root, one <code>&lt;nav&gt;</code>, optional header/footer regions, grouped lists, item controls, and native <code>&lt;details&gt;</code> for nested menus.</p>
+<dl>
+  <dt><code>&lt;aside class="sidebar"&gt;</code></dt>
+  <dd>
+    Sidebar root. Supports <code>id</code>, <code>data-side="left|right"</code>, <code>data-initial-open="false"</code>, <code>data-initial-mobile-open="true"</code>, and <code>data-breakpoint</code>. JavaScript manages <code>aria-hidden</code>, <code>inert</code>, and the internal <code>data-sidebar-initialized</code> flag.
+    <dl>
+      <dt><code>&lt;nav aria-label="..."&gt;</code></dt>
+      <dd>
+        Navigation landmark inside the sidebar.
+        <dl>
+          <dt><code>&lt;header&gt;</code></dt>
+          <dd>Optional header for branding, workspace controls, user controls, or persistent actions.</dd>
+          <dt><code>&lt;section&gt;</code></dt>
+          <dd>
+            Scrollable content region between the optional header and footer.
+            <dl>
+              <dt><code>&lt;div role="group" aria-labelledby="..."&gt;</code></dt>
+              <dd>Named navigation group. Use a heading element as the group label.</dd>
+              <dt><code>&lt;ul&gt;</code> + <code>&lt;li&gt;</code></dt>
+              <dd>
+                Menu and menu item structure. Top-level lists and nested submenu lists receive different spacing and borders.
+                <dl>
+                  <dt><code>&lt;a&gt;</code> / <code>&lt;button&gt;</code></dt>
+                  <dd>Menu item control. Use links for navigation and buttons for actions. Supports <code>data-variant="default|outline"</code>, <code>data-size="default|sm|lg"</code>, <code>data-active="true"</code>, <code>disabled</code> on buttons, and <code>aria-disabled="true"</code> on custom-disabled controls. For links, prefer <code>&lt;a aria-current="page"&gt;</code> for the current page. Add <code>data-keep-mobile-sidebar-open</code> on a clicked link, button, or ancestor when that control should not close the mobile sidebar.</dd>
+                  <dt><code>&lt;details&gt;</code> / <code>&lt;summary&gt;</code></dt>
+                  <dd>Native disclosure for collapsible submenus. Put the nested <code>&lt;ul&gt;</code> directly after <code>&lt;summary&gt;</code>. The <code>&lt;summary&gt;</code> supports the same active, variant, and size attributes as menu item controls. Add <code>id</code> and <code>aria-controls</code> when the relationship is not obvious from nearby markup.</dd>
+                  <dt><code>&lt;hr role="separator"&gt;</code></dt>
+                  <dd>Optional separator between groups or menu sections.</dd>
+                </dl>
+              </dd>
+            </dl>
+          </dd>
+          <dt><code>&lt;footer&gt;</code></dt>
+          <dd>Optional footer for account controls, status, or persistent actions.</dd>
+        </dl>
+      </dd>
+    </dl>
+  </dd>
+  <dt><code>&lt;main&gt;</code></dt>
+  <dd>Sibling content wrapper. The desktop margin applies to the sibling immediately after the sidebar.</dd>
+</dl>
+
+<p>Set <code>--sidebar-width</code> and <code>--sidebar-mobile-width</code> on <code>:root</code> or the sidebar root to override the default <code>16rem</code> desktop width and <code>18rem</code> mobile width.</p>
+<h3 class="d-h3">JavaScript API</h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>API</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>sidebar.open()</code></td>
+<td>Method</td>
+<td>Opens the sidebar.</td>
+</tr>
+<tr>
+<td><code>sidebar.close()</code></td>
+<td>Method</td>
+<td>Closes the sidebar.</td>
+</tr>
+<tr>
+<td><code>sidebar.toggle()</code></td>
+<td>Method</td>
+<td>Toggles the sidebar.</td>
+</tr>
+</tbody></table>
+</div>
