@@ -206,7 +206,7 @@ HTML = f"""<!doctype html>
   .sc-bar span {{ inline-size: 100%; border-radius: calc(var(--radius) - 4px) calc(var(--radius) - 4px) 0 0; background: var(--chart-2); }}
   .sc-bar:nth-child(3n+1) span {{ background: var(--chart-1); }} .sc-bar:nth-child(3n) span {{ background: var(--chart-3); }}
   .sc-bar small {{ font-size: .6875rem; color: var(--muted-foreground); }}
-  .sc-stats > div {{ display: grid; gap: .125rem; padding: .75rem; border: 1px solid var(--border); }}
+  .sc-stats > div {{ display: grid; gap: .25rem; padding: .75rem; border: 1px solid var(--border); }}
   .sc-stats > div:first-child {{ border-start-start-radius: var(--radius); border-end-start-radius: var(--radius); }}
   .sc-stats > div:last-child {{ border-start-end-radius: var(--radius); border-end-end-radius: var(--radius); border-inline-start-width: 0; }}
   .sc-stats small {{ font-size: .6875rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted-foreground); }}
