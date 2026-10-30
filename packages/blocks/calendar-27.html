@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calendar 27 · Auvyx UI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../ui/dist/auvyx.min.css">
+<script src="../ui/dist/auvyx.min.js" defer></script>
+<script>(function(){var r=document.documentElement,t=null;try{t=new URLSearchParams(location.search).get('theme')}catch(e){}var d=t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.classList.toggle('dark',d)})()</script>
+<style>
+  body { background: var(--background); }
+  .cal-box { border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
+  .cal-note { margin: 0; font-size: 0.875rem; color: var(--muted-foreground); text-align: center; text-wrap: balance; }
+  .cal-card { inline-size: fit-content; max-inline-size: 100%; }
+  .cal-card > section { display: flex; justify-content: center; }
+  .cal-card > section > .calendar { padding: 0; }
+  .cal-center { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+  .cover > .cal-center, .cover > .card, .cover > form, .cover > .calendar { inline-size: auto; }
+  .cal-row { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; }
+  .cal-row > .field { inline-size: auto; }
+  .cal-times { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; inline-size: 100%; }
+  .cal-times .field input { inline-size: 100%; }
+  input[type='time']::-webkit-calendar-picker-indicator { display: none; }
+
+  .cover > .cal-chart { inline-size: min(40rem, 100%); }
+  .cal-bars { display: flex; align-items: flex-end; gap: 2px; block-size: 12rem; }
+  .cal-bars > span { flex: 1; min-inline-size: 2px; border-radius: 3px 3px 0 0; background: var(--chart-2, var(--primary)); }
+  .card-action .date-picker > button:first-child { font-size: 0.8125rem; }
+  @media (width < 36rem) { .cal-chart > header { grid-template-columns: 1fr; } .cal-chart .card-action { grid-column: 1; grid-row: auto; justify-self: start; } }
+
+</style>
+</head>
+<body>
+<main class="cover"><div class="card cal-chart"><header><h2>Web Analytics</h2><p>Showing total visitors for the selected range</p><div class="card-action"><auvyx-date-picker class="date-picker" mode="range" data-align="end" id="range"><input type="date" name="from" value="2026-06-05"><input type="date" name="to" value="2026-06-20"></auvyx-date-picker></div></header><section><div class="cal-bars" id="bars" role="img" aria-label="Visitors per day"></div><p class="cal-note" id="total"></p></section></div></main>
+<script>const rand=s=>{let x=Math.sin(s)*10000;return x-Math.floor(x)};const day=d=>Math.floor(d/86400000);function draw(){const r=document.getElementById('range');const [a,b]=r.value.split('/');if(!a||!b)return;const s=new Date(a+'T00:00:00'),e=new Date(b+'T00:00:00');const vals=[];for(let d=new Date(s);d<=e;d.setDate(d.getDate()+1)){vals.push(Math.round(120+rand(day(d.getTime()))*380));}const max=Math.max(...vals);document.getElementById('bars').innerHTML=vals.map(v=>`<span style="block-size:${v/max*100}%" title="${v}"></span>`).join('');document.getElementById('total').textContent=`${vals.reduce((x,y)=>x+y,0).toLocaleString()} visitors over ${vals.length} days`;}document.getElementById('range').addEventListener('change',draw);customElements.whenDefined('auvyx-date-picker').then(()=>requestAnimationFrame(draw));</script>
+</body>
+</html>

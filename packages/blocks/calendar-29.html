@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calendar 29 · Auvyx UI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../ui/dist/auvyx.min.css">
+<script src="../ui/dist/auvyx.min.js" defer></script>
+<script>(function(){var r=document.documentElement,t=null;try{t=new URLSearchParams(location.search).get('theme')}catch(e){}var d=t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.classList.toggle('dark',d)})()</script>
+<style>
+  body { background: var(--background); }
+  .cal-box { border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
+  .cal-note { margin: 0; font-size: 0.875rem; color: var(--muted-foreground); text-align: center; text-wrap: balance; }
+  .cal-card { inline-size: fit-content; max-inline-size: 100%; }
+  .cal-card > section { display: flex; justify-content: center; }
+  .cal-card > section > .calendar { padding: 0; }
+  .cal-center { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+  .cover > .cal-center, .cover > .card, .cover > form, .cover > .calendar { inline-size: auto; }
+  .cal-row { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; }
+  .cal-row > .field { inline-size: auto; }
+  .cal-times { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; inline-size: 100%; }
+  .cal-times .field input { inline-size: 100%; }
+  input[type='time']::-webkit-calendar-picker-indicator { display: none; }
+
+  .cal-attach { display: block; inline-size: 18rem; }
+  .cal-attach > .input-group { anchor-name: --bc-popover; }
+  .cal-pop { padding: 0 !important; inline-size: auto !important; }
+  #nl-out { max-inline-size: 18rem; }
+</style>
+</head>
+<body>
+<main class="cover"><form onsubmit="event.preventDefault()" class="stack" data-gap="2"><div role="group" class="field"><label for="nl">Schedule Date</label><div class="popover cal-attach"><div class="input-group"><input id="nl" type="text" value="In 2 days" placeholder="Tomorrow or next week" autocomplete="off"><button type="button" class="btn" data-variant="ghost" data-size="icon-xs" data-align="inline-end" popovertarget="nl-pop" aria-label="Select date"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></button></div><div id="nl-pop" data-popover popover data-side="bottom" data-align="end" class="cal-pop"><auvyx-calendar class="calendar" id="cal"></auvyx-calendar></div></div><p id="nl-out" aria-live="polite"></p></div></form></main>
+<script>const pad=n=>String(n).padStart(2,'0');const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;const addDays=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);const today=new Date();const DAYS=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'],UNITS={day:1,days:1,week:7,weeks:7};function parse(s){s=s.trim().toLowerCase();if(!s)return null;if(s==='today'||s==='now')return today;if(s==='tomorrow')return addDays(today,1);if(s==='yesterday')return addDays(today,-1);let m=s.match(/^in (\d+|a|an|one|two|three) (day|days|week|weeks|month|months)$/);if(m){const n={a:1,an:1,one:1,two:2,three:3}[m[1]]||+m[1];if(m[2].startsWith('month'))return new Date(today.getFullYear(),today.getMonth()+n,today.getDate());return addDays(today,n*UNITS[m[2]]);}m=s.match(/^(next )?(sunday|monday|tuesday|wednesday|thursday|friday|saturday)$/);if(m){const t=DAYS.indexOf(m[2]);let diff=(t-today.getDay()+7)%7||7;if(m[1])diff+=diff<7?7:0;return addDays(today,diff);}if(s==='next week')return addDays(today,7);if(s==='next month')return new Date(today.getFullYear(),today.getMonth()+1,today.getDate());const d=new Date(s);return isNaN(d)?null:d;}const i=document.getElementById('nl'),c=document.getElementById('cal'),o=document.getElementById('nl-out'),p=document.getElementById('nl-pop');const long=d=>d.toLocaleDateString(undefined,{dateStyle:'full'});function sync(){const d=parse(i.value);o.innerHTML=d?`Your post will be published on <strong>${long(d)}</strong>.`:'Try “tomorrow”, “in 3 days” or “next friday”.';if(d){c.value=iso(d);c.goTo(d);}}c.addEventListener('change',e=>{const d=e.detail.dates[0];i.value=d.toLocaleDateString(undefined,{dateStyle:'medium'});o.innerHTML=`Your post will be published on <strong>${long(d)}</strong>.`;p.hidePopover();});i.addEventListener('input',sync);customElements.whenDefined('auvyx-calendar').then(sync);</script>
+</body>
+</html>

@@ -1,4 +1,164 @@
 {
+  "calendar-01": {
+    "title": "Calendar 01",
+    "description": "A simple calendar.",
+    "category": "calendar"
+  },
+  "calendar-02": {
+    "title": "Calendar 02",
+    "description": "Multiple months with single selection.",
+    "category": "calendar"
+  },
+  "calendar-03": {
+    "title": "Calendar 03",
+    "description": "Multiple months with multiple selection.",
+    "category": "calendar"
+  },
+  "calendar-04": {
+    "title": "Calendar 04",
+    "description": "Single month with range selection.",
+    "category": "calendar"
+  },
+  "calendar-05": {
+    "title": "Calendar 05",
+    "description": "Multiple months with range selection.",
+    "category": "calendar"
+  },
+  "calendar-06": {
+    "title": "Calendar 06",
+    "description": "Range selection with minimum days.",
+    "category": "calendar"
+  },
+  "calendar-07": {
+    "title": "Calendar 07",
+    "description": "Range selection with minimum and maximum days.",
+    "category": "calendar"
+  },
+  "calendar-08": {
+    "title": "Calendar 08",
+    "description": "Calendar with disabled days before today.",
+    "category": "calendar"
+  },
+  "calendar-09": {
+    "title": "Calendar 09",
+    "description": "Range calendar with disabled weekends.",
+    "category": "calendar"
+  },
+  "calendar-10": {
+    "title": "Calendar 10",
+    "description": "Calendar with a Today button.",
+    "category": "calendar"
+  },
+  "calendar-11": {
+    "title": "Calendar 11",
+    "description": "Range calendar limited to June and July.",
+    "category": "calendar"
+  },
+  "calendar-12": {
+    "title": "Calendar 12",
+    "description": "Localized calendar with a language selector.",
+    "category": "calendar"
+  },
+  "calendar-13": {
+    "title": "Calendar 13",
+    "description": "Calendar with a month and year dropdown.",
+    "category": "calendar"
+  },
+  "calendar-14": {
+    "title": "Calendar 14",
+    "description": "Calendar with booked dates.",
+    "category": "calendar"
+  },
+  "calendar-15": {
+    "title": "Calendar 15",
+    "description": "Calendar with week numbers.",
+    "category": "calendar"
+  },
+  "calendar-16": {
+    "title": "Calendar 16",
+    "description": "Calendar with start and end time.",
+    "category": "calendar"
+  },
+  "calendar-17": {
+    "title": "Calendar 17",
+    "description": "Calendar with inline time inputs.",
+    "category": "calendar"
+  },
+  "calendar-18": {
+    "title": "Calendar 18",
+    "description": "Calendar with a larger, responsive cell size.",
+    "category": "calendar"
+  },
+  "calendar-19": {
+    "title": "Calendar 19",
+    "description": "Calendar with quick presets.",
+    "category": "calendar"
+  },
+  "calendar-20": {
+    "title": "Calendar 20",
+    "description": "Calendar with a time slot picker and booking summary.",
+    "category": "calendar"
+  },
+  "calendar-21": {
+    "title": "Calendar 21",
+    "description": "Range calendar with custom day content.",
+    "category": "calendar"
+  },
+  "calendar-22": {
+    "title": "Calendar 22",
+    "description": "A date picker in a popover.",
+    "category": "calendar"
+  },
+  "calendar-23": {
+    "title": "Calendar 23",
+    "description": "A date range picker.",
+    "category": "calendar"
+  },
+  "calendar-24": {
+    "title": "Calendar 24",
+    "description": "A date and time picker.",
+    "category": "calendar"
+  },
+  "calendar-25": {
+    "title": "Calendar 25",
+    "description": "A date and time range picker.",
+    "category": "calendar"
+  },
+  "calendar-26": {
+    "title": "Calendar 26",
+    "description": "Check-in and check-out pickers with times.",
+    "category": "calendar"
+  },
+  "calendar-27": {
+    "title": "Calendar 27",
+    "description": "Web analytics chart filtered by a date range.",
+    "category": "calendar"
+  },
+  "calendar-28": {
+    "title": "Calendar 28",
+    "description": "A text input with an attached date picker.",
+    "category": "calendar"
+  },
+  "calendar-29": {
+    "title": "Calendar 29",
+    "description": "A date picker with natural language input.",
+    "category": "calendar"
+  },
+  "calendar-30": {
+    "title": "Calendar 30",
+    "description": "A range picker with compact range formatting.",
+    "category": "calendar"
+  },
+  "calendar-31": {
+    "title": "Calendar 31",
+    "description": "Calendar with events for the selected day.",
+    "category": "calendar"
+  },
+  "calendar-32": {
+    "title": "Calendar 32",
+    "description": "A date picker in a drawer, for mobile.",
+    "category": "calendar"
+  },
   "login-01": {
     "title": "Login 01",
     "description": "A simple login form.",

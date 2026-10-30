@@ -345,17 +345,22 @@
 
   /* Calendar */
   .calendar { @apply p-3; }
-  .calendar > header > h2 { @apply text-sm font-medium; }
-  .calendar > header > button { @apply hover:bg-muted focus-visible:ring-ring/50 rounded-md focus-visible:ring-3; }
-  .calendar > table th { @apply text-muted-foreground pb-1 text-[0.8rem]; }
-  .calendar > table td > button { @apply hover:bg-muted focus-visible:ring-ring/50 rounded-md text-sm font-normal focus-visible:relative focus-visible:z-10 focus-visible:ring-3; }
-  .calendar > table td[data-outside] > button { @apply text-muted-foreground; }
-  .calendar > table td > button[aria-current='date'] { @apply bg-muted text-foreground; }
-  .calendar > table td:is([aria-selected='true'], [data-range-start], [data-range-end]) > button { @apply bg-primary text-primary-foreground hover:bg-primary/90; }
-  .calendar > table td[data-range-middle] { @apply bg-muted; }
-  .calendar > table td[data-range-middle] > button { @apply text-foreground hover:bg-accent rounded-none bg-transparent; }
-  .calendar > table td[data-range-start]:not([data-range-end]) { @apply bg-muted rounded-s-md; }
-  .calendar > table td[data-range-end]:not([data-range-start]) { @apply bg-muted rounded-e-md; }
+  .calendar-month > header > h2 { @apply text-sm font-medium; }
+  .calendar-month > header > button { @apply hover:bg-muted focus-visible:ring-ring/50 rounded-md focus-visible:ring-3; }
+  .calendar-month .calendar-caption > select { @apply h-8 py-0 text-sm font-medium; }
+  .calendar-month > table th { @apply text-muted-foreground pb-1 text-[0.8rem]; }
+  .calendar-month > table th[data-week-number] { @apply text-muted-foreground/70 pe-1 pb-0 text-[0.75rem] align-middle; }
+  .calendar-month > table td > button { @apply hover:bg-muted focus-visible:ring-ring/50 rounded-md text-sm font-normal focus-visible:relative focus-visible:z-10 focus-visible:ring-3; }
+  .calendar-month > table td > button > small { @apply text-muted-foreground mt-0.5 text-[0.625rem]; }
+  .calendar-month > table td[data-outside] > button { @apply text-muted-foreground; }
+  .calendar-month > table td > button[aria-current='date'] { @apply bg-muted text-foreground; }
+  .calendar-month > table td:is([aria-selected='true'], [data-range-start], [data-range-end]) > button { @apply bg-primary text-primary-foreground hover:bg-primary/90; }
+  .calendar-month > table td:is([aria-selected='true'], [data-range-start], [data-range-end]) > button > small { @apply text-primary-foreground/80; }
+  .calendar-month > table td[data-range-middle] { @apply bg-muted; }
+  .calendar-month > table td[data-range-middle] > button { @apply text-foreground hover:bg-accent rounded-none bg-transparent; }
+  .calendar-month > table td[data-range-middle] > button > small { @apply text-muted-foreground; }
+  .calendar-month > table td[data-range-start]:not([data-range-end]) { @apply bg-muted rounded-s-md; }
+  .calendar-month > table td[data-range-end]:not([data-range-start]) { @apply bg-muted rounded-e-md; }
 
   /* Date Picker */
   .date-picker > button:first-child { @apply w-60 font-normal; }

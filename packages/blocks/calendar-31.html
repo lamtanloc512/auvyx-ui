@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calendar 31 · Auvyx UI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../ui/dist/auvyx.min.css">
+<script src="../ui/dist/auvyx.min.js" defer></script>
+<script>(function(){var r=document.documentElement,t=null;try{t=new URLSearchParams(location.search).get('theme')}catch(e){}var d=t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.classList.toggle('dark',d)})()</script>
+<style>
+  body { background: var(--background); }
+  .cal-box { border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
+  .cal-note { margin: 0; font-size: 0.875rem; color: var(--muted-foreground); text-align: center; text-wrap: balance; }
+  .cal-card { inline-size: fit-content; max-inline-size: 100%; }
+  .cal-card > section { display: flex; justify-content: center; }
+  .cal-card > section > .calendar { padding: 0; }
+  .cal-center { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+  .cover > .cal-center, .cover > .card, .cover > form, .cover > .calendar { inline-size: auto; }
+  .cal-row { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; }
+  .cal-row > .field { inline-size: auto; }
+  .cal-times { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; inline-size: 100%; }
+  .cal-times .field input { inline-size: 100%; }
+  input[type='time']::-webkit-calendar-picker-indicator { display: none; }
+
+  .cal-foot { border-block-start: 1px solid var(--border); padding-block-start: 1rem; }
+  .cal-evday { font-size: 0.875rem; font-weight: 500; }
+  .cal-events { display: flex; flex-direction: column; gap: 0.5rem; margin: 0; padding: 0; list-style: none; inline-size: 100%; }
+  .cal-events li { position: relative; border-radius: calc(var(--radius) - 2px); background: var(--muted); padding: 0.5rem 0.75rem 0.5rem 1.25rem; font-size: 0.875rem; }
+  .cal-events li::before { content: ''; position: absolute; inset-block: 0.5rem; inset-inline-start: 0.5rem; inline-size: 0.25rem; border-radius: 9999px; background: color-mix(in oklch, var(--primary) 70%, transparent); }
+  .cal-events small { display: block; color: var(--muted-foreground); font-size: 0.75rem; }
+  .cal-events .cal-none { background: none; padding-inline-start: 0; color: var(--muted-foreground); }
+  .cal-events .cal-none::before { display: none; }
+
+</style>
+</head>
+<body>
+<main class="cover"><div class="card cal-card" data-size="sm"><section><auvyx-calendar class="calendar" id="cal" value="2026-06-12" month="2026-06"></auvyx-calendar></section><footer class="cal-foot"><div class="stack" data-gap="2" style="inline-size:100%"><div class="cluster" data-justify="between"><strong id="ev-day" class="cal-evday"></strong><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Add event"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div><ul id="ev" class="cal-events"></ul></div></footer></div></main>
+<script>const EV={"2026-06-12": [["Team sync", "09:00 \u2013 09:30"], ["Design review", "11:00 \u2013 12:00"], ["Flight to Tokyo", "18:45"]], "2026-06-13": [["Check-in, Shinjuku", "15:00"]], "2026-06-15": [["Client workshop", "10:00 \u2013 16:00"]]};const c=document.getElementById('cal');function upd(){const v=c.value;const d=c.dates[0];document.getElementById('ev-day').textContent=d?d.toLocaleDateString(undefined,{day:'numeric',month:'long',year:'numeric'}):'';const list=EV[v]||[];document.getElementById('ev').innerHTML=list.length?list.map(([t,h])=>`<li>${t}<small>${h}</small></li>`).join(''):'<li class="cal-none">No events.</li>';}c.addEventListener('change',upd);customElements.whenDefined('auvyx-calendar').then(upd);</script>
+</body>
+</html>
