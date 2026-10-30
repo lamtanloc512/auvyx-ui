@@ -30,11 +30,10 @@ Auvyx contains no licensing, payment or tier logic. Paid source must never be co
 - [x] Icon libraries: Lucide, Tabler, HugeIcons, Phosphor, Remix (docs, previews, registry).
 - [x] Motion layer (`src/css/motion`), squircle corners (native + Monoco fallback).
 - [x] Per-component JS modules (`dist/js/`) and docs labels for components that need JavaScript.
-- [x] Web Components edition: `<auvyx-tabs>`, `<auvyx-select>` (`dist/wc/`), tested in React 19 and Vue 3.
+- [x] Web Components edition for every component with behavior: tabs, select, combobox, command, dropdown-menu, popover, accordion, sidebar, toaster, slider, drawer (`dist/wc/`), tested in React 19 and Vue 3.
 
 ## Next (Auvyx)
 
-- [ ] Web Components edition for the remaining behaviors: combobox, command, dropdown-menu, popover, accordion, sidebar, toast, slider, drawer.
 - [ ] Custom Elements Manifest and generated TypeScript/JSX/Vue types.
 - [ ] Registry framework variants: React (JSX) output next to HTML, `--framework` in the CLI.
 - [ ] Registry items for components (`registry:ui`), not only blocks.

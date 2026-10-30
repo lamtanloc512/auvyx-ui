@@ -509,12 +509,7 @@
     }).join('');
     const toc = c.examples.slice(1).map((ex, n) => `<li><a href="#c-${key}" data-scroll="ex-${n + 1}">${esc(ex.title)}</a></li>`).join('');
     const wc = D.wcModules[key];
-    const wcSection = wc ? `<h2 class="d-h2" id="web-component">Web Component</h2><div class="d-prose">
-      <p>The Web Components edition wraps the same markup in <code>&lt;${wc.tag}&gt;</code> and adds a <code>value</code> property (also an attribute) and a <code>change</code> event. Setting <code>value</code> from code does not fire <code>change</code>, like native inputs. Load <code>${wc.file}</code> instead of <code>js/${key}.min.js</code>.</p>
-      ${codeBox(`<${wc.tag} value="…">\n  <!-- the HTML markup above, unchanged -->\n</${wc.tag}>\n<script src="${CDN}/${wc.file}" defer><\/script>`)}
-      <p>React 19:</p>${codeBox(`const [value, setValue] = useState("…");\n\n<${wc.tag} value={value} onChange={(e) => setValue(e.target.value)}>\n  {/* the markup, as JSX */}\n</${wc.tag}>`, 'Component.jsx')}
-      <p>Vue 3 (with <code>isCustomElement</code> set for <code>auvyx-</code> tags):</p>${codeBox(`<${wc.tag} :value="value" @change="value = $event.target.value">\n  <!-- the markup -->\n</${wc.tag}>`, 'Component.vue')}
-    </div>` : '';
+    const wcSection = wc ? webComponentDocs(key, wc) : '';
     return `<div class="d-page" data-component="${esc(key)}"><article>
       <div class="d-crumb">Components ${ICON(I.chev)} <span>${esc(c.title)}</span></div>
       <h1 class="d-h1">${esc(c.title)}</h1><p class="d-lead">${esc(c.description)}</p>
@@ -550,6 +545,44 @@
       usage.innerHTML = '<p>Styles ship in <code>auvyx.min.css</code>. No JavaScript is needed.</p>';
     }
     usage.querySelectorAll('.d-code pre code').forEach((c) => { if (!c.querySelector('span')) c.innerHTML = highlight(c.textContent); });
+  }
+
+  // "Web Component" section of a component page, from dist/wc/manifest.json.
+  function webComponentDocs(key, wc) {
+    const { props = {}, events = {}, methods = {} } = wc.api || {};
+    const cap = (d) => esc(d[0].toUpperCase() + d.slice(1));
+    const rows = [
+      ...Object.entries(props).map(([n, d]) => `<tr><td><code>${n}</code></td><td>Property and attribute</td><td>${cap(d)}</td></tr>`),
+      ...Object.entries(events).map(([n, d]) => `<tr><td><code>${n}</code></td><td>Event</td><td>${cap(d)}</td></tr>`),
+      ...Object.entries(methods).map(([n, d]) => `<tr><td><code>${esc(n)}</code></td><td>Method</td><td>${cap(d)}</td></tr>`),
+    ].join('');
+    const prop = Object.keys(props)[0];
+    const evs = Object.keys(events);
+    const ev = prop === 'open' ? 'toggle' : evs[0];
+    // React 19 maps onChange/onInput to these events on custom elements, but onToggle and onSelect are
+    // React's own synthetic events: use the lowercase ontoggle / onselect for custom elements.
+    const reactProp = (e) => (e === 'toggle' || e === 'select' ? `on${e}` : `on${e[0].toUpperCase()}${e.slice(1)}`);
+    const read = prop === 'open' ? 'e.target.open' : 'e.target.value';
+    let react, vue;
+    if (prop) {
+      const init = prop === 'open' ? 'false' : '"…"';
+      react = `const [${prop}, set${prop[0].toUpperCase()}${prop.slice(1)}] = useState(${init});\n\n<${wc.tag} ${prop}={${prop}} ${reactProp(ev)}={(e) => set${prop[0].toUpperCase()}${prop.slice(1)}(${read})}>\n  {/* the markup, as JSX */}\n</${wc.tag}>`;
+      vue = `<${wc.tag} :${prop}="${prop}" @${ev}="${prop} = $event.target.${prop}">\n  <!-- the markup -->\n</${wc.tag}>`;
+    } else if (evs.length) {
+      react = `<${wc.tag} ${reactProp(evs[0])}={(e) => console.log(e.detail.value)}>\n  {/* the markup, as JSX */}\n</${wc.tag}>`;
+      vue = `<${wc.tag} @${evs[0]}="(e) => console.log(e.detail.value)">\n  <!-- the markup -->\n</${wc.tag}>`;
+    } else {
+      react = `const toaster = useRef(null);\n\n<${wc.tag} ref={toaster}>{/* the markup */}</${wc.tag}>\n<button onClick={() => toaster.current.toast({ title: "Saved" })}>Save</button>`;
+      vue = `<${wc.tag} ref="toaster"><!-- the markup --></${wc.tag}>\n<button @click="$refs.toaster.toast({ title: 'Saved' })">Save</button>`;
+    }
+    const silent = prop === 'open' ? '<code>toggle</code> fires on every open or close, like <code>&lt;details&gt;</code>.' : prop ? 'Setting <code>value</code> from code does not fire events, like native inputs.' : '';
+    return `<h2 class="d-h2" id="web-component">Web Component</h2><div class="d-prose">
+      <p>The Web Components edition wraps the same markup in <code>&lt;${wc.tag}&gt;</code>. Load <code>${wc.file}</code> instead of <code>js/${key}.min.js</code>; it includes the behavior. ${silent}</p>
+      ${codeBox(`<${wc.tag}${prop === 'value' ? ' value="…"' : prop === 'open' ? ' open' : ''}>\n  <!-- the HTML markup above, unchanged -->\n</${wc.tag}>\n<script src="${CDN}/${wc.file}" defer><\/script>`)}
+      <div class="d-tablewrap"><table><thead><tr><th>Name</th><th>Kind</th><th>Description</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <p>React 19:</p>${codeBox(react, 'Component.jsx')}
+      <p>Vue 3 (with <code>isCustomElement</code> set for <code>auvyx-</code> tags):</p>${codeBox(vue, 'Component.vue')}
+    </div>`;
   }
 
   function blockCard(b) {
