@@ -1,0 +1,686 @@
+{
+ "app-window": [
+  "app-window",
+  "browser",
+  "app-window",
+  "window-line"
+ ],
+ "archive": [
+  "archive",
+  "archive-02",
+  "archive",
+  "archive-line"
+ ],
+ "arrow-down": [
+  "arrow-down",
+  "arrow-down-02",
+  "arrow-down",
+  "arrow-down-line"
+ ],
+ "arrow-left": [
+  "arrow-left",
+  "arrow-left-01",
+  "arrow-left",
+  "arrow-left-line"
+ ],
+ "arrow-right": [
+  "arrow-right",
+  "arrow-right-02",
+  "arrow-right",
+  "arrow-right-line"
+ ],
+ "arrow-right-left": [
+  "arrows-exchange",
+  "arrow-data-transfer-horizontal",
+  "arrows-left-right",
+  "arrow-left-right-line"
+ ],
+ "arrow-up": [
+  "arrow-up",
+  "arrow-up-02",
+  "arrow-up",
+  "arrow-up-line"
+ ],
+ "arrow-up-right": [
+  "arrow-up-right",
+  "arrow-up-right-01",
+  "arrow-up-right",
+  "arrow-right-up-line"
+ ],
+ "audio-lines": [
+  "wave-sine",
+  "audio-wave-01",
+  "waveform",
+  "voiceprint-line"
+ ],
+ "bell": [
+  "bell",
+  "notification-01",
+  "bell",
+  "notification-3-line"
+ ],
+ "bold": [
+  "bold",
+  "text-bold",
+  "text-b",
+  "bold"
+ ],
+ "book": [
+  "book-2",
+  "book-02",
+  "book",
+  "book-2-line"
+ ],
+ "book-open": [
+  "book",
+  "book-open-01",
+  "book-open",
+  "book-open-line"
+ ],
+ "bookmark": [
+  "bookmark",
+  "bookmark-02",
+  "bookmark-simple",
+  "bookmark-line"
+ ],
+ "bot": [
+  "robot",
+  "robotic",
+  "robot",
+  "robot-2-line"
+ ],
+ "box": [
+  "box",
+  "package",
+  "package",
+  "box-3-line"
+ ],
+ "building": [
+  "building",
+  "building-03",
+  "buildings",
+  "building-line"
+ ],
+ "building-2": [
+  "building-bank",
+  "bank",
+  "bank",
+  "bank-line"
+ ],
+ "calculator": [
+  "calculator",
+  "calculator",
+  "calculator",
+  "calculator-line"
+ ],
+ "calendar": [
+  "calendar",
+  "calendar-03",
+  "calendar-blank",
+  "calendar-line"
+ ],
+ "car": [
+  "car",
+  "car-01",
+  "car",
+  "car-line"
+ ],
+ "chart-column": [
+  "chart-bar",
+  "chart-column",
+  "chart-bar",
+  "bar-chart-2-line"
+ ],
+ "check": [
+  "check",
+  "tick-02",
+  "check",
+  "check-line"
+ ],
+ "chevron-down": [
+  "chevron-down",
+  "arrow-down-01",
+  "caret-down",
+  "arrow-down-s-line"
+ ],
+ "chevron-left": [
+  "chevron-left",
+  "arrow-left-01",
+  "caret-left",
+  "arrow-left-s-line"
+ ],
+ "chevron-right": [
+  "chevron-right",
+  "arrow-right-01",
+  "caret-right",
+  "arrow-right-s-line"
+ ],
+ "chevrons-up-down": [
+  "selector",
+  "unfold-more",
+  "caret-up-down",
+  "expand-up-down-line"
+ ],
+ "circle-alert": [
+  "alert-circle",
+  "alert-circle",
+  "warning-circle",
+  "error-warning-line"
+ ],
+ "circle-check": [
+  "circle-check",
+  "checkmark-circle-02",
+  "check-circle",
+  "checkbox-circle-line"
+ ],
+ "circle-fading-plus": [
+  "circle-dashed-plus",
+  "add-circle",
+  "plus-circle",
+  "add-circle-line"
+ ],
+ "clipboard-paste": [
+  "clipboard",
+  "task-01",
+  "clipboard-text",
+  "clipboard-line"
+ ],
+ "clock": [
+  "clock",
+  "clock-01",
+  "clock",
+  "time-line"
+ ],
+ "clock-4": [
+  "clock",
+  "clock-02",
+  "clock",
+  "time-line"
+ ],
+ "cloud": [
+  "cloud",
+  "cloud",
+  "cloud",
+  "cloud-line"
+ ],
+ "code": [
+  "code",
+  "source-code",
+  "code",
+  "code-line"
+ ],
+ "coffee": [
+  "coffee",
+  "coffee-01",
+  "coffee",
+  "cup-line"
+ ],
+ "command": [
+  "command",
+  "command",
+  "command",
+  "command-line"
+ ],
+ "copy": [
+  "copy",
+  "copy-01",
+  "copy",
+  "file-copy-line"
+ ],
+ "credit-card": [
+  "credit-card",
+  "credit-card",
+  "credit-card",
+  "bank-card-line"
+ ],
+ "dot": [
+  "point",
+  "circle",
+  "dot",
+  "circle-fill"
+ ],
+ "download": [
+  "download",
+  "download-04",
+  "download-simple",
+  "download-line"
+ ],
+ "ellipsis": [
+  "dots",
+  "more-horizontal",
+  "dots-three",
+  "more-line"
+ ],
+ "external-link": [
+  "external-link",
+  "link-square-02",
+  "arrow-square-out",
+  "external-link-line"
+ ],
+ "eye-off": [
+  "eye-off",
+  "view-off",
+  "eye-slash",
+  "eye-off-line"
+ ],
+ "file": [
+  "file",
+  "file-01",
+  "file",
+  "file-line"
+ ],
+ "file-code": [
+  "file-code",
+  "file-script",
+  "file-code",
+  "file-code-line"
+ ],
+ "file-text": [
+  "file-text",
+  "file-01",
+  "file-text",
+  "file-text-line"
+ ],
+ "folder": [
+  "folder",
+  "folder-01",
+  "folder",
+  "folder-line"
+ ],
+ "folder-code": [
+  "folder-code",
+  "folder-code",
+  "folder-simple",
+  "folder-5-line"
+ ],
+ "folder-plus": [
+  "folder-plus",
+  "folder-add",
+  "folder-plus",
+  "folder-add-line"
+ ],
+ "frame": [
+  "frame",
+  "frame",
+  "frame-corners",
+  "crop-line"
+ ],
+ "gallery-horizontal": [
+  "layout-columns",
+  "layout-3-column",
+  "columns",
+  "layout-column-line"
+ ],
+ "help-circle": [
+  "help-circle",
+  "help-circle",
+  "question",
+  "question-line"
+ ],
+ "house": [
+  "home",
+  "home-01",
+  "house",
+  "home-line"
+ ],
+ "image": [
+  "photo",
+  "image-01",
+  "image",
+  "image-line"
+ ],
+ "inbox": [
+  "inbox",
+  "inbox",
+  "tray",
+  "inbox-line"
+ ],
+ "info": [
+  "info-circle",
+  "information-circle",
+  "info",
+  "information-line"
+ ],
+ "italic": [
+  "italic",
+  "text-italic",
+  "text-italic",
+  "italic"
+ ],
+ "layout-dashboard": [
+  "layout-dashboard",
+  "dashboard-square-01",
+  "squares-four",
+  "dashboard-line"
+ ],
+ "layout-grid": [
+  "layout-grid",
+  "grid-view",
+  "squares-four",
+  "layout-grid-line"
+ ],
+ "life-buoy": [
+  "lifebuoy",
+  "help-circle",
+  "lifebuoy",
+  "lifebuoy-line"
+ ],
+ "list": [
+  "list",
+  "left-to-right-list-bullet",
+  "list-bullets",
+  "list-unordered"
+ ],
+ "list-filter-plus": [
+  "filter-plus",
+  "filter-add",
+  "funnel",
+  "filter-line"
+ ],
+ "loader-circle": [
+  "loader-2",
+  "loading-03",
+  "circle-notch",
+  "loader-4-line"
+ ],
+ "lock": [
+  "lock",
+  "square-lock-02",
+  "lock",
+  "lock-line"
+ ],
+ "log-out": [
+  "logout",
+  "logout-01",
+  "sign-out",
+  "logout-box-line"
+ ],
+ "mail": [
+  "mail",
+  "mail-01",
+  "envelope-simple",
+  "mail-line"
+ ],
+ "mail-check": [
+  "mail-check",
+  "mail-validation-01",
+  "envelope-simple-open",
+  "mail-check-line"
+ ],
+ "map": [
+  "map",
+  "maps",
+  "map-trifold",
+  "map-2-line"
+ ],
+ "menu": [
+  "menu-2",
+  "menu-01",
+  "list",
+  "menu-line"
+ ],
+ "message-square": [
+  "message",
+  "message-01",
+  "chat-centered",
+  "message-2-line"
+ ],
+ "minus": [
+  "minus",
+  "minus-sign",
+  "minus",
+  "subtract-line"
+ ],
+ "monitor": [
+  "device-desktop",
+  "computer",
+  "monitor",
+  "computer-line"
+ ],
+ "moon": [
+  "moon",
+  "moon-02",
+  "moon",
+  "moon-line"
+ ],
+ "paint-bucket": [
+  "bucket-droplet",
+  "paint-bucket",
+  "paint-bucket",
+  "paint-fill"
+ ],
+ "panel-left": [
+  "layout-sidebar",
+  "sidebar-left",
+  "sidebar-simple",
+  "side-bar-line"
+ ],
+ "pie-chart": [
+  "chart-pie",
+  "pie-chart",
+  "chart-pie",
+  "pie-chart-line"
+ ],
+ "plus": [
+  "plus",
+  "plus-sign",
+  "plus",
+  "add-line"
+ ],
+ "refresh-ccw": [
+  "refresh",
+  "refresh",
+  "arrows-counter-clockwise",
+  "refresh-line"
+ ],
+ "rotate-ccw": [
+  "rotate",
+  "rotate-left-01",
+  "arrow-counter-clockwise",
+  "anticlockwise-line"
+ ],
+ "scissors": [
+  "scissors",
+  "scissor-01",
+  "scissors",
+  "scissors-line"
+ ],
+ "search": [
+  "search",
+  "search-01",
+  "magnifying-glass",
+  "search-line"
+ ],
+ "send": [
+  "send",
+  "sent",
+  "paper-plane-tilt",
+  "send-plane-line"
+ ],
+ "settings": [
+  "settings",
+  "settings-01",
+  "gear",
+  "settings-3-line"
+ ],
+ "settings-2": [
+  "adjustments-horizontal",
+  "settings-02",
+  "sliders-horizontal",
+  "equalizer-line"
+ ],
+ "shapes": [
+  "triangle-square-circle",
+  "shapes",
+  "shapes",
+  "shapes-line"
+ ],
+ "shield-alert": [
+  "shield-exclamation",
+  "shield-01",
+  "shield-warning",
+  "shield-line"
+ ],
+ "shopping-cart": [
+  "shopping-cart",
+  "shopping-cart-01",
+  "shopping-cart",
+  "shopping-cart-line"
+ ],
+ "shuffle": [
+  "arrows-shuffle",
+  "shuffle",
+  "shuffle",
+  "shuffle-line"
+ ],
+ "sliders-horizontal": [
+  "adjustments-horizontal",
+  "sliders-horizontal",
+  "sliders-horizontal",
+  "equalizer-2-line"
+ ],
+ "smartphone": [
+  "device-mobile",
+  "smart-phone-01",
+  "device-mobile",
+  "smartphone-line"
+ ],
+ "smile": [
+  "mood-smile",
+  "smile",
+  "smiley",
+  "emotion-happy-line"
+ ],
+ "sparkles": [
+  "sparkles",
+  "sparkles",
+  "sparkle",
+  "sparkling-line"
+ ],
+ "square": [
+  "square",
+  "square",
+  "square",
+  "checkbox-blank-line"
+ ],
+ "square-terminal": [
+  "terminal-2",
+  "command-line",
+  "terminal-window",
+  "terminal-box-line"
+ ],
+ "star": [
+  "star",
+  "star",
+  "star",
+  "star-line"
+ ],
+ "sun": [
+  "sun",
+  "sun-03",
+  "sun",
+  "sun-line"
+ ],
+ "tablet": [
+  "device-tablet",
+  "tablet-01",
+  "device-tablet",
+  "tablet-line"
+ ],
+ "target": [
+  "target",
+  "target-02",
+  "target",
+  "focus-3-line"
+ ],
+ "terminal": [
+  "terminal",
+  "command-line",
+  "terminal",
+  "terminal-line"
+ ],
+ "trash": [
+  "trash",
+  "delete-02",
+  "trash",
+  "delete-bin-line"
+ ],
+ "trash-2": [
+  "trash",
+  "delete-02",
+  "trash",
+  "delete-bin-line"
+ ],
+ "trending-down": [
+  "trending-down",
+  "chart-down",
+  "trend-down",
+  "arrow-right-down-line"
+ ],
+ "trending-up": [
+  "trending-up",
+  "chart-up",
+  "trend-up",
+  "arrow-right-up-line"
+ ],
+ "triangle-alert": [
+  "alert-triangle",
+  "alert-02",
+  "warning",
+  "error-warning-line"
+ ],
+ "tv": [
+  "device-tv",
+  "tv-01",
+  "television",
+  "tv-2-line"
+ ],
+ "upload": [
+  "upload",
+  "upload-04",
+  "upload-simple",
+  "upload-line"
+ ],
+ "user": [
+  "user",
+  "user",
+  "user",
+  "user-line"
+ ],
+ "users": [
+  "users",
+  "user-group",
+  "users",
+  "group-line"
+ ],
+ "verified": [
+  "rosette-discount-check",
+  "checkmark-badge-01",
+  "seal-check",
+  "verified-badge-line"
+ ],
+ "wallet": [
+  "wallet",
+  "wallet-01",
+  "wallet",
+  "wallet-line"
+ ],
+ "x": [
+  "x",
+  "cancel-01",
+  "x",
+  "close-line"
+ ],
+ "zoom-in": [
+  "zoom-in",
+  "zoom-in-area",
+  "magnifying-glass-plus",
+  "zoom-in-line"
+ ],
+ "zoom-out": [
+  "zoom-out",
+  "zoom-out-area",
+  "magnifying-glass-minus",
+  "zoom-out-line"
+ ]
+}

@@ -10,6 +10,8 @@
     // Tailwind 600 (500 for the light hues, which take a dark foreground).
     const THEMES = [['Default'], ['Red', 0.577, 0.245, 27.3], ['Orange', 0.646, 0.222, 41.1], ['Amber', 0.769, 0.188, 70.1, 1], ['Yellow', 0.795, 0.184, 86, 1], ['Lime', 0.768, 0.233, 130.9, 1], ['Green', 0.627, 0.194, 149.2], ['Emerald', 0.596, 0.145, 163.2], ['Teal', 0.6, 0.118, 184.7], ['Cyan', 0.609, 0.126, 221.7], ['Sky', 0.588, 0.158, 242], ['Blue', 0.546, 0.245, 262.9], ['Indigo', 0.511, 0.262, 277], ['Violet', 0.541, 0.281, 293], ['Purple', 0.558, 0.288, 302.3], ['Fuchsia', 0.591, 0.293, 322.9], ['Pink', 0.592, 0.249, 0.6], ['Rose', 0.586, 0.253, 17.6]];
     const FONTS = [['Geist', 'sans-serif'], ['Inter', 'sans-serif'], ['Figtree', 'sans-serif'], ['Manrope', 'sans-serif'], ['DM Sans', 'sans-serif'], ['Outfit', 'sans-serif'], ['Plus Jakarta Sans', 'sans-serif'], ['Public Sans', 'sans-serif'], ['Noto Sans', 'sans-serif'], ['Nunito Sans', 'sans-serif'], ['IBM Plex Sans', 'sans-serif'], ['Space Grotesk', 'sans-serif'], ['Lora', 'serif'], ['Playfair Display', 'serif'], ['Merriweather', 'serif'], ['JetBrains Mono', 'monospace'], ['System', 'system']];
+    // Label -> icons.js set key. Inline icons are Lucide; icons.js swaps the others in.
+    const ICON_LIBS = [['Lucide', 'lucide'], ['Tabler', 'tabler'], ['HugeIcons', 'hugeicons'], ['Phosphor', 'ph'], ['Remix', 'ri']];
     const OPTS = {
       style: { label: 'Style', items: ['Vega', 'Nova', 'Maia', 'Lyra', 'Mira', 'Luma', 'Sera', 'Rhea'] },
       base: { label: 'Base Color', items: BASES.map((b) => b[0]) },
@@ -17,6 +19,7 @@
       chart: { label: 'Chart Color', items: THEMES.map((t) => t[0]) },
       heading: { label: 'Heading', items: ['Inherit', ...FONTS.map((f) => f[0])] },
       font: { label: 'Font', items: FONTS.map((f) => f[0]) },
+      icons: { label: 'Icon Library', items: ICON_LIBS.map((l) => l[0]) },
       radius: { label: 'Radius', items: ['0', '0.3', '0.45', '0.625', '0.75', '1'], fmt: (v) => (v === '0' ? 'None' : v + 'rem') },
       corners: { label: 'Corners', items: ['Round', 'Squircle', 'Smooth', 'Bevel', 'Scoop', 'Notch'] },
       menu: { label: 'Menu', items: ['Default', 'Translucent'] },
@@ -24,11 +27,12 @@
     };
     const KEYS = Object.keys(OPTS);
     const CORNER_CSS = { Round: 'round', Squircle: 'squircle', Smooth: 'superellipse(1.5)', Bevel: 'bevel', Scoop: 'scoop', Notch: 'notch' };
-    const DEFAULT = { style: 0, base: 0, theme: 0, chart: 0, heading: 0, font: 1, radius: 3, corners: 1, menu: 0, accent: 0 };
+    const DEFAULT = { style: 0, base: 0, theme: 0, chart: 0, heading: 0, font: 1, icons: 0, radius: 3, corners: 1, menu: 0, accent: 0 };
     const STORE = 'auvyx-create';
     let state = { ...DEFAULT, imported: null };
     try { const s = JSON.parse(localStorage.getItem(STORE) || 'null'); if (s) state = { ...state, ...s }; } catch (e) {}
 
+    const iconLib = () => ICON_LIBS[state.icons]?.[1] || 'lucide';
     const pick = (k) => OPTS[k].items[state[k]] ?? OPTS[k].items[0];
     const fmt = (k, v) => (OPTS[k].fmt ? OPTS[k].fmt(v) : v);
 
@@ -121,6 +125,7 @@
       lines.push(`<link rel="stylesheet" href="${CDN}/styles/${styleFile()}">`);
       lines.push('<style>', css().replace(/^/gm, '  '), '</style>');
       lines.push(`<script src="${CDN}/auvyx.min.js" defer><\/script>`);
+      if (iconLib() !== 'lucide') lines.push(`<!-- Icons: ${pick('icons')}. Copied blocks use inline Lucide SVGs; swap them for ${pick('icons')} icons. -->`);
       if (tokens().shared['corner-shape'] !== 'round') lines.push(`<!-- corner-shape is native in Chrome 139+; Monoco draws it elsewhere -->`, `<script src="${CDN}/auvyx.corners.min.js" defer><\/script>`);
       return lines.join('\n');
     }
@@ -168,6 +173,7 @@
     };
     const ROW_ICON = {
       style: '<rect width="18" height="18" x="3" y="3" rx="2"/>',
+      icons: '<path d="M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z"/><rect x="3" y="14" width="7" height="7" rx="1"/><circle cx="17.5" cy="17.5" r="3.5"/>',
       radius: '<path d="M4 20V10a6 6 0 0 1 6-6h10"/>',
       corners: '<path d="M4 20v-9l7-7h9"/>',
       menu: '<path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/>',
@@ -209,7 +215,7 @@
         <aside class="d-cr-panel dark" id="cr-panel" aria-label="Preset options">${panel()}</aside>
         <div class="d-cr-stage"><iframe id="cr-frame" data-preview title="Theme preview" src="create-preview.html"></iframe></div>
       </div>
-      ${dlg('cr-open', 'Open Preset', 'Paste a preset code to load its options.', `<input class="input" id="cr-code" placeholder="--preset 0000013100" autocomplete="off" spellcheck="false" aria-label="Preset code"><p class="d-cr-err" id="cr-code-err" hidden>That code is not valid.</p>`, '<button type="button" class="btn" data-cr="open">Open</button>')}
+      ${dlg('cr-open', 'Open Preset', 'Paste a preset code to load its options.', `<input class="input" id="cr-code" placeholder="--preset 00000103100" autocomplete="off" spellcheck="false" aria-label="Preset code"><p class="d-cr-err" id="cr-code-err" hidden>That code is not valid.</p>`, '<button type="button" class="btn" data-cr="open">Open</button>')}
       ${dlg('cr-import', 'Import theme', 'Paste the CSS from tweakcn.com (Code → CSS, the <code>:root</code> and <code>.dark</code> blocks) or a shadcn registry JSON. Colors, fonts, radius, shadows, tracking and spacing apply.', `<textarea class="textarea d-cr-ta" id="cr-theme-src" rows="10" spellcheck="false" placeholder=":root {&#10;  --background: oklch(1 0 0);&#10;  --primary: oklch(0.62 0.19 260);&#10;  …&#10;}&#10;.dark { … }" aria-label="Theme CSS or JSON"></textarea><p class="d-cr-err" id="cr-theme-err" hidden></p>`, '<button type="button" class="btn" data-cr="import">Apply theme</button>')}
       ${dlg('cr-css', 'Theme CSS', 'Paste after the Auvyx stylesheet.', '<div id="cr-css-body"></div>')}
       ${dlg('cr-init', 'Initialize Project', 'Put this in your <code>&lt;head&gt;</code>. Everything is CDN-hosted; no build step.', '<div id="cr-init-body"></div>')}`;
@@ -228,19 +234,21 @@
     const stylePack = (prefix) => (state.style ? `${prefix}dist/styles/${styleFile()}` : '');
     // Standalone block pages (opened in a new tab) read this to apply the same preset.
     function publish() {
-      try { localStorage.setItem('auvyx-preset', JSON.stringify({ css: css(), style: state.style ? styleFile() : '', fonts: fontsHref() })); } catch (e) {}
+      try { localStorage.setItem('auvyx-preset', JSON.stringify({ css: css(), style: state.style ? styleFile() : '', fonts: fontsHref(), icons: iconLib() })); } catch (e) {}
     }
     function syncSite() {
       publish();
       setHref(headTag(document, 'd-cr-site-style', 'link'), stylePack(''));
       setHref(headTag(document, 'd-cr-site-fonts', 'link'), fontsHref());
       headTag(document, 'd-cr-site', 'style').textContent = css();
+      window.auvyxIcons?.apply(iconLib());
     }
     function syncBlock(doc) {
       if (!doc?.head) return;
       setHref(headTag(doc, 'd-cr-style', 'link'), stylePack('../'));
       setHref(headTag(doc, 'd-cr-fonts', 'link'), fontsHref());
       headTag(doc, 'd-cr-theme', 'style').textContent = css();
+      doc.defaultView?.auvyxIcons?.apply(iconLib());
     }
     // Showcase frames (create-preview.html): the Create stage and the home page.
     function syncPreview(f) {
@@ -251,6 +259,7 @@
       setHref(doc.getElementById('sc-fonts'), fontsHref());
       doc.documentElement.classList.toggle('dark', document.documentElement.classList.contains('dark'));
       f.contentWindow.auvyxCorners?.apply();
+      f.contentWindow.auvyxIcons?.apply(iconLib());
     }
     function sync() {
       syncSite();

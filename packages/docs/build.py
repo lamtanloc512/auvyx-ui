@@ -50,7 +50,8 @@ BLOCK_PRESET = """<script>
         if (p.fonts) add("link", "d-cr-fonts", { rel: "stylesheet", href: p.fonts });
         add("style", "d-cr-theme", { textContent: p.css });
       })();
-    </script>"""
+    </script>
+    <script src="../icons.js" defer></script>"""
 
 
 def guides(sizes):
@@ -212,6 +213,10 @@ def main():
         # Before </head>: after the block's own theme script, so the docs dark mode wins.
         html = html.replace("  </head>", "    " + BLOCK_PRESET + "\n  </head>", 1)
         (OUT / "blocks" / f.name).write_text(html)
+
+    # Create "Icon Library": icons.js swaps inline Lucide icons using icons.json.
+    shutil.copy(DOCS / "src/icons.js", OUT / "icons.js")
+    run("node", str(DOCS / "tools/icons.mjs"), str(OUT))
 
     # Public registry served at /r/<name>.json for `auvyx add`.
     run("node", str(BLOCKS / "tools/build_registry.mjs"), "--out", str(OUT / "r"))

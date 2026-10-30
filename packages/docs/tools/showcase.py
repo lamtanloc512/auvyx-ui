@@ -249,6 +249,7 @@ HTML = f"""<!doctype html>
 </style>
 <script src="dist/auvyx.min.js" defer></script>
 <script src="dist/auvyx.corners.min.js" defer></script>
+<script src="icons.js" defer></script>
 </head>
 <body>
 <main class="sc">
