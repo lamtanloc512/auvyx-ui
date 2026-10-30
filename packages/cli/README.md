@@ -28,18 +28,18 @@ npx @auvyx/cli list
   "icons": "tabler",
   "registries": {
     "@auvyx": "https://auvyx-ui.vercel.app/r/{icons}/{name}.json",
-    "@auvyx-pro": {
-      "url": "https://<pro-domain>/r/{icons}/{name}.json",
-      "headers": { "Authorization": "Bearer ${AUVYX_LICENSE_KEY}" }
+    "@acme": {
+      "url": "https://registry.acme.dev/r/{icons}/{name}.json",
+      "headers": { "Authorization": "Bearer ${ACME_TOKEN}" }
     }
   }
 }
 ```
 
-Header values expand `${VAR}` from the environment, so license keys never live in the file.
+Any registry that serves the same item format works, public or private. Header values expand `${VAR}` from the environment, so tokens never live in the file. Auvyx's own registry is public and free; commercial blocks (for example Beamui's) are served by their own registries.
 
 ```bash
-AUVYX_LICENSE_KEY=... npx @auvyx/cli add @auvyx-pro/dashboard-02
+ACME_TOKEN=... npx @auvyx/cli add @acme/dashboard-02
 ```
 
 A registry template can also be a local path, which is useful for testing a registry build.
@@ -52,8 +52,8 @@ Built by `packages/blocks/tools/build_registry.mjs`. A subset of the shadcn regi
 | --- | --- |
 | `name`, `title`, `description`, `categories` | Item metadata |
 | `type` | `registry:block` |
-| `meta.tier` | `free` or `pro` |
 | `meta.icons` | Icon library the item's inline SVGs use |
+| `meta.*` | Anything the registry's `registry.json` entry puts in `meta` (other registries use it for their own fields) |
 | `meta.scripts` | Extra scripts the block needs besides `auvyx.min.css`/`auvyx.min.js` |
 | `registryDependencies` | Other items to install; unqualified names resolve in the same registry |
 | `files[]` | `{ path, type, target, content }`; `target` is relative to `dir` and may not leave it |

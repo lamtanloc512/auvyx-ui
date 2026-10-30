@@ -5,10 +5,10 @@
 //   auvyx add <item...> [--icons <library>] [--page] [--overwrite] [--dry-run]
 //   auvyx list [@namespace]
 //
-// Items: `login-01` (default namespace), `@auvyx-pro/dashboard-02`, a URL, or a
+// Items: `login-01` (default namespace), `@acme/dashboard-02`, a URL, or a
 // local .json path. Registries map a namespace to a URL template with `{name}`
 // and optionally `{icons}` (the icon library: lucide, tabler, hugeicons, ph, ri);
-// headers may reference env vars as ${VAR}, so license keys stay out of the file.
+// headers may reference env vars as ${VAR}, so tokens stay out of the file.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
@@ -71,7 +71,7 @@ function resolve(config, spec) {
 async function fetchJson({ source, headers, ns }) {
   if (!/^https?:\/\//.test(source)) return JSON.parse(await fs.readFile(source, 'utf8'));
   const res = await fetch(source, { headers });
-  if (res.status === 401 || res.status === 403) fail(`${ns ?? source}: access denied. Check your license key.`);
+  if (res.status === 401 || res.status === 403) fail(`${ns ?? source}: access denied (HTTP ${res.status}). Check this registry's credentials.`);
   if (res.status === 404) fail(`not found: ${source}`);
   if (!res.ok) fail(`${source}: HTTP ${res.status}`);
   return res.json();
@@ -142,7 +142,7 @@ async function list() {
   const config = await loadConfig();
   const ns = rest[0] ?? DEFAULT_NS;
   const { items = [] } = await fetchJson(resolve(config, `${ns}/index`));
-  for (const it of items) console.log(`${it.name.padEnd(16)} ${it.meta?.tier === 'free' ? '' : `[${it.meta?.tier}] `}${it.description}`);
+  for (const it of items) console.log(`${it.name.padEnd(16)} ${it.description}`);
 }
 
 const commands = { init, add, list };

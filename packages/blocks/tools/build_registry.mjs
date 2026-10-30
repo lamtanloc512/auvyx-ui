@@ -1,6 +1,6 @@
 // Build a shadcn-style registry from block HTML pages.
 //
-//   node packages/blocks/tools/build_registry.mjs [--src dir] [--out dir] [--tier free|pro] [--cdn url]
+//   node packages/blocks/tools/build_registry.mjs [--src dir] [--out dir] [--cdn url]
 //
 // Each block page becomes r/<icons>/<name>.json, one per icon library
 // (lucide, tabler, hugeicons, ph, ri), with two files:
@@ -8,9 +8,10 @@
 //   - pages/<name>.html        standalone page with CDN links
 // plus r/<icons>/index.json listing every item. r/<name>.json and r/index.json
 // stay as the Lucide copies for registries configured before icon libraries
-// existed. The same script builds a private
-// (pro) registry: point --src at the private blocks folder and --out at the
-// directory your authenticated endpoint serves.
+// existed. Other registries built on Auvyx (Beamui, for one) reuse this
+// script: point --src at their blocks folder (HTML pages plus registry.json)
+// and --out at the directory their endpoint serves. Each registry.json entry
+// may carry a free-form `meta` object, copied into the item as is.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -24,7 +25,6 @@ const args = Object.fromEntries(
 );
 const src = path.resolve(args.src ?? path.join(here, '..'));
 const out = path.resolve(args.out ?? path.join(src, 'dist/r'));
-const tier = args.tier ?? 'free';
 const version = JSON.parse(await fs.readFile(path.join(root, 'packages/ui/package.json'), 'utf8')).version;
 const cdn = args.cdn ?? `https://cdn.jsdelivr.net/npm/@auvyx/ui@${version}/dist`;
 
@@ -74,7 +74,7 @@ for (const [name, info] of Object.entries(meta).sort(([a], [b]) => a.localeCompa
     title: info.title ?? page.title ?? name,
     description: info.description ?? '',
     categories: [info.category].filter(Boolean),
-    meta: { tier: info.tier ?? tier, version, ...(scripts.length && { scripts }) },
+    meta: { ...info.meta, version, ...(scripts.length && { scripts }) },
     registryDependencies: info.registryDependencies ?? [],
     files: [
       { path: `blocks/${name}.html`, type: 'registry:block', target: `blocks/${name}.html`, content: fragment(page) },
@@ -83,6 +83,7 @@ for (const [name, info] of Object.entries(meta).sort(([a], [b]) => a.localeCompa
   });
 }
 
+const info = (item) => ({ meta: meta[item.name].meta ?? {} });
 const json = (v) => JSON.stringify(v, null, 2) + '\n';
 for (const icons of ICON_SETS) {
   const dir = path.join(out, icons);
@@ -96,9 +97,9 @@ for (const icons of ICON_SETS) {
     };
     await fs.writeFile(path.join(dir, `${item.name}.json`), json(variant));
     if (icons === 'lucide') await fs.writeFile(path.join(out, `${item.name}.json`), json(variant));
-    index.push({ name: item.name, type: item.type, title: item.title, description: item.description, categories: item.categories, meta: { tier: item.meta.tier, icons } });
+    index.push({ name: item.name, type: item.type, title: item.title, description: item.description, categories: item.categories, meta: { ...info(item).meta, icons } });
   }
   await fs.writeFile(path.join(dir, 'index.json'), json({ name: 'auvyx', version, icons, items: index }));
   if (icons === 'lucide') await fs.writeFile(path.join(out, 'index.json'), json({ name: 'auvyx', version, icons, items: index }));
 }
-console.log(`registry: ${items.length} ${tier} items x ${ICON_SETS.length} icon libraries -> ${path.relative(root, out)}`);
+console.log(`registry: ${items.length} items x ${ICON_SETS.length} icon libraries -> ${path.relative(root, out)}`);
