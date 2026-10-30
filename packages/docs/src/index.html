@@ -43,7 +43,8 @@
   .d-search { display: inline-flex; align-items: center; gap: 0.5rem; inline-size: 15rem; justify-content: space-between; color: var(--muted-foreground); font-weight: 400; }
   .d-search kbd { font-family: var(--font-mono); font-size: 0.6875rem; padding: 0.0625rem 0.375rem; border: 1px solid var(--border); border-radius: 0.25rem; background: var(--muted); }
   .d-theme { inline-size: auto; }
-  .d-search[data-variant] { background: var(--muted); border-color: transparent; box-shadow: none; }
+  /* Search and theme select share one look: same height, muted fill, no border. */
+  .d-search[data-variant], select.d-theme { block-size: 2rem; background-color: var(--muted); border-color: transparent; box-shadow: none; font-size: 0.875rem; }
   .d-sep { inline-size: 1px; block-size: 1.25rem; margin-inline: 0.25rem; background: var(--border); flex: none; }
   body:not([data-page='create']) .d-init { display: none; }
   body[data-page='create'] .d-header-in, body[data-page='create'] .d-shell { max-inline-size: none; }
