@@ -42,6 +42,12 @@ await fs.writeFile(path.join(dist, 'auvyx.js'), banner + jsSrc);
 const { code: minJs } = await transform(jsSrc, { loader: 'js', minify: true, target: 'es2022' });
 await fs.writeFile(path.join(dist, 'auvyx.min.js'), banner + minJs);
 
+// Chart runtime (needs Chart.js + auvyx.min.js): separate so pages without charts skip it.
+{
+  const { code } = await transform(await fs.readFile(path.join(root, 'src/js/chart.js'), 'utf8'), { loader: 'js', minify: true, target: 'es2020' });
+  await fs.writeFile(path.join(dist, 'auvyx.chart.min.js'), banner + code);
+}
+
 // Elements as standalone ES modules, for picking only what a page uses.
 await fs.mkdir(path.join(dist, 'elements'), { recursive: true });
 for (const file of await fs.readdir(path.join(root, 'packages/elements/src'))) {
