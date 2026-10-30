@@ -146,10 +146,34 @@ if (document.readyState !== 'loading') { window.basecoat.initAll(); window.basec
   await fs.writeFile(path.join(dist, 'js/manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
 }
 
+// Web Components edition: <auvyx-*> wrappers (packages/elements/src/wc) around
+// the HTML edition's markup. Each file carries the core, the component's
+// behavior and the element, so one script is enough. The HTML edition above
+// is unchanged; this is an opt-in layer for frameworks.
+const WC_MODULES = {
+  tabs: { behavior: 'src/js/tabs.js', element: 'packages/elements/src/wc/tabs.js', tag: 'auvyx-tabs' },
+  select: { behavior: 'src/js/select.js', element: 'packages/elements/src/wc/select.js', tag: 'auvyx-select' },
+};
+{
+  const core = await fs.readFile(path.join(root, 'src/js/basecoat.js'), 'utf8');
+  await fs.mkdir(path.join(dist, 'wc'), { recursive: true });
+  const manifest = {};
+  for (const [name, mod] of Object.entries(WC_MODULES)) {
+    const element = (await build({ entryPoints: [path.join(root, mod.element)], bundle: true, format: 'iife', write: false, target: 'es2022' })).outputFiles[0].text;
+    const behavior = await fs.readFile(path.join(root, mod.behavior), 'utf8');
+    const src = `if (!window.basecoat) ${core.trim()}\n${behavior}\n${element}`;
+    const { code } = await transform(src, { loader: 'js', minify: true, target: 'es2022' });
+    const file = `wc/${name}.min.js`;
+    await fs.writeFile(path.join(dist, file), banner + code);
+    manifest[name] = { file, tag: mod.tag, gzip: gzipSync(banner + code, { level: 9 }).length };
+  }
+  await fs.writeFile(path.join(dist, 'wc/manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
+}
+
 // Elements as standalone ES modules, for picking only what a page uses.
 await fs.mkdir(path.join(dist, 'elements'), { recursive: true });
 for (const file of await fs.readdir(path.join(root, 'packages/elements/src'))) {
-  if (file === 'corners.js') continue; // bundled with Monoco as auvyx.corners.min.js
+  if (file === 'corners.js' || file === 'wc') continue; // corners: bundled with Monoco; wc: the Web Components edition above
   const { code } = await transform(await fs.readFile(path.join(root, 'packages/elements/src', file), 'utf8'), { loader: 'js', minify: true, format: 'esm', target: 'es2022' });
   const relinked = code.replace(/(["'])\.\/([\w-]+)\.js\1/g, '$1./$2.min.js$1');
   await fs.writeFile(path.join(dist, 'elements', file.replace(/\.js$/, '.min.js')), banner + relinked);

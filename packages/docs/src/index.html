@@ -508,14 +508,22 @@
         <div data-pane="code" hidden>${codeBox(ex.html)}</div></div>`;
     }).join('');
     const toc = c.examples.slice(1).map((ex, n) => `<li><a href="#c-${key}" data-scroll="ex-${n + 1}">${esc(ex.title)}</a></li>`).join('');
+    const wc = D.wcModules[key];
+    const wcSection = wc ? `<h2 class="d-h2" id="web-component">Web Component</h2><div class="d-prose">
+      <p>The Web Components edition wraps the same markup in <code>&lt;${wc.tag}&gt;</code> and adds a <code>value</code> property (also an attribute) and a <code>change</code> event. Setting <code>value</code> from code does not fire <code>change</code>, like native inputs. Load <code>${wc.file}</code> instead of <code>js/${key}.min.js</code>.</p>
+      ${codeBox(`<${wc.tag} value="…">\n  <!-- the HTML markup above, unchanged -->\n</${wc.tag}>\n<script src="${CDN}/${wc.file}" defer><\/script>`)}
+      <p>React 19:</p>${codeBox(`const [value, setValue] = useState("…");\n\n<${wc.tag} value={value} onChange={(e) => setValue(e.target.value)}>\n  {/* the markup, as JSX */}\n</${wc.tag}>`, 'Component.jsx')}
+      <p>Vue 3 (with <code>isCustomElement</code> set for <code>auvyx-</code> tags):</p>${codeBox(`<${wc.tag} :value="value" @change="value = $event.target.value">\n  <!-- the markup -->\n</${wc.tag}>`, 'Component.vue')}
+    </div>` : '';
     return `<div class="d-page" data-component="${esc(key)}"><article>
       <div class="d-crumb">Components ${ICON(I.chev)} <span>${esc(c.title)}</span></div>
       <h1 class="d-h1">${esc(c.title)}</h1><p class="d-lead">${esc(c.description)}</p>
       <div class="d-tags">${tags}</div>
       ${exs}
       <h2 class="d-h2" id="usage">Usage</h2><div class="d-prose"><div id="d-js-usage"></div>${c.notes || ''}</div>
+      ${wcSection}
       ${pager(prev, next)}
-    </article><aside class="d-toc"><h4>On this page</h4><ul>${toc}<li><a href="#c-${key}" data-scroll="usage">Usage</a></li></ul></aside></div>`;
+    </article><aside class="d-toc"><h4>On this page</h4><ul>${toc}<li><a href="#c-${key}" data-scroll="usage">Usage</a></li>${wc ? `<li><a href="#c-${key}" data-scroll="web-component">Web Component</a></li>` : ''}</ul></aside></div>`;
   }
 
   // Which JS modules do this page's demos use? Each module's `detect` selector

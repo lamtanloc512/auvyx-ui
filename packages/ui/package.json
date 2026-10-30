@@ -18,6 +18,7 @@
     "./corners": "./dist/auvyx.corners.min.js",
     "./elements/*": "./dist/elements/*.min.js",
     "./js/*": "./dist/js/*.min.js",
+    "./wc/*": "./dist/wc/*.min.js",
     "./auvyx.bundle.css": "./dist/auvyx.bundle.css"
   },
   "scripts": {

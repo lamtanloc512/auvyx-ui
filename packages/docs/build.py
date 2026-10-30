@@ -55,7 +55,7 @@ BLOCK_PRESET = """<script>
     <script src="../icons.js" defer></script>"""
 
 
-def guides(sizes, js_modules):
+def guides(sizes, js_modules, wc_modules):
     t = lambda s: TILE.format(s)
     return [
         {"slug": "introduction", "title": "Introduction", "description": "A drop-in design system with the shadcn look, built on a fork of Basecoat.", "html": f"""
@@ -81,6 +81,13 @@ def guides(sizes, js_modules):
 <div class="d-tablewrap"><table><thead><tr><th>Module</th><th>Size (gzip)</th><th>Needed for</th></tr></thead><tbody>
 {"".join(f'<tr><td><code>js/{n}.min.js</code></td><td>{m["gzip"] / 1024:.1f} kB</td><td>{"Optional: " if m["kind"] == "enhance" else ""}{n.replace("-", " ").capitalize()}{(". " + html_escape(m["note"])) if m.get("note") else ""}</td></tr>' for n, m in js_modules.items())}
 </tbody></table></div>
+<h2 class="d-h2">Editions</h2><p>Auvyx comes in two editions that share the same CSS and the same behavior code. Pick per component; they mix on one page.</p>
+<div class="d-tablewrap"><table><thead><tr><th>Edition</th><th>Markup</th><th>Best for</th></tr></thead><tbody>
+<tr><td>HTML (default)</td><td>Classes and ARIA, plus a script from <code>js/</code></td><td>Server templates, static sites, HTMX, copy-paste blocks</td></tr>
+<tr><td>Web Components</td><td>The same markup wrapped in <code>&lt;auvyx-*&gt;</code>, script from <code>wc/</code></td><td>React, Vue, Svelte, Angular: a <code>value</code> property and a <code>change</code> event</td></tr>
+</tbody></table></div>
+{code('<!-- HTML edition -->' + chr(10) + '<div class="tabs">…</div>' + chr(10) + f'<script src="{CDN}/js/tabs.min.js" defer></script>' + chr(10) + chr(10) + '<!-- Web Components edition: same markup, wrapped -->' + chr(10) + '<auvyx-tabs value="account">' + chr(10) + '  <div class="tabs">…</div>' + chr(10) + '</auvyx-tabs>' + chr(10) + f'<script src="{CDN}/wc/tabs.min.js" defer></script>')}
+<p>Web Components so far: {", ".join(f'<code>&lt;{m["tag"]}&gt;</code> ({m["gzip"] / 1024:.1f} kB)' for m in wc_modules.values())}. Each file includes the component's behavior, so it replaces the matching <code>js/</code> module. In React 19 read <code>e.target.value</code> in <code>onChange</code>; in Vue add <code>app.config.compilerOptions.isCustomElement = (tag) =&gt; tag.startsWith('auvyx-')</code>; in Angular add <code>CUSTOM_ELEMENTS_SCHEMA</code>.</p>
 <h2 class="d-h2">npm</h2>{code('npm install @auvyx/ui' + chr(10) + chr(10) + '/* in your CSS entry */' + chr(10) + '@import "@auvyx/ui";')}
 <h2 class="d-h2">Tailwind v4 (source channel)</h2><p>Import after Tailwind. Your build compiles the components and generates the utilities your markup uses.</p>
 {code('@import "tailwindcss";' + chr(10) + '@import "@auvyx/ui/bundle";')}
@@ -229,6 +236,7 @@ def main():
         shutil.copy(UI / "dist" / f, OUT / "dist" / f)
     shutil.copytree(UI / "dist" / "elements", OUT / "dist" / "elements")
     shutil.copytree(UI / "dist" / "js", OUT / "dist" / "js")
+    shutil.copytree(UI / "dist" / "wc", OUT / "dist" / "wc")
     shutil.copytree(UI / "dist" / "styles", OUT / "dist" / "styles")
     run("python3", str(DOCS / "tools/showcase.py"))
     shutil.copy(DOCS / "src/create-preview.html", OUT / "create-preview.html")
@@ -242,10 +250,11 @@ def main():
             if meta["category"] == cat:
                 blocks.append({"id": bid, **meta, "height": TALL.get(bid, HEIGHTS[cat])})
     js_modules = json.loads((UI / "dist/js/manifest.json").read_text())
-    gd = guides(sizes, js_modules)
+    wc_modules = json.loads((UI / "dist/wc/manifest.json").read_text())
+    gd = guides(sizes, js_modules, wc_modules)
     data = {"version": VERSION, "cdn": CDN, "sizes": sizes, "components": comps, "guides": gd,
             "blocks": blocks, "blockCats": [{"id": c, "title": t} for c, t in BLOCK_CATS], "featured": FEATURED,
-            "charts": charts(), "jsModules": js_modules}
+            "charts": charts(), "jsModules": js_modules, "wcModules": wc_modules}
     data_json = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 
     # docs.css: bundle + utilities used by examples/guides (scanned from the data file).

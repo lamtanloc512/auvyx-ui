@@ -1,0 +1,8 @@
+/* Web Components edition (fork addition): <auvyx-*> wrappers around the HTML
+   edition's markup add no box of their own, so layout and styles stay the
+   HTML edition's. See packages/elements/src/wc/. */
+@layer components {
+  :is(auvyx-tabs, auvyx-select) {
+    display: contents;
+  }
+}
