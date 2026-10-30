@@ -115,12 +115,17 @@
   const surfaceColor = (color, element, { from = 0.4, to } = {}) => {
     if (to === undefined) return colorWithAlpha(color, from, element);
 
+    // Chart.js calls this on every draw, including each frame of a resize.
+    // Resolving a color forces a style recalc, so resolve the stops once per
+    // chart init; theme changes re-init the chart and resolve them again.
+    let stops = null;
     return ({ chart }) => {
-      if (!chart.chartArea) return colorWithAlpha(color, from, element);
+      stops ||= [colorWithAlpha(color, from, element), colorWithAlpha(color, to, element)];
+      if (!chart.chartArea) return stops[0];
 
       const gradient = chart.ctx.createLinearGradient(0, chart.chartArea.top, 0, chart.chartArea.bottom);
-      gradient.addColorStop(0, colorWithAlpha(color, from, element));
-      gradient.addColorStop(1, colorWithAlpha(color, to, element));
+      gradient.addColorStop(0, stops[0]);
+      gradient.addColorStop(1, stops[1]);
       return gradient;
     };
   };

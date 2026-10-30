@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed charts with `surface: "gradient"` resolving their colors on every draw, which forced a full style recalculation per frame and made resizes (such as opening or closing a Sidebar next to a chart) stutter. The gradient colors are now resolved once per chart render.
+
 ## [1.1.0] - 2026-10-23
 
 ### Upgrading
