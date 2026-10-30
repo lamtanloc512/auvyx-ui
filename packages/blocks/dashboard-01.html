@@ -145,6 +145,17 @@
         inline-size: 0.75rem;
         block-size: 0.75rem;
       }
+      .db-status {
+        padding-inline: 0.375rem;
+        color: var(--muted-foreground);
+      }
+      .db-status svg {
+        inline-size: 0.75rem;
+        block-size: 0.75rem;
+      }
+      .db-status[data-done] svg {
+        color: oklch(0.723 0.219 149.579);
+      }
       .db-kpi > footer {
         flex-direction: column;
         align-items: flex-start;
@@ -642,7 +653,7 @@
                       <td><a href="#" class="db-link">Cover page</a></td>
                       <td><span class="badge" data-variant="outline">Cover page</span></td>
                       <td>
-                        <span class="badge" data-variant="outline" class="db-status">
+                        <span class="badge db-status" data-variant="outline">
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                           In Process
                         </span>
@@ -662,7 +673,7 @@
                       <td><a href="#" class="db-link">Table of contents</a></td>
                       <td><span class="badge" data-variant="outline">Table of contents</span></td>
                       <td>
-                        <span class="badge" data-variant="outline" class="db-status">
+                        <span class="badge db-status" data-variant="outline" data-done>
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
                           Done
                         </span>
@@ -682,7 +693,7 @@
                       <td><a href="#" class="db-link">Executive summary</a></td>
                       <td><span class="badge" data-variant="outline">Narrative</span></td>
                       <td>
-                        <span class="badge" data-variant="outline" class="db-status">
+                        <span class="badge db-status" data-variant="outline" data-done>
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
                           Done
                         </span>
@@ -702,7 +713,7 @@
                       <td><a href="#" class="db-link">Technical approach</a></td>
                       <td><span class="badge" data-variant="outline">Narrative</span></td>
                       <td>
-                        <span class="badge" data-variant="outline" class="db-status">
+                        <span class="badge db-status" data-variant="outline" data-done>
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
                           Done
                         </span>
@@ -722,7 +733,7 @@
                       <td><a href="#" class="db-link">Design</a></td>
                       <td><span class="badge" data-variant="outline">Narrative</span></td>
                       <td>
-                        <span class="badge" data-variant="outline" class="db-status">
+                        <span class="badge db-status" data-variant="outline">
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                           In Process
                         </span>
@@ -742,7 +753,7 @@
                       <td><a href="#" class="db-link">Capabilities</a></td>
                       <td><span class="badge" data-variant="outline">Narrative</span></td>
                       <td>
-                        <span class="badge" data-variant="outline" class="db-status">
+                        <span class="badge db-status" data-variant="outline">
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                           In Process
                         </span>
@@ -762,7 +773,7 @@
                       <td><a href="#" class="db-link">Integration with existing systems</a></td>
                       <td><span class="badge" data-variant="outline">Narrative</span></td>
                       <td>
-                        <span class="badge" data-variant="outline" class="db-status">
+                        <span class="badge db-status" data-variant="outline">
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                           In Process
                         </span>
@@ -782,7 +793,7 @@
                       <td><a href="#" class="db-link">Innovation and Advantages</a></td>
                       <td><span class="badge" data-variant="outline">Narrative</span></td>
                       <td>
-                        <span class="badge" data-variant="outline" class="db-status">
+                        <span class="badge db-status" data-variant="outline" data-done>
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
                           Done
                         </span>
@@ -804,7 +815,7 @@
                       </td>
                       <td><span class="badge" data-variant="outline">Technical content</span></td>
                       <td>
-                        <span class="badge" data-variant="outline" class="db-status">
+                        <span class="badge db-status" data-variant="outline" data-done>
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
                           Done
                         </span>
@@ -826,7 +837,7 @@
                       </td>
                       <td><span class="badge" data-variant="outline">Narrative</span></td>
                       <td>
-                        <span class="badge" data-variant="outline" class="db-status">
+                        <span class="badge db-status" data-variant="outline" data-done>
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
                           Done
                         </span>
@@ -846,7 +857,7 @@
                       <td><a href="#" class="db-link">Adaptive Communication Protocols</a></td>
                       <td><span class="badge" data-variant="outline">Narrative</span></td>
                       <td>
-                        <span class="badge" data-variant="outline" class="db-status">
+                        <span class="badge db-status" data-variant="outline" data-done>
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
                           Done
                         </span>
@@ -866,7 +877,7 @@
                       <td><a href="#" class="db-link">Advantages Over Current Technologies</a></td>
                       <td><span class="badge" data-variant="outline">Narrative</span></td>
                       <td>
-                        <span class="badge" data-variant="outline" class="db-status">
+                        <span class="badge db-status" data-variant="outline">
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                           In Process
                         </span>
@@ -886,7 +897,7 @@
                       <td><a href="#" class="db-link">Past Performance</a></td>
                       <td><span class="badge" data-variant="outline">Narrative</span></td>
                       <td>
-                        <span class="badge" data-variant="outline" class="db-status">
+                        <span class="badge db-status" data-variant="outline" data-done>
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
                           Done
                         </span>
@@ -908,7 +919,7 @@
                       </td>
                       <td><span class="badge" data-variant="outline">Narrative</span></td>
                       <td>
-                        <span class="badge" data-variant="outline" class="db-status">
+                        <span class="badge db-status" data-variant="outline" data-done>
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
                           Done
                         </span>

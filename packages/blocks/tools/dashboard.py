@@ -58,7 +58,8 @@ ROWS = [
     ("Customer Feedback and Satisfaction Levels", "Narrative", "Done", 15, 34, "Assign reviewer"),
 ]
 def status(s):
-    return (f'<span class="badge" data-variant="outline" class="db-status">{ic("check") if s == "Done" else ic("clock")}{s}</span>')
+    done = s == "Done"
+    return (f'<span class="badge db-status" data-variant="outline"{" data-done" if done else ""}>{ic("check") if done else ic("clock")}{s}</span>')
 
 rows = "\n".join(
     f'<tr><td><input class="input" type="checkbox" data-select aria-label="Select {h}"></td><td><a href="#" class="db-link">{h}</a></td>'
@@ -132,6 +133,9 @@ CSS = sb.SB_CSS + """
   .db-kpi > header > h2 { margin: 0; font-size: 1.5rem; font-weight: 600; font-variant-numeric: tabular-nums; }
   @container (width >= 40rem) { .db-kpi > header > h2 { font-size: 1.875rem; } }
   .db-kpi .badge svg { inline-size: 0.75rem; block-size: 0.75rem; }
+  .db-status { padding-inline: 0.375rem; color: var(--muted-foreground); }
+  .db-status svg { inline-size: 0.75rem; block-size: 0.75rem; }
+  .db-status[data-done] svg { color: oklch(0.723 0.219 149.579); }
   .db-kpi > footer { flex-direction: column; align-items: flex-start; gap: 0.375rem; font-size: 0.875rem; }
   .db-kpi-trend { margin: 0; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; }
   .db-kpi-trend svg { inline-size: 1rem; block-size: 1rem; }
