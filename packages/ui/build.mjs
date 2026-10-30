@@ -61,6 +61,27 @@ await fs.writeFile(path.join(dist, 'auvyx.js'), banner + jsSrc);
 const { code: minJs } = await transform(jsSrc, { loader: 'js', minify: true, target: 'es2022' });
 await fs.writeFile(path.join(dist, 'auvyx.min.js'), banner + minJs);
 
+// Radius roles (src/css/extra/tokens.css) for a style pack, read from the
+// pack's own .btn, .textarea and .card rules: fork-added components then round like
+// the pack's buttons (controls), cards, and one step below cards (surfaces).
+const RADIUS_STEPS = ['none', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl'];
+const RADIUS_VALUE = { none: '0', xs: '0.125rem', sm: 'var(--radius-sm)', md: 'var(--radius-md)', lg: 'var(--radius-lg)', xl: 'var(--radius-xl)', '2xl': '1rem', '3xl': '1.5rem', '4xl': '2rem' };
+async function radiusRoles(style) {
+  const src = await fs.readFile(path.join(root, `src/css/styles/${style}.css`), 'utf8');
+  const step = (selector) => {
+    const block = src.slice(src.indexOf(`  ${selector} {`), src.indexOf('}', src.indexOf(`  ${selector} {`)));
+    const m = block.match(/\brounded-(none|xs|sm|md|lg|xl|2xl|3xl|4xl)\b/);
+    if (!m) throw new Error(`${style}: no rounded-* on ${selector}`);
+    return m[1];
+  };
+  const control = step('.btn');
+  const field = step('.textarea');
+  const card = step('.card');
+  const surface = RADIUS_STEPS[Math.max(0, RADIUS_STEPS.indexOf(card) - 1)];
+  const surfaceStep = card === 'none' ? 'none' : surface;
+  return `:root{--auvyx-r-control:${RADIUS_VALUE[control]};--auvyx-r-field:${RADIUS_VALUE[field]};--auvyx-r-surface:${RADIUS_VALUE[surfaceStep]};--auvyx-r-card:${RADIUS_VALUE[card]}}`;
+}
+
 // Style packs: the same bundle built on each Basecoat style pack (Create page / opt-in).
 // Fork-added components keep Vega visuals for now (see TODO.md).
 {
@@ -86,7 +107,7 @@ await fs.writeFile(path.join(dist, 'auvyx.min.js'), banner + minJs);
     // token too, so components outside the pack and page CSS using var(--radius)
     // match. A later --radius from the page still wins.
     const square = ['lyra', 'sera'].includes(style) ? ':root{--radius:0}' : '';
-    await fs.writeFile(path.join(dist, 'styles', `auvyx-${style}.min.css`), banner + code + square);
+    await fs.writeFile(path.join(dist, 'styles', `auvyx-${style}.min.css`), banner + code + square + await radiusRoles(style));
   }
 }
 

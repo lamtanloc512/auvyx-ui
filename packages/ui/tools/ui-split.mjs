@@ -21,6 +21,7 @@ const FILES = {
   'base/base.css': 'base',
   'motion/index.css': 'base',
   'layout/index.css': 'base',
+  'extra/tokens.css': 'base',
   // The zero-JS variants cascade after every component: files of their own.
   'native/popover.css': 'popover.native',
   'native/accordion.css': 'accordion.native',
@@ -103,7 +104,7 @@ export async function splitCss(root, dist, names, post = (s) => s) {
   await copyTree(cssRoot, path.join(tmp, 'src/css'), (file, text) => {
     const rel = path.relative(cssRoot, file).split(path.sep).join('/');
     // Entry files only import; style packs other than Vega are not in the bundle.
-    if (!/^(components|extra\/components|native|base|motion|layout)\/|^(styles|extra\/styles)\/vega\.css$/.test(rel) || /index\.css$/.test(rel) && !/^(motion|layout)\//.test(rel)) return text;
+    if (!/^(components|extra\/components|native|base|motion|layout)\/|^(styles|extra\/styles)\/vega\.css$|^extra\/tokens\.css$/.test(rel) || /index\.css$/.test(rel) && !/^(motion|layout)\//.test(rel)) return text;
     if (!/@layer components|@layer base/.test(text)) return text;
     if (SECTIONS[rel] && !rel.startsWith('styles/') && !rel.startsWith('extra/styles/')) {
       // A structure file with sections: the part before the first one is the file's own component.

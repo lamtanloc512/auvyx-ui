@@ -1,0 +1,20 @@
+/* Radius roles for fork-added components (fork addition).
+ *
+ * Basecoat's style packs set each component's corners with their own scale
+ * (Vega: buttons rounded-md, cards rounded-xl; Maia: pill buttons, ...).
+ * Components added by the fork read these roles instead of a fixed scale:
+ *   --auvyx-r-control  buttons, toggles, menu items, calendar days
+ *   --auvyx-r-field    bordered fields and boxes: OTP slots, option rows, table frames
+ *   --auvyx-r-surface  popovers, panels and boxes inside cards (one step below cards)
+ *   --auvyx-r-card     cards and card-like containers
+ * The defaults are Vega's; each style pack bundle (dist/styles/) ends with
+ * its own values, read from its .btn, .textarea and .card rules by packages/ui/build.mjs.
+ */
+@layer base {
+  :root {
+    --auvyx-r-control: var(--radius-md);
+    --auvyx-r-field: var(--radius-md);
+    --auvyx-r-surface: var(--radius-lg);
+    --auvyx-r-card: var(--radius-xl);
+  }
+}
