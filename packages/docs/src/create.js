@@ -166,6 +166,13 @@
       if (k === 'font' || k === 'heading') return `<span class="d-sw-font" style="font-family:${v === 'Inherit' ? 'inherit' : fontStack(v)}">Aa</span>`;
       return '';
     };
+    const ROW_ICON = {
+      style: '<rect width="18" height="18" x="3" y="3" rx="2"/>',
+      radius: '<path d="M4 20V10a6 6 0 0 1 6-6h10"/>',
+      corners: '<path d="M4 20v-9l7-7h9"/>',
+      menu: '<path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/>',
+      accent: '<path d="m19 11-8-8-8.6 8.6a2 2 0 0 0 0 2.8l5.2 5.2c.8.8 2 .8 2.8 0L19 11Z"/><path d="m5 2 5 5"/><path d="M2 13h15"/><path d="M22 20a2 2 0 1 1-4 0c0-1.6 1.7-2.4 2-4 .3 1.6 2 2.4 2 4Z"/>',
+    };
     function row(k) {
       const o = OPTS[k];
       const v = pick(k);
@@ -173,7 +180,8 @@
       const locked = state.imported && /^(base|theme|font|heading|radius)$/.test(k) && hasImported(k);
       return `<div class="dropdown-menu d-cr-row">
         <button type="button" class="d-cr-btn" popovertarget="cr-${k}" aria-haspopup="menu"${locked ? ' data-locked' : ''}>
-          <span class="d-cr-label">${esc(o.label)}</span><span class="d-cr-val">${swatch(k, v)}<span>${esc(locked ? 'From import' : fmt(k, v))}</span></span>
+          <span class="d-cr-text"><span class="d-cr-label">${esc(o.label)}</span><span class="d-cr-val">${esc(locked ? 'From import' : fmt(k, v))}</span></span>
+          <span class="d-cr-icon">${swatch(k, v) || ICON(ROW_ICON[k])}</span>
         </button>
         <div id="cr-${k}" data-popover popover data-side="bottom" data-align="start" class="d-cr-pop"><div role="menu" aria-label="${esc(o.label)}">${items}</div></div>
       </div>`;
@@ -198,7 +206,7 @@
     const dlg = (id, title, desc, body, foot = '') => `<dialog id="${id}" class="dialog d-cr-dialog" closedby="any" aria-labelledby="${id}-t"><div><header><h2 id="${id}-t">${title}</h2><p>${desc}</p></header><section>${body}</section><footer>${foot}<button type="button" class="btn" data-variant="outline" commandfor="${id}" command="close">Close</button></footer></div></dialog>`;
     function page() {
       return `<div class="d-create">
-        <aside class="d-cr-panel" id="cr-panel" aria-label="Preset options">${panel()}</aside>
+        <aside class="d-cr-panel dark" id="cr-panel" aria-label="Preset options">${panel()}</aside>
         <div class="d-cr-stage"><iframe id="cr-frame" title="Theme preview" src="create-preview.html"></iframe></div>
       </div>
       ${dlg('cr-open', 'Open Preset', 'Paste a preset code to load its options.', `<input class="input" id="cr-code" placeholder="--preset 0000003000" autocomplete="off" spellcheck="false" aria-label="Preset code"><p class="d-cr-err" id="cr-code-err" hidden>That code is not valid.</p>`, '<button type="button" class="btn" data-cr="open">Open</button>')}
@@ -209,7 +217,22 @@
 
     let frame, mounted = false;
     function save() { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} }
+    // The docs chrome takes the preset too while Create is open, like shadcn's /create.
+    function syncSite() {
+      const head = document.head;
+      let st = document.getElementById('d-cr-site'), fl = document.getElementById('d-cr-site-fonts');
+      if (!st) { st = document.createElement('style'); st.id = 'd-cr-site'; head.append(st); }
+      if (!fl) { fl = document.createElement('link'); fl.id = 'd-cr-site-fonts'; fl.rel = 'stylesheet'; head.append(fl); }
+      st.textContent = css();
+      const fh = fontsHref();
+      if (fh) { if (fl.getAttribute('href') !== fh) fl.href = fh; } else fl.removeAttribute('href');
+    }
+    function unmount() {
+      document.getElementById('d-cr-site')?.remove();
+      document.getElementById('d-cr-site-fonts')?.remove();
+    }
     function sync() {
+      if ($('#cr-panel')) syncSite();
       const doc = frame?.contentDocument;
       if (!doc || !doc.getElementById('sc-theme')) return;
       doc.getElementById('sc-theme').textContent = css();
@@ -258,6 +281,6 @@
         }
       });
     }
-    return { page, mount, sync, parseTheme, css, encode, decode, get state() { return state; } };
+    return { page, mount, unmount, sync, parseTheme, css, encode, decode, get state() { return state; } };
   })();
   window.auvyxCreate = Create;

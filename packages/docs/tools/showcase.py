@@ -191,8 +191,8 @@ HTML = f"""<!doctype html>
 <style id="sc-theme"></style>
 <style>
   body {{ margin: 0; background: color-mix(in oklch, var(--muted) 45%, var(--background)); color: var(--foreground); font-family: var(--font-sans); }}
-  .sc {{ columns: 19rem; column-gap: 1rem; padding: 1rem; }}
-  .sc > * {{ break-inside: avoid; margin-block-end: 1rem; }}
+  .sc {{ columns: 16rem; column-gap: .75rem; padding: .75rem; }}
+  .sc > * {{ break-inside: avoid; margin-block-end: .75rem; }}
   .sc-wide {{ column-span: none; }}
   .sc-full {{ inline-size: 100%; }}
   .sc-muted {{ color: var(--muted-foreground); }}
@@ -235,6 +235,11 @@ HTML = f"""<!doctype html>
   .sc-person {{ display: grid; line-height: 1.3; font-size: .875rem; }}
   .sc-person small {{ color: var(--muted-foreground); }}
   .card {{ container-type: inline-size; }}
+  .card select {{ max-inline-size: 100%; min-inline-size: 0; }}
+  .sc-pair .sc-big {{ font-size: clamp(1.125rem, 14cqi, 1.75rem); }}
+  .item > aside.cluster {{ flex-wrap: nowrap; gap: .5rem; }}
+  .item > section {{ min-inline-size: 0; }}
+  .item > section > :is(h3, p) {{ display: block; min-inline-size: 0; max-inline-size: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
 </style>
 <script src="dist/auvyx.min.js" defer></script>
 <script src="dist/auvyx.corners.min.js" defer></script>

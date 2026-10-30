@@ -43,6 +43,10 @@
   .d-search { display: inline-flex; align-items: center; gap: 0.5rem; inline-size: 15rem; justify-content: space-between; color: var(--muted-foreground); font-weight: 400; }
   .d-search kbd { font-family: var(--font-mono); font-size: 0.6875rem; padding: 0.0625rem 0.375rem; border: 1px solid var(--border); border-radius: 0.25rem; background: var(--muted); }
   .d-theme { inline-size: auto; }
+  .d-search[data-variant] { background: var(--muted); border-color: transparent; box-shadow: none; }
+  .d-sep { inline-size: 1px; block-size: 1.25rem; margin-inline: 0.25rem; background: var(--border); flex: none; }
+  body:not([data-page='create']) .d-init { display: none; }
+  body[data-page='create'] .d-header-in, body[data-page='create'] .d-shell { max-inline-size: none; }
   .d-menu-btn { display: none; }
   @media (width < 64rem) { .d-search { inline-size: auto; } .d-search .d-search-label, .d-search kbd { display: none; } }
   @media (width < 48rem) { .d-topnav { display: none; } .d-menu-btn { display: inline-flex; } .d-theme { display: none; } }
@@ -162,17 +166,22 @@
 
   /* Create (preset builder) */
   .d-create { display: grid; grid-template-columns: 17rem minmax(0, 1fr); gap: 1.25rem; padding-block: 1.25rem; }
-  .d-cr-panel { position: sticky; top: calc(var(--header-h) + 1.25rem); align-self: start; display: grid; gap: 0.75rem; max-block-size: calc(100svh - var(--header-h) - 2.5rem); overflow-y: auto; scrollbar-width: thin; }
-  .d-cr-rows { display: grid; border: 1px solid var(--border); border-radius: var(--radius); overflow: clip; }
-  .d-cr-row + .d-cr-row { border-block-start: 1px solid var(--border); }
+  .d-cr-panel { position: sticky; top: calc(var(--header-h) + 1.25rem); align-self: start; display: grid; gap: 0.5rem; padding: 0.5rem; max-block-size: calc(100svh - var(--header-h) - 2.5rem); overflow-y: auto; scrollbar-width: thin; border-radius: var(--radius); background: var(--background); color: var(--foreground); }
+  .d-cr-rows { display: grid; gap: 0.5rem; }
   .d-cr-row { display: block; }
-  .d-cr-btn { appearance: none; border: 0; background: transparent; color: inherit; font: inherit; text-align: start; box-sizing: border-box; display: flex; inline-size: 100%; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.5rem 0.75rem; cursor: pointer; font-size: 0.875rem; }
+  .d-cr-btn { appearance: none; box-sizing: border-box; display: flex; inline-size: 100%; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: calc(var(--radius) - 2px); background: color-mix(in oklch, var(--muted) 40%, transparent); color: inherit; font: inherit; text-align: start; cursor: pointer; }
   .d-cr-btn:hover { background: var(--accent); }
-  .d-cr-btn:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; }
+  .d-cr-btn:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
   .d-cr-btn[data-locked] .d-cr-val { color: var(--muted-foreground); font-style: italic; }
-  .d-cr-label { color: var(--muted-foreground); }
-  .d-cr-val { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 500; min-inline-size: 0; }
-  .d-cr-val > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .d-cr-text { display: grid; min-inline-size: 0; line-height: 1.3; }
+  .d-cr-label { font-size: 0.75rem; color: var(--muted-foreground); }
+  .d-cr-val { font-size: 0.875rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .d-cr-icon { display: inline-grid; place-items: center; flex: none; color: var(--muted-foreground); }
+  .d-cr-icon svg { inline-size: 1rem; block-size: 1rem; }
+  .d-cr-icon .d-sw { inline-size: 1rem; block-size: 1rem; }
+  /* The panel is a scoped .dark surface; outline buttons only get dark visuals under html.dark. */
+  .d-cr-panel .btn[data-variant='outline'] { background: transparent; border-color: var(--border); color: var(--foreground); }
+  .d-cr-panel .btn[data-variant='outline']:hover { background: var(--accent); }
   .d-cr-pop { min-inline-size: 13rem; max-block-size: 20rem; overflow-y: auto; }
   .d-cr-pop [role=menuitemradio] > svg:last-child { margin-inline-start: auto; }
   .d-sw { inline-size: 0.875rem; block-size: 0.875rem; border-radius: 999px; flex: none; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 15%, transparent); }
@@ -183,7 +192,7 @@
   .d-cr-preset code { font-family: var(--font-mono, ui-monospace, monospace); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .d-cr-import { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.375rem 0.375rem 0.375rem 0.75rem; border: 1px dashed var(--border); border-radius: var(--radius); font-size: 0.8125rem; }
   .d-cr-import > span { display: inline-flex; align-items: center; gap: 0.375rem; }
-  .d-cr-stage { min-inline-size: 0; border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px); overflow: clip; background: var(--muted); }
+  .d-cr-stage { min-inline-size: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: clip; background: var(--muted); }
   .d-cr-stage iframe { display: block; inline-size: 100%; block-size: calc(100svh - var(--header-h) - 2.5rem); border: 0; }
   .d-cr-dialog > div { inline-size: min(40rem, calc(100vw - 2rem)); max-inline-size: none; }
   .d-cr-dialog .d-code pre { max-block-size: 50svh; }
@@ -201,6 +210,7 @@
     </button>
     <a href="#" class="d-brand"><span class="d-brand-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 21h20Z"/><path d="M7.5 14h9"/></svg></span>Auvyx UI</a>
     <nav class="d-topnav" aria-label="Main">
+      <a href="#" data-top="home">Home</a>
       <a href="#introduction" data-top="docs">Docs</a>
       <a href="#components" data-top="components">Components</a>
       <a href="#blocks" data-top="blocks">Blocks</a>
@@ -213,6 +223,7 @@
         <svg class="d-search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="inline-size:1rem;block-size:1rem"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         <kbd>⌘K</kbd>
       </button>
+      <span class="d-sep" aria-hidden="true"></span>
       <select class="select d-theme" id="d-theme" aria-label="Color theme">
         <option value="">Neutral</option>
         <option value="ocean">Ocean</option>
@@ -224,6 +235,8 @@
       <button type="button" class="btn" data-variant="ghost" data-size="icon-sm" id="d-mode" aria-label="Toggle dark mode">
         <svg class="d-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="inline-size:1rem;block-size:1rem"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
       </button>
+      <span class="d-sep d-init" aria-hidden="true"></span>
+      <button type="button" class="btn d-init" data-size="sm" commandfor="cr-init" command="show-modal" data-cr="show-init"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m7 11 2-2-2-2"/><path d="M11 13h4"/></svg>Initialize Project</button>
     </div>
   </div>
 </header>
@@ -492,7 +505,7 @@
     const h = decodeURIComponent(location.hash.slice(1)) || '';
     chartQueue = [];
     let html, active = h, wide = false, top = 'docs', title = 'Auvyx UI';
-    if (!h || h === 'home') { html = pageHome(); active = ''; top = ''; }
+    if (!h || h === 'home') { html = pageHome(); active = ''; top = 'home'; }
     else if (h === 'components') { html = pageHome(); active = ''; top = 'components'; setTimeout(() => document.getElementById('all-components')?.scrollIntoView({ block: 'start' }), 0); }
     else if (h.startsWith('c-') && D.components[h.slice(2)]) { html = pageComponent(h.slice(2)); top = 'components'; title = D.components[h.slice(2)].title + ' · Auvyx UI'; }
     else if (h === 'blocks' || h.startsWith('blocks-')) { const cat = h === 'blocks' ? 'featured' : h.slice(7); html = pageBlocks(cat); wide = true; top = 'blocks'; title = 'Blocks · Auvyx UI'; }
@@ -500,6 +513,8 @@
     else if (h === 'charts') { html = pageCharts(); wide = true; top = 'charts'; title = 'Charts · Auvyx UI'; }
     else { const g = GUIDES.find((x) => x.slug === h); html = g ? pageGuide(g) : pageHome(); if (!g) active = ''; }
     if (wide) shell.dataset.wide = ''; else delete shell.dataset.wide;
+    document.body.dataset.page = top;
+    if (h !== 'create') Create.unmount();
     $('#d-nav').innerHTML = navHTML(active);
     $('#d-mnav-body').innerHTML = navHTML(active);
     document.querySelectorAll('.d-topnav a').forEach((a) => a.toggleAttribute('aria-current', a.dataset.top === top) || a.removeAttribute('aria-current'));
