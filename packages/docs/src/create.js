@@ -207,7 +207,7 @@
     function page() {
       return `<div class="d-create">
         <aside class="d-cr-panel dark" id="cr-panel" aria-label="Preset options">${panel()}</aside>
-        <div class="d-cr-stage"><iframe id="cr-frame" title="Theme preview" src="create-preview.html"></iframe></div>
+        <div class="d-cr-stage"><iframe id="cr-frame" data-preview title="Theme preview" src="create-preview.html"></iframe></div>
       </div>
       ${dlg('cr-open', 'Open Preset', 'Paste a preset code to load its options.', `<input class="input" id="cr-code" placeholder="--preset 0000003100" autocomplete="off" spellcheck="false" aria-label="Preset code"><p class="d-cr-err" id="cr-code-err" hidden>That code is not valid.</p>`, '<button type="button" class="btn" data-cr="open">Open</button>')}
       ${dlg('cr-import', 'Import theme', 'Paste the CSS from tweakcn.com (Code → CSS, the <code>:root</code> and <code>.dark</code> blocks) or a shadcn registry JSON. Colors, fonts, radius, shadows, tracking and spacing apply.', `<textarea class="textarea d-cr-ta" id="cr-theme-src" rows="10" spellcheck="false" placeholder=":root {&#10;  --background: oklch(1 0 0);&#10;  --primary: oklch(0.62 0.19 260);&#10;  …&#10;}&#10;.dark { … }" aria-label="Theme CSS or JSON"></textarea><p class="d-cr-err" id="cr-theme-err" hidden></p>`, '<button type="button" class="btn" data-cr="import">Apply theme</button>')}
@@ -237,19 +237,19 @@
       setHref(headTag(doc, 'd-cr-fonts', 'link'), fontsHref());
       headTag(doc, 'd-cr-theme', 'style').textContent = css();
     }
-    function sync() {
-      syncSite();
-      const doc = frame?.contentDocument;
+    // Showcase frames (create-preview.html): the Create stage and the home page.
+    function syncPreview(f) {
+      const doc = f?.contentDocument;
       if (!doc || !doc.getElementById('sc-theme')) return;
       doc.getElementById('sc-theme').textContent = css();
-      const st = doc.getElementById('sc-style');
-      const href = `dist/styles/${styleFile()}`;
-      if (!st.getAttribute('href').endsWith(href)) st.setAttribute('href', href);
-      const fl = doc.getElementById('sc-fonts');
-      const fh = fontsHref();
-      if (fl.getAttribute('href') !== fh) { if (fh) fl.setAttribute('href', fh); else fl.removeAttribute('href'); }
+      setHref(doc.getElementById('sc-style'), `dist/styles/${styleFile()}`);
+      setHref(doc.getElementById('sc-fonts'), fontsHref());
       doc.documentElement.classList.toggle('dark', document.documentElement.classList.contains('dark'));
-      frame.contentWindow.auvyxCorners?.apply();
+      f.contentWindow.auvyxCorners?.apply();
+    }
+    function sync() {
+      syncSite();
+      document.querySelectorAll('iframe[data-preview]').forEach(syncPreview);
     }
     function refresh() {
       save();
@@ -260,7 +260,7 @@
     function mount() {
       frame = $('#cr-frame');
       if (!frame) return;
-      frame.addEventListener('load', sync);
+      frame.addEventListener('load', () => syncPreview(frame));
       sync();
       if (mounted) return;
       mounted = true;
