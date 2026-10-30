@@ -67,6 +67,13 @@ export const ELEMENTS = [
     attributes: [
       { name: 'mode', type: "'single' | 'range'", description: 'Two inputs for a range' },
       { name: 'months', type: 'string', description: 'Months shown in the calendar' },
+      { name: 'caption', type: "'label' | 'dropdown'", description: 'Passed to the calendar' },
+      { name: 'week-numbers', type: 'boolean', description: 'Passed to the calendar' },
+      { name: 'disabled-days', type: 'string', description: 'Passed to the calendar' },
+      { name: 'disabled-dates', type: 'string', description: 'Passed to the calendar' },
+      { name: 'booked', type: 'string', description: 'Passed to the calendar' },
+      { name: 'min-days', type: 'string', description: 'Passed to the calendar (range mode)' },
+      { name: 'max-days', type: 'string', description: 'Passed to the calendar (range mode)' },
     ],
     properties: [{ name: 'value', type: 'string', description: '"YYYY-MM-DD", or "start/end" in range mode', readonly: true }],
     events: [change('A date was picked', '{ value: string }')] },

@@ -1085,11 +1085,9 @@
         });
       }
       document.getElementById("range").addEventListener("change", draw);
-      window.addEventListener("DOMContentLoaded", () =>
-        window.Chart && window.basecoat?.chart
-          ? draw()
-          : window.addEventListener("load", draw, { once: true }),
-      );
+      // Chart.js and auvyx.chart.min.js load deferred: wait for them unless they are there (also when mounted later by a framework).
+      if (window.Chart && window.basecoat?.chart) draw();
+      else window.addEventListener("load", draw, { once: true });
     </script>
   </body>
 </html>

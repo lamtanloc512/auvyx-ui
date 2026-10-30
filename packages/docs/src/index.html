@@ -173,6 +173,8 @@
   .d-frame iframe { display: block; inline-size: 100%; block-size: var(--h, 46rem); border: 0; background: var(--background); }
   @media (width < 48rem) { .d-frame { min-inline-size: 0; resize: none; } .d-block-tools .toggle-group { display: none; } }
   .d-block .d-code pre { max-block-size: 40rem; }
+  .d-bcode-bar { margin-block-end: 0.75rem; }
+  [data-bfwpane]:not([hidden]) { display: grid; gap: 0.75rem; }
 
   /* Charts */
   .d-charts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr)); gap: 1rem; margin-block-start: 1.5rem; }
@@ -610,7 +612,7 @@
     const list = cat === 'featured' ? D.featured.map((id) => D.blocks.find((b) => b.id === id)) : D.blocks.filter((b) => b.category === cat);
     const tabs = [{ id: 'featured', title: 'Featured' }, ...D.blockCats].map((c) => `<a href="#${c.id === 'featured' ? 'blocks' : 'blocks-' + c.id}"${c.id === cat ? ' aria-current="page"' : ''}>${esc(c.title)}</a>`).join('');
     return `<div class="d-blocks-head"><h1 class="d-h1">Building Blocks for the Web</h1>
-      <p class="d-lead">Clean, modern building blocks. Copy and paste into your apps. Plain HTML on <code class="d-inline">auvyx.min.css</code>: no build step, no utility classes.</p></div>
+      <p class="d-lead">Clean, modern building blocks. Copy and paste into your apps, as plain HTML or React 19 components on <code class="d-inline">auvyx.min.css</code>: no build step, no utility classes.</p></div>
       <nav class="d-cats" aria-label="Block categories">${tabs}</nav>${list.map(blockCard).join('')}`;
   }
 
@@ -677,6 +679,12 @@
       sec.querySelectorAll('[data-bpane]').forEach((p) => { p.hidden = p.dataset.bpane !== bv.dataset.bview; });
       if (bv.dataset.bview === 'code') loadBlockCode(sec);
     }
+    const fw = e.target.closest('[data-bfw]');
+    if (fw) {
+      const pane = fw.closest('[data-bpane]');
+      pane.querySelectorAll('[data-bfw]').forEach((b) => b.setAttribute('aria-selected', String(b === fw)));
+      pane.querySelectorAll('[data-bfwpane]').forEach((p) => { p.hidden = p.dataset.bfwpane !== fw.dataset.bfw; });
+    }
   });
   main.addEventListener('change', (e) => {
     if (e.target.name?.startsWith('vp-')) {
@@ -691,11 +699,19 @@
     const pane = sec.querySelector('[data-bpane="code"]');
     if (pane.dataset.loaded) return;
     const id = sec.id.replace('block-', '');
+    // React code comes from the registry, in the icon library chosen in Create.
+    let icons = 'lucide';
+    try { icons = JSON.parse(localStorage.getItem('auvyx-preset') || '{}').icons || icons; } catch (e) {}
     try {
-      const res = await fetch(`blocks/${id}.html`);
-      let txt = await res.text();
-      txt = txt.replaceAll('../dist/', CDN + '/');
-      pane.innerHTML = codeBox(txt, `${id}.html`);
+      const [page, item] = await Promise.all([
+        fetch(`blocks/${id}.html`).then((r) => r.text()),
+        fetch(`r/react/${icons}/${id}.json`).then((r) => r.json()),
+      ]);
+      const tsx = item.files[0];
+      const fw = (name, label) => `<button type="button" role="tab" aria-selected="${name === 'html'}" data-bfw="${name}">${label}</button>`;
+      pane.innerHTML = `<div class="d-bcode-bar"><div class="d-ex-tabs" role="tablist" aria-label="Framework">${fw('html', 'HTML')}${fw('react', 'React')}</div></div>
+        <div data-bfwpane="html">${codeBox(`npx @auvyx/cli add ${id}`)}${codeBox(page.replaceAll('../dist/', CDN + '/'), `${id}.html`)}</div>
+        <div data-bfwpane="react" hidden>${codeBox(`npx @auvyx/cli add ${id} --framework react`)}${codeBox(tsx.content, tsx.target)}</div>`;
       pane.dataset.loaded = '1';
     } catch (err) {
       pane.innerHTML = `<p class="d-lead">Could not load the source. Open <a href="blocks/${id}.html" target="_blank" rel="noopener">${id}.html</a> instead.</p>`;

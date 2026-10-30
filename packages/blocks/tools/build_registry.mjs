@@ -2,13 +2,14 @@
 //
 //   node packages/blocks/tools/build_registry.mjs [--src dir] [--out dir] [--cdn url]
 //
-// Each block page becomes r/<icons>/<name>.json, one per icon library
-// (lucide, tabler, hugeicons, ph, ri), with two files:
-//   - blocks/<name>.html       fragment: block <style>, <body> markup, block scripts
-//   - pages/<name>.html        standalone page with CDN links
-// plus r/<icons>/index.json listing every item. r/<name>.json and r/index.json
-// stay as the Lucide copies for registries configured before icon libraries
-// existed. Other registries built on Auvyx (Beamui, for one) reuse this
+// Each block page becomes r/<framework>/<icons>/<name>.json, one per
+// framework (html, react) and icon library (lucide, tabler, hugeicons, ph, ri):
+//   html:  blocks/<name>.html  fragment: block <style>, <body> markup, block scripts
+//          pages/<name>.html   standalone page with CDN links
+//   react: blocks/<name>.tsx   React 19 component (tools/html-to-react.mjs)
+// plus an index.json per folder listing every item. r/<icons>/ and r/<name>.json
+// stay as copies of the HTML items for registries configured before
+// frameworks and icon libraries existed. Other registries built on Auvyx (Beamui, for one) reuse this
 // script: point --src at their blocks folder (HTML pages plus registry.json)
 // and --out at the directory their endpoint serves. Each registry.json entry
 // may carry a free-form `meta` object, copied into the item as is.
@@ -16,6 +17,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { convertIcons, ICON_SETS } from '../../docs/tools/icon-convert.mjs';
+import { toReact } from './html-to-react.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '../../..');
@@ -69,6 +71,7 @@ for (const [name, info] of Object.entries(meta).sort(([a], [b]) => a.localeCompa
   const page = parse(html);
   const scripts = page.scripts.filter((s) => !BASE_ASSETS.has(path.basename(s))).map(toCdn);
   items.push({
+    page,
     name,
     type: 'registry:block',
     title: info.title ?? page.title ?? name,
@@ -83,23 +86,82 @@ for (const [name, info] of Object.entries(meta).sort(([a], [b]) => a.localeCompa
   });
 }
 
-const info = (item) => ({ meta: meta[item.name].meta ?? {} });
+const FRAMEWORKS = ['html', 'react'];
 const json = (v) => JSON.stringify(v, null, 2) + '\n';
-for (const icons of ICON_SETS) {
-  const dir = path.join(out, icons);
-  await fs.mkdir(dir, { recursive: true });
-  const index = [];
-  for (const item of items) {
-    const variant = {
-      ...item,
-      meta: { ...item.meta, icons },
-      files: item.files.map((f) => ({ ...f, content: convertIcons(f.content, icons) })),
-    };
-    await fs.writeFile(path.join(dir, `${item.name}.json`), json(variant));
-    if (icons === 'lucide') await fs.writeFile(path.join(out, `${item.name}.json`), json(variant));
-    index.push({ name: item.name, type: item.type, title: item.title, description: item.description, categories: item.categories, meta: { ...info(item).meta, icons } });
-  }
-  await fs.writeFile(path.join(dir, 'index.json'), json({ name: 'auvyx', version, icons, items: index }));
-  if (icons === 'lucide') await fs.writeFile(path.join(out, 'index.json'), json({ name: 'auvyx', version, icons, items: index }));
+const write = async (file, v) => {
+  await fs.mkdir(path.dirname(file), { recursive: true });
+  await fs.writeFile(file, json(v));
+};
+
+function variant(item, framework, icons) {
+  const { page, ...rest } = item;
+  const meta = { ...rest.meta, framework, icons };
+  if (framework === 'html') return { ...rest, meta, files: rest.files.map((f) => ({ ...f, content: convertIcons(f.content, icons) })) };
+  // Scripts inside <body> run after the markup, like the head's.
+  const bodyScripts = [...page.body.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+  if (/<script\b(?![^>]*>[\s\S]*?<\/script>)|<script\s[^>]*>/.test(page.body)) throw new Error('external <script> in <body>');
+  const content = toReact(item.name, {
+    title: item.title,
+    description: item.description,
+    styles: convertIcons(page.styles.map(dedent).join('\n'), icons),
+    body: convertIcons(dedent(page.body.replace(/\s*<script>[\s\S]*?<\/script>/g, '')), icons),
+    scripts: [...page.inline, ...bodyScripts].map((s) => convertIcons(dedent(s), icons)),
+  });
+  // Blocks with <auvyx-*> elements need their JSX types.
+  const deps = content.includes('<auvyx-') ? [...rest.registryDependencies, '@auvyx/react-types'] : rest.registryDependencies;
+  return { ...rest, meta, registryDependencies: deps, files: [{ path: `blocks/${item.name}.tsx`, type: 'registry:block', target: `blocks/${item.name}.tsx`, content }] };
 }
-console.log(`registry: ${items.length} items x ${ICON_SETS.length} icon libraries -> ${path.relative(root, out)}`);
+
+// JSX types for <auvyx-*> elements, installed next to React blocks that use
+// them (from packages/ui/dist/types, so the ui build runs first).
+async function reactTypes() {
+  const types = path.join(root, 'packages/ui/dist/types');
+  const elements = await fs.readFile(path.join(types, 'elements.d.ts'), 'utf8');
+  const react = (await fs.readFile(path.join(types, 'react.d.ts'), 'utf8')).replace("from './elements'", "from './auvyx-elements'");
+  return {
+    name: 'react-types',
+    type: 'registry:lib',
+    title: 'React types',
+    description: 'TypeScript JSX types for <auvyx-*> elements (React 19).',
+    categories: [],
+    meta: { version, framework: 'react' },
+    registryDependencies: [],
+    files: [
+      { path: 'types/auvyx-elements.d.ts', type: 'registry:lib', target: 'types/auvyx-elements.d.ts', content: elements },
+      { path: 'types/auvyx-react.d.ts', type: 'registry:lib', target: 'types/auvyx-react.d.ts', content: react },
+    ],
+  };
+}
+const ownRegistry = args.src === undefined;
+const typesItem = ownRegistry ? await reactTypes() : null;
+
+for (const framework of FRAMEWORKS) {
+  for (const icons of ICON_SETS) {
+    const index = [];
+    for (const item of items) {
+      let v;
+      try {
+        v = variant(item, framework, icons);
+      } catch (e) {
+        throw new Error(`${item.name} (${framework}, ${icons}): ${e.message}`);
+      }
+      await write(path.join(out, framework, icons, `${item.name}.json`), v);
+      if (framework === 'html') {
+        await write(path.join(out, icons, `${item.name}.json`), v);
+        if (icons === 'lucide') await write(path.join(out, `${item.name}.json`), v);
+      }
+      index.push({ name: v.name, type: v.type, title: v.title, description: v.description, categories: v.categories, meta: { ...meta[item.name].meta, framework, icons } });
+    }
+    if (framework === 'react' && typesItem) {
+      await write(path.join(out, framework, icons, `${typesItem.name}.json`), { ...typesItem, meta: { ...typesItem.meta, icons } });
+      index.push({ name: typesItem.name, type: typesItem.type, title: typesItem.title, description: typesItem.description, categories: [], meta: { framework, icons } });
+    }
+    const list = { name: 'auvyx', version, framework, icons, items: index };
+    await write(path.join(out, framework, icons, 'index.json'), list);
+    if (framework === 'html') {
+      await write(path.join(out, icons, 'index.json'), list);
+      if (icons === 'lucide') await write(path.join(out, 'index.json'), list);
+    }
+  }
+}
+console.log(`registry: ${items.length} items x ${FRAMEWORKS.length} frameworks x ${ICON_SETS.length} icon libraries -> ${path.relative(root, out)}`);

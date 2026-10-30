@@ -1,21 +1,24 @@
 #!/usr/bin/env node
 // Auvyx CLI: copy blocks from a registry into your project (shadcn-style open code).
 //
-//   auvyx init [--registry <url-template>] [--icons <library>] [--dir <dir>]
-//   auvyx add <item...> [--icons <library>] [--page] [--overwrite] [--dry-run]
+//   auvyx init [--framework html|react] [--registry <url-template>] [--icons <library>] [--dir <dir>]
+//   auvyx add <item...> [--framework html|react] [--icons <library>] [--page] [--overwrite] [--dry-run]
 //   auvyx list [@namespace]
 //
 // Items: `login-01` (default namespace), `@acme/dashboard-02`, a URL, or a
 // local .json path. Registries map a namespace to a URL template with `{name}`
-// and optionally `{icons}` (the icon library: lucide, tabler, hugeicons, ph, ri);
-// headers may reference env vars as ${VAR}, so tokens stay out of the file.
+// and optionally `{framework}` (html or react) and `{icons}` (the icon library:
+// lucide, tabler, hugeicons, ph, ri); headers may reference env vars as
+// ${VAR}, so tokens stay out of the file.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
 const CONFIG = 'auvyx.json';
 const DEFAULT_NS = '@auvyx';
-const DEFAULT_REGISTRY = 'https://auvyx-ui.vercel.app/r/{icons}/{name}.json';
+const DEFAULT_REGISTRY = 'https://auvyx-ui.vercel.app/r/{framework}/{icons}/{name}.json';
 const ICON_LIBRARIES = ['lucide', 'tabler', 'hugeicons', 'ph', 'ri'];
+const FRAMEWORKS = ['html', 'react'];
+const SETUP_URL = 'https://auvyx-ui.vercel.app/#installation';
 
 const argv = process.argv.slice(2);
 const flags = new Set(argv.filter((a) => a.startsWith('--')));
@@ -23,7 +26,7 @@ const opt = (name) => {
   const i = argv.indexOf(`--${name}`);
   return i >= 0 ? argv[i + 1] : undefined;
 };
-const positional = argv.filter((a, i) => !a.startsWith('--') && !['--registry', '--dir', '--icons'].includes(argv[i - 1]));
+const positional = argv.filter((a, i) => !a.startsWith('--') && !['--registry', '--dir', '--icons', '--framework'].includes(argv[i - 1]));
 const [command, ...rest] = positional;
 
 const fail = (msg) => {
@@ -54,6 +57,24 @@ function iconLibrary(config) {
   return lib;
 }
 
+function framework(config) {
+  const fw = opt('framework') ?? config.framework ?? 'html';
+  if (!FRAMEWORKS.includes(fw)) fail(`unknown framework "${fw}". Use one of: ${FRAMEWORKS.join(', ')}.`);
+  return fw;
+}
+
+// React when the project's package.json depends on it, HTML otherwise.
+async function detectFramework() {
+  try {
+    const pkg = JSON.parse(await fs.readFile('package.json', 'utf8'));
+    const deps = { ...pkg.dependencies, ...pkg.devDependencies };
+    if (deps.react) return 'react';
+  } catch (e) {
+    if (e.code !== 'ENOENT') fail(`cannot read package.json: ${e.message}`);
+  }
+  return 'html';
+}
+
 function resolve(config, spec) {
   if (/^https?:\/\//.test(spec) || spec.endsWith('.json')) return { source: spec, headers: {} };
   const m = spec.match(/^(@[\w-]+)\/(.+)$/);
@@ -61,8 +82,10 @@ function resolve(config, spec) {
   const entry = config.registries?.[ns];
   if (!entry) fail(`unknown registry ${ns}. Add it to "registries" in ${CONFIG}.`);
   const { url, headers = {} } = typeof entry === 'string' ? { url: entry } : entry;
+  const fw = framework(config);
+  if (fw !== 'html' && !url.includes('{framework}')) fail(`${ns} serves HTML only (its URL has no {framework}); use --framework html.`);
   return {
-    source: url.replace('{icons}', iconLibrary(config)).replace('{name}', encodeURIComponent(name)),
+    source: url.replaceAll('{framework}', fw).replaceAll('{icons}', iconLibrary(config)).replaceAll('{name}', encodeURIComponent(name)),
     headers: Object.fromEntries(Object.entries(headers).map(([k, v]) => [k, expandEnv(v, ns)])),
     ns,
   };
@@ -85,13 +108,18 @@ async function init() {
   } catch (e) {
     if (e.code !== 'ENOENT') throw e;
   }
+  const detected = opt('framework') ? null : await detectFramework();
+  const fw = framework({ framework: detected ?? undefined });
+  const src = await fs.access('src').then(() => true, () => false);
   const config = {
-    dir: opt('dir') ?? 'auvyx',
+    framework: fw,
+    dir: opt('dir') ?? (fw === 'react' ? `${src ? 'src/' : ''}components/auvyx` : 'auvyx'),
     icons: iconLibrary({}),
     registries: { [DEFAULT_NS]: registry },
   };
   await fs.writeFile(CONFIG, JSON.stringify(config, null, 2) + '\n');
-  console.log(`wrote ${CONFIG}`);
+  console.log(`wrote ${CONFIG}${detected === 'react' ? ' (React found in package.json)' : ''}`);
+  console.log(`\nLoad auvyx.min.css and auvyx.min.js once in your ${fw === 'react' ? 'root layout or index.html' : 'pages'}: ${SETUP_URL}`);
 }
 
 async function add() {
@@ -133,7 +161,7 @@ async function add() {
     }
   }
   if (scripts.size) {
-    console.log('\nThese blocks also need:');
+    console.log(`\nThese blocks also need${framework(config) === 'react' ? ', loaded once in your root layout or index.html' : ''}:`);
     for (const s of scripts) console.log(`  <script src="${s}" defer></script>`);
   }
 }
