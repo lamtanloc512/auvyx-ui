@@ -1,0 +1,19 @@
+/* Fork additions: shadcn/ui components Basecoat does not ship yet.
+   Structure in components/, visuals per style pack in styles/. */
+@import "./components/aspect-ratio.css";
+@import "./components/toggle.css";
+@import "./components/sheet.css";
+@import "./components/hover-card.css";
+@import "./components/input-otp.css";
+@import "./components/carousel.css";
+@import "./components/chat.css";
+@import "./components/attachment.css";
+@import "./components/code-block.css";
+@import "./components/trace.css";
+@import "./components/questionnaire.css";
+@import "./components/menus.css";
+@import "./components/resizable.css";
+@import "./components/data-table.css";
+@import "./components/calendar.css";
+@import "./components/sidebar.css";
+@import "./styles/vega.css";

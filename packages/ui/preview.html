@@ -1,0 +1,673 @@
+<meta charset="utf-8">
+<title>Auvyx UI Preview</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="dist/auvyx.min.css">
+<script>
+  /* Map the viewer's theme (data-theme on <html> or OS setting) to Basecoat's html.dark. */
+  (function () {
+    var r = document.documentElement, t = r.getAttribute('data-theme');
+    var dark = t === 'dark' || (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+    r.classList.toggle('dark', dark);
+  })();
+</script>
+<style>
+  /* Layout: single column of labelled specimen sections; tokens come from @auvyx/ui itself. */
+  :root { --pv-gap: 2.5rem; color-scheme: light; }
+  html.dark { color-scheme: dark; }
+  body { background: var(--background); color: var(--foreground); font-family: var(--font-sans); }
+  .pv { padding-block: 1.5rem 4rem; }
+  .pv-head { border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; }
+  .pv-head h1 { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.01em; margin: 0; }
+  .pv-head p { margin: 0.25rem 0 0; color: var(--muted-foreground); font-size: 0.875rem; }
+  .pv-controls label { font-size: 0.8125rem; color: var(--muted-foreground); display: flex; gap: 0.5rem; align-items: center; }
+  .pv-sec > header h2 { font-size: 1rem; font-weight: 600; margin: 0; text-wrap: balance; }
+  .pv-sec > header p { margin: 0.25rem 0 0; font-size: 0.875rem; color: var(--muted-foreground); max-width: 65ch; }
+  .pv-spec { border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; }
+  .pv-spec-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem; }
+  .pv-spec-top h3 { font-size: 0.875rem; font-weight: 600; margin: 0; }
+  .pv-spec-top code { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted-foreground); }
+  .pv-note { font-size: 0.8125rem; color: var(--muted-foreground); margin: 0; }
+  .pv-code { position: relative; background: var(--muted); border-radius: var(--radius); overflow-x: auto; }
+  .pv-code pre { margin: 0; padding: 0.875rem 1rem; font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.6; }
+  .pv-stat { border: 1px solid var(--border); border-radius: var(--radius); padding: 0.75rem 1rem; }
+  .pv-stat b { display: block; font-size: 1.25rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .pv-stat span { font-size: 0.75rem; color: var(--muted-foreground); }
+  .pv-swatch { height: 2.5rem; flex: 1; border-radius: calc(var(--radius) - 2px); }
+  .pv-price { font-size: 1.875rem; font-weight: 600; margin: 0; font-variant-numeric: tabular-nums; }
+  .pv-grow { flex: 1; }
+  .pv-pad { padding: 1rem; }
+  .pv-chat { block-size: 34rem; border: 1px solid var(--border); border-radius: var(--radius); }
+  .pv-drop { border: 1px dashed var(--border); border-radius: var(--radius); padding: 2rem 1rem; text-align: center; font-size: 0.875rem; color: var(--muted-foreground); }
+  .pv-resize { block-size: 14rem; border: 1px solid var(--border); border-radius: var(--radius); }
+  .pv-tile { border: 1px solid var(--border); border-radius: var(--radius); padding: 0.75rem 1rem; font-size: 0.8125rem; min-width: 0; }
+  .pv-tile[data-tone='primary'] { background: var(--primary); color: var(--primary-foreground); border-color: transparent; }
+  .pv-tile[data-tone='muted'] { background: var(--muted); color: var(--muted-foreground); border-color: transparent; }
+</style>
+
+<div class="wrapper stack pv" data-size="lg" data-gap="12">
+  <header class="pv-head cluster" data-justify="between">
+    <div>
+      <h1>Auvyx UI <span class="badge" data-variant="secondary">v0.1.0</span></h1>
+      <p>Basecoat fork · import 1 file CSS là chạy · JS chỉ khi component thật sự cần</p>
+    </div>
+    <div class="pv-controls cluster" data-gap="3">
+      <label for="pv-theme">Theme
+        <select id="pv-theme" class="select" aria-label="Brand theme">
+          <option value="">Default</option>
+          <option value="ocean">Ocean</option>
+          <option value="forest">Forest</option>
+        </select>
+      </label>
+      <label for="pv-dark"><input id="pv-dark" type="checkbox" role="switch" class="input"> Dark</label>
+    </div>
+  </header>
+
+  <section class="pv-sec stack" data-gap="4" aria-labelledby="s-use">
+    <header>
+      <h2 id="s-use">Cách dùng</h2>
+      <p>Kênh CDN giống Bootstrap: một <code>&lt;link&gt;</code> cho CSS, thêm <code>&lt;script defer&gt;</code> chỉ khi dùng Tabs, Select, Combobox, Command, Toast, Sidebar hoặc Slider. Project đã có Tailwind thì import bản source.</p>
+    </header>
+    <div class="pv-code">
+      <pre id="pv-snippet">&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@auvyx/ui@0.1.0/dist/auvyx.min.css"&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/@auvyx/ui@0.1.0/dist/auvyx.min.js" defer&gt;&lt;/script&gt;  &lt;!-- tùy chọn --&gt;
+
+&lt;html class="dark" data-theme="ocean"&gt;  &lt;!-- dark mode + brand theme = chỉ CSS variables --&gt;
+
+/* Đã có Tailwind v4? Dùng kênh source, utility do build của bạn sinh ra */
+@import "tailwindcss";
+@import "@auvyx/ui/bundle";</pre>
+    </div>
+    <div class="auto-grid" data-min="sm" data-gap="3">
+      <div class="pv-stat"><b>33.3 kB</b><span>auvyx.min.css · gzip · không có utility</span></div>
+      <div class="pv-stat"><b>17.3 kB</b><span>auvyx.min.js · gzip · tùy chọn</span></div>
+      <div class="pv-stat"><b>22.9 kB</b><span>upstream basecoat.cdn.min.css</span></div>
+    </div>
+  </section>
+
+  <section class="pv-sec stack" data-gap="4" aria-labelledby="s-native">
+    <header>
+      <h2 id="s-native">Zero JS: chạy bằng tính năng native của browser</h2>
+      <p>Trang này không load JS cho các component dưới đây. Popover API, Invoker Commands, <code>&lt;details name&gt;</code> và CSS anchor positioning làm toàn bộ việc mở/đóng, light dismiss, Escape và focus.</p>
+    </header>
+    <div class="auto-grid" style="--min: 18rem">
+
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Popover</h3><span class="badge" data-variant="outline">0 JS</span></div>
+        <div class="popover">
+          <button type="button" class="btn" data-variant="outline" popovertarget="pv-pop">Kích thước eSIM</button>
+          <div id="pv-pop" data-popover popover data-side="bottom" data-align="start" style="width: 16rem">
+            <header><h4>Gói dữ liệu</h4><p>Chọn dung lượng cho chuyến đi.</p></header>
+            <div class="stack" data-gap="2">
+              <label class="label" for="pv-gb">Dung lượng (GB)</label>
+              <input class="input" id="pv-gb" type="number" value="10">
+            </div>
+          </div>
+        </div>
+        <p class="pv-note"><code>popover</code> + <code>popovertarget</code>, đặt vị trí bằng <code>position-area</code>.</p>
+      </article>
+
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Dropdown menu</h3><span class="badge" data-variant="outline">0 JS</span></div>
+        <div class="dropdown-menu">
+          <button type="button" class="btn" data-variant="outline" popovertarget="pv-menu" aria-haspopup="menu">Tài khoản</button>
+          <div id="pv-menu" data-popover popover data-side="bottom" data-align="start" style="width: 12rem">
+            <div role="menu" aria-label="Tài khoản">
+              <button type="button" role="menuitem"><span>Hồ sơ</span><kbd>⇧⌘P</kbd></button>
+              <button type="button" role="menuitem"><span>Thanh toán</span><kbd>⌘B</kbd></button>
+              <hr role="separator">
+              <button type="button" role="menuitem" popovertarget="pv-menu" popovertargetaction="hide"><span>Đăng xuất</span></button>
+            </div>
+          </div>
+        </div>
+        <p class="pv-note">Tab giữa các item. Phím mũi tên sẽ do <code>&lt;auvyx-menu&gt;</code> (light DOM) bổ sung ở bước Web Components.</p>
+      </article>
+
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Dialog</h3><span class="badge" data-variant="outline">0 JS</span></div>
+        <div class="cluster" data-gap="2">
+          <button type="button" class="btn" commandfor="pv-dlg" command="show-modal">Sửa hồ sơ</button>
+        </div>
+        <dialog id="pv-dlg" class="dialog" closedby="any" aria-labelledby="pv-dlg-title">
+          <div>
+            <header>
+              <h2 id="pv-dlg-title">Sửa hồ sơ</h2>
+              <p>Thay đổi sẽ lưu khi bạn bấm Lưu.</p>
+            </header>
+            <section>
+              <div class="stack" data-gap="2">
+                <label class="label" for="pv-name">Tên</label>
+                <input class="input" id="pv-name" type="text" value="Ethan">
+              </div>
+            </section>
+            <footer>
+              <button type="button" class="btn" data-variant="outline" commandfor="pv-dlg" command="close">Huỷ</button>
+              <button type="button" class="btn" commandfor="pv-dlg" command="close">Lưu</button>
+            </footer>
+          </div>
+        </dialog>
+        <p class="pv-note"><code>commandfor</code> + <code>command="show-modal"</code>; <code>closedby="any"</code> cho backdrop click.</p>
+      </article>
+
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Accordion</h3><span class="badge" data-variant="outline">0 JS</span></div>
+        <section class="accordion">
+          <details name="pv-faq" open>
+            <summary><h2>eSIM kích hoạt khi nào?</h2><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+            <section><p>Khi máy kết nối mạng ở nước đến lần đầu tiên.</p></section>
+          </details>
+          <details name="pv-faq">
+            <summary><h2>Có hoàn tiền không?</h2><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+            <section><p>Có, nếu gói chưa được cài đặt.</p></section>
+          </details>
+          <details name="pv-faq" inert>
+            <summary><h2>Gói doanh nghiệp (sắp có)</h2><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+            <section><p>Chưa mở.</p></section>
+          </details>
+        </section>
+        <p class="pv-note">Cùng <code>name</code> = chỉ mở một mục. <code>inert</code> = disabled.</p>
+      </article>
+
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Tooltip</h3><span class="badge" data-variant="outline">0 JS</span></div>
+        <div class="cluster" data-gap="2">
+          <button type="button" class="btn" data-variant="outline" data-tooltip="Copy mã kích hoạt" data-side="top">Top</button>
+          <button type="button" class="btn" data-variant="outline" data-tooltip="Mở cài đặt" data-side="bottom">Bottom</button>
+        </div>
+        <p class="pv-note">CSS thuần từ upstream, dùng <code>data-tooltip</code>.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="pv-sec stack" data-gap="4" aria-labelledby="s-new">
+    <header>
+      <h2 id="s-new">Mới thêm: component shadcn mà Basecoat chưa có</h2>
+      <p>Đợt A, cả 8 đều zero JS. Toggle dùng checkbox/radio native nên form submit được; Sheet là chính <code>&lt;dialog&gt;</code>; Input OTP là một <code>&lt;input&gt;</code> duy nhất; Carousel dùng scroll-snap và <code>::scroll-button</code>.</p>
+    </header>
+    <div class="auto-grid" style="--min: 18rem">
+
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Toggle</h3><span class="badge" data-variant="outline">0 JS</span></div>
+        <div class="cluster" data-gap="2">
+          <label class="toggle" aria-label="Bold"><input type="checkbox" name="bold" checked><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12h9a4 4 0 0 1 0 8H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h7a4 4 0 0 1 0 8"/></svg></label>
+          <label class="toggle" aria-label="Italic"><input type="checkbox" name="italic"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" x2="10" y1="4" y2="4"/><line x1="14" x2="5" y1="20" y2="20"/><line x1="15" x2="9" y1="4" y2="20"/></svg></label>
+          <label class="toggle" data-variant="outline"><input type="checkbox" name="wifi"> Wi-Fi hotspot</label>
+        </div>
+        <p class="pv-note"><code>&lt;label class="toggle"&gt;&lt;input type="checkbox"&gt;</code></p>
+      </article>
+
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Toggle Group</h3><span class="badge" data-variant="outline">0 JS</span></div>
+        <fieldset class="toggle-group" data-variant="outline">
+          <legend>Thời hạn gói</legend>
+          <label class="toggle"><input type="radio" name="pv-days" value="7"> 7 ngày</label>
+          <label class="toggle"><input type="radio" name="pv-days" value="15" checked> 15 ngày</label>
+          <label class="toggle"><input type="radio" name="pv-days" value="30"> 30 ngày</label>
+        </fieldset>
+        <fieldset class="toggle-group" data-spacing="1">
+          <legend>Vùng</legend>
+          <label class="toggle"><input type="checkbox" name="pv-reg" value="jp" checked> Nhật</label>
+          <label class="toggle"><input type="checkbox" name="pv-reg" value="kr"> Hàn</label>
+          <label class="toggle"><input type="checkbox" name="pv-reg" value="th" checked> Thái</label>
+        </fieldset>
+        <p class="pv-note">Radio = chọn một, checkbox = chọn nhiều.</p>
+      </article>
+
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Sheet</h3><span class="badge" data-variant="outline">0 JS</span></div>
+        <div class="cluster" data-gap="2">
+          <button type="button" class="btn" data-variant="outline" commandfor="pv-sheet" command="show-modal">Mở giỏ hàng</button>
+          <button type="button" class="btn" data-variant="outline" commandfor="pv-sheet-l" command="show-modal">Từ trái</button>
+        </div>
+        <dialog id="pv-sheet" class="sheet" data-side="right" closedby="any" aria-labelledby="pv-sheet-t">
+          <header><h2 id="pv-sheet-t">Giỏ hàng</h2><p>2 gói eSIM đang chờ thanh toán.</p></header>
+          <section class="stack" data-gap="3">
+            <div class="cluster" data-justify="between"><span>Nhật Bản · 10 GB</span><span>$14.90</span></div>
+            <div class="cluster" data-justify="between"><span>Hàn Quốc · 5 GB</span><span>$8.50</span></div>
+          </section>
+          <footer>
+            <button type="button" class="btn" commandfor="pv-sheet" command="close">Thanh toán $23.40</button>
+            <button type="button" class="btn" data-variant="outline" commandfor="pv-sheet" command="close">Tiếp tục mua</button>
+          </footer>
+          <button type="button" aria-label="Đóng" commandfor="pv-sheet" command="close"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+        </dialog>
+        <dialog id="pv-sheet-l" class="sheet" data-side="left" closedby="any" aria-labelledby="pv-sheet-lt">
+          <header><h2 id="pv-sheet-lt">Menu</h2><p>Sheet từ bên trái.</p></header>
+          <section class="stack" data-gap="2"><a href="#s-new">Gói eSIM</a><a href="#s-new">Đơn hàng</a><a href="#s-new">Hỗ trợ</a></section>
+          <button type="button" aria-label="Đóng" commandfor="pv-sheet-l" command="close"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+        </dialog>
+        <p class="pv-note"><code>&lt;dialog class="sheet" data-side="right" closedby="any"&gt;</code></p>
+      </article>
+
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Hover Card</h3><span class="badge" data-variant="outline">0 JS</span></div>
+        <p class="pv-note">Rê chuột hoặc Tab vào:
+          <span class="hover-card">
+            <a href="#s-new">@flowsus</a>
+            <span data-popover data-side="bottom">
+              <strong>flowsus</strong>
+              <span class="pv-note">eSIM du lịch cho châu Á. Kích hoạt trong 2 phút.</span>
+            </span>
+          </span>
+        </p>
+        <p class="pv-note">Mở sau 500ms bằng <code>:hover</code> / <code>:focus-within</code>.</p>
+      </article>
+
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Input OTP</h3><span class="badge" data-variant="outline">0 JS</span></div>
+        <div role="group" class="field">
+          <label for="pv-otp">Mã xác minh</label>
+          <div class="input-otp" data-length="6">
+            <input id="pv-otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" value="4821">
+          </div>
+        </div>
+        <p class="pv-note">Một <code>&lt;input&gt;</code>: paste, autofill SMS, validation đều native.</p>
+      </article>
+
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Aspect Ratio</h3><span class="badge" data-variant="outline">0 JS</span></div>
+        <div class="aspect-ratio" data-ratio="16/9">
+          <svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="160" height="90" fill="var(--muted)"/><circle cx="118" cy="28" r="12" fill="var(--primary)" opacity=".5"/><path d="M0 90 50 44l30 26 22-18 58 38Z" fill="var(--primary)" opacity=".8"/></svg>
+        </div>
+        <p class="pv-note"><code>data-ratio="16/9"</code> hoặc <code>style="--ratio: 5/4"</code>.</p>
+      </article>
+
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Carousel</h3><span class="badge" data-variant="outline">0 JS</span></div>
+        <section class="carousel" data-markers aria-roledescription="carousel" aria-label="Điểm đến">
+          <ol>
+            <li aria-roledescription="slide" aria-label="1 / 3"><div class="card"><section class="stack" data-gap="1"><strong>Tokyo</strong><span class="pv-note">Từ $4.50</span></section></div></li>
+            <li aria-roledescription="slide" aria-label="2 / 3"><div class="card"><section class="stack" data-gap="1"><strong>Seoul</strong><span class="pv-note">Từ $3.90</span></section></div></li>
+            <li aria-roledescription="slide" aria-label="3 / 3"><div class="card"><section class="stack" data-gap="1"><strong>Bangkok</strong><span class="pv-note">Từ $2.90</span></section></div></li>
+          </ol>
+        </section>
+        <p class="pv-note">Vuốt được ở mọi browser; nút và dots là <code>::scroll-button</code> / <code>::scroll-marker</code> (Chromium).</p>
+      </article>
+
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Typography</h3><code>.typography</code></div>
+        <div class="typography">
+          <h4>Hướng dẫn cài eSIM</h4>
+          <p data-variant="muted">Mất khoảng 2 phút.</p>
+          <ol><li>Mở <code>Cài đặt</code> → Di động.</li><li>Quét mã QR trong email.</li></ol>
+          <blockquote>Bật chuyển vùng dữ liệu khi đến nơi.</blockquote>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="pv-sec stack" data-gap="4" aria-labelledby="s-chat">
+    <header>
+      <h2 id="s-chat">Mới thêm: nhóm chat / AI</h2>
+      <p>Đợt B: Message, Bubble, Marker, Message Scroller, Trace, Attachment, Code Block, Questionnaire. Scroller dính đáy bằng <code>column-reverse</code>, nút "về tin mới nhất" hiện bằng scroll-driven animation; Trace mở rộng bằng <code>&lt;details&gt;</code>. Chỉ nút Copy cần JS.</p>
+    </header>
+    <div class="split" data-gap="4" style="--side: 22rem; --split-min: 55%">
+      <div class="message-scroller pv-chat">
+        <div role="log" aria-label="Hội thoại hỗ trợ" tabindex="0">
+          <div>
+            <p class="marker" data-variant="separator"><span>Hôm nay</span></p>
+            <article class="message" data-align="end">
+              <span class="avatar"><span>E</span></span>
+              <section>
+                <div class="bubble"><p>Mình sang Tokyo 10 ngày, nên mua gói nào?</p></div>
+                <footer>Đã xem · 21:04</footer>
+              </section>
+            </article>
+            <article class="message">
+              <span class="avatar"><span>F</span></span>
+              <section>
+                <header>flowsus assistant</header>
+                <ol class="trace">
+                  <li data-status="done"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Tra gói theo điểm đến</span><small>0.8s</small></li>
+                  <li>
+                    <details>
+                      <summary data-status="done"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span>So sánh 3 gói Nhật Bản</span><small>1.4s</small></summary>
+                      <div>10 GB / 15 ngày rẻ nhất trên mỗi GB cho chuyến 10 ngày.</div>
+                    </details>
+                  </li>
+                  <li data-status="running"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg><span>Kiểm tra vùng phủ sóng Docomo</span></li>
+                </ol>
+                <div class="bubble" data-variant="muted"><p>Bạn nên lấy gói <strong>Nhật Bản 10 GB / 15 ngày</strong> ($14.90). Dư 5 ngày phòng khi đổi lịch bay.</p><aside>👍 2</aside></div>
+              </section>
+            </article>
+            <p class="marker"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>Assistant đang soạn tiếp…</span></p>
+            <article class="message" data-align="end">
+              <span class="avatar"><span>E</span></span>
+              <section>
+                <div class="attachment" data-state="uploading" data-size="sm">
+                  <figure><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg></figure>
+                  <div><strong>ve-may-bay.pdf</strong><small>Đang tải lên… 64%</small></div>
+                </div>
+                <div class="bubble" data-variant="tinted"><p>Đây là vé, check giúp mình ngày về nhé.</p></div>
+              </section>
+            </article>
+            <article class="message" id="pv-latest">
+              <span class="avatar"><span>F</span></span>
+              <section>
+                <div class="bubble" data-variant="ghost"><p>Ngày về 24/11, gói 15 ngày vẫn đủ. Mã kích hoạt của bạn:</p></div>
+                <figure class="code-block" data-size="sm">
+                  <figcaption><span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 17 6-6-6-6"/><path d="M12 19h8"/></svg>LPA</span><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" data-copy aria-label="Copy"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></figcaption>
+                  <pre tabindex="0"><code>LPA:1$smdp.flowsus.com$K2-4F9A-7C21</code></pre>
+                </figure>
+              </section>
+            </article>
+          </div>
+        </div>
+        <a href="#pv-latest" class="btn" data-size="icon" aria-label="Về tin mới nhất"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></a>
+      </div>
+      <div class="stack" data-gap="4">
+        <form class="questionnaire pv-spec" onsubmit="event.preventDefault()">
+          <output>Câu 1 / 3</output>
+          <fieldset>
+            <legend>Bạn dùng dữ liệu nhiều không?</legend>
+            <p>Để gợi ý dung lượng phù hợp.</p>
+            <label><input class="input" type="radio" name="pv-q" value="light" required><span>Ít<small>Bản đồ, nhắn tin</small></span><kbd>1</kbd></label>
+            <label><input class="input" type="radio" name="pv-q" value="medium" checked><span>Vừa<small>Mạng xã hội, ảnh</small></span><kbd>2</kbd></label>
+            <label><input class="input" type="radio" name="pv-q" value="heavy"><span>Nhiều<small>Video, hotspot cho laptop</small></span><kbd>3</kbd></label>
+          </fieldset>
+          <footer><button class="btn">Tiếp tục</button><button type="button" class="btn" data-variant="ghost">Bỏ qua</button></footer>
+        </form>
+        <div class="attachment-group">
+          <div class="attachment" data-state="done"><figure><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg></figure><div><strong>ho-chieu.jpg</strong><small>1.2 MB</small></div><div data-actions><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Xoá"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>
+          <div class="attachment" data-state="error"><figure><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></figure><div><strong>visa.heic</strong><small>Định dạng không hỗ trợ</small></div></div>
+          <div class="attachment" data-state="idle"><figure><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg></figure><div><strong>Thả file vào đây</strong><small>PDF, JPG tối đa 10 MB</small></div></div>
+        </div>
+        <figure class="code-block">
+          <figcaption><span>install.html</span><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" data-copy aria-label="Copy"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></figcaption>
+          <pre tabindex="0" data-numbered><code><span>&lt;link rel="stylesheet" href="auvyx.min.css"&gt;</span>
+<span data-line="removed">&lt;script src="basecoat/all.min.js"&gt;&lt;/script&gt;</span>
+<span data-line="added">&lt;script src="auvyx.min.js" defer&gt;&lt;/script&gt;</span>
+<span data-line="highlighted">&lt;html data-theme="ocean"&gt;</span></code></pre>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-sec stack" data-gap="4" aria-labelledby="s-js2">
+    <header>
+      <h2 id="s-js2">Mới thêm: component cần JS (@auvyx/elements)</h2>
+      <p>Đợt C. Menubar và Navigation Menu mở/đóng bằng Popover API kể cả không có JS; <code>menu.js</code> thêm phím mũi tên, Navigation Menu mở khi rê chuột. Calendar, Date Picker, Data Table, Resizable, Context Menu là light-DOM custom elements: dùng chung CSS, form submit native, không Shadow DOM.</p>
+    </header>
+
+    <div class="auto-grid" style="--min: 18rem">
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Menubar</h3><span class="badge" data-variant="outline">native + keys</span></div>
+        <nav class="menubar" role="menubar" aria-label="Quản lý eSIM">
+          <div class="dropdown-menu">
+            <button type="button" role="menuitem" aria-haspopup="menu" aria-expanded="false" popovertarget="pv-mb-1">Gói</button>
+            <div id="pv-mb-1" data-popover popover><div role="menu" aria-label="Gói"><button type="button" role="menuitem"><span>Mua gói mới</span><kbd>⌘N</kbd></button><button type="button" role="menuitem"><span>Gia hạn</span><kbd>⌘R</kbd></button><hr role="separator"><button type="button" role="menuitem"><span>Lịch sử</span></button></div></div>
+          </div>
+          <div class="dropdown-menu">
+            <button type="button" role="menuitem" aria-haspopup="menu" aria-expanded="false" popovertarget="pv-mb-2">Thiết bị</button>
+            <div id="pv-mb-2" data-popover popover><div role="menu" aria-label="Thiết bị"><button type="button" role="menuitemcheckbox" aria-checked="true"><span>Tự chuyển vùng</span><span data-indicator><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></button><button type="button" role="menuitemcheckbox" aria-checked="false"><span>Hotspot</span><span data-indicator><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></button></div></div>
+          </div>
+          <div class="dropdown-menu">
+            <button type="button" role="menuitem" aria-haspopup="menu" aria-expanded="false" popovertarget="pv-mb-3">Trợ giúp</button>
+            <div id="pv-mb-3" data-popover popover><div role="menu" aria-label="Trợ giúp"><button type="button" role="menuitem"><span>Cách cài eSIM</span></button><button type="button" role="menuitem"><span>Chat với hỗ trợ</span></button></div></div>
+          </div>
+        </nav>
+        <p class="pv-note">Mở một menu rồi dùng ← → để chuyển, ↑ ↓ để chọn item.</p>
+      </article>
+
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Context Menu</h3><span class="badge" data-variant="outline">JS</span></div>
+        <auvyx-context-menu class="context-menu">
+          <div class="pv-drop" tabindex="0">Nhấn chuột phải (hoặc Shift+F10) vào vùng này</div>
+          <div class="dropdown-menu"><div data-popover popover><div role="menu" aria-label="Thao tác"><button type="button" role="menuitem"><span>Sao chép mã QR</span><kbd>⌘C</kbd></button><button type="button" role="menuitem"><span>Gửi qua email</span></button><hr role="separator"><button type="button" role="menuitem" data-variant="destructive"><span>Xoá eSIM</span></button></div></div></div>
+        </auvyx-context-menu>
+      </article>
+
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Date Picker</h3><span class="badge" data-variant="outline">enhances native</span></div>
+        <form class="stack" data-gap="3" id="pv-dp-form" onsubmit="event.preventDefault(); this.querySelector('output').textContent = 'Gửi: depart=' + new FormData(this).get('depart')">
+          <div role="group" class="field">
+            <label for="pv-depart">Ngày bay</label>
+            <auvyx-date-picker class="date-picker" data-placeholder="Chọn ngày"><input id="pv-depart" type="date" name="depart" min="2026-10-29" required></auvyx-date-picker>
+          </div>
+          <div class="cluster" data-gap="2"><button class="btn" data-size="sm">Gửi form</button><output class="pv-note"></output></div>
+        </form>
+        <p class="pv-note">Không có JS: dùng date picker native của browser. Có JS: popover + calendar, input gốc vẫn submit.</p>
+      </article>
+    </div>
+
+    <article class="pv-spec stack" data-gap="3">
+      <div class="pv-spec-top"><h3>Navigation Menu</h3><span class="badge" data-variant="outline">native + hover</span></div>
+      <nav class="navigation-menu" aria-label="Điều hướng chính">
+        <ul>
+          <li>
+            <button type="button" popovertarget="pv-nm-1">Gói eSIM <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+            <div id="pv-nm-1" data-popover popover data-cols="2">
+              <ul>
+                <li><a href="#s-js2"><strong>Châu Á</strong><span>Nhật, Hàn, Thái, Singapore và 20 nước khác.</span></a></li>
+                <li><a href="#s-js2"><strong>Châu Âu</strong><span>Một gói cho 39 nước khối Schengen.</span></a></li>
+                <li><a href="#s-js2"><strong>Toàn cầu</strong><span>120 quốc gia, phù hợp chuyến đi dài.</span></a></li>
+                <li><a href="#s-js2"><strong>Doanh nghiệp</strong><span>Quản lý nhiều eSIM cho cả đội.</span></a></li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <button type="button" popovertarget="pv-nm-2">Hỗ trợ <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+            <div id="pv-nm-2" data-popover popover>
+              <ul>
+                <li><a href="#s-js2"><strong>Cài đặt</strong><span>Hướng dẫn cho iPhone và Android.</span></a></li>
+                <li><a href="#s-js2"><strong>Thiết bị tương thích</strong><span>Kiểm tra máy của bạn có hỗ trợ eSIM.</span></a></li>
+              </ul>
+            </div>
+          </li>
+          <li><a href="#s-js2">Bảng giá</a></li>
+        </ul>
+      </nav>
+    </article>
+
+    <div class="split" data-gap="4" style="--side: 18rem; --split-min: 60%">
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Calendar</h3><span class="badge" data-variant="outline">JS</span></div>
+        <auvyx-calendar class="calendar" value="2026-11-14" min="2026-10-29" name="pv-cal" id="pv-cal"></auvyx-calendar>
+        <auvyx-calendar class="calendar" mode="range" value="2026-11-10/2026-11-24" id="pv-cal-range"></auvyx-calendar>
+        <p class="pv-note">Phím mũi tên, Home/End, PageUp/PageDown (Shift = năm). Range: chọn ngày đi rồi ngày về.</p>
+      </article>
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Data Table</h3><span class="badge" data-variant="outline">JS</span></div>
+        <auvyx-data-table class="data-table" data-page-size="5" id="pv-dt">
+          <header>
+            <input class="input" type="search" data-filter placeholder="Lọc theo nước, vùng…" aria-label="Lọc gói">
+            <div class="dropdown-menu">
+              <button type="button" class="btn" data-variant="outline" popovertarget="pv-dt-cols">Cột <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+              <div id="pv-dt-cols" data-popover popover data-align="end" style="width: 10rem">
+                <div class="stack" data-gap="2" style="padding: 0.5rem">
+                  <label class="cluster" data-gap="2"><input class="input" type="checkbox" data-column="2" checked> Vùng</label>
+                  <label class="cluster" data-gap="2"><input class="input" type="checkbox" data-column="3" checked> Dung lượng</label>
+                  <label class="cluster" data-gap="2"><input class="input" type="checkbox" data-column="4" checked> Thời hạn</label>
+                </div>
+              </div>
+            </div>
+          </header>
+          <div>
+            <table class="table">
+              <thead><tr>
+                <th><input class="input" type="checkbox" data-select-all aria-label="Chọn tất cả"></th>
+                <th aria-sort="none"><button type="button">Nước</button></th>
+                <th aria-sort="none"><button type="button">Vùng</button></th>
+                <th>Dung lượng</th>
+                <th aria-sort="none" data-type="number"><button type="button">Thời hạn</button></th>
+                <th aria-sort="none" data-type="number"><button type="button">Giá</button></th>
+              </tr></thead>
+              <tbody>
+              <tr><td><input class="input" type="checkbox" data-select aria-label="Chọn Nhật Bản"></td><td>Nhật Bản</td><td>Châu Á</td><td>10 GB</td><td data-value="15">15 ngày</td><td data-value="14.9">$14.90</td></tr>
+              <tr><td><input class="input" type="checkbox" data-select aria-label="Chọn Hàn Quốc"></td><td>Hàn Quốc</td><td>Châu Á</td><td>5 GB</td><td data-value="7">7 ngày</td><td data-value="8.5">$8.50</td></tr>
+              <tr><td><input class="input" type="checkbox" data-select aria-label="Chọn Thái Lan"></td><td>Thái Lan</td><td>Châu Á</td><td>15 GB</td><td data-value="30">30 ngày</td><td data-value="11.0">$11.00</td></tr>
+              <tr><td><input class="input" type="checkbox" data-select aria-label="Chọn Pháp"></td><td>Pháp</td><td>Châu Âu</td><td>10 GB</td><td data-value="15">15 ngày</td><td data-value="16.4">$16.40</td></tr>
+              <tr><td><input class="input" type="checkbox" data-select aria-label="Chọn Mỹ"></td><td>Mỹ</td><td>Bắc Mỹ</td><td>20 GB</td><td data-value="30">30 ngày</td><td data-value="24.0">$24.00</td></tr>
+              <tr><td><input class="input" type="checkbox" data-select aria-label="Chọn Úc"></td><td>Úc</td><td>Châu Đại Dương</td><td>8 GB</td><td data-value="15">15 ngày</td><td data-value="13.2">$13.20</td></tr>
+              <tr><td><input class="input" type="checkbox" data-select aria-label="Chọn Singapore"></td><td>Singapore</td><td>Châu Á</td><td>3 GB</td><td data-value="5">5 ngày</td><td data-value="5.9">$5.90</td></tr>
+              <tr><td><input class="input" type="checkbox" data-select aria-label="Chọn Đức"></td><td>Đức</td><td>Châu Âu</td><td>12 GB</td><td data-value="30">30 ngày</td><td data-value="18.75">$18.75</td></tr>
+                <tr data-empty hidden><td colspan="6">Không có gói phù hợp.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <footer>
+            <span data-selected-count data-template="Đã chọn {selected} / {total} gói"></span>
+            <span data-page-status data-template="Trang {page} / {pages}"></span>
+            <button type="button" class="btn" data-variant="outline" data-size="sm" data-page="prev">Trước</button>
+            <button type="button" class="btn" data-variant="outline" data-size="sm" data-page="next">Sau</button>
+          </footer>
+        </auvyx-data-table>
+      </article>
+    </div>
+
+    <article class="pv-spec stack" data-gap="3">
+      <div class="pv-spec-top"><h3>Resizable</h3><span class="badge" data-variant="outline">JS</span></div>
+      <auvyx-resizable class="resizable pv-resize" data-orientation="horizontal">
+        <section style="--size: 30" data-min="20" id="pv-rz-a"><p class="pv-note pv-pad">Danh sách đơn hàng</p></section>
+        <div role="separator" tabindex="0" aria-label="Đổi kích thước danh sách" data-handle></div>
+        <section style="--size: 70">
+          <auvyx-resizable class="resizable" data-orientation="vertical">
+            <section style="--size: 60"><p class="pv-note pv-pad">Chi tiết đơn</p></section>
+            <div role="separator" tabindex="0" aria-label="Đổi kích thước chi tiết" data-handle></div>
+            <section style="--size: 40"><p class="pv-note pv-pad">Nhật ký kích hoạt</p></section>
+          </auvyx-resizable>
+        </section>
+      </auvyx-resizable>
+      <p class="pv-note">Kéo thanh chia, hoặc Tab tới rồi dùng phím mũi tên (Shift = 10%), Enter để chia đều.</p>
+    </article>
+  </section>
+
+  <section class="pv-sec stack" data-gap="4" aria-labelledby="s-base">
+    <header>
+      <h2 id="s-base">Components cơ bản</h2>
+      <p>API giữ nguyên Basecoat: một root class cộng <code>data-variant</code>, <code>data-size</code>. Đổi Theme ở góc trên để thấy token thay đổi.</p>
+    </header>
+    <div class="auto-grid" style="--min: 18rem">
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Button</h3><code>.btn</code></div>
+        <div class="cluster" data-gap="2">
+          <button type="button" class="btn">Mua gói</button>
+          <button type="button" class="btn" data-variant="secondary">So sánh</button>
+          <button type="button" class="btn" data-variant="outline">Chi tiết</button>
+          <button type="button" class="btn" data-variant="ghost">Bỏ qua</button>
+          <button type="button" class="btn" data-variant="destructive">Huỷ gói</button>
+          <button type="button" class="btn" data-variant="link">Điều khoản</button>
+        </div>
+      </article>
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Badge</h3><code>.badge</code></div>
+        <div class="cluster" data-gap="2">
+          <span class="badge">Đang hoạt động</span>
+          <span class="badge" data-variant="secondary">5G</span>
+          <span class="badge" data-variant="outline">Châu Á</span>
+          <span class="badge" data-variant="destructive">Hết hạn</span>
+        </div>
+        <div class="cluster" data-gap="2">
+          <div class="pv-swatch" style="background: var(--primary)"></div>
+          <div class="pv-swatch" style="background: var(--accent)"></div>
+          <div class="pv-swatch" style="background: var(--muted)"></div>
+          <div class="pv-swatch" style="background: var(--destructive)"></div>
+        </div>
+      </article>
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Alert</h3><code>.alert</code></div>
+        <div class="alert">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <h2>Gói sắp hết dung lượng</h2>
+          <section>Còn 0.8 GB trên tổng 10 GB.</section>
+        </div>
+      </article>
+      <article class="pv-spec stack" data-gap="3">
+        <div class="pv-spec-top"><h3>Form</h3><code>.field</code></div>
+        <div role="group" class="field">
+          <label for="pv-email">Email nhận QR</label>
+          <input id="pv-email" type="email" placeholder="ban@email.com">
+        </div>
+        <div role="group" class="field" data-invalid>
+          <label for="pv-code">Mã giảm giá</label>
+          <input id="pv-code" value="FLOW50" aria-invalid="true" aria-describedby="pv-code-err">
+          <p id="pv-code-err" role="alert">Mã đã hết hạn.</p>
+        </div>
+        <div role="group" class="field">
+          <label for="pv-region">Khu vực</label>
+          <select id="pv-region" class="select"><option>Nhật Bản</option><option>Hàn Quốc</option><option>Thái Lan</option></select>
+        </div>
+        <div role="group" class="field" data-orientation="horizontal">
+          <input id="pv-roam" type="checkbox" role="switch">
+          <label for="pv-roam">Tự động gia hạn</label>
+        </div>
+      </article>
+      <article class="card">
+        <header>
+          <h2>Nhật Bản · 10 GB</h2>
+          <p>30 ngày · mạng Docomo, SoftBank</p>
+        </header>
+        <section><p class="pv-price">$14.90</p></section>
+        <footer class="cluster" data-gap="2">
+          <button type="button" class="btn pv-grow">Mua ngay</button>
+          <button type="button" class="btn" data-variant="outline">Chi tiết</button>
+        </footer>
+      </article>
+    </div>
+  </section>
+
+  <section class="pv-sec stack" data-gap="4" aria-labelledby="s-js">
+    <header>
+      <h2 id="s-js">Cần JS (auvyx.min.js)</h2>
+      <p>Tabs cần JS cho ARIA roving tabindex và điều hướng bằng phím mũi tên. Không có JS, tab đầu vẫn hiển thị.</p>
+    </header>
+    <div class="tabs" id="pv-tabs">
+      <nav role="tablist" aria-orientation="horizontal">
+        <button type="button" role="tab" id="pv-t1" aria-controls="pv-p1" aria-selected="true" tabindex="0">Tổng quan</button>
+        <button type="button" role="tab" id="pv-t2" aria-controls="pv-p2" aria-selected="false" tabindex="-1">Mức dùng</button>
+        <button type="button" role="tab" id="pv-t3" aria-controls="pv-p3" aria-selected="false" tabindex="-1">Hoá đơn</button>
+      </nav>
+      <div role="tabpanel" id="pv-p1" aria-labelledby="pv-t1" tabindex="-1"><p class="pv-note pv-pad">3 eSIM đang hoạt động.</p></div>
+      <div role="tabpanel" id="pv-p2" aria-labelledby="pv-t2" tabindex="-1" hidden><p class="pv-note pv-pad">Đã dùng 9.2 GB tháng này.</p></div>
+      <div role="tabpanel" id="pv-p3" aria-labelledby="pv-t3" tabindex="-1" hidden><p class="pv-note pv-pad">Hoá đơn gần nhất: $14.90.</p></div>
+    </div>
+  </section>
+
+  <section class="pv-sec stack" data-gap="4" aria-labelledby="s-layout">
+    <header>
+      <h2 id="s-layout">Layout primitives</h2>
+      <p>Thay cho utility classes ở kênh CDN: 5 layout có tên riêng, cấu hình bằng <code>data-*</code> hoặc CSS variable. Không trùng tên với Tailwind, nên load chung cũng không xung đột. Cả trang này được dàn layout bằng chúng.</p>
+    </header>
+    <div class="split" data-gap="4" style="--side: 12rem">
+      <nav class="pv-tile stack" data-gap="2" data-tone="muted" aria-label="Ví dụ split">
+        <strong>.split</strong>
+        <span>Side 12rem, tự xuống dòng khi hẹp.</span>
+      </nav>
+      <div class="stack" data-gap="3">
+        <div class="auto-grid" data-min="xs" data-gap="2">
+          <div class="pv-tile" data-tone="primary">.auto-grid</div>
+          <div class="pv-tile">data-min="xs"</div>
+          <div class="pv-tile">không cần breakpoint</div>
+          <div class="pv-tile">tự chia cột</div>
+        </div>
+        <div class="cluster" data-gap="2" data-justify="between">
+          <span class="badge" data-variant="outline">.cluster</span>
+          <span class="badge" data-variant="outline">data-justify="between"</span>
+        </div>
+      </div>
+    </div>
+    <div class="pv-code">
+      <pre>&lt;main class="wrapper stack" data-size="lg" data-gap="12"&gt;
+  &lt;div class="split" style="--side: 12rem"&gt;&lt;nav&gt;…&lt;/nav&gt;&lt;section&gt;…&lt;/section&gt;&lt;/div&gt;
+  &lt;div class="auto-grid" data-min="sm"&gt;…&lt;/div&gt;
+  &lt;div class="cluster" data-gap="2" data-justify="between"&gt;…&lt;/div&gt;
+&lt;/main&gt;</pre>
+    </div>
+  </section>
+</div>
+
+<script src="dist/auvyx.min.js" defer></script>
+<script>
+  (function () {
+    var root = document.documentElement, body = document.body;
+    var dark = document.getElementById('pv-dark');
+    var theme = document.getElementById('pv-theme');
+    dark.checked = root.classList.contains('dark');
+    dark.addEventListener('change', function () { root.classList.toggle('dark', dark.checked); });
+    theme.addEventListener('change', function () {
+      if (theme.value) body.setAttribute('data-theme', theme.value); else body.removeAttribute('data-theme');
+    });
+  })();
+</script>

@@ -1,0 +1,70 @@
+/* Trace (fork addition): steps of an agent run, tool calls, reasoning.
+ *
+ *   <ol class="trace">
+ *     <li data-status="done"><svg>…</svg><span>Searched plans</span><small>1.2s</small></li>
+ *     <li data-status="running"><svg>…</svg><span>Checking coverage</span></li>
+ *     <li>
+ *       <details>
+ *         <summary data-status="error"><svg>…</svg><span>Payment check</span></summary>
+ *         <div>Card declined: insufficient funds.</div>
+ *       </details>
+ *     </li>
+ *   </ol>
+ * Collapsible steps are native <details>, so no JS.
+ * data-status: done | running (shimmer) | pending | error
+ */
+@layer components {
+  .trace {
+    @apply m-0 flex w-full min-w-0 list-none flex-col p-0;
+
+    :is(li, summary)[data-status],
+    > li:not(:has(> details)),
+    summary {
+      @apply flex w-fit max-w-full min-w-0 items-center transition-colors;
+    }
+
+    > li > :is(a, button) {
+      @apply flex w-fit max-w-full min-w-0 cursor-pointer items-center text-start outline-none;
+    }
+
+    :is(li, summary) > svg {
+      @apply pointer-events-none flex shrink-0;
+    }
+
+    :is(li, summary) > span {
+      @apply min-w-0 truncate;
+    }
+
+    :is(li, summary) > small {
+      @apply shrink-0 tabular-nums;
+    }
+
+    [data-status='pending'] {
+      @apply opacity-60;
+    }
+
+    details {
+      @apply flex w-full min-w-0 flex-col;
+
+      > summary {
+        @apply cursor-pointer list-none outline-none;
+
+        &::-webkit-details-marker {
+          display: none;
+        }
+
+        > svg:first-child {
+          @apply transition-transform;
+        }
+      }
+
+      &[open] > summary > svg:first-child {
+        @apply rotate-90 rtl:-rotate-90;
+      }
+
+      > :not(summary) {
+        @apply min-w-0 wrap-break-word;
+      }
+    }
+  }
+}

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calendar 25 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .cal-times {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+        inline-size: 100%;
+      }
+      .cal-times .field input {
+        inline-size: 100%;
+      }
+      input[type="time"]::-webkit-calendar-picker-indicator {
+        display: none;
+      }
+
+      .date-picker > button:first-child {
+        inline-size: 100%;
+      }
+      .date-picker {
+        display: flex;
+      }
+      .cover > form {
+        inline-size: 18rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="cover">
+      <form class="stack" data-gap="4" onsubmit="event.preventDefault()">
+        <div role="group" class="field">
+          <label for="r">Dates</label>
+          <auvyx-date-picker class="date-picker" mode="range" months="2">
+            <input id="r" type="date" name="from" value="2026-06-12" />
+            <input type="date" name="to" value="2026-06-19" />
+          </auvyx-date-picker>
+        </div>
+        <div class="cal-times">
+          <div role="group" class="field">
+            <label for="t1">From</label>
+            <input id="t1" type="time" name="from_time" value="14:00" />
+          </div>
+          <div role="group" class="field">
+            <label for="t2">To</label>
+            <input id="t2" type="time" name="to_time" value="11:00" />
+          </div>
+        </div>
+      </form>
+    </main>
+  </body>
+</html>

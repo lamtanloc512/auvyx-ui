@@ -1,0 +1,59 @@
+/* Attachment (fork addition)
+ *
+ *   <div class="attachment-group">
+ *     <div class="attachment" data-state="uploading">
+ *       <figure><svg>…</svg></figure>              ← or <img>; data-variant="image"
+ *       <div><strong>passport.pdf</strong><small>Uploading… 42%</small></div>
+ *       <div data-actions><button class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Remove">…</button></div>
+ *     </div>
+ *   </div>
+ * data-state: idle (dashed) | uploading | processing | done | error
+ * data-size: sm | xs   data-orientation: vertical
+ * A full-card link: make <a> the title and it stretches over the card.
+ */
+@layer components {
+  .attachment-group {
+    @apply flex min-w-0 flex-wrap;
+  }
+
+  .attachment {
+    @apply relative flex max-w-full min-w-0 shrink-0 items-center border transition-colors;
+
+    &[data-orientation='vertical'] {
+      @apply flex-col items-stretch;
+    }
+
+    > figure {
+      @apply relative m-0 flex aspect-square shrink-0 items-center justify-center overflow-hidden [&_svg]:pointer-events-none;
+
+      > img {
+        @apply aspect-square w-full object-cover;
+      }
+    }
+
+    > div:not([data-actions]) {
+      @apply max-w-full min-w-0 flex-1;
+
+      > :is(strong, a, span):first-child {
+        @apply block max-w-full min-w-0 truncate;
+      }
+
+      > :is(small, p) {
+        @apply m-0 block min-w-0 truncate;
+      }
+
+      /* Stretched link: the whole card is the hit area. */
+      > a:first-child::after {
+        @apply absolute inset-0 z-10 content-[''];
+      }
+    }
+
+    > [data-actions] {
+      @apply relative z-20 flex shrink-0 items-center;
+    }
+
+    &[data-orientation='vertical'] > [data-actions] {
+      @apply absolute;
+    }
+  }
+}

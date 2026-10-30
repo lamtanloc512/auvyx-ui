@@ -84,7 +84,7 @@
 }
 
 @theme {
-  --font-sans: "Geist Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans: "Geist", "Geist Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -132,5 +132,14 @@
   }
   body {
     @apply bg-background text-foreground overscroll-none;
+  }
+  hr:where([aria-orientation='vertical']) {
+    flex-shrink: 0;
+    align-self: stretch;
+    inline-size: 1px;
+    block-size: auto;
+    margin: 0;
+    border-block-start-width: 0;
+    border-inline-start-width: 1px;
   }
 }

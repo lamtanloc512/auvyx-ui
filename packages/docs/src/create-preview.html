@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create preview · Auvyx UI</title>
+<link id="sc-fonts" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+<link id="sc-style" rel="stylesheet" href="dist/styles/auvyx-vega.min.css">
+<style id="sc-theme"></style>
+<style>
+  body { margin: 0; background: color-mix(in oklch, var(--muted) 45%, var(--background)); color: var(--foreground); font-family: var(--font-sans); }
+  .sc { columns: 19rem; column-gap: 1rem; padding: 1rem; }
+  .sc > * { break-inside: avoid; margin-block-end: 1rem; }
+  .sc-wide { column-span: none; }
+  .sc-full { inline-size: 100%; }
+  .sc-muted { color: var(--muted-foreground); }
+  .sc-note { margin: 0; font-size: .8125rem; }
+  .sc-center { text-align: center; }
+  .sc-link { font-size: .75rem; color: var(--muted-foreground); text-decoration: none; text-transform: uppercase; letter-spacing: .04em; }
+  .sc-big { font-size: 1.75rem; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; margin: 0; }
+  .sc-amount { font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+  .sc-bars { display: flex; align-items: flex-end; gap: .5rem; block-size: 9rem; }
+  .sc-bar { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: .375rem; block-size: 100%; }
+  .sc-bar span { inline-size: 100%; border-radius: calc(var(--radius) - 4px) calc(var(--radius) - 4px) 0 0; background: var(--chart-2); }
+  .sc-bar:nth-child(3n+1) span { background: var(--chart-1); } .sc-bar:nth-child(3n) span { background: var(--chart-3); }
+  .sc-bar small { font-size: .6875rem; color: var(--muted-foreground); }
+  .sc-stats > div { display: grid; gap: .125rem; padding: .75rem; border: 1px solid var(--border); }
+  .sc-stats > div:first-child { border-start-start-radius: var(--radius); border-end-start-radius: var(--radius); }
+  .sc-stats > div:last-child { border-start-end-radius: var(--radius); border-end-end-radius: var(--radius); border-inline-start-width: 0; }
+  .sc-stats small { font-size: .6875rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted-foreground); }
+  .sc-stats strong { font-size: 1.125rem; font-weight: 600; }
+  .sc-stats span { font-size: .8125rem; color: var(--muted-foreground); }
+  .sc-panel { display: grid; gap: .5rem; padding: .875rem; border-radius: var(--radius); background: var(--muted); }
+  .sc-panel > small { font-size: .6875rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted-foreground); }
+  .sc-dl { display: grid; grid-template-columns: 1fr auto; gap: .5rem 1rem; margin: 0; font-size: .875rem; }
+  .sc-dl dt { color: var(--muted-foreground); } .sc-dl dd { margin: 0; text-align: end; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .sc-box { padding: .875rem; border-radius: var(--radius); background: var(--muted); }
+  .sc-strong { color: var(--foreground) !important; font-weight: 600; }
+  .sc-ico { display: grid; place-items: center; inline-size: 2.25rem; block-size: 2.25rem; border-radius: calc(var(--radius) - 2px); background: var(--muted); }
+  .sc-ico svg { inline-size: 1rem; block-size: 1rem; }
+  .sc-when { font-size: .8125rem; }
+  @container (width < 30rem) { .sc-when { display: none; } }
+  .sc-amt { font-size: .875rem; font-variant-numeric: tabular-nums; }
+  .sc-pos { color: oklch(0.6 0.15 150); }
+  .sc-danger { color: var(--destructive); }
+  .sc-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .sc-pair .card > header > p { margin: 0; font-size: .8125rem; color: var(--muted-foreground); }
+  .sc-radios { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+  .sc-navcard { padding: 0; overflow: hidden; }
+  .sc-navcard .sidebar > nav { --sidebar-width: 100%; border: 0; background: transparent; }
+  .sc-cal { display: flex; justify-content: center; }
+  .sc-cal .calendar { padding: 0; }
+  .sc-person { display: grid; line-height: 1.3; font-size: .875rem; }
+  .sc-person small { color: var(--muted-foreground); }
+  .card { container-type: inline-size; }
+</style>
+<script src="dist/auvyx.min.js" defer></script>
+<script src="dist/auvyx.corners.min.js" defer></script>
+</head>
+<body>
+<main class="sc">
+<div class="card">
+  <header><h2>Contribution History</h2><p>Last 6 months of activity</p><div class="card-action"><span class="badge" data-variant="outline">+12% vs last month</span></div></header>
+  <section class="stack" data-gap="4">
+    <div class="sc-bars"><div class="sc-bar"><span style="block-size:54%"></span><small>Dec</small></div><div class="sc-bar"><span style="block-size:78%"></span><small>Jan</small></div><div class="sc-bar"><span style="block-size:66%"></span><small>Feb</small></div><div class="sc-bar"><span style="block-size:92%"></span><small>Mar</small></div><div class="sc-bar"><span style="block-size:52%"></span><small>Apr</small></div><div class="sc-bar"><span style="block-size:100%"></span><small>May</small></div></div>
+    <div class="switcher sc-stats" data-gap="0" style="--threshold: 16rem">
+      <div><small>Upcoming</small><strong>May 25, 2026</strong><span>$1,000 scheduled</span></div>
+      <div><small>Auto-save plan</small><strong>Accelerated</strong><span>Recurring weekly</span></div>
+    </div>
+  </section>
+  <footer><button type="button" class="btn sc-full">View Full Report</button></footer>
+</div>
+<div class="card">
+  <header><h2>Payout Threshold</h2><p>Set the minimum balance required before a payout is triggered.</p><div class="card-action"><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></header>
+  <section class="stack" data-gap="4">
+    <div role="group" class="field"><label for="sc-cur">Preferred Currency</label>
+      <select id="sc-cur" class="select"><option>USD — United States Dollar</option><option>EUR — Euro</option><option>VND — Vietnamese Dong</option></select></div>
+    <div role="group" class="field"><div class="cluster" data-justify="between"><label for="sc-min">Minimum Payout Amount</label><strong class="sc-amount">$3,000.00</strong></div>
+      <input id="sc-min" type="range" class="input" min="50" max="10000" value="3000" step="50" />
+      <div class="cluster sc-muted" data-justify="between"><small>$50 (min)</small><small>$10,000 (max)</small></div></div>
+    <div role="group" class="field"><label for="sc-notes">Notes</label><textarea id="sc-notes" class="textarea" rows="3" placeholder="Add any notes for this payout configuration…"></textarea></div>
+  </section>
+  <footer><button type="button" class="btn sc-full">Save Threshold</button></footer>
+</div>
+<div class="card">
+  <header><h2>Savings Targets</h2><p>Active milestones for 2026</p><div class="card-action"><button type="button" class="btn" data-variant="outline" data-size="sm">New Goal</button></div></header>
+  <section class="stack" data-gap="3">
+    <div class="sc-panel"><small>Retirement</small><strong class="sc-big">$420,000</strong>
+      <div class="progress" role="progressbar" aria-label="Retirement" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"><span style="width:65%"></span></div>
+      <div class="cluster sc-muted" data-justify="between"><small>65% achieved</small><small>$273,000</small></div></div>
+    <div class="sc-panel"><small>Real estate</small><strong class="sc-big">$85,000</strong>
+      <div class="progress" role="progressbar" aria-label="Real estate" aria-valuenow="32" aria-valuemin="0" aria-valuemax="100"><span style="width:32%"></span></div>
+      <div class="cluster sc-muted" data-justify="between"><small>32% achieved</small><small>$27,200</small></div></div>
+  </section>
+  <footer><p class="sc-muted sc-note">You have not met your targets for this year.</p></footer>
+</div>
+<div class="card">
+  <header><h2>Buy Investment</h2></header>
+  <section class="stack" data-gap="4">
+    <div role="group" class="field"><label for="sc-amt">Amount to Invest</label>
+      <div class="input-group"><span data-align="inline-start">$</span><input id="sc-amt" type="text" value="1,000.00" /></div></div>
+    <div role="group" class="field"><label for="sc-order">Order Type</label><select id="sc-order" class="select"><option>Market Order</option><option>Limit Order</option></select><p>Market orders execute at the current price.</p></div>
+    <dl class="sc-dl"><dt>Estimated Shares</dt><dd>1.95</dd><dt>Buying Power</dt><dd>$12,450.00</dd></dl>
+  </section>
+  <footer class="stack" data-gap="3"><button type="button" class="btn sc-full">Review Order</button><p class="sc-muted sc-note sc-center">Trades are typically executed within minutes during market hours.</p></footer>
+</div>
+<div class="card">
+  <header><h2>Account Access</h2><p>Update your credentials or re-authenticate.</p></header>
+  <section class="stack" data-gap="4">
+    <div role="group" class="field"><label for="sc-email">Email Address</label><input id="sc-email" type="email" value="artist@studio.inc" /></div>
+    <div role="group" class="field"><div class="cluster" data-justify="between"><label for="sc-pw">Current Password</label><a href="#" class="sc-link">Forgot?</a></div><input id="sc-pw" type="password" value="supersecret" /></div>
+    <button type="button" class="btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Update Security</button>
+    <a href="#" class="item" data-variant="outline" data-size="sm"><figure class="sc-danger"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></figure>
+      <section><h3>Danger Zone</h3><p>Archive account and remove catalog</p></section><aside><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></aside></a>
+  </section>
+</div>
+<div class="card sc-wide">
+  <header><h2>Recent Transactions</h2><p>Your latest account activity.</p><div class="card-action"><button type="button" class="btn" data-variant="outline" data-size="sm">View All</button></div></header>
+  <section class="stack" data-gap="1">
+    <article class="item" data-size="sm"><figure class="sc-ico"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"/><path d="M6 2v2"/></svg></figure><section><h3>Blue Bottle Coffee</h3><p>Food & Drink</p></section>
+      <aside class="cluster" data-gap="4"><span class="sc-muted sc-when">Today, 10:24 AM</span><strong class="sc-amt">-$6.50</strong><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="More"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></aside></article>
+    <article class="item" data-size="sm"><figure class="sc-ico"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></figure><section><h3>Whole Foods Market</h3><p>Groceries</p></section>
+      <aside class="cluster" data-gap="4"><span class="sc-muted sc-when">Yesterday</span><strong class="sc-amt">-$142.30</strong><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="More"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></aside></article>
+    <article class="item" data-size="sm"><figure class="sc-ico"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg></figure><section><h3>Stripe Payout</h3><p>Income</p></section>
+      <aside class="cluster" data-gap="4"><span class="sc-muted sc-when">Oct 12</span><strong class="sc-amt sc-pos">+$4,200.00</strong><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="More"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></aside></article>
+    <article class="item" data-size="sm"><figure class="sc-ico"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg></figure><section><h3>Uber Technologies</h3><p>Transport</p></section>
+      <aside class="cluster" data-gap="4"><span class="sc-muted sc-when">Oct 11</span><strong class="sc-amt">-$24.10</strong><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="More"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></aside></article>
+    <article class="item" data-size="sm"><figure class="sc-ico"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="15" x="2" y="7" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg></figure><section><h3>Netflix Subscription</h3><p>Entertainment</p></section>
+      <aside class="cluster" data-gap="4"><span class="sc-muted sc-when">Oct 10</span><strong class="sc-amt">-$19.99</strong><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="More"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></aside></article>
+  </section>
+</div>
+<div class="card">
+  <header><h2>Receiving Method</h2><p>Payout preferences</p></header>
+  <section class="stack" data-gap="4">
+    <div role="group" class="field"><label for="sc-holder">Account Holder Name</label><input id="sc-holder" type="text" value="Synthetic Horizons Music LLC" /></div>
+    <fieldset class="fieldset"><legend data-variant="label">Receiving Method</legend>
+      <div role="radiogroup" class="sc-radios">
+        <div role="group" class="field"><label><div role="group" class="field" data-orientation="horizontal"><input type="radio" name="sc-method" class="input" checked /><section><h3>Bank Transfer</h3><p>SWIFT / IBAN</p></section></div></label></div>
+        <div role="group" class="field"><label><div role="group" class="field" data-orientation="horizontal"><input type="radio" name="sc-method" class="input" /><section><h3>PayPal</h3><p>Instant payout</p></section></div></label></div>
+      </div></fieldset>
+    <div role="group" class="field"><label for="sc-iban">IBAN / Account Number</label><input id="sc-iban" type="text" placeholder="DE89 3704 0044 ...." /></div>
+  </section>
+  <footer><button type="button" class="btn sc-full">Save Payout Settings</button></footer>
+</div>
+<div class="sc-pair">
+  <div class="card" data-size="sm"><header><p>Card Balance</p><h2 class="sc-big">US$12.94</h2></header><section><p class="sc-muted sc-note">US$11,337.06 available</p></section></div>
+  <div class="card" data-size="sm"><header><p>Payment Due</p><h2 class="sc-big">1 Apr</h2></header><footer><button type="button" class="btn sc-full" data-variant="outline" data-size="sm">Pay Early</button></footer></div>
+</div>
+<div class="card">
+  <header><h2>Power Usage</h2><p>Whole home</p></header>
+  <section class="stack" data-gap="4">
+    <div class="sc-bars"><div class="sc-bar"><span style="block-size:32%"></span><small>6a</small></div><div class="sc-bar"><span style="block-size:70%"></span><small>8a</small></div><div class="sc-bar"><span style="block-size:76%"></span><small>10a</small></div><div class="sc-bar"><span style="block-size:60%"></span><small>12p</small></div><div class="sc-bar"><span style="block-size:86%"></span><small>2p</small></div><div class="sc-bar"><span style="block-size:72%"></span><small>4p</small></div><div class="sc-bar"><span style="block-size:96%"></span><small>6p</small></div><div class="sc-bar"><span style="block-size:80%"></span><small>8p</small></div></div>
+    <div class="switcher sc-stats" data-gap="0" style="--threshold: 14rem"><div><small>Currently using</small><strong>3.4 kW</strong></div><div><small>Solar gen</small><strong class="sc-muted">+1.2 kW</strong></div></div>
+    <div class="stack" data-gap="2"><div class="cluster" data-justify="between"><small class="sc-muted">Battery level</small><small>85%</small></div>
+      <div class="progress" role="progressbar" aria-label="Battery" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"><span style="width:85%"></span></div></div>
+  </section>
+</div>
+<div class="card">
+  <header><h2>Transfer Funds</h2><p>Move money between your connected accounts.</p><div class="card-action"><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></header>
+  <section class="stack" data-gap="4">
+    <div role="group" class="field"><label for="sc-tr">Amount to Transfer</label><div class="input-group"><span data-align="inline-start">$</span><input id="sc-tr" type="text" value="1,200.00" /></div></div>
+    <div role="group" class="field"><label for="sc-from">From Account</label><select id="sc-from" class="select"><option>Main Checking (··8402) — $12,450.00</option></select></div>
+    <div role="group" class="field"><label for="sc-to">To Account</label><select id="sc-to" class="select"><option>High Yield Savings (··1192) — $42,100.00</option></select></div>
+    <dl class="sc-dl sc-box"><dt>Estimated arrival</dt><dd>Today, Apr 14</dd><dt>Transaction fee</dt><dd>$0.00</dd><dt class="sc-strong">Total amount</dt><dd class="sc-strong">$1,200.00</dd></dl>
+  </section>
+  <footer><button type="button" class="btn sc-full">Confirm Transfer</button></footer>
+</div>
+<div class="card">
+  <header><h2>Preferences</h2><p>Manage your account settings and notifications.</p></header>
+  <section class="stack" data-gap="4">
+    <div role="group" class="field"><label for="sc-dc">Default Currency</label><select id="sc-dc" class="select"><option>USD — United States Dollar</option></select></div>
+    <div role="group" class="field" data-orientation="horizontal"><section><label for="sc-pub">Public Statistics</label><p>Allow others to see your total stream count and listening activity</p></section><input type="checkbox" id="sc-pub" role="switch" class="input" checked /></div>
+    <div role="group" class="field" data-orientation="horizontal"><section><label for="sc-mail">Email Notifications</label><p>Monthly royalty reports and distribution updates</p></section><input type="checkbox" id="sc-mail" role="switch" class="input" checked /></div>
+  </section>
+</div>
+<div class="card sc-navcard"><aside class="sidebar" data-position="static"><nav aria-label="Showcase navigation"><section>
+  <div role="group" aria-labelledby="sc-nav-h"><h3 id="sc-nav-h">Overview</h3><ul><li><a href="#" aria-current="page"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg><span>Dashboard</span></a></li><li><a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg><span>Transactions</span></a></li><li><a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg><span>Investments</span></a></li><li><a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg><span>Accounts</span></a></li></ul></div>
+  <div role="group" aria-labelledby="sc-nav-p"><h3 id="sc-nav-p">Planning</h3><ul><li><a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span>Goals</span></a></li><li><a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg><span>Budget</span></a></li></ul></div>
+</section></nav></aside></div>
+<div class="card">
+  <header><nav class="breadcrumb" aria-label="Breadcrumb"><ol><li><a href="#">Home</a></li><li aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></li><li><span aria-current="page">Payments</span></li></ol></nav></header>
+  <section class="stack" data-gap="2">
+    <a href="#" class="item" data-size="sm"><figure><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></figure><section><h3>Change transfer limit</h3><p>Adjust how much you can send from your balance.</p></section><aside><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></aside></a>
+    <a href="#" class="item" data-size="sm"><figure><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></figure><section><h3>Scheduled transfers</h3><p>Set up a transfer to send at a later date.</p></section><aside><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></aside></a>
+    <a href="#" class="item" data-size="sm"><figure><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></figure><section><h3>Direct debits</h3><p>Set up and manage regular payments.</p></section><aside><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></aside></a>
+  </section>
+</div>
+<div class="card"><section class="empty">
+  <header><figure><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg></figure><h3>Connect Bank</h3><p>Link your payout method to receive monthly royalty distributions automatically.</p></header>
+  <footer><button type="button" class="btn" data-size="sm">Set Up Payouts</button></footer>
+</section></div>
+<div class="card">
+  <header><h2>Upcoming Payments</h2><p>Select a date to view scheduled payments.</p></header>
+  <section class="sc-cal"><auvyx-calendar class="calendar" value="2026-04-14" month="2026-04" booked="2026-04-03,2026-04-21"></auvyx-calendar></section>
+</div>
+<div class="card">
+  <header><h2>Team Members</h2><p>Invite your team members to collaborate.</p></header>
+  <section class="stack" data-gap="4">
+    <div class="cluster" data-justify="between"><div class="cluster" data-gap="3"><span class="avatar"><span>SD</span></span><div class="sc-person"><strong>Sofia Davis</strong><small>m@example.com</small></div></div>
+      <div class="dropdown-menu"><button type="button" class="btn" data-variant="outline" data-size="sm" popovertarget="sc-role-0">Owner <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div id="sc-role-0" data-popover popover data-align="end" style="width:12rem"><div role="menu" aria-label="Role"><button type="button" role="menuitem"><span>Viewer</span></button><button type="button" role="menuitem"><span>Developer</span></button><button type="button" role="menuitem"><span>Billing</span></button><button type="button" role="menuitem"><span>Owner</span></button></div></div></div></div>
+    <div class="cluster" data-justify="between"><div class="cluster" data-gap="3"><span class="avatar"><span>JL</span></span><div class="sc-person"><strong>Jackson Lee</strong><small>p@example.com</small></div></div>
+      <div class="dropdown-menu"><button type="button" class="btn" data-variant="outline" data-size="sm" popovertarget="sc-role-1">Member <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div id="sc-role-1" data-popover popover data-align="end" style="width:12rem"><div role="menu" aria-label="Role"><button type="button" role="menuitem"><span>Viewer</span></button><button type="button" role="menuitem"><span>Developer</span></button><button type="button" role="menuitem"><span>Billing</span></button><button type="button" role="menuitem"><span>Owner</span></button></div></div></div></div>
+    <div class="cluster" data-justify="between"><div class="cluster" data-gap="3"><span class="avatar"><span>IN</span></span><div class="sc-person"><strong>Isabella Nguyen</strong><small>i@example.com</small></div></div>
+      <div class="dropdown-menu"><button type="button" class="btn" data-variant="outline" data-size="sm" popovertarget="sc-role-2">Member <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div id="sc-role-2" data-popover popover data-align="end" style="width:12rem"><div role="menu" aria-label="Role"><button type="button" role="menuitem"><span>Viewer</span></button><button type="button" role="menuitem"><span>Developer</span></button><button type="button" role="menuitem"><span>Billing</span></button><button type="button" role="menuitem"><span>Owner</span></button></div></div></div></div>
+  </section>
+</div>
+</main>
+</body>
+</html>

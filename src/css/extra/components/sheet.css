@@ -1,0 +1,103 @@
+/* Sheet (fork addition)
+ *
+ * A side panel on native <dialog>. The dialog itself is the panel, so
+ * `closedby="any"` light dismiss, Escape, focus trap and inert page all come
+ * from the browser. Open/close with Invoker Commands, no JS:
+ *   <button class="btn" commandfor="s1" command="show-modal">Open</button>
+ *   <dialog id="s1" class="sheet" data-side="right" closedby="any" aria-labelledby="s1-title">
+ *     <header><h2 id="s1-title">Edit profile</h2><p>…</p></header>
+ *     <section>…</section>
+ *     <footer><button class="btn" commandfor="s1" command="close">Save</button></footer>
+ *     <button type="button" aria-label="Close" commandfor="s1" command="close"><svg>…</svg></button>
+ *   </dialog>
+ * data-side: right (default) | left | top | bottom.
+ */
+@layer components {
+  .sheet {
+    @apply fixed m-0 flex max-h-none max-w-none flex-col overflow-hidden border-0 p-0 opacity-100 outline-hidden transition-[translate,opacity,overlay,display] transition-discrete backdrop:transition-all backdrop:transition-discrete;
+
+    &:not([data-side]),
+    &[data-side='right'] {
+      inset: 0 0 0 auto;
+      @apply h-full w-3/4;
+      --sheet-from: 100% 0;
+    }
+
+    &[data-side='left'] {
+      inset: 0 auto 0 0;
+      @apply h-full w-3/4;
+      --sheet-from: -100% 0;
+    }
+
+    &[data-side='top'] {
+      inset: 0 0 auto 0;
+      @apply h-auto w-full;
+      --sheet-from: 0 -100%;
+    }
+
+    &[data-side='bottom'] {
+      inset: auto 0 0 0;
+      @apply h-auto w-full;
+      --sheet-from: 0 100%;
+    }
+
+    &:dir(rtl):not([data-side]),
+    &:dir(rtl)[data-side='right'] {
+      inset: 0 auto 0 0;
+      --sheet-from: -100% 0;
+    }
+
+    &:dir(rtl)[data-side='left'] {
+      inset: 0 0 0 auto;
+      --sheet-from: 100% 0;
+    }
+
+    /* Closed: off-screen. Open: in place, animating from off-screen.
+       display:flex above beats the UA's dialog:not([open]){display:none}. */
+    translate: var(--sheet-from);
+
+    &:not([open]) {
+      display: none;
+    }
+
+    &[open] {
+      translate: 0 0;
+
+      @starting-style {
+        translate: var(--sheet-from);
+      }
+    }
+
+    &::backdrop {
+      @apply opacity-100;
+    }
+
+    &:not([open])::backdrop {
+      @apply opacity-0;
+    }
+
+    &[open]::backdrop {
+      @starting-style {
+        @apply opacity-0;
+      }
+    }
+
+    > section {
+      @apply min-h-0 flex-1 overflow-y-auto;
+    }
+
+    > footer {
+      @apply mt-auto flex flex-col;
+    }
+
+    > :is(button, form[method='dialog']):last-child {
+      @apply absolute;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sheet {
+      transition: none;
+    }
+  }
+}

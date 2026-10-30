@@ -1,6 +1,43 @@
 # Changelog
 
-## Unreleased
+## [Unreleased]
+
+## [1.1.0] - 2026-10-23
+
+### Upgrading
+
+- Toast `title`, `description`, `action.label` and `cancel.label` are now escaped as text by default. If you pass HTML in any of them, add `html: true` to your `toaster.toast()` call.
+
+### Added
+
+- Added vertical separators: `<hr aria-orientation="vertical">` renders as a 1px line that fills its row.
+- Added single-file `.bundle.css` builds (`dist/basecoat.bundle.css` and `dist/basecoat-{style}.bundle.css`) with every Basecoat import inlined, so the standalone Tailwind CLI can use Basecoat without npm. Based on the standalone CLI setup proposed by [@ytsruh](https://github.com/ytsruh) in [#150](https://github.com/hunvreus/basecoat/pull/150).
+- Added an `html: true` option to `toaster.toast()` for callers that need to pass raw HTML in the title, description or action labels.
+
+### Changed
+
+- Toast `title`, `description`, `action.label` and `cancel.label` are now escaped as text by default, matching Sonner. Pass `html: true` to keep the previous raw-HTML behavior.
+- Changed the default `--font-sans` to start with `"Geist"`, the family name used by Google Fonts, Bunny Fonts and Fontsource, with `"Geist Sans"` kept as a fallback. The customization docs now install `@fontsource/geist`.
+- Updated the docs dependency to `reallysimpledocs@^1.0.14`, so `llms.txt` links to the Markdown version of each page.
+- Documented how to use Tailwind utilities with Basecoat's theme colors alongside the CDN build and the Tailwind Play CDN.
+
+### Fixed
+
+- Prevented Escape from dismissing an enclosing dialog while closing an open Combobox popup.
+- Fixed long Tooltip text clipping instead of showing an ellipsis across all style packs.
+- Locked page scroll while a modal Dialog, Alert Dialog, Command Dialog or Drawer is open.
+- Kept a parent Popover, Dropdown Menu, Select or Combobox open when a nested one opens inside it. Sibling components still close each other.
+- Scoped Sidebar navigation styles to the sidebar's direct child `nav` (`.sidebar > nav`), so other `nav` elements inside a sidebar, such as a Tabs list, are no longer fixed and stacked.
+- Stopped Dialogs and Command Dialogs from closing when a press starts inside the dialog and the drag ends on the backdrop. Updated the Nunjucks and Jinja templates and the docs examples. Based on [#104](https://github.com/hunvreus/basecoat/pull/104) by [@PhilipdeRijk](https://github.com/PhilipdeRijk).
+- Fixed iOS auto-zoom when tapping the Combobox input, the Combobox chips input, the Command search input, native Selects, and Input Group inputs and textareas by using `text-base` below the `md` breakpoint, like regular inputs. The compact Lyra and Mira styles keep their smaller sizes.
+- Fixed Slider thumb hover and focus rings, the RTL Sidebar submenu chevron, and some dark mode and tooltip arrow styles not applying in the unminified CDN files, because the rules were nested under pseudo-elements.
+- Fixed CDN `.min.css` builds occasionally dropping rules (such as hidden Combobox, Command and Select options) by minifying with esbuild instead of Tailwind's minifier.
+- Stopped the Toast docs example from pushing its fragment URL into the browser history with HTMX.
+- Replaced the `.form` migration snippet in the 1.0.0 notes, which fails in Tailwind v4, with markup that works.
+
+### Contributors
+
+- Thanks to [@ytsruh](https://github.com/ytsruh), [@PhilipdeRijk](https://github.com/PhilipdeRijk), [@sgruendel](https://github.com/sgruendel), [@alexander-posztos](https://github.com/alexander-posztos) and [@Jezda1337](https://github.com/Jezda1337) for their contributions to this release.
 
 ## [1.0.2] - 2026-07-06
 
@@ -156,14 +193,16 @@
 
 ### Migration Notes
 
-To keep the previous `.form` wrapper behavior, define it in your own Tailwind CSS:
+The `.form` wrapper can't be recreated with `@apply`: Tailwind v4 only applies utilities, not Basecoat's component classes. Wrap each label and control in a `.field` instead:
 
-```css
-.form label { @apply label; }
-.form input { @apply input; }
-.form textarea { @apply textarea; }
-.form select { @apply select; }
+```html
+<div class="field">
+  <label for="email">Email</label>
+  <input id="email" type="email">
+</div>
 ```
+
+Or add the component class to each element: `class="label"`, `class="input"`, `class="textarea"`, or `class="select"` on a native `<select>`.
 
 To keep the previous document-event command APIs, add bridge listeners in your app:
 

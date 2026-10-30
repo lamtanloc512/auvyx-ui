@@ -1,0 +1,172 @@
+/* Layout primitives (fork addition)
+ *
+ * Five named layouts for the no-build (CDN) channel, so pages can be laid out
+ * without utility classes. Names deliberately avoid Tailwind utility names
+ * (`grid`, `container`, `flex`…), so loading Tailwind alongside never clashes.
+ *
+ *   .wrapper    centered page column with side gutter       data-size: sm | md | lg | xl | prose
+ *   .stack      vertical flow with gap                      data-gap, data-align
+ *   .cluster    horizontal, wraps, vertically centered      data-gap, data-align, data-justify
+ *   .auto-grid  responsive columns, no breakpoints          data-gap, data-min: xs | sm | md | lg
+ *   .split      side + main, stacks when narrow             data-gap, data-side: start | end
+ *   .cover      full-height, centers its content            data-pad
+ *   .switcher   equal columns that stack below --threshold  data-gap, style="--threshold: 40rem"
+ *
+ * Escape hatch for any value: CSS variables, e.g. style="--gap: 1.75rem; --min: 20rem".
+ */
+@layer components {
+  :root {
+    --layout-space: 0.25rem;
+  }
+
+  /* Gap scale shared by every primitive (multiples of --layout-space). */
+  :is(.stack, .cluster, .auto-grid, .split, .switcher) {
+    /* Defaults live on the element so nested primitives never inherit the parent's value. */
+    --gap: calc(var(--layout-space) * 4);
+    gap: var(--gap);
+
+    &[data-gap='0'] { --gap: 0; }
+    &[data-gap='1'] { --gap: calc(var(--layout-space) * 1); }
+    &[data-gap='2'] { --gap: calc(var(--layout-space) * 2); }
+    &[data-gap='3'] { --gap: calc(var(--layout-space) * 3); }
+    &[data-gap='4'] { --gap: calc(var(--layout-space) * 4); }
+    &[data-gap='6'] { --gap: calc(var(--layout-space) * 6); }
+    &[data-gap='8'] { --gap: calc(var(--layout-space) * 8); }
+    &[data-gap='12'] { --gap: calc(var(--layout-space) * 12); }
+    &[data-gap='16'] { --gap: calc(var(--layout-space) * 16); }
+  }
+
+  .wrapper {
+    --wrapper-max: 72rem;
+    box-sizing: border-box;
+    inline-size: 100%;
+    max-inline-size: var(--wrapper-max);
+    margin-inline: auto;
+    padding-inline: max(var(--wrapper-pad, 1rem), env(safe-area-inset-left, 0px)) max(var(--wrapper-pad, 1rem), env(safe-area-inset-right, 0px));
+
+    &[data-size='sm'] { --wrapper-max: 40rem; }
+    &[data-size='md'] { --wrapper-max: 56rem; }
+    &[data-size='lg'] { --wrapper-max: 72rem; }
+    &[data-size='xl'] { --wrapper-max: 90rem; }
+    &[data-size='prose'] { --wrapper-max: 65ch; }
+  }
+
+  .stack {
+    display: flex;
+    flex-direction: column;
+
+    &[data-align='start'] { align-items: flex-start; }
+    &[data-align='center'] { align-items: center; }
+    &[data-align='end'] { align-items: flex-end; }
+  }
+
+  .cluster {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    &[data-align='start'] { align-items: flex-start; }
+    &[data-align='end'] { align-items: flex-end; }
+    &[data-align='baseline'] { align-items: baseline; }
+    &[data-justify='center'] { justify-content: center; }
+    &[data-justify='end'] { justify-content: flex-end; }
+    &[data-justify='between'] { justify-content: space-between; }
+  }
+
+  .auto-grid {
+    --min: 16rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--min)), 1fr));
+
+    &[data-min='xs'] { --min: 8rem; }
+    &[data-min='sm'] { --min: 12rem; }
+    &[data-min='md'] { --min: 16rem; }
+    &[data-min='lg'] { --min: 24rem; }
+  }
+
+  /* Sidebar layout: the side keeps --side width; main takes the rest and
+     wraps below once it would get narrower than --split-min. */
+  .split {
+    --side: 16rem;
+    --split-min: 50%;
+    display: flex;
+    flex-wrap: wrap;
+
+    > * {
+      flex-grow: 1;
+      min-inline-size: 0;
+    }
+
+    > :first-child {
+      flex-basis: var(--side);
+    }
+
+    > :last-child {
+      flex-basis: 0;
+      flex-grow: 999;
+      min-inline-size: var(--split-min);
+    }
+
+    &[data-side='end'] {
+      > :first-child {
+        flex-basis: 0;
+        flex-grow: 999;
+        min-inline-size: var(--split-min);
+      }
+
+      > :last-child {
+        flex-basis: var(--side);
+        flex-grow: 1;
+        min-inline-size: 0;
+      }
+    }
+  }
+
+  /* Full-viewport section that centers its child (auth pages, empty states). */
+  .cover {
+    --cover-pad: 1.5rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-block-size: 100svh;
+    padding: var(--cover-pad);
+
+    &[data-pad='0'] { --cover-pad: 0; }
+    &[data-pad='lg'] { --cover-pad: 2.5rem; }
+
+    > * {
+      inline-size: 100%;
+    }
+  }
+
+  /* Columns side by side while the container is wider than --threshold,
+     one column below it. Container-relative: no media queries. */
+  .switcher {
+    --threshold: 40rem;
+    display: flex;
+    flex-wrap: wrap;
+
+    > * {
+      flex-grow: 1;
+      flex-basis: calc((var(--threshold) - 100%) * 999);
+      min-inline-size: 0;
+    }
+  }
+
+  /* Accessibility helper kept in the CDN bundle on purpose: visually hidden,
+     still read by screen readers. Same output as Tailwind's sr-only, so the
+     two never conflict. */
+  .sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border-width: 0;
+  }
+}

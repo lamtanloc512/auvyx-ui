@@ -16,3 +16,8 @@ templates/
 site/dist/
 site/public/assets/js/
 site/public/fragments/
+__pycache__/
+packages/docs/out/
+packages/docs/src/data/.scan.json
+packages/docs/src/docs.css
+packages/ui/.tmp/

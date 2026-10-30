@@ -1,0 +1,66 @@
+/* Questionnaire (fork addition): a question with choices, e.g. an agent
+ * asking the user to pick. Plain form controls, so it submits natively.
+ *
+ *   <form class="questionnaire">
+ *     <output>Question 1 of 3</output>
+ *     <fieldset>
+ *       <legend>How long is your trip?</legend>
+ *       <p>We size the data plan from this.</p>
+ *       <label><input class="input" type="radio" name="days" value="7" required><span>Up to 7 days<small>Weekend or short stay</small></span></label>
+ *       <label><input class="input" type="radio" name="days" value="30"><span>Up to 30 days</span></label>
+ *     </fieldset>
+ *     <footer><button class="btn">Continue</button></footer>
+ *   </form>
+ * Inputs take class="input" for the Basecoat radio/checkbox look; type="checkbox" for multiple answers. A <kbd> at the end of a label shows a shortcut.
+ */
+@layer components {
+  .questionnaire {
+    @apply flex w-full min-w-0 flex-col;
+
+    > output {
+      @apply w-fit tabular-nums;
+      min-block-size: 1lh;
+    }
+
+    > fieldset {
+      @apply m-0 grid min-w-0 border-0 p-0 outline-none;
+
+      > legend {
+        @apply float-start w-full p-0 text-pretty;
+      }
+
+      > legend + * {
+        clear: both;
+      }
+
+      > p {
+        @apply m-0 text-pretty;
+      }
+
+      > label {
+        @apply relative flex cursor-pointer items-start text-start transition-colors outline-none select-none;
+        min-block-size: 2.75rem;
+
+        > span {
+          @apply flex min-w-0 flex-1 flex-col leading-snug;
+
+          > small {
+            @apply block;
+          }
+        }
+
+        > kbd {
+          @apply inline-flex shrink-0 items-center justify-center;
+        }
+
+        &:has(> input:disabled) {
+          @apply cursor-not-allowed opacity-50;
+        }
+      }
+    }
+
+    > footer {
+      @apply flex flex-wrap items-center;
+    }
+  }
+}

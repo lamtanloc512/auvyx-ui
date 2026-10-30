@@ -1,0 +1,47 @@
+/* Input OTP (fork addition)
+ *
+ * Zero JS: one native <input> (paste, autofill via autocomplete="one-time-code",
+ * form submit and validation all work), drawn as slots. The wrapper paints the
+ * slot borders; the input is one slot wider than the wrapper so the caret after
+ * the last digit never scrolls the text out of alignment.
+ *   <div class="input-otp" data-length="6">
+ *     <input inputmode="numeric" autocomplete="one-time-code" maxlength="6"
+ *            pattern="[0-9]{6}" aria-label="Verification code">
+ *   </div>
+ * data-length: 4 | 5 | 6 (default) | 8, or style="--length: 7".
+ */
+@layer components {
+  .input-otp {
+    --length: 6;
+    --slot: 2.25rem;
+    @apply relative inline-block overflow-hidden align-middle;
+    direction: ltr;
+    inline-size: calc(var(--slot) * var(--length));
+    block-size: var(--slot);
+    /* Separators between slots (the outer border comes from the style pack). */
+    background-image: repeating-linear-gradient(to right, transparent 0 calc(var(--slot) - 1px), var(--otp-line, currentColor) calc(var(--slot) - 1px) var(--slot));
+    background-size: calc(var(--slot) * (var(--length) - 1)) 100%;
+    background-repeat: no-repeat;
+
+    &[data-length='4'] { --length: 4; }
+    &[data-length='5'] { --length: 5; }
+    &[data-length='6'] { --length: 6; }
+    &[data-length='8'] { --length: 8; }
+
+    > input {
+      @apply absolute inset-y-0 start-0 m-0 h-full border-0 bg-transparent p-0 outline-none;
+      box-sizing: border-box;
+      inline-size: calc(var(--slot) * (var(--length) + 1));
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: calc(var(--slot) - 1ch);
+      padding-inline-start: calc((var(--slot) - 1ch) / 2);
+      caret-color: currentColor;
+      box-shadow: none;
+    }
+
+    &:has(> input:disabled) {
+      @apply pointer-events-none opacity-50;
+    }
+  }
+}

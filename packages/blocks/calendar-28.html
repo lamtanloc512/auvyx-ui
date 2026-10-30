@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calendar 28 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      input[type="time"]::-webkit-calendar-picker-indicator {
+        display: none;
+      }
+
+      .cal-attach {
+        display: block;
+        inline-size: 18rem;
+      }
+      .cal-attach > .input-group {
+        anchor-name: --bc-popover;
+      }
+      .cal-pop {
+        padding: 0 !important;
+        inline-size: auto !important;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="cover">
+      <form onsubmit="event.preventDefault()" class="stack" data-gap="2">
+        <div role="group" class="field">
+          <label for="date">Subscription Date</label>
+          <div class="popover cal-attach">
+            <div class="input-group">
+              <input
+                id="date"
+                type="text"
+                value="June 01, 2026"
+                placeholder="June 01, 2026"
+                autocomplete="off" />
+              <button
+                type="button"
+                class="btn"
+                data-variant="ghost"
+                data-size="icon-xs"
+                data-align="inline-end"
+                popovertarget="date-pop"
+                aria-label="Select date">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+              </button>
+            </div>
+            <div
+              id="date-pop"
+              data-popover
+              popover
+              data-side="bottom"
+              data-align="end"
+              class="cal-pop">
+              <auvyx-calendar class="calendar" id="cal" value="2026-06-01"></auvyx-calendar>
+            </div>
+          </div>
+        </div>
+      </form>
+    </main>
+    <script>
+      const i = document.getElementById("date"),
+        c = document.getElementById("cal"),
+        p = document.getElementById("date-pop");
+      const pad = (n) => String(n).padStart(2, "0");
+      const fmt = (d) =>
+        d.toLocaleDateString("en-US", { day: "2-digit", month: "long", year: "numeric" });
+      c.addEventListener("change", (e) => {
+        i.value = fmt(e.detail.dates[0]);
+        p.hidePopover();
+        i.focus();
+      });
+      i.addEventListener("input", () => {
+        const d = new Date(i.value);
+        if (!isNaN(d)) {
+          c.value = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+        }
+      });
+      i.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          p.showPopover();
+        }
+      });
+    </script>
+  </body>
+</html>

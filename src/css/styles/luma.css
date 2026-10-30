@@ -217,7 +217,7 @@
   /* Native Select */
   .field > select,
   select.select {
-    @apply bg-input/50 border-transparent placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 w-fit rounded-3xl border py-1 ps-3 pe-8 text-sm transition-[color,box-shadow,background-color] focus-visible:ring-3 aria-invalid:ring-3 data-[size=sm]:h-8;
+    @apply bg-input/50 border-transparent placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 w-fit rounded-3xl border py-1 ps-3 pe-8 text-base md:text-sm transition-[color,box-shadow,background-color] focus-visible:ring-3 aria-invalid:ring-3 data-[size=sm]:h-8;
     @apply bg-[image:var(--chevron-down-icon-50)] bg-no-repeat bg-position-[center_right_0.625rem] bg-size-[1rem];
   }
 
@@ -373,7 +373,7 @@
   }
 
   .command > header input {
-    @apply ps-1.5 text-sm placeholder:text-muted-foreground;
+    @apply ps-1.5 text-base md:text-sm placeholder:text-muted-foreground;
   }
 
   .command [role='menu'] {
@@ -415,7 +415,7 @@
 
   /* Combobox */
   .combobox > input[role='combobox'] {
-    @apply bg-input/50 border-transparent focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 rounded-3xl border py-2 ps-3 pe-8 text-sm transition-[color,box-shadow,background-color] focus-visible:ring-3 aria-invalid:ring-3;
+    @apply bg-input/50 border-transparent focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 rounded-3xl border py-2 ps-3 pe-8 text-base md:text-sm transition-[color,box-shadow,background-color] focus-visible:ring-3 aria-invalid:ring-3;
   }
 
   .combobox > svg,
@@ -462,6 +462,10 @@
 
   .combobox-chips {
     @apply bg-input/50 border-transparent focus-within:border-ring focus-within:ring-ring/30 has-[[aria-invalid=true]]:ring-destructive/20 dark:has-[[aria-invalid=true]]:ring-destructive/40 has-[[aria-invalid=true]]:border-destructive dark:has-[[aria-invalid=true]]:border-destructive/50 min-h-9 gap-1.5 rounded-3xl border bg-clip-padding px-1.5 py-1.5 text-sm transition-[color,box-shadow,background-color] focus-within:ring-3 has-[[aria-invalid=true]]:ring-3;
+  }
+
+  .combobox-chips > input[role='combobox'] {
+    @apply text-base md:text-sm;
   }
 
   .combobox-chip {
@@ -787,7 +791,11 @@
   }
 
   :is(.field > input[type='radio'], .input[type='radio']):checked:before {
-    @apply bg-primary-foreground size-2 dark:size-2.5;
+    @apply bg-primary-foreground size-2;
+  }
+
+  html.dark :is(.field > input[type='radio'], .input[type='radio']):checked:before {
+    @apply size-2.5;
   }
 
   /* Switch */
@@ -805,7 +813,11 @@
   }
 
   :is(.field > input[type='checkbox'][role='switch'], .input[type='checkbox'][role='switch']):before {
-    @apply bg-background rounded-full shadow-sm not-dark:bg-clip-padding;
+    @apply bg-background rounded-full shadow-sm;
+  }
+
+  html:not(.dark) :is(.field > input[type='checkbox'][role='switch'], .input[type='checkbox'][role='switch']):before {
+    @apply bg-clip-padding;
   }
 
   html.dark :is(.field > input[type='checkbox'][role='switch'], .input[type='checkbox'][role='switch']):not(:checked):before {
@@ -948,7 +960,7 @@
     @apply rounded-3xl;
   }
   .input-group > :is(input, select, [data-control]) {
-    @apply px-3 py-1 text-sm;
+    @apply px-3 py-1 text-base md:text-sm;
   }
 
   .input-group:not([data-orientation='vertical']):has(> :is([data-align='start'], [data-align='inline-start'])) > :is(input, select, [data-control]) {
@@ -960,7 +972,7 @@
   }
 
   .input-group > textarea {
-    @apply px-3 py-2.5 text-sm;
+    @apply px-3 py-2.5 text-base md:text-sm;
   }
 
   .input-group > :is(span, [role='group'], header, footer),
@@ -1182,92 +1194,92 @@
   }
 
   /* Sidebar */
-  .sidebar nav {
+  .sidebar > nav {
     @apply bg-sidebar text-sidebar-foreground;
   }
 
-  .sidebar nav > header,
-  .sidebar nav > footer {
+  .sidebar > nav > header,
+  .sidebar > nav > footer {
     @apply gap-2 p-2 [--radius:var(--radius-xl)];
   }
 
-  .sidebar nav > section {
+  .sidebar > nav > section {
     @apply gap-2 [--radius:var(--radius-xl)];
   }
 
-  .sidebar nav [role=separator] {
+  .sidebar > nav [role=separator] {
     @apply border-sidebar-border mx-2;
   }
 
-  .sidebar nav > section > [role=group] {
+  .sidebar > nav > section > [role=group] {
     @apply p-2;
   }
 
-  .sidebar nav h3 {
+  .sidebar > nav h3 {
     @apply text-sidebar-foreground/70 ring-sidebar-ring h-8 rounded-xl px-3 text-xs font-medium focus-visible:ring-2 [&>svg]:size-4 transition-[margin,opacity] duration-200 ease-linear;
   }
 
-  .sidebar nav > section > [role=group] > ul {
+  .sidebar > nav > section > [role=group] > ul {
     @apply gap-0.5;
   }
 
-  .sidebar nav > section > [role=group] {
+  .sidebar > nav > section > [role=group] {
     @apply text-sm;
   }
 
-  .sidebar nav li > :is(a, button),
-  .sidebar nav li > details > summary {
+  .sidebar > nav li > :is(a, button),
+  .sidebar > nav li > details > summary {
     @apply ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground gap-2 rounded-xl px-3 py-2 text-sm focus-visible:ring-2 text-left focus-visible:outline-hidden data-[open]:hover:bg-sidebar-accent data-[open]:hover:text-sidebar-accent-foreground [&>svg]:shrink-0 [&>svg]:size-4;
   }
 
-  .sidebar nav li > :is(a, button):is([aria-current=page], [data-active=true]),
-  .sidebar nav li > details > summary:is([aria-current=page], [data-active=true]) {
+  .sidebar > nav li > :is(a, button):is([aria-current=page], [data-active=true]),
+  .sidebar > nav li > details > summary:is([aria-current=page], [data-active=true]) {
     @apply bg-sidebar-accent text-sidebar-accent-foreground font-medium;
   }
 
-  .sidebar nav li > :is(a, button):not([data-variant]),
-  .sidebar nav li > details > summary:not([data-variant]),
-  .sidebar nav li > :is(a, button)[data-variant=default],
-  .sidebar nav li > details > summary[data-variant=default] {
+  .sidebar > nav li > :is(a, button):not([data-variant]),
+  .sidebar > nav li > details > summary:not([data-variant]),
+  .sidebar > nav li > :is(a, button)[data-variant=default],
+  .sidebar > nav li > details > summary[data-variant=default] {
     @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
   }
 
-  .sidebar nav li > :is(a, button)[data-variant=outline],
-  .sidebar nav li > details > summary[data-variant=outline] {
+  .sidebar > nav li > :is(a, button)[data-variant=outline],
+  .sidebar > nav li > details > summary[data-variant=outline] {
     @apply bg-background shadow-[0_0_0_1px_var(--sidebar-border)] hover:shadow-[0_0_0_1px_var(--sidebar-accent)] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
   }
 
-  .sidebar nav li > :is(a, button):not([data-size]),
-  .sidebar nav li > details > summary:not([data-size]),
-  .sidebar nav li > :is(a, button)[data-size=default],
-  .sidebar nav li > details > summary[data-size=default] {
+  .sidebar > nav li > :is(a, button):not([data-size]),
+  .sidebar > nav li > details > summary:not([data-size]),
+  .sidebar > nav li > :is(a, button)[data-size=default],
+  .sidebar > nav li > details > summary[data-size=default] {
     @apply h-9 text-sm;
   }
 
-  .sidebar nav li > :is(a, button)[data-size=sm],
-  .sidebar nav li > details > summary[data-size=sm] {
+  .sidebar > nav li > :is(a, button)[data-size=sm],
+  .sidebar > nav li > details > summary[data-size=sm] {
     @apply h-8 text-xs;
   }
 
-  .sidebar nav li > :is(a, button)[data-size=lg],
-  .sidebar nav li > details > summary[data-size=lg] {
+  .sidebar > nav li > :is(a, button)[data-size=lg],
+  .sidebar > nav li > details > summary[data-size=lg] {
     @apply h-14 px-3 text-sm;
   }
 
-  .sidebar nav li > details > summary::after {
+  .sidebar > nav li > details > summary::after {
     @apply size-4;
   }
 
-  .sidebar nav li > details::details-content {
+  .sidebar > nav li > details::details-content {
     @apply px-3.5;
   }
 
-  .sidebar nav ul ul {
+  .sidebar > nav ul ul {
     @apply border-sidebar-border translate-x-px gap-1 border-s px-2.5 py-0.5 rtl:-translate-x-px;
   }
 
-  .sidebar nav ul ul > li > :is(a, button),
-  .sidebar nav ul ul > li > details > summary {
+  .sidebar > nav ul ul > li > :is(a, button),
+  .sidebar > nav ul ul > li > details > summary {
     @apply text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground h-7 gap-2 rounded-xl px-3 text-sm focus-visible:ring-2 [&>svg]:size-4;
   }
   /* Progress */
@@ -1324,11 +1336,19 @@
 
   /* Tooltip */
   [data-tooltip]::before {
-    @apply bg-foreground text-background inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs has-[.kbd]:pe-1.5 [&_.kbd]:relative [&_.kbd]:isolate [&_.kbd]:z-50 [&_.kbd]:rounded-lg;
+    @apply bg-foreground text-background rounded-xl px-3 py-1.5 text-xs;
   }
 
   [data-tooltip][data-arrow]::after {
-    @apply bg-foreground absolute z-[60] size-2.5 rotate-45 rounded-[2px] data-[side=left]:translate-x-[-1.5px] data-[side=right]:translate-x-[1.5px];
+    @apply bg-foreground absolute z-[60] size-2.5 rotate-45 rounded-[2px];
+  }
+
+  [data-tooltip][data-arrow][data-side='left']::after {
+    @apply translate-x-[-1.5px];
+  }
+
+  [data-tooltip][data-arrow][data-side='right']::after {
+    @apply translate-x-[1.5px];
   }
 
   /* Toast */
@@ -1362,15 +1382,54 @@
   }
 
   :is(.field > input[type='range'], .input[type='range'])::-webkit-slider-thumb {
-    @apply ring-black/10 not-dark:bg-clip-padding ring-1 h-4 w-6 rounded-full bg-white shadow-md transition-[color,box-shadow,background-color] hover:ring-4 hover:ring-ring/30 focus-visible:ring-4 focus-visible:ring-ring/30 -mt-[calc((var(--slider-thumb-size)-var(--slider-track-height))/2)] focus-visible:outline-hidden;
+    @apply ring-black/10 ring-1 h-4 w-6 rounded-full bg-white shadow-md transition-[color,box-shadow,background-color] -mt-[calc((var(--slider-thumb-size)-var(--slider-track-height))/2)];
   }
 
   :is(.field > input[type='range'], .input[type='range'])::-moz-range-thumb {
-    @apply ring-black/10 not-dark:bg-clip-padding ring-1 h-4 w-6 rounded-full bg-white shadow-md transition-[color,box-shadow,background-color] hover:ring-4 hover:ring-ring/30 focus-visible:ring-4 focus-visible:ring-ring/30 focus-visible:outline-hidden;
+    @apply ring-black/10 ring-1 h-4 w-6 rounded-full bg-white shadow-md transition-[color,box-shadow,background-color];
   }
 
   :is(.field > input[type='range'], .input[type='range'])::-ms-thumb {
-    @apply ring-black/10 not-dark:bg-clip-padding ring-1 h-4 w-6 rounded-full bg-white shadow-md transition-[color,box-shadow,background-color] hover:ring-4 hover:ring-ring/30 focus-visible:ring-4 focus-visible:ring-ring/30 focus-visible:outline-hidden;
+    @apply ring-black/10 ring-1 h-4 w-6 rounded-full bg-white shadow-md transition-[color,box-shadow,background-color];
+  }
+
+  /* States go before the thumb pseudo-element so they still apply with native CSS nesting. */
+  html:not(.dark) :is(.field > input[type='range'], .input[type='range'])::-webkit-slider-thumb {
+    @apply bg-clip-padding;
+  }
+
+  html:not(.dark) :is(.field > input[type='range'], .input[type='range'])::-moz-range-thumb {
+    @apply bg-clip-padding;
+  }
+
+  html:not(.dark) :is(.field > input[type='range'], .input[type='range'])::-ms-thumb {
+    @apply bg-clip-padding;
+  }
+
+  @media (hover: hover) {
+    :is(.field > input[type='range'], .input[type='range']):hover::-webkit-slider-thumb {
+      @apply ring-4 ring-ring/30;
+    }
+
+    :is(.field > input[type='range'], .input[type='range']):hover::-moz-range-thumb {
+      @apply ring-4 ring-ring/30;
+    }
+
+    :is(.field > input[type='range'], .input[type='range']):hover::-ms-thumb {
+      @apply ring-4 ring-ring/30;
+    }
+  }
+
+  :is(.field > input[type='range'], .input[type='range']):focus-visible::-webkit-slider-thumb {
+    @apply ring-4 ring-ring/30 outline-hidden;
+  }
+
+  :is(.field > input[type='range'], .input[type='range']):focus-visible::-moz-range-thumb {
+    @apply ring-4 ring-ring/30 outline-hidden;
+  }
+
+  :is(.field > input[type='range'], .input[type='range']):focus-visible::-ms-thumb {
+    @apply ring-4 ring-ring/30 outline-hidden;
   }
 
 }

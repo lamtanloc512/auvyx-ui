@@ -1,0 +1,105 @@
+/* Calendar + Date Picker (fork addition)
+ *
+ * Calendar is rendered by <auvyx-calendar> (JS) as one table grid per month:
+ *   <auvyx-calendar class="calendar" value="2026-11-14" name="date"></auvyx-calendar>
+ *   <auvyx-calendar class="calendar" mode="range" months="2" value="2026-11-10/2026-11-24"></auvyx-calendar>
+ * Full attribute list in packages/elements/src/calendar.js. --cell-size sets the day size.
+ *
+ * Date Picker progressively enhances a native date input; without JS the
+ * browser's own picker is used:
+ *   <auvyx-date-picker class="date-picker"><input type="date" name="depart"></auvyx-date-picker>
+ */
+@layer components {
+  .calendar {
+    --cell-size: 2rem;
+    @apply inline-block w-fit;
+  }
+
+  .calendar-months {
+    @apply flex flex-wrap gap-4;
+  }
+
+  .calendar-month {
+    @apply flex flex-col;
+
+    > header {
+      @apply relative flex items-center justify-between gap-1;
+      block-size: var(--cell-size);
+
+      > h2 {
+        @apply m-0 flex-1 text-center select-none;
+      }
+
+      > button,
+      > span:empty {
+        @apply inline-flex flex-none items-center justify-center outline-none select-none;
+        inline-size: var(--cell-size);
+        block-size: var(--cell-size);
+      }
+
+      > button > svg {
+        @apply size-4 rtl:rotate-180;
+      }
+
+      > button:disabled {
+        @apply pointer-events-none opacity-50;
+      }
+    }
+
+    .calendar-caption {
+      @apply flex flex-1 items-center justify-center gap-1.5;
+
+      > select {
+        @apply w-auto;
+      }
+    }
+
+    > table {
+      @apply mt-2 border-collapse;
+
+      th {
+        @apply p-0 font-normal select-none;
+        inline-size: var(--cell-size);
+      }
+
+      td {
+        @apply relative p-0 text-center;
+        block-size: var(--cell-size);
+      }
+
+      td > button {
+        @apply inline-flex flex-col items-center justify-center outline-none select-none tabular-nums;
+        inline-size: var(--cell-size);
+        min-block-size: var(--cell-size);
+
+        > small {
+          @apply block leading-none;
+        }
+
+        &:disabled {
+          @apply pointer-events-none opacity-50;
+        }
+      }
+
+      td[data-booked] > button {
+        @apply line-through;
+      }
+    }
+  }
+
+  .date-picker {
+    @apply relative inline-flex;
+
+    > input[type='date'][hidden] {
+      display: none;
+    }
+
+    > button:first-child {
+      @apply justify-start text-start;
+    }
+
+    > [data-popover] {
+      @apply w-auto;
+    }
+  }
+}

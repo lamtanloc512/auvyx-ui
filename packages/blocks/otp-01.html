@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OTP 01 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .block-title {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        text-wrap: balance;
+      }
+      .block-title[data-size="xl"] {
+        font-size: 1.25rem;
+      }
+      .block-center {
+        text-align: center;
+      }
+      .card > .field-separator > span,
+      .card .field-separator > span {
+        background: var(--card);
+      }
+
+      .block-otp {
+        --slot: 2.75rem;
+        align-self: center;
+        inline-size: calc(var(--slot) * var(--length));
+        font-size: 1.25rem;
+      }
+      .card > header.block-center {
+        text-align: center;
+      }
+
+      .block-otp-col {
+        max-inline-size: 20rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="cover" data-pad="lg">
+      <div class="block-otp-col">
+        <div class="card">
+          <header class="block-center">
+            <h2 class="block-title" data-size="xl">Enter verification code</h2>
+            <p>We sent a 6-digit code to your email.</p>
+          </header>
+          <section>
+            <form class="fieldset" onsubmit="event.preventDefault()">
+              <div role="group" class="field">
+                <label for="otp" class="sr-only">Verification code</label>
+                <div class="input-otp block-otp" data-length="6">
+                  <input
+                    id="otp"
+                    inputmode="numeric"
+                    autocomplete="one-time-code"
+                    maxlength="6"
+                    pattern="[0-9]{6}"
+                    required />
+                </div>
+                <p class="block-center">
+                  Didn't receive the code?
+                  <a href="#">Resend</a>
+                </p>
+              </div>
+              <div role="group" class="field">
+                <button type="submit" class="btn">Verify</button>
+              </div>
+            </form>
+          </section>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

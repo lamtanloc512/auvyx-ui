@@ -1,0 +1,108 @@
+/* Native popover (fork addition)
+ *
+ * Opt-in, zero-JS variant of `.popover` and `.dropdown-menu`:
+ * put the native `popover` attribute on the `[data-popover]` element and
+ * `popovertarget` on the trigger. The browser handles open/close, light
+ * dismiss, Escape, top layer and focus return; CSS anchor positioning places
+ * the panel next to its trigger.
+ *
+ *   <div class="popover">
+ *     <button class="btn" data-variant="outline" popovertarget="p1">Open</button>
+ *     <div id="p1" data-popover popover data-side="bottom" data-align="start">…</div>
+ *   </div>
+ *
+ * Without anchor positioning support the panel falls back to the browser's
+ * default popover placement (centered in the viewport), still fully usable.
+ * Components that keep the upstream JS (`aria-hidden` toggling, no `popover`
+ * attribute) are unaffected by these rules.
+ */
+@layer components {
+  :is(.popover, .dropdown-menu, .date-picker, .navigation-menu > ul > li):has(> [data-popover][popover]) {
+    anchor-scope: --bc-popover;
+
+    > :is(button, [popovertarget]):first-child {
+      anchor-name: --bc-popover;
+    }
+  }
+
+  /* Zero-specificity reset of the UA [popover] box (border, padding, colors,
+     overflow) so the style pack's [data-popover] visuals still win. */
+  :where([data-popover][popover]) {
+    color: inherit;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    overflow: visible;
+  }
+
+  [data-popover][popover] {
+    /* :popover-open drives visibility instead of upstream's aria-hidden. */
+    visibility: visible;
+    opacity: 0;
+    scale: 0.95;
+    translate: none;
+    transition:
+      opacity 150ms ease,
+      scale 150ms ease,
+      translate 150ms ease,
+      overlay 150ms allow-discrete,
+      display 150ms allow-discrete;
+
+    /* Style packs set display:flex on [data-popover], which beats the UA's
+       [popover]:not(:popover-open){display:none}; restore it. */
+    &:not(:popover-open) {
+      display: none;
+    }
+
+    &:popover-open {
+      opacity: 1;
+      scale: 1;
+
+      @starting-style {
+        opacity: 0;
+        scale: 0.95;
+      }
+    }
+  }
+
+  @supports (anchor-name: --a) {
+    [data-popover][popover] {
+      position: absolute;
+      inset: auto;
+      margin: 0;
+      position-anchor: --bc-popover;
+      min-width: anchor-size(width);
+      position-try-fallbacks: flip-block, flip-inline;
+
+      /* Side + align -> position-area. Default: bottom, start. */
+      &:not([data-side]),
+      &[data-side='bottom'] {
+        position-area: block-end span-inline-end;
+        margin-block-start: 0.25rem;
+        &[data-align='end'] { position-area: block-end span-inline-start; }
+        &[data-align='center'] { position-area: block-end; }
+      }
+
+      &[data-side='top'] {
+        position-area: block-start span-inline-end;
+        margin-block-end: 0.25rem;
+        &[data-align='end'] { position-area: block-start span-inline-start; }
+        &[data-align='center'] { position-area: block-start; }
+      }
+
+      &:is([data-side='right'], [data-side='inline-end']) {
+        position-area: inline-end span-block-end;
+        margin-inline-start: 0.25rem;
+        &[data-align='end'] { position-area: inline-end span-block-start; }
+        &[data-align='center'] { position-area: inline-end; }
+      }
+
+      &:is([data-side='left'], [data-side='inline-start']) {
+        position-area: inline-start span-block-end;
+        margin-inline-end: 0.25rem;
+        &[data-align='end'] { position-area: inline-start span-block-start; }
+        &[data-align='center'] { position-area: inline-start; }
+      }
+    }
+  }
+}

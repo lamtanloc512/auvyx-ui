@@ -1,0 +1,1095 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard 01 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="../ui/dist/auvyx.chart.min.js" defer></script>
+    <style>
+      body {
+        min-block-size: 100svh;
+      }
+      .sb-mark {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        inline-size: 2rem;
+        block-size: 2rem;
+        border-radius: calc(var(--radius) + 2px);
+        background: var(--sidebar-primary);
+        color: var(--sidebar-primary-foreground);
+      }
+      .sb-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .sb-user-head {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.375rem 0.5rem;
+        font-size: 0.875rem;
+      }
+      .sb-user-head > span:last-child {
+        display: grid;
+        line-height: 1.25;
+      }
+      .sb-user-head small {
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+      }
+      .sb-push {
+        margin-block-start: auto;
+      }
+      .app-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        block-size: 4rem;
+        padding-inline: 1rem;
+        border-block-end: 1px solid var(--border);
+        background: var(--background);
+      }
+      .app-header > hr[aria-orientation="vertical"] {
+        block-size: 1rem;
+        margin-inline-end: 0.5rem;
+      }
+      .sidebar > nav > header .dropdown-menu,
+      .sidebar > nav > footer .dropdown-menu {
+        display: flex;
+        inline-size: 100%;
+      }
+
+      .db-main {
+        container-type: inline-size;
+      }
+      .sidebar[data-variant="inset"] + main .app-header {
+        background: transparent;
+      }
+      .db-header {
+        block-size: 3rem;
+        position: static;
+      }
+      .db-title {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 500;
+      }
+      .db-gh {
+        margin-inline-start: auto;
+      }
+      .db-body {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+      }
+      @media (width >= 48rem) {
+        .db-body {
+          gap: 1.5rem;
+          padding: 1.5rem;
+        }
+      }
+      .db-kpis {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+      }
+      .db-kpi {
+        background: linear-gradient(
+          to top,
+          color-mix(in oklch, var(--primary) 5%, var(--card)),
+          var(--card)
+        );
+      }
+      .db-kpi > header > p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: var(--muted-foreground);
+      }
+      .db-kpi > header > h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+      }
+      @container (width >= 40rem) {
+        .db-kpi > header > h2 {
+          font-size: 1.875rem;
+        }
+      }
+      .db-kpi .badge svg {
+        inline-size: 0.75rem;
+        block-size: 0.75rem;
+      }
+      .db-kpi > footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.375rem;
+        font-size: 0.875rem;
+      }
+      .db-kpi-trend {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+      }
+      .db-kpi-trend svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .db-kpi-note {
+        margin: 0;
+        color: var(--muted-foreground);
+      }
+      .db-canvas {
+        block-size: 250px;
+      }
+      .db-canvas .chart {
+        aspect-ratio: auto;
+        block-size: 100%;
+      }
+      .db-narrow {
+        display: none;
+      }
+      @container (width < 40rem) {
+        .db-wide {
+          display: none;
+        }
+        .db-narrow {
+          display: inline;
+        }
+        .db-chart > header {
+          grid-template-columns: 1fr;
+        }
+        .db-chart .card-action {
+          grid-column: 1;
+          grid-row: auto;
+          justify-self: start;
+        }
+      }
+      .db-chart .toggle-group .toggle {
+        font-size: 0.8125rem;
+      }
+      .db-tabs {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 1rem;
+      }
+      .db-tabs > [role="tablist"] {
+        grid-column: 1;
+        justify-self: start;
+        max-inline-size: 100%;
+        overflow-x: auto;
+      }
+      .db-tabs > .db-add {
+        grid-column: 2;
+        grid-row: 1;
+      }
+      .db-tabs > [role="tabpanel"] {
+        grid-column: 1 / -1;
+      }
+      @container (width < 48rem) {
+        .db-tabs > [role="tablist"] > :nth-child(n + 3) {
+          display: none;
+        }
+      }
+      .db-tabs [role="tab"] .badge {
+        margin-inline-start: 0.25rem;
+      }
+      .db-link {
+        color: inherit;
+        text-decoration: none;
+        font-weight: 500;
+      }
+      .db-link:hover {
+        text-decoration: underline;
+      }
+      .db-num {
+        text-align: end;
+      }
+      .db-tabs .badge svg {
+        inline-size: 0.75rem;
+        block-size: 0.75rem;
+      }
+      .db-empty {
+        aspect-ratio: 16 / 6;
+        border: 1px dashed var(--border);
+        border-radius: 0.75rem;
+      }
+      .db-quick {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .sidebar > nav li > a.db-create {
+        flex: 1;
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .sidebar > nav li > a.db-create:hover {
+        background: color-mix(in oklch, var(--primary) 90%, transparent);
+        color: var(--primary-foreground);
+      }
+    </style>
+  </head>
+  <body>
+    <aside id="app-sidebar" class="sidebar" data-variant="inset" data-collapsible="icon">
+      <nav aria-label="Sidebar">
+        <header>
+          <ul>
+            <li>
+              <a href="#" data-size="lg">
+                <span class="sb-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></svg></span>
+                <span><strong>Acme Inc.</strong></span>
+              </a>
+            </li>
+          </ul>
+        </header>
+        <section>
+          <div role="group" aria-label="Quick create">
+            <ul>
+              <li class="db-quick">
+                <a href="#" class="db-create" data-tooltip="Quick Create" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                  <span>Quick Create</span>
+                </a>
+                <button
+                  type="button"
+                  class="btn"
+                  data-variant="outline"
+                  data-size="icon-sm"
+                  aria-label="Inbox"
+                  data-sidebar-hide-collapsed>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+                </button>
+              </li>
+              <li>
+                <a href="#" aria-current="page" data-tooltip="Dashboard" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Lifecycle" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+                  <span>Lifecycle</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Analytics" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"/><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/></svg>
+                  <span>Analytics</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Projects" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+                  <span>Projects</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Team" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <span>Team</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div role="group" aria-labelledby="g41">
+            <h3 id="g41">Documents</h3>
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Data Library" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></svg>
+                  <span>Data Library</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Reports" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+                  <span>Reports</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Word Assistant" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+                  <span>Word Assistant</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div role="group" aria-label="Secondary" class="sb-push">
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Settings" data-side="right" data-size="sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <span>Settings</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Get Help" data-side="right" data-size="sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/><circle cx="12" cy="12" r="4"/></svg>
+                  <span>Get Help</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Search" data-side="right" data-size="sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  <span>Search</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </section>
+        <footer>
+          <div class="dropdown-menu">
+            <button
+              type="button"
+              data-sidebar-item
+              data-size="lg"
+              popovertarget="user42"
+              aria-haspopup="menu">
+              <span class="avatar" data-size="sm"><span>CN</span></span>
+              <span>
+                <strong>shadcn</strong>
+                <small>m@example.com</small>
+              </span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+            </button>
+            <div
+              id="user42"
+              data-popover
+              popover
+              data-side="right"
+              data-align="end"
+              style="min-width: 14rem">
+              <div role="menu" aria-label="Account">
+                <div class="sb-user-head">
+                  <span class="avatar" data-size="sm"><span>CN</span></span>
+                  <span>
+                    <strong>shadcn</strong>
+                    <small>m@example.com</small>
+                  </span>
+                </div>
+                <hr role="separator" />
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+                  <span>Upgrade to Pro</span>
+                </button>
+                <hr role="separator" />
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <span>Account</span>
+                </button>
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                  <span>Billing</span>
+                </button>
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>
+                  <span>Notifications</span>
+                </button>
+                <hr role="separator" />
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                  <span>Log out</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </nav>
+    </aside>
+    <main class="db-main">
+      <header class="app-header db-header">
+        <button
+          type="button"
+          class="btn"
+          data-variant="ghost"
+          data-size="icon-sm"
+          data-sidebar-toggle="app-sidebar"
+          aria-controls="app-sidebar"
+          aria-label="Toggle sidebar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></svg>
+        </button>
+        <hr role="separator" aria-orientation="vertical" />
+        <h1 class="db-title">Documents</h1>
+        <a href="#" class="btn db-gh" data-variant="ghost" data-size="sm">GitHub</a>
+      </header>
+      <div class="db-body">
+        <div class="db-kpis">
+          <div class="card db-kpi">
+            <header>
+              <p>Total Revenue</p>
+              <h2>$1,250.00</h2>
+              <div class="card-action">
+                <span class="badge" data-variant="outline">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                  +12.5%
+                </span>
+              </div>
+            </header>
+            <footer>
+              <p class="db-kpi-trend">
+                Trending up this month
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              </p>
+              <p class="db-kpi-note">Visitors for the last 6 months</p>
+            </footer>
+          </div>
+          <div class="card db-kpi">
+            <header>
+              <p>New Customers</p>
+              <h2>1,234</h2>
+              <div class="card-action">
+                <span class="badge" data-variant="outline">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>
+                  -20%
+                </span>
+              </div>
+            </header>
+            <footer>
+              <p class="db-kpi-trend">
+                Down 20% this period
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>
+              </p>
+              <p class="db-kpi-note">Acquisition needs attention</p>
+            </footer>
+          </div>
+          <div class="card db-kpi">
+            <header>
+              <p>Active Accounts</p>
+              <h2>45,678</h2>
+              <div class="card-action">
+                <span class="badge" data-variant="outline">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                  +12.5%
+                </span>
+              </div>
+            </header>
+            <footer>
+              <p class="db-kpi-trend">
+                Strong user retention
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              </p>
+              <p class="db-kpi-note">Engagement exceed targets</p>
+            </footer>
+          </div>
+          <div class="card db-kpi">
+            <header>
+              <p>Growth Rate</p>
+              <h2>4.5%</h2>
+              <div class="card-action">
+                <span class="badge" data-variant="outline">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                  +4.5%
+                </span>
+              </div>
+            </header>
+            <footer>
+              <p class="db-kpi-trend">
+                Steady performance increase
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              </p>
+              <p class="db-kpi-note">Meets growth projections</p>
+            </footer>
+          </div>
+        </div>
+        <div class="card db-chart">
+          <header>
+            <h2>Total Visitors</h2>
+            <p>
+              <span class="db-wide">Total for the last 3 months</span>
+              <span class="db-narrow">Last 3 months</span>
+            </p>
+            <div class="card-action">
+              <fieldset class="toggle-group" data-variant="outline" id="range">
+                <legend>Time range</legend>
+                <label class="toggle">
+                  <input type="radio" name="range" value="90" checked />
+                  Last 3 months
+                </label>
+                <label class="toggle">
+                  <input type="radio" name="range" value="30" />
+                  Last 30 days
+                </label>
+                <label class="toggle">
+                  <input type="radio" name="range" value="7" />
+                  Last 7 days
+                </label>
+              </fieldset>
+            </div>
+          </header>
+          <section>
+            <div class="db-canvas">
+              <canvas id="visitors" aria-label="Visitors by day"></canvas>
+            </div>
+          </section>
+        </div>
+        <div class="tabs db-tabs" id="db-tabs">
+          <nav role="tablist" aria-orientation="horizontal">
+            <button
+              type="button"
+              role="tab"
+              id="t-outline"
+              aria-controls="p-outline"
+              aria-selected="true"
+              tabindex="0">
+              Outline
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="t-perf"
+              aria-controls="p-perf"
+              aria-selected="false"
+              tabindex="-1">
+              Past Performance
+              <span class="badge" data-variant="secondary">3</span>
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="t-people"
+              aria-controls="p-people"
+              aria-selected="false"
+              tabindex="-1">
+              Key Personnel
+              <span class="badge" data-variant="secondary">2</span>
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="t-focus"
+              aria-controls="p-focus"
+              aria-selected="false"
+              tabindex="-1">
+              Focus Documents
+            </button>
+          </nav>
+          <button type="button" class="btn db-add" data-variant="outline" data-size="sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+            <span class="db-wide">Add Section</span>
+          </button>
+          <div role="tabpanel" id="p-outline" aria-labelledby="t-outline">
+            <auvyx-data-table class="data-table" data-page-size="10" id="docs-table">
+              <header>
+                <input
+                  class="input"
+                  type="search"
+                  data-filter
+                  placeholder="Filter sections..."
+                  aria-label="Filter sections" />
+              </header>
+              <div>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>
+                        <input
+                          class="input"
+                          type="checkbox"
+                          data-select-all
+                          aria-label="Select all" />
+                      </th>
+                      <th aria-sort="none"><button type="button">Header</button></th>
+                      <th aria-sort="none"><button type="button">Section Type</button></th>
+                      <th aria-sort="none"><button type="button">Status</button></th>
+                      <th aria-sort="none" data-type="number" class="db-num">
+                        <button type="button">Target</button>
+                      </th>
+                      <th aria-sort="none" data-type="number" class="db-num">
+                        <button type="button">Limit</button>
+                      </th>
+                      <th>Reviewer</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <input
+                          class="input"
+                          type="checkbox"
+                          data-select
+                          aria-label="Select Cover page" />
+                      </td>
+                      <td><a href="#" class="db-link">Cover page</a></td>
+                      <td><span class="badge" data-variant="outline">Cover page</span></td>
+                      <td>
+                        <span class="badge" data-variant="outline" class="db-status">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                          In Process
+                        </span>
+                      </td>
+                      <td data-value="18" class="db-num">18</td>
+                      <td data-value="5" class="db-num">5</td>
+                      <td>Eddie Lake</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input
+                          class="input"
+                          type="checkbox"
+                          data-select
+                          aria-label="Select Table of contents" />
+                      </td>
+                      <td><a href="#" class="db-link">Table of contents</a></td>
+                      <td><span class="badge" data-variant="outline">Table of contents</span></td>
+                      <td>
+                        <span class="badge" data-variant="outline" class="db-status">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                          Done
+                        </span>
+                      </td>
+                      <td data-value="29" class="db-num">29</td>
+                      <td data-value="24" class="db-num">24</td>
+                      <td>Eddie Lake</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input
+                          class="input"
+                          type="checkbox"
+                          data-select
+                          aria-label="Select Executive summary" />
+                      </td>
+                      <td><a href="#" class="db-link">Executive summary</a></td>
+                      <td><span class="badge" data-variant="outline">Narrative</span></td>
+                      <td>
+                        <span class="badge" data-variant="outline" class="db-status">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                          Done
+                        </span>
+                      </td>
+                      <td data-value="10" class="db-num">10</td>
+                      <td data-value="13" class="db-num">13</td>
+                      <td>Eddie Lake</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input
+                          class="input"
+                          type="checkbox"
+                          data-select
+                          aria-label="Select Technical approach" />
+                      </td>
+                      <td><a href="#" class="db-link">Technical approach</a></td>
+                      <td><span class="badge" data-variant="outline">Narrative</span></td>
+                      <td>
+                        <span class="badge" data-variant="outline" class="db-status">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                          Done
+                        </span>
+                      </td>
+                      <td data-value="27" class="db-num">27</td>
+                      <td data-value="23" class="db-num">23</td>
+                      <td>Jamik Tashpulatov</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input
+                          class="input"
+                          type="checkbox"
+                          data-select
+                          aria-label="Select Design" />
+                      </td>
+                      <td><a href="#" class="db-link">Design</a></td>
+                      <td><span class="badge" data-variant="outline">Narrative</span></td>
+                      <td>
+                        <span class="badge" data-variant="outline" class="db-status">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                          In Process
+                        </span>
+                      </td>
+                      <td data-value="2" class="db-num">2</td>
+                      <td data-value="16" class="db-num">16</td>
+                      <td>Jamik Tashpulatov</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input
+                          class="input"
+                          type="checkbox"
+                          data-select
+                          aria-label="Select Capabilities" />
+                      </td>
+                      <td><a href="#" class="db-link">Capabilities</a></td>
+                      <td><span class="badge" data-variant="outline">Narrative</span></td>
+                      <td>
+                        <span class="badge" data-variant="outline" class="db-status">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                          In Process
+                        </span>
+                      </td>
+                      <td data-value="20" class="db-num">20</td>
+                      <td data-value="8" class="db-num">8</td>
+                      <td>Jamik Tashpulatov</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input
+                          class="input"
+                          type="checkbox"
+                          data-select
+                          aria-label="Select Integration with existing systems" />
+                      </td>
+                      <td><a href="#" class="db-link">Integration with existing systems</a></td>
+                      <td><span class="badge" data-variant="outline">Narrative</span></td>
+                      <td>
+                        <span class="badge" data-variant="outline" class="db-status">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                          In Process
+                        </span>
+                      </td>
+                      <td data-value="19" class="db-num">19</td>
+                      <td data-value="21" class="db-num">21</td>
+                      <td>Jamik Tashpulatov</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input
+                          class="input"
+                          type="checkbox"
+                          data-select
+                          aria-label="Select Innovation and Advantages" />
+                      </td>
+                      <td><a href="#" class="db-link">Innovation and Advantages</a></td>
+                      <td><span class="badge" data-variant="outline">Narrative</span></td>
+                      <td>
+                        <span class="badge" data-variant="outline" class="db-status">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                          Done
+                        </span>
+                      </td>
+                      <td data-value="25" class="db-num">25</td>
+                      <td data-value="26" class="db-num">26</td>
+                      <td><span class="db-muted">Assign reviewer</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input
+                          class="input"
+                          type="checkbox"
+                          data-select
+                          aria-label="Select Overview of EMR's Innovative Solutions" />
+                      </td>
+                      <td>
+                        <a href="#" class="db-link">Overview of EMR's Innovative Solutions</a>
+                      </td>
+                      <td><span class="badge" data-variant="outline">Technical content</span></td>
+                      <td>
+                        <span class="badge" data-variant="outline" class="db-status">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                          Done
+                        </span>
+                      </td>
+                      <td data-value="7" class="db-num">7</td>
+                      <td data-value="23" class="db-num">23</td>
+                      <td><span class="db-muted">Assign reviewer</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input
+                          class="input"
+                          type="checkbox"
+                          data-select
+                          aria-label="Select Advanced Algorithms and Machine Learning" />
+                      </td>
+                      <td>
+                        <a href="#" class="db-link">Advanced Algorithms and Machine Learning</a>
+                      </td>
+                      <td><span class="badge" data-variant="outline">Narrative</span></td>
+                      <td>
+                        <span class="badge" data-variant="outline" class="db-status">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                          Done
+                        </span>
+                      </td>
+                      <td data-value="30" class="db-num">30</td>
+                      <td data-value="28" class="db-num">28</td>
+                      <td><span class="db-muted">Assign reviewer</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input
+                          class="input"
+                          type="checkbox"
+                          data-select
+                          aria-label="Select Adaptive Communication Protocols" />
+                      </td>
+                      <td><a href="#" class="db-link">Adaptive Communication Protocols</a></td>
+                      <td><span class="badge" data-variant="outline">Narrative</span></td>
+                      <td>
+                        <span class="badge" data-variant="outline" class="db-status">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                          Done
+                        </span>
+                      </td>
+                      <td data-value="9" class="db-num">9</td>
+                      <td data-value="31" class="db-num">31</td>
+                      <td><span class="db-muted">Assign reviewer</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input
+                          class="input"
+                          type="checkbox"
+                          data-select
+                          aria-label="Select Advantages Over Current Technologies" />
+                      </td>
+                      <td><a href="#" class="db-link">Advantages Over Current Technologies</a></td>
+                      <td><span class="badge" data-variant="outline">Narrative</span></td>
+                      <td>
+                        <span class="badge" data-variant="outline" class="db-status">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                          In Process
+                        </span>
+                      </td>
+                      <td data-value="12" class="db-num">12</td>
+                      <td data-value="0" class="db-num">0</td>
+                      <td><span class="db-muted">Assign reviewer</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input
+                          class="input"
+                          type="checkbox"
+                          data-select
+                          aria-label="Select Past Performance" />
+                      </td>
+                      <td><a href="#" class="db-link">Past Performance</a></td>
+                      <td><span class="badge" data-variant="outline">Narrative</span></td>
+                      <td>
+                        <span class="badge" data-variant="outline" class="db-status">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                          Done
+                        </span>
+                      </td>
+                      <td data-value="22" class="db-num">22</td>
+                      <td data-value="33" class="db-num">33</td>
+                      <td><span class="db-muted">Assign reviewer</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input
+                          class="input"
+                          type="checkbox"
+                          data-select
+                          aria-label="Select Customer Feedback and Satisfaction Levels" />
+                      </td>
+                      <td>
+                        <a href="#" class="db-link">Customer Feedback and Satisfaction Levels</a>
+                      </td>
+                      <td><span class="badge" data-variant="outline">Narrative</span></td>
+                      <td>
+                        <span class="badge" data-variant="outline" class="db-status">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                          Done
+                        </span>
+                      </td>
+                      <td data-value="15" class="db-num">15</td>
+                      <td data-value="34" class="db-num">34</td>
+                      <td><span class="db-muted">Assign reviewer</span></td>
+                    </tr>
+                    <tr data-empty hidden><td colspan="7">No results.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <footer>
+                <span
+                  data-selected-count
+                  data-template="{selected} of {total} row(s) selected."></span>
+                <span data-page-status></span>
+                <button
+                  type="button"
+                  class="btn"
+                  data-variant="outline"
+                  data-size="sm"
+                  data-page="prev">
+                  Previous
+                </button>
+                <button
+                  type="button"
+                  class="btn"
+                  data-variant="outline"
+                  data-size="sm"
+                  data-page="next">
+                  Next
+                </button>
+              </footer>
+            </auvyx-data-table>
+          </div>
+          <div role="tabpanel" id="p-perf" aria-labelledby="t-perf" hidden>
+            <div class="db-empty"></div>
+          </div>
+          <div role="tabpanel" id="p-people" aria-labelledby="t-people" hidden>
+            <div class="db-empty"></div>
+          </div>
+          <div role="tabpanel" id="p-focus" aria-labelledby="t-focus" hidden>
+            <div class="db-empty"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      const DATA = [
+        { date: "2024-04-01", desktop: 260, mobile: 350 },
+        { date: "2024-04-02", desktop: 360, mobile: 307 },
+        { date: "2024-04-03", desktop: 240, mobile: 235 },
+        { date: "2024-04-04", desktop: 177, mobile: 247 },
+        { date: "2024-04-05", desktop: 327, mobile: 332 },
+        { date: "2024-04-06", desktop: 401, mobile: 367 },
+        { date: "2024-04-07", desktop: 317, mobile: 298 },
+        { date: "2024-04-08", desktop: 351, mobile: 222 },
+        { date: "2024-04-09", desktop: 477, mobile: 241 },
+        { date: "2024-04-10", desktop: 405, mobile: 315 },
+        { date: "2024-04-11", desktop: 256, mobile: 322 },
+        { date: "2024-04-12", desktop: 325, mobile: 233 },
+        { date: "2024-04-13", desktop: 447, mobile: 160 },
+        { date: "2024-04-14", desktop: 368, mobile: 187 },
+        { date: "2024-04-15", desktop: 288, mobile: 252 },
+        { date: "2024-04-16", desktop: 371, mobile: 235 },
+        { date: "2024-04-17", desktop: 361, mobile: 136 },
+        { date: "2024-04-18", desktop: 179, mobile: 76 },
+        { date: "2024-04-19", desktop: 141, mobile: 118 },
+        { date: "2024-04-20", desktop: 278, mobile: 178 },
+        { date: "2024-04-21", desktop: 263, mobile: 146 },
+        { date: "2024-04-22", desktop: 121, mobile: 50 },
+        { date: "2024-04-23", desktop: 136, mobile: 50 },
+        { date: "2024-04-24", desktop: 195, mobile: 74 },
+        { date: "2024-04-25", desktop: 65, mobile: 133 },
+        { date: "2024-04-26", desktop: 60, mobile: 93 },
+        { date: "2024-04-27", desktop: 84, mobile: 50 },
+        { date: "2024-04-28", desktop: 175, mobile: 50 },
+        { date: "2024-04-29", desktop: 60, mobile: 83 },
+        { date: "2024-04-30", desktop: 60, mobile: 140 },
+        { date: "2024-05-01", desktop: 115, mobile: 97 },
+        { date: "2024-05-02", desktop: 97, mobile: 50 },
+        { date: "2024-05-03", desktop: 60, mobile: 50 },
+        { date: "2024-05-04", desktop: 62, mobile: 148 },
+        { date: "2024-05-05", desktop: 240, mobile: 198 },
+        { date: "2024-05-06", desktop: 207, mobile: 150 },
+        { date: "2024-05-07", desktop: 107, mobile: 96 },
+        { date: "2024-05-08", desktop: 195, mobile: 141 },
+        { date: "2024-05-09", desktop: 278, mobile: 242 },
+        { date: "2024-05-10", desktop: 191, mobile: 277 },
+        { date: "2024-05-11", desktop: 193, mobile: 218 },
+        { date: "2024-05-12", desktop: 381, mobile: 175 },
+        { date: "2024-05-13", desktop: 432, mobile: 233 },
+        { date: "2024-05-14", desktop: 298, mobile: 326 },
+        { date: "2024-05-15", desktop: 295, mobile: 336 },
+        { date: "2024-05-16", desktop: 412, mobile: 263 },
+        { date: "2024-05-17", desktop: 373, mobile: 225 },
+        { date: "2024-05-18", desktop: 287, mobile: 287 },
+        { date: "2024-05-19", desktop: 399, mobile: 363 },
+        { date: "2024-05-20", desktop: 501, mobile: 343 },
+        { date: "2024-05-21", desktop: 367, mobile: 255 },
+        { date: "2024-05-22", desktop: 248, mobile: 222 },
+        { date: "2024-05-23", desktop: 330, mobile: 284 },
+        { date: "2024-05-24", desktop: 351, mobile: 338 },
+        { date: "2024-05-25", desktop: 224, mobile: 290 },
+        { date: "2024-05-26", desktop: 228, mobile: 193 },
+        { date: "2024-05-27", desktop: 347, mobile: 169 },
+        { date: "2024-05-28", desktop: 270, mobile: 232 },
+        { date: "2024-05-29", desktop: 83, mobile: 266 },
+        { date: "2024-05-30", desktop: 97, mobile: 198 },
+        { date: "2024-05-31", desktop: 189, mobile: 102 },
+        { date: "2024-06-01", desktop: 106, mobile: 95 },
+        { date: "2024-06-02", desktop: 60, mobile: 162 },
+        { date: "2024-06-03", desktop: 144, mobile: 183 },
+        { date: "2024-06-04", desktop: 170, mobile: 104 },
+        { date: "2024-06-05", desktop: 60, mobile: 50 },
+        { date: "2024-06-06", desktop: 60, mobile: 50 },
+        { date: "2024-06-07", desktop: 94, mobile: 116 },
+        { date: "2024-06-08", desktop: 120, mobile: 128 },
+        { date: "2024-06-09", desktop: 60, mobile: 50 },
+        { date: "2024-06-10", desktop: 100, mobile: 50 },
+        { date: "2024-06-11", desktop: 219, mobile: 50 },
+        { date: "2024-06-12", desktop: 129, mobile: 120 },
+        { date: "2024-06-13", desktop: 60, mobile: 126 },
+        { date: "2024-06-14", desktop: 162, mobile: 53 },
+        { date: "2024-06-15", desktop: 294, mobile: 50 },
+        { date: "2024-06-16", desktop: 231, mobile: 90 },
+        { date: "2024-06-17", desktop: 223, mobile: 179 },
+        { date: "2024-06-18", desktop: 360, mobile: 175 },
+        { date: "2024-06-19", desktop: 358, mobile: 107 },
+        { date: "2024-06-20", desktop: 221, mobile: 97 },
+        { date: "2024-06-21", desktop: 271, mobile: 184 },
+        { date: "2024-06-22", desktop: 444, mobile: 266 },
+        { date: "2024-06-23", desktop: 427, mobile: 247 },
+        { date: "2024-06-24", desktop: 328, mobile: 179 },
+        { date: "2024-06-25", desktop: 396, mobile: 185 },
+        { date: "2024-06-26", desktop: 449, mobile: 277 },
+        { date: "2024-06-27", desktop: 308, mobile: 341 },
+        { date: "2024-06-28", desktop: 242, mobile: 299 },
+        { date: "2024-06-29", desktop: 385, mobile: 229 },
+        { date: "2024-06-30", desktop: 427, mobile: 244 },
+      ];
+      function draw() {
+        const n = +document.querySelector("[name=range]:checked").value;
+        const rows = DATA.slice(-n).map((d) => ({
+          ...d,
+          label: new Date(d.date + "T00:00").toLocaleDateString(undefined, {
+            month: "short",
+            day: "numeric",
+          }),
+        }));
+        window.basecoat.chart("#visitors", {
+          type: "line",
+          labelKey: "label",
+          data: rows,
+          legend: false,
+          series: {
+            mobile: {
+              label: "Mobile",
+              color: "var(--chart-1)",
+              surface: "gradient",
+              dataset: { fill: "origin", tension: 0.35, pointRadius: 0, borderWidth: 1.5 },
+            },
+            desktop: {
+              label: "Desktop",
+              color: "var(--chart-2)",
+              surface: "gradient",
+              dataset: { fill: "origin", tension: 0.35, pointRadius: 0, borderWidth: 1.5 },
+            },
+          },
+          options: {
+            scales: { x: { ticks: { maxTicksLimit: 8, autoSkip: true } }, y: { stacked: true } },
+          },
+        });
+      }
+      document.getElementById("range").addEventListener("change", draw);
+      window.addEventListener("DOMContentLoaded", () =>
+        window.Chart && window.basecoat?.chart
+          ? draw()
+          : window.addEventListener("load", draw, { once: true }),
+      );
+    </script>
+  </body>
+</html>

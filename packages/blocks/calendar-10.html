@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calendar 10 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .cal-card {
+        inline-size: fit-content;
+        max-inline-size: 100%;
+      }
+      .cal-card > section {
+        display: flex;
+        justify-content: center;
+      }
+      .cal-card > section > .calendar {
+        padding: 0;
+      }
+      input[type="time"]::-webkit-calendar-picker-indicator {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="cover">
+      <div class="card cal-card">
+        <header>
+          <h2>Appointment</h2>
+          <p>Find a date</p>
+          <div class="card-action">
+            <button type="button" class="btn" data-variant="outline" data-size="sm" id="today">
+              Today
+            </button>
+          </div>
+        </header>
+        <section>
+          <auvyx-calendar
+            class="calendar"
+            id="cal"
+            month="2026-06"
+            value="2026-06-12"></auvyx-calendar>
+        </section>
+      </div>
+    </main>
+    <script>
+      const pad = (n) => String(n).padStart(2, "0");
+      const iso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+      const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+      const today = new Date();
+      const c = document.getElementById("cal");
+      document.getElementById("today").onclick = () => {
+        c.value = iso(today);
+        c.goTo(today);
+      };
+    </script>
+  </body>
+</html>

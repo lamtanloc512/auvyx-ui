@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sidebar 13 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        min-block-size: 100svh;
+      }
+      @media (width < 48rem) {
+        .sb-hide-sm {
+          display: none;
+        }
+      }
+      .sidebar > nav > header .dropdown-menu,
+      .sidebar > nav > footer .dropdown-menu {
+        display: flex;
+        inline-size: 100%;
+      }
+
+      .cover > .btn {
+        inline-size: auto;
+      }
+      .sb-dlg > div {
+        max-inline-size: min(56rem, calc(100% - 2rem)) !important;
+        padding: 0 !important;
+        overflow: hidden;
+        block-size: min(500px, calc(100svh - 2rem));
+      }
+      .sb-dlg-grid {
+        display: flex;
+        block-size: 100%;
+      }
+      .sb-dlg-side {
+        block-size: 100%;
+      }
+      .sb-dlg-side > nav {
+        --sidebar-width: 14rem;
+      }
+      @media (width < 48rem) {
+        .sb-dlg-side {
+          display: none !important;
+        }
+      }
+      .sb-dlg-main {
+        flex: 1;
+        min-inline-size: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .sb-dlg-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        block-size: 4rem;
+        padding-inline: 1rem;
+        flex: none;
+      }
+      .sb-dlg-body {
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 0 1rem 1rem;
+      }
+      .sb-dlg-row {
+        flex: none;
+        aspect-ratio: 16 / 5;
+        max-block-size: 8rem;
+        border-radius: 0.75rem;
+        background: color-mix(in oklch, var(--muted) 60%, transparent);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="cover">
+      <button type="button" class="btn" commandfor="settings-dlg" command="show-modal">
+        Open Dialog
+      </button>
+    </main>
+    <dialog id="settings-dlg" class="dialog sb-dlg" closedby="any" aria-label="Settings">
+      <div>
+        <div class="sb-dlg-grid">
+          <aside class="sidebar sb-dlg-side" data-position="static">
+            <nav aria-label="Settings">
+              <section>
+                <div role="group" aria-label="Navigation">
+                  <ul>
+                    <li>
+                      <a href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>
+                        <span>Notifications</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>
+                        <span>Navigation</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                        <span>Home</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+                        <span>Appearance</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" aria-current="page">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+                        <span>Messages & media</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></svg>
+                        <span>Language & region</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span>Accessibility</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                        <span>Mark as read</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/></svg>
+                        <span>Audio & video</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
+                        <span>Connected accounts</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
+                        <span>Privacy & visibility</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <span>Advanced</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </section>
+            </nav>
+          </aside>
+          <div class="sb-dlg-main">
+            <header class="sb-dlg-head">
+              <nav class="breadcrumb" aria-label="Breadcrumb">
+                <ol>
+                  <li class="sb-hide-sm"><a href="#">Settings</a></li>
+                  <li aria-hidden="true" class="sb-hide-sm"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></li>
+                  <li><span aria-current="page">Messages &amp; media</span></li>
+                </ol>
+              </nav>
+              <button
+                type="button"
+                class="btn"
+                data-variant="ghost"
+                data-size="icon-sm"
+                commandfor="settings-dlg"
+                command="close"
+                aria-label="Close">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              </button>
+            </header>
+            <div class="sb-dlg-body">
+              <div class="sb-dlg-row"></div>
+              <div class="sb-dlg-row"></div>
+              <div class="sb-dlg-row"></div>
+              <div class="sb-dlg-row"></div>
+              <div class="sb-dlg-row"></div>
+              <div class="sb-dlg-row"></div>
+              <div class="sb-dlg-row"></div>
+              <div class="sb-dlg-row"></div>
+              <div class="sb-dlg-row"></div>
+              <div class="sb-dlg-row"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </dialog>
+  </body>
+</html>

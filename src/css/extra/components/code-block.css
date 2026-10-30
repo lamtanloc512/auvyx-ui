@@ -1,0 +1,72 @@
+/* Code Block (fork addition)
+ *
+ *   <figure class="code-block">
+ *     <figcaption>
+ *       <span>install.sh</span>
+ *       <button type="button" class="btn" data-variant="ghost" data-size="icon-sm" data-copy aria-label="Copy">…</button>
+ *     </figcaption>
+ *     <pre tabindex="0" data-numbered><code><span>npm i @auvyx/ui</span>
+ * <span data-line="added">import "@auvyx/ui/bundle"</span></code></pre>
+ *   </figure>
+ * Lines are optional <span>s inside <code>; data-line: highlighted | added | removed.
+ * <pre data-wrap> wraps long lines. data-variant="destructive" for error output.
+ * Copy needs JS (Clipboard API): copy.js handles any [data-copy] button.
+ */
+@layer components {
+  .code-block {
+    @apply relative m-0 flex w-full min-w-0 flex-col overflow-hidden;
+
+    > figcaption {
+      @apply flex min-w-0 shrink-0 items-center;
+
+      > :first-child {
+        @apply min-w-0 truncate [&_svg]:pointer-events-none [&_svg]:inline-block [&_svg]:align-middle;
+      }
+
+      > :is(button, [data-actions]):last-child {
+        @apply ms-auto flex shrink-0 items-center;
+      }
+    }
+
+    /* Copy button without a caption floats in the corner and shows on hover/focus. */
+    > :is(button, [data-actions]) {
+      @apply absolute z-10 opacity-0 transition-opacity pointer-coarse:opacity-100;
+    }
+
+    &:is(:hover, :focus-within) > :is(button, [data-actions]) {
+      @apply opacity-100;
+    }
+
+    > pre {
+      @apply m-0 min-h-0 min-w-0 overflow-auto text-start font-mono outline-none;
+      scrollbar-width: thin;
+
+      &[data-wrap] {
+        @apply wrap-break-word whitespace-pre-wrap;
+      }
+
+      /* inline-block, not block: the real newlines between line spans in
+         <pre> already break lines; block would add an empty line each. */
+      > code > span {
+        @apply relative inline-block min-w-full;
+      }
+
+      &[data-numbered] {
+        counter-reset: bc-line;
+
+        > code > span {
+          counter-increment: bc-line;
+
+          &::before {
+            @apply me-3 inline-block select-none;
+            content: counter(bc-line);
+          }
+        }
+      }
+
+      > code > span:is([data-line='added'], [data-line='removed'])::after {
+        @apply absolute select-none;
+      }
+    }
+  }
+}

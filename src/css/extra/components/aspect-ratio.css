@@ -1,0 +1,23 @@
+/* Aspect Ratio (fork addition)
+ *   <div class="aspect-ratio" data-ratio="16/9"><img src="…" alt="…"></div>
+ *   <div class="aspect-ratio" style="--ratio: 5 / 4">…</div>
+ */
+@layer components {
+  .aspect-ratio {
+    @apply relative w-full overflow-hidden;
+    --ratio: 16 / 9;
+    aspect-ratio: var(--ratio);
+
+    &[data-ratio='1/1'] { --ratio: 1 / 1; }
+    &[data-ratio='4/3'] { --ratio: 4 / 3; }
+    &[data-ratio='3/2'] { --ratio: 3 / 2; }
+    &[data-ratio='16/9'] { --ratio: 16 / 9; }
+    &[data-ratio='21/9'] { --ratio: 21 / 9; }
+    &[data-ratio='3/4'] { --ratio: 3 / 4; }
+    &[data-ratio='9/16'] { --ratio: 9 / 16; }
+
+    > :is(img, video, iframe, picture, canvas, svg) {
+      @apply absolute inset-0 size-full object-cover;
+    }
+  }
+}

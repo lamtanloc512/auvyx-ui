@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calendar 17 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .cal-card {
+        inline-size: fit-content;
+        max-inline-size: 100%;
+      }
+      .cal-card > section {
+        display: flex;
+        justify-content: center;
+      }
+      .cal-card > section > .calendar {
+        padding: 0;
+      }
+      input[type="time"]::-webkit-calendar-picker-indicator {
+        display: none;
+      }
+
+      .cal-foot {
+        border-block-start: 1px solid var(--border);
+        padding-block-start: 1rem;
+      }
+      .cal-tl {
+        inline-size: 3rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+      .cal-ti {
+        flex: 1;
+        inline-size: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="cover">
+      <div class="card cal-card" data-size="sm">
+        <section><auvyx-calendar class="calendar" value="2026-06-12"></auvyx-calendar></section>
+        <footer class="cal-foot">
+          <div class="stack" data-gap="3" style="inline-size: 100%">
+            <div class="cluster" data-gap="2">
+              <label for="t1" class="cal-tl">Start</label>
+              <input class="input cal-ti" id="t1" type="time" step="1" value="10:30:00" />
+            </div>
+            <div class="cluster" data-gap="2">
+              <label for="t2" class="cal-tl">End</label>
+              <input class="input cal-ti" id="t2" type="time" step="1" value="12:30:00" />
+            </div>
+          </div>
+        </footer>
+      </div>
+    </main>
+  </body>
+</html>
