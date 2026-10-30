@@ -36,10 +36,10 @@ Auvyx contains no licensing, payment or tier logic. Paid source must never be co
 - [x] Components in the registry (`registry:ui`): `auvyx.min.css` split per component (`dist/ui/`, `packages/ui/tools/ui-split.mjs`), dependencies found in a browser (`tools/ui-deps.mjs`), `ui/index.css` kept in cascade order by the CLI. Layout and motion now come before the components in the bundle.
 - [x] npm workspaces (`packages/*`), one build (`npm run auvyx:build`: ui → registry → docs) and the checks in `packages/tests` (`npm run auvyx:test`), run by the `auvyx` CI job.
 - [x] Upstream docs site (`site/`) merged into `packages/docs` and removed: component reference notes (`src/data/notes/`), the Templates guide, JavaScript lifecycle and fonts, `llms.txt` / `llms-full.txt` with Markdown exports (`md/`).
+- [x] `@auvyx/ui` and `@auvyx/cli` 0.1.0 on npm (LICENSE with Basecoat's notice, README); CDN on jsDelivr. Later versions: GitHub release tagged `ui@x.y.z` / `cli@x.y.z` → `.github/workflows/release-auvyx.yml` stages them with trusted publishing → approve on npm. `@auvyx/elements` stays private (bundled into `@auvyx/ui`).
 
 ## Next (Auvyx)
 
-- [ ] Publish `@auvyx/ui` and `@auvyx/cli` to npm. Ready: LICENSE (with Basecoat's notice) and README in each package, `npm run auvyx:publish` for the first version, then `.github/workflows/release-auvyx.yml` (tags `ui@x.y.z` / `cli@x.y.z`, trusted publishing). `@auvyx/elements` stays private (bundled into `@auvyx/ui`); the upstream `basecoat-css` release workflow is removed.
 
 ## Beamui (tracked there, listed for context)
 
