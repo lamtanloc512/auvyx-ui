@@ -9,6 +9,8 @@
  *   .cluster    horizontal, wraps, vertically centered      data-gap, data-align, data-justify
  *   .auto-grid  responsive columns, no breakpoints          data-gap, data-min: xs | sm | md | lg
  *   .split      side + main, stacks when narrow             data-gap, data-side: start | end
+ *   .cover      full-height, centers its content            data-pad
+ *   .switcher   equal columns that stack below --threshold  data-gap, style="--threshold: 40rem"
  *
  * Escape hatch for any value: CSS variables, e.g. style="--gap: 1.75rem; --min: 20rem".
  */
@@ -18,7 +20,7 @@
   }
 
   /* Gap scale shared by every primitive (multiples of --layout-space). */
-  :is(.stack, .cluster, .auto-grid, .split) {
+  :is(.stack, .cluster, .auto-grid, .split, .switcher) {
     /* Defaults live on the element so nested primitives never inherit the parent's value. */
     --gap: calc(var(--layout-space) * 4);
     gap: var(--gap);
@@ -118,5 +120,53 @@
         min-inline-size: 0;
       }
     }
+  }
+
+  /* Full-viewport section that centers its child (auth pages, empty states). */
+  .cover {
+    --cover-pad: 1.5rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-block-size: 100svh;
+    padding: var(--cover-pad);
+
+    &[data-pad='0'] { --cover-pad: 0; }
+    &[data-pad='lg'] { --cover-pad: 2.5rem; }
+
+    > * {
+      inline-size: 100%;
+    }
+  }
+
+  /* Columns side by side while the container is wider than --threshold,
+     one column below it. Container-relative: no media queries. */
+  .switcher {
+    --threshold: 40rem;
+    display: flex;
+    flex-wrap: wrap;
+
+    > * {
+      flex-grow: 1;
+      flex-basis: calc((var(--threshold) - 100%) * 999);
+      min-inline-size: 0;
+    }
+  }
+
+  /* Accessibility helper kept in the CDN bundle on purpose: visually hidden,
+     still read by screen readers. Same output as Tailwind's sr-only, so the
+     two never conflict. */
+  .sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border-width: 0;
   }
 }

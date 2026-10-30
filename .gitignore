@@ -16,3 +16,4 @@ templates/
 site/dist/
 site/public/assets/js/
 site/public/fragments/
+__pycache__/
