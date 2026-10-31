@@ -13,6 +13,9 @@ import { root, dist, registry, cli, freshDir, run, serve, browser, open, shot, s
 // Rendering noise between two loads of the same page stays below this
 // (antialiasing of images and text at sub-pixel offsets).
 const NOISE = 300;
+// Blocks: a cascade mistake moves whole layouts (thousands of pixels); text
+// antialiasing on CI runners can differ by a few dozen between two loads.
+const BLOCK_NOISE = 60;
 
 let server, b;
 before(async () => {
@@ -49,8 +52,8 @@ test('blocks render identically with the split files', async () => {
         await page.close();
       }
       return shots;
-    });
-    if (d.pixels > 0) { failures.push(`${n}: ${d.size ?? `${d.pixels} px`}`); await keep(`split-${n}`, ...d.shots); }
+    }, { tolerance: BLOCK_NOISE });
+    if (d.pixels > BLOCK_NOISE) { failures.push(`${n}: ${d.size ?? `${d.pixels} px`}`); await keep(`split-${n}`, ...d.shots); }
   }
   assert.deepEqual(failures, []);
 });
