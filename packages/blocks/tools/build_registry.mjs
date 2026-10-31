@@ -164,7 +164,7 @@ async function uiItems() {
       title: docs[name]?.title ?? 'Chart',
       description: docs[name]?.description ?? 'Chart.js styles: tooltips and legends.',
       categories: ['ui'],
-      meta: { version, docs: `https://auvyx-ui.vercel.app/#c-${name}` },
+      meta: { version, docs: `https://ui.auvyx.org/#c-${name}` },
       registryDependencies: ['base', ...c.dependencies],
       files,
     });

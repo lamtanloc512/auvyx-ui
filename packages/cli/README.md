@@ -6,7 +6,7 @@ Copy Auvyx UI blocks into your project, shadcn-style: you own the code after `ad
 npx @auvyx/cli init --icons tabler
 ```
 
-`init` points `@auvyx` at `https://auvyx-ui.vercel.app/r/{framework}/{icons}/{name}.json`; pass `--registry` to use another one. `--icons` picks the icon library the blocks are delivered with: `lucide` (default), `tabler`, `hugeicons`, `ph` (Phosphor) or `ri` (Remix). It is saved in `auvyx.json`, and `add --icons <library>` overrides it for one install.
+`init` points `@auvyx` at `https://ui.auvyx.org/r/{framework}/{icons}/{name}.json`; pass `--registry` to use another one. `--icons` picks the icon library the blocks are delivered with: `lucide` (default), `tabler`, `hugeicons`, `ph` (Phosphor) or `ri` (Remix). It is saved in `auvyx.json`, and `add --icons <library>` overrides it for one install.
 
 ```bash
 npx @auvyx/cli add login-01 sidebar-07
@@ -48,7 +48,7 @@ npx @auvyx/cli list
   "dir": "auvyx",
   "icons": "tabler",
   "registries": {
-    "@auvyx": "https://auvyx-ui.vercel.app/r/{framework}/{icons}/{name}.json",
+    "@auvyx": "https://ui.auvyx.org/r/{framework}/{icons}/{name}.json",
     "@acme": {
       "url": "https://registry.acme.dev/r/{framework}/{icons}/{name}.json",
       "headers": { "Authorization": "Bearer ${ACME_TOKEN}" }

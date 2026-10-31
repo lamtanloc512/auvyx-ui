@@ -55,4 +55,4 @@ Auvyx contains no licensing, payment or tier logic. Paid source must never be co
 ## Open questions
 
 1. Keep publishing `basecoat-css`, or only `@auvyx/*`?
-2. Final domain for docs and the public registry (currently `auvyx-ui.vercel.app`).
+2. Final domain for docs and the public registry (currently `ui.auvyx.org`).

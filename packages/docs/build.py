@@ -21,7 +21,7 @@ VERSION = json.loads((UI / "package.json").read_text())["version"]
 CDN = f"https://cdn.jsdelivr.net/npm/@auvyx/ui@{'.'.join(VERSION.split('.')[:2])}/dist"
 
 
-SITE = "https://auvyx-ui.vercel.app"
+SITE = "https://ui.auvyx.org"
 
 
 def write_llms(guides_list, comps, blocks):

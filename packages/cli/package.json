@@ -18,7 +18,7 @@
     "url": "git+https://github.com/lamtanloc512/auvyx-ui.git",
     "directory": "packages/cli"
   },
-  "homepage": "https://auvyx-ui.vercel.app",
+  "homepage": "https://ui.auvyx.org",
   "bugs": {
     "url": "https://github.com/lamtanloc512/auvyx-ui/issues"
   },

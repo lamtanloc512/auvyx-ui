@@ -2,7 +2,7 @@
 
 A drop-in design system with the shadcn/ui look: plain HTML and CSS classes, optional JavaScript, no build step.
 
-Docs: https://auvyx-ui.vercel.app
+Docs: https://ui.auvyx.org
 
 ## CDN
 

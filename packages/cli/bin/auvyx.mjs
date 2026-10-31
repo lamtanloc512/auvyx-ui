@@ -15,10 +15,10 @@ import path from 'node:path';
 
 const CONFIG = 'auvyx.json';
 const DEFAULT_NS = '@auvyx';
-const DEFAULT_REGISTRY = 'https://auvyx-ui.vercel.app/r/{framework}/{icons}/{name}.json';
+const DEFAULT_REGISTRY = 'https://ui.auvyx.org/r/{framework}/{icons}/{name}.json';
 const ICON_LIBRARIES = ['lucide', 'tabler', 'hugeicons', 'ph', 'ri'];
 const FRAMEWORKS = ['html', 'react'];
-const SETUP_URL = 'https://auvyx-ui.vercel.app/#installation';
+const SETUP_URL = 'https://ui.auvyx.org/#installation';
 
 const argv = process.argv.slice(2);
 const flags = new Set(argv.filter((a) => a.startsWith('--')));

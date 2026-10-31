@@ -1,13 +1,13 @@
 # Contributing to Auvyx UI
 
-- Submit pull requests (PRs) against the `main` branch, which Vercel deploys to https://auvyx-ui.vercel.app (other branches get preview URLs).
+- Submit pull requests (PRs) against the `main` branch, which Vercel deploys to https://ui.auvyx.org (other branches get preview URLs).
 - Keep changes focused: one feature or fix per PR.
 - Test locally before submitting: `npm run check` (package), and `npm run auvyx:build` plus `npm run auvyx:test` for `packages/*` and the docs. CI runs them on every PR.
 - Follow existing code style.
 
 ## Docs deploys
 
-The docs site is `packages/docs` (built to `packages/docs/out` by `npm run auvyx:build`). Vercel deploys `main` to https://auvyx-ui.vercel.app and every other branch to a preview URL (see `vercel.json`). The upstream ReallySimpleDocs/Astro site (`site/`) was merged into it and removed.
+The docs site is `packages/docs` (built to `packages/docs/out` by `npm run auvyx:build`). Vercel deploys `main` to https://ui.auvyx.org and every other branch to a preview URL (see `vercel.json`). The upstream ReallySimpleDocs/Astro site (`site/`) was merged into it and removed.
 
 ## Releasing
 

@@ -7,7 +7,7 @@ import path from 'node:path';
 import { root, requireBuild } from './lib/env.mjs';
 
 const out = path.join(root, 'packages/docs/out');
-const SITE = 'https://auvyx-ui.vercel.app/';
+const SITE = 'https://ui.auvyx.org/';
 
 test('llms.txt links to existing exports', async () => {
   requireBuild();

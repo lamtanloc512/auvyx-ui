@@ -4,7 +4,7 @@ A drop-in design system with the shadcn/ui look: plain HTML and CSS classes, opt
 
 ![screenshot](.github/screenshot.png)
 
-- Docs: [auvyx-ui.vercel.app](https://auvyx-ui.vercel.app) ([llms.txt](https://auvyx-ui.vercel.app/llms.txt))
+- Docs: [ui.auvyx.org](https://ui.auvyx.org) ([llms.txt](https://ui.auvyx.org/llms.txt))
 - npm: [`@auvyx/ui`](https://www.npmjs.com/package/@auvyx/ui), [`@auvyx/cli`](https://www.npmjs.com/package/@auvyx/cli)
 
 ## Features
