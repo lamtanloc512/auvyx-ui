@@ -16,7 +16,9 @@ UI = ROOT / "packages/ui"
 BLOCKS = ROOT / "packages/blocks"
 
 VERSION = json.loads((UI / "package.json").read_text())["version"]
-CDN = f"https://cdn.jsdelivr.net/npm/@auvyx/ui@{VERSION}/dist"
+# major.minor: jsDelivr serves the newest published 0.1.x, so the docs never
+# link a version npm has not released yet (it waits for approval after a bump).
+CDN = f"https://cdn.jsdelivr.net/npm/@auvyx/ui@{'.'.join(VERSION.split('.')[:2])}/dist"
 
 
 SITE = "https://auvyx-ui.vercel.app"

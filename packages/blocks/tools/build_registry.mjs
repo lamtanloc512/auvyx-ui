@@ -28,7 +28,9 @@ const args = Object.fromEntries(
 const src = path.resolve(args.src ?? path.join(here, '..'));
 const out = path.resolve(args.out ?? path.join(src, 'dist/r'));
 const version = JSON.parse(await fs.readFile(path.join(root, 'packages/ui/package.json'), 'utf8')).version;
-const cdn = args.cdn ?? `https://cdn.jsdelivr.net/npm/@auvyx/ui@${version}/dist`;
+// major.minor: the newest published 0.1.x, so copied pages work while a new
+// patch version waits for approval on npm.
+const cdn = args.cdn ?? `https://cdn.jsdelivr.net/npm/@auvyx/ui@${version.split('.').slice(0, 2).join('.')}/dist`;
 
 // Theme toggle used by the docs previews (?theme=dark); not part of the block.
 const isPreviewScript = (s) => s.includes('prefers-color-scheme') && s.includes('URLSearchParams');

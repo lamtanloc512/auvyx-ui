@@ -181,7 +181,7 @@ SB_CSS = """
   .sb-strong { font-weight: 500; }
   .sidebar > nav li > a.sb-strong + ul { display: flex; }
   .app-header { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 0.5rem; block-size: 4rem; padding-inline: 1rem; border-block-end: 1px solid var(--border); background: var(--background); }
-  .app-header > hr[aria-orientation='vertical'] { block-size: 1rem; margin-inline-end: 0.5rem; }
+  .app-header > hr[aria-orientation='vertical'] { align-self: center; block-size: 1rem; margin-inline-end: 0.5rem; }
   .app-body { display: flex; flex-direction: column; gap: 1rem; padding: 1rem; }
   .app-tiles { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); }
   .app-tile { aspect-ratio: 16 / 9; border-radius: 0.75rem; background: color-mix(in oklch, var(--muted) 60%, transparent); }
