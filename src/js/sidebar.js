@@ -100,7 +100,7 @@
     sidebar.toggle();
   });
 
-  if (window.basecoat) {
-    window.basecoat.register('sidebar', '.sidebar', initSidebar);
+  if (window.auvyx) {
+    window.auvyx.register('sidebar', '.sidebar', initSidebar);
   }
 })();

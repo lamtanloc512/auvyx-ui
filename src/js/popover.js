@@ -81,7 +81,7 @@
     popoverComponent.dispatchEvent(new CustomEvent('basecoat:initialized'));
   };
 
-  if (window.basecoat) {
-    window.basecoat.register('popover', '.popover:not([data-popover-initialized]):not(:has(> [data-popover][popover]))', initPopover);
+  if (window.auvyx) {
+    window.auvyx.register('popover', '.popover:not([data-popover-initialized]):not(:has(> [data-popover][popover]))', initPopover);
   }
 })();

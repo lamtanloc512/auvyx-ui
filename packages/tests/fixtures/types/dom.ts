@@ -15,3 +15,10 @@ cal.dates = [];
 drawer.open = 'yes';
 document.querySelector('auvyx-resizable')!.addEventListener('resize', (e) => { const n: number[] = e.detail.sizes; void n; });
 void v; void d;
+// The global API and its alias.
+window.auvyx.initAll({ force: true });
+window.basecoat.theme.toggle();
+const mode: 'light' | 'dark' = window.auvyx.theme.get();
+void mode;
+// @ts-expect-error unknown theme mode
+window.auvyx.theme.set('blue');

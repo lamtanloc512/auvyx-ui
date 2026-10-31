@@ -86,8 +86,26 @@ export const ELEMENTS = [
     methods: [{ name: 'openAt', signature: '(x: number, y: number) => void', description: 'Open the menu at viewport coordinates' }] },
 ];
 
-// Toast options accepted by toaster.toast() in both editions.
-export const EXTRA_TYPES = `export interface AuvyxToastOptions {
+// Toast options accepted by toaster.toast() in both editions, and the
+// window.auvyx API (src/js/basecoat.js; window.basecoat is an alias).
+export const EXTRA_TYPES = `export interface AuvyxCore {
+  /** Register a behavior: name, a selector and an init function (or { selector, init, refresh }). */
+  register(name: string, selectorOrOptions: string | { selector: string; init: (el: Element) => void; refresh?: (el: Element) => void }, init?: (el: Element) => void): void;
+  /** Initialize one registered component type in the page. */
+  init(name: string): void;
+  /** Initialize every registered component not initialized yet; force re-creates them (after a cache restore). */
+  initAll(options?: { force?: boolean }): void;
+  /** Re-read an initialized component's markup (options changed). */
+  refresh(el: Element): void;
+  /** Watch the page for inserted markup (on by default). */
+  start(): void;
+  stop(): void;
+  theme: { get(): 'light' | 'dark'; set(mode: 'light' | 'dark'): void; toggle(): void };
+  /** Chart.js helper, present once auvyx.chart.min.js is loaded. */
+  chart?: (target: string | HTMLCanvasElement, config: unknown) => unknown;
+}
+
+export interface AuvyxToastOptions {
   category?: 'success' | 'error' | 'info' | 'warning';
   title?: string;
   description?: string;

@@ -28,3 +28,27 @@ test('component reference notes are in the exports', async () => {
     assert.match(md, /^## Usage$/m, `${f}: notes exported`);
   }
 });
+
+// The Create page's dialogs (Copy CSS, Open Preset, Initialize Project) must
+// open on screen: a leftover translate from the page-enter animation once
+// made each dialog the containing block of its fixed panel and collapsed it.
+test('Create page dialogs open on screen', async () => {
+  const { serve, browser, open } = await import('./lib/env.mjs');
+  const server = await serve();
+  const b = await browser();
+  try {
+    const { page, errors } = await open(b, server.url(path.join(out, 'index.html')) + '#create', { width: 1440, height: 900 });
+    for (const [trigger, id] of [['[data-cr=show-css]', 'cr-css'], ['[commandfor=cr-open]', 'cr-open'], ['[data-cr=show-init]', 'cr-init']]) {
+      await page.locator(`#cr-panel ${trigger}`).first().click();
+      await page.waitForTimeout(400);
+      const box = await page.evaluate((id) => document.querySelector(`#${id} > div`).getBoundingClientRect().toJSON(), id);
+      assert.ok(box.top >= 0 && box.bottom <= 900 && box.height > 150, `${id} panel on screen: ${JSON.stringify(box)}`);
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(300);
+    }
+    assert.deepEqual(errors, []);
+  } finally {
+    await b.close();
+    await server.close();
+  }
+});

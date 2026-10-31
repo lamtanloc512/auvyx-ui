@@ -167,7 +167,7 @@ const DATA = {json.dumps(days)};
 function draw() {{
   const n = +document.querySelector('[name=range]:checked').value;
   const rows = DATA.slice(-n).map(d => ({{ ...d, label: new Date(d.date + 'T00:00').toLocaleDateString(undefined, {{ month: 'short', day: 'numeric' }}) }}));
-  window.basecoat.chart('#visitors', {{
+  window.auvyx.chart('#visitors', {{
     type: 'line', labelKey: 'label', data: rows, legend: false,
     series: {{
       mobile: {{ label: 'Mobile', color: 'var(--chart-1)', surface: 'gradient', dataset: {{ fill: 'origin', tension: 0.35, pointRadius: 0, borderWidth: 1.5 }} }},
@@ -178,7 +178,7 @@ function draw() {{
 }}
 document.getElementById('range').addEventListener('change', draw);
 // Chart.js and auvyx.chart.min.js load deferred: wait for them unless they are there (also when mounted later by a framework).
-if (window.Chart && window.basecoat?.chart) draw();
+if (window.Chart && window.auvyx?.chart) draw();
 else window.addEventListener('load', draw, {{ once: true }});
 </script>
 """

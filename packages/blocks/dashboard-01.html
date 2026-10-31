@@ -1071,7 +1071,7 @@
             day: "numeric",
           }),
         }));
-        window.basecoat.chart("#visitors", {
+        window.auvyx.chart("#visitors", {
           type: "line",
           labelKey: "label",
           data: rows,
@@ -1097,7 +1097,7 @@
       }
       document.getElementById("range").addEventListener("change", draw);
       // Chart.js and auvyx.chart.min.js load deferred: wait for them unless they are there (also when mounted later by a framework).
-      if (window.Chart && window.basecoat?.chart) draw();
+      if (window.Chart && window.auvyx?.chart) draw();
       else window.addEventListener("load", draw, { once: true });
     </script>
   </body>

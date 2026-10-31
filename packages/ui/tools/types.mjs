@@ -57,7 +57,7 @@ function domTypes() {
     out.push(`  removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;`);
     out.push('}', '');
   }
-  out.push('declare global {', '  interface HTMLElementTagNameMap {');
+  out.push('declare global {', '  interface Window {', '    /** The Auvyx UI JavaScript API. */', '    auvyx: AuvyxCore;', '    /** Alias of window.auvyx, kept for existing code. */', '    basecoat: AuvyxCore;', '  }', '  interface HTMLElementTagNameMap {');
   for (const el of ELEMENTS) out.push(`    ${JSON.stringify(el.tag)}: ${el.className};`);
   out.push('  }', '}', '');
   return out.join('\n');

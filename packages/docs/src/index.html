@@ -258,7 +258,10 @@
     .d-cr-btn:active { transform: scale(0.97); }
     .d-nav a:active, .d-topnav a:active { transform: scale(0.98); }
     /* Page enter: each route re-renders #d-main, so its children replay this. */
-    .d-main > * { animation: d-enter 260ms var(--d-ease) both; }
+    /* backwards, not both: a finished animation must not leave translate: 0px
+       behind, which turns an element into the containing block of its fixed
+       children (and collapses the Create page's dialogs). */
+    .d-main > :not(dialog) { animation: d-enter 260ms var(--d-ease) backwards; }
     .d-main > :nth-child(2) { animation-delay: 40ms; }
     .d-main > :nth-child(3) { animation-delay: 80ms; }
     /* Icons swapped in by JS (copy -> check, sun <-> moon) pop in. */
@@ -449,7 +452,7 @@
   const main = $('#d-main');
   let chartQueue = [];
   function rerenderCharts() {
-    chartQueue.forEach(({ id, cfg }) => { const c = document.getElementById(id); if (c && window.basecoat?.chart) window.basecoat.chart(c, cfg()); });
+    chartQueue.forEach(({ id, cfg }) => { const c = document.getElementById(id); if (c && window.auvyx?.chart) window.auvyx.chart(c, cfg()); });
   }
 
   function pageHome() {
@@ -673,14 +676,14 @@
     if (!(h === 'components')) window.scrollTo({ top: 0 });
     const cur = $('#d-nav [aria-current="page"]'); if (cur) cur.scrollIntoView({ block: 'nearest' });
     if ($('#d-mnav').open) $('#d-mnav').close();
-    window.basecoat?.initAll?.();
+    window.auvyx?.initAll?.();
     if (h === 'create') Create.mount();
     if (h.startsWith('c-')) {
       // Demos initialize on DOMContentLoaded on first load, right away after that.
       if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => requestAnimationFrame(labelJs), { once: true });
       else requestAnimationFrame(labelJs);
     }
-    if (chartQueue.length) { const go = () => rerenderCharts(); if (window.basecoat?.chart && window.Chart) go(); else window.addEventListener('load', go, { once: true }); }
+    if (chartQueue.length) { const go = () => rerenderCharts(); if (window.auvyx?.chart && window.Chart) go(); else window.addEventListener('load', go, { once: true }); }
   }
   window.addEventListener('hashchange', route);
 

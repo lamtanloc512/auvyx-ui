@@ -191,8 +191,8 @@
     container.dispatchEvent(new CustomEvent('basecoat:initialized'));
   };
 
-  if (window.basecoat) {
-    window.basecoat.register('command', {
+  if (window.auvyx) {
+    window.auvyx.register('command', {
       selector: '.command:not([data-command-initialized])',
       init: initCommand,
       refresh: refreshCommand,

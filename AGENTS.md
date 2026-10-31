@@ -46,7 +46,7 @@
 
 ## JavaScript
 - JavaScript is behavior only; do not use JS to paper over CSS architecture issues.
-- Register JS components with `window.basecoat.register()` and make initialization idempotent with `data-*-initialized` flags.
+- Register JS components with `window.auvyx.register()` (`window.basecoat` is an alias of the same object) and make initialization idempotent with `data-*-initialized` flags.
 - Component init functions must return before attaching listeners or mutating DOM when the root already has its initialized flag.
 - Keep generated DOM minimal and aligned with documented HTML.
 - Prefer native browser APIs and events.

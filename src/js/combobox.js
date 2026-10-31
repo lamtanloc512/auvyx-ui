@@ -566,8 +566,8 @@
     root.dispatchEvent(new CustomEvent('basecoat:initialized'));
   };
 
-  if (window.basecoat) {
-    window.basecoat.register('combobox', {
+  if (window.auvyx) {
+    window.auvyx.register('combobox', {
       selector: '.combobox:not([data-combobox-initialized])',
       init: initCombobox,
       refresh: refreshCombobox,

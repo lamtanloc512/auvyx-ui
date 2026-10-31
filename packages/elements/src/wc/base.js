@@ -49,7 +49,7 @@ export class AuvyxWrapper extends HTMLElement {
   setup(state) {
     this.root = this.querySelector(`:scope > ${this.constructor.rootSelector}`);
     if (!this.root) return;
-    window.basecoat?.init(this.constructor.component);
+    window.auvyx?.init(this.constructor.component);
     // Events start on the inner root. Catch them on the root itself, after the
     // behavior's own listeners there have run, stop them from bubbling (so
     // frameworks listening on this element see one event), and re-emit them

@@ -78,7 +78,7 @@
     drawer.dispatchEvent(new CustomEvent('basecoat:initialized'));
   };
 
-  if (window.basecoat) {
-    window.basecoat.register('drawer', '.drawer:not([data-drawer-initialized])', initDrawer);
+  if (window.auvyx) {
+    window.auvyx.register('drawer', '.drawer:not([data-drawer-initialized])', initDrawer);
   }
 })();

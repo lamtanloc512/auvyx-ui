@@ -162,9 +162,9 @@ const JS_MODULES = {
     } else {
       src = await fs.readFile(path.join(root, mod.src), 'utf8');
       // Core once per page, then this component; init right away when loaded after the DOM is ready.
-      if (mod.core) src = `if (!window.basecoat) ${core.trim()}
+      if (mod.core) src = `if (!window.auvyx) ${core.trim()}
 ${src}
-if (document.readyState !== 'loading') { window.basecoat.initAll(); window.basecoat.start(); }`;
+if (document.readyState !== 'loading') { window.auvyx.initAll(); window.auvyx.start(); }`;
     }
     const { code } = await transform(src, { loader: 'js', minify: true, target: 'es2022' });
     const file = `js/${name}.min.js`;
@@ -198,7 +198,7 @@ const WC_MODULES = {
   for (const [name, mod] of Object.entries(WC_MODULES)) {
     const element = (await build({ entryPoints: [path.join(root, mod.element)], bundle: true, format: 'iife', write: false, target: 'es2022' })).outputFiles[0].text;
     const behavior = await fs.readFile(path.join(root, mod.behavior), 'utf8');
-    const src = `if (!window.basecoat) ${core.trim()}\n${behavior}\n${element}`;
+    const src = `if (!window.auvyx) ${core.trim()}\n${behavior}\n${element}`;
     const { code } = await transform(src, { loader: 'js', minify: true, target: 'es2022' });
     const file = `wc/${name}.min.js`;
     await fs.writeFile(path.join(dist, file), banner + code);
@@ -233,7 +233,7 @@ await writeTypes(dist, version);
     if (m.element) src = (await build({ entryPoints: [path.join(root, m.src)], bundle: true, format: 'iife', write: false, target: 'es2022' })).outputFiles[0].text;
     else {
       src = await fs.readFile(path.join(root, m.src), 'utf8');
-      if (m.core) src = `// Shared core, once per page.\nif (!window.basecoat) ${core.trim()}\n\n${src.trim()}\n\n// Loaded after the DOM is ready: initialize now.\nif (document.readyState !== 'loading') { window.basecoat.initAll(); window.basecoat.start(); }\n`;
+      if (m.core) src = `// Shared core, once per page.\nif (!window.auvyx) ${core.trim()}\n\n${src.trim()}\n\n// Loaded after the DOM is ready: initialize now.\nif (document.readyState !== 'loading') { window.auvyx.initAll(); window.auvyx.start(); }\n`;
     }
     await fs.writeFile(path.join(dist, 'ui', `${mod}.js`), `/* @auvyx/ui v${version} | MIT License | see LICENSE */\n${src}`);
   }
