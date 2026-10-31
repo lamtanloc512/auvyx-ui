@@ -160,7 +160,7 @@ def guides(sizes, js_modules, wc_modules):
 <tr><td><code>--sidebar-*</code>, <code>--chart-1…5</code></td><td>Sidebar surfaces, chart series</td></tr>
 </tbody></table></div>"""},
         {"slug": "motion", "title": "Motion", "description": "One motion language for every component: shared tokens, CSS springs and reduced-motion fallbacks.", "html": f"""
-<p>Every Auvyx component moves the same way. Buttons spring back from a press, menus and popovers scale in from their trigger, dialogs and sheets enter on an ease-out curve and leave faster, tab panels and accordion content fade in and rise. It is all CSS (transitions, <code>@starting-style</code> and <code>linear()</code> springs), so it works on the CDN build with no script.</p>
+<p>Every Auvyx component moves the same way. Buttons spring back from a press; fields, selects, checkboxes, radios and switches darken on hover, and choices and slider thumbs give under a press; menus and popovers scale in from their trigger, dialogs and sheets enter on an ease-out curve and leave faster, tab panels and accordion content fade in and rise. It is all CSS (transitions, <code>@starting-style</code> and <code>linear()</code> springs), so it works on the CDN build with no script.</p>
 {demo("""<div class="cluster" data-gap="3">
   <button class="btn">Press me</button>
   <div class="dropdown-menu">
