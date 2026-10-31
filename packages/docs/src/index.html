@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="docs.css">
 <script>
-  /* Viewer theme (artifact host sets data-theme on <html>, or OS preference) -> Basecoat's html.dark. */
+  /* Viewer theme (artifact host sets data-theme on <html>, or OS preference) -> html.dark. */
   (function () {
     var r = document.documentElement, pref = null;
     try { pref = localStorage.getItem('auvyx-docs-mode'); } catch (e) {}
@@ -507,7 +507,6 @@
     const next = i < COMPONENTS.length - 1 ? { slug: 'c-' + COMPONENTS[i + 1], title: D.components[COMPONENTS[i + 1]].title } : null;
     // The JavaScript badge and install notes are filled by labelJs() once the demos have run.
     const tags = [
-      c.source === 'auvyx' ? '<span class="badge">Added in Auvyx</span>' : '<span class="badge" data-variant="secondary">From Basecoat</span>',
       '<span id="d-js-tag"></span>',
       c.native ? '<span class="badge" data-variant="outline">Zero-JS variant</span>' : '',
     ].join('');
@@ -642,7 +641,7 @@
 
   function pageCharts() {
     chartQueue = D.charts.map((ch, n) => ({ id: `chart-${n}`, cfg: () => ch.config }));
-    return `<div class="d-blocks-head"><h1 class="d-h1">Charts</h1><p class="d-lead">Chart.js with Basecoat defaults: theme colors, external tooltips, legends. Add <code class="d-inline">auvyx.chart.min.js</code> after Chart.js.</p></div>
+    return `<div class="d-blocks-head"><h1 class="d-h1">Charts</h1><p class="d-lead">Chart.js with Auvyx defaults: theme colors, external tooltips, legends. Add <code class="d-inline">auvyx.chart.min.js</code> after Chart.js.</p></div>
       ${codeBox(`<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"><\/script>\n<script src="${CDN}/auvyx.min.js" defer><\/script>\n<script src="${CDN}/auvyx.chart.min.js" defer><\/script>`)}
       <div class="d-charts">${D.charts.map((ch, n) => `<div class="card"><header><h2>${esc(ch.title)}</h2><p>${esc(ch.description)}</p></header><section><div class="d-chart-box"><canvas id="chart-${n}" aria-label="${esc(ch.title)}"></canvas></div></section></div>`).join('')}</div>`;
   }

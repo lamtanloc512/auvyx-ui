@@ -17,7 +17,7 @@
 // wrapper is `display: contents`, so layout is the HTML edition's.
 export class AuvyxWrapper extends HTMLElement {
   static observedAttributes = ['value'];
-  // Subclasses set: component (Basecoat registry name), rootSelector.
+  // Subclasses set: component (behavior registry name), rootSelector.
   // Events from the root that are re-emitted from this element.
   static relayed = ['change'];
   // Also relay native (non-custom) events, for wrappers around form controls.

@@ -1,6 +1,6 @@
 /* Radius roles for fork-added components (fork addition).
  *
- * Basecoat's style packs set each component's corners with their own scale
+ * The style packs set each component's corners with their own scale
  * (Vega: buttons rounded-md, cards rounded-xl; Maia: pill buttons, ...).
  * Components added by the fork read these roles instead of a fixed scale:
  *   --auvyx-r-control  buttons, toggles, menu items, calendar days

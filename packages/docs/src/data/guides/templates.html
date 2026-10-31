@@ -1,4 +1,4 @@
-<p>The macros generate the same markup as the component examples, which Auvyx styles unchanged, and keep repeated server-rendered markup easy to maintain. The macros come from Basecoat: they ship with the <code>basecoat-css</code> package and live in this repository under <a href="https://github.com/lamtanloc512/basecoat/tree/main/src/templates" target="_blank" rel="noopener">src/templates</a>.</p>
+<p>The macros generate the same markup as the component examples, which Auvyx styles unchanged, and keep repeated server-rendered markup easy to maintain. They live in the repository under <a href="https://github.com/lamtanloc512/basecoat/tree/main/src/templates" target="_blank" rel="noopener">src/templates</a>.</p>
 <h2 class="d-h2" id="t-macros">Macros</h2>
 <div class="d-tablewrap"><table>
 <thead>
@@ -80,14 +80,14 @@
 <p>Some macro files include internal recursive helpers such as <code>render_select_items()</code>. Those helpers are implementation details and are not part of the public API.</p>
 <h2 class="d-h2" id="t-usage">Usage</h2>
 <h3 class="d-h3" id="t-install-templates">Install Templates</h3>
-<p>Copy the template folder for your template engine from <code>basecoat-css</code>. Templates are meant to be app-owned, so you can edit them after copying.</p>
-<div class="d-code"><div class="d-file">Nunjucks</div><pre><code>cp -R node_modules/basecoat-css/templates/nunjucks ./templates/basecoat</code></pre></div>
-<div class="d-code"><div class="d-file">Jinja</div><pre><code>cp -R node_modules/basecoat-css/templates/jinja ./templates/basecoat</code></pre></div>
+<p>Copy the template folder for your template engine into your project. Templates are meant to be app-owned, so you can edit them after copying.</p>
+<div class="d-code"><div class="d-file">Nunjucks</div><pre><code>npx degit lamtanloc512/basecoat/src/templates/nunjucks templates/auvyx</code></pre></div>
+<div class="d-code"><div class="d-file">Jinja</div><pre><code>npx degit lamtanloc512/basecoat/src/templates/jinja templates/auvyx</code></pre></div>
 <p>Copy only the files you use if you do not want the full template folder.</p>
 <p>You can also copy the <a href="https://github.com/lamtanloc512/basecoat/tree/main/src/templates/nunjucks" target="_blank" rel="noopener">Nunjucks templates</a> or <a href="https://github.com/lamtanloc512/basecoat/tree/main/src/templates/jinja" target="_blank" rel="noopener">Jinja templates</a> from GitHub.</p>
 <h3 class="d-h3" id="t-use-a-macro">Use a Macro</h3>
 <p>Import a macro from the copied template file, then call it with the props for that component.</p>
-<div class="d-code"><div class="d-file">Nunjucks</div><pre><code>{% from "basecoat/select.njk" import select %}
+<div class="d-code"><div class="d-file">Nunjucks</div><pre><code>{% from "auvyx/select.njk" import select %}
 {{ select(
   name="fruit",
   items=[
@@ -96,7 +96,7 @@
     { value: "blueberry", label: "Blueberry" }
   ]
 ) }}</code></pre></div>
-<div class="d-code"><div class="d-file">Jinja</div><pre><code>{% from "basecoat/select.html.jinja" import select %}
+<div class="d-code"><div class="d-file">Jinja</div><pre><code>{% from "auvyx/select.html.jinja" import select %}
 {{ select(
   name="fruit",
   items=[

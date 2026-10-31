@@ -1,6 +1,6 @@
 /* Native dialog triggers (fork addition)
  *
- * Basecoat's .dialog / .alert-dialog already style native <dialog>.
+ * The core .dialog / .alert-dialog already style native <dialog>.
  * Open and close them without JS using Invoker Commands:
  *
  *   <button class="btn" commandfor="d1" command="show-modal">Open</button>

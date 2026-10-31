@@ -1,6 +1,6 @@
 # @auvyx/ui
 
-A drop-in design system with the shadcn/ui look: plain HTML and CSS classes, optional JavaScript, no build step. Based on [Basecoat](https://github.com/hunvreus/basecoat).
+A drop-in design system with the shadcn/ui look: plain HTML and CSS classes, optional JavaScript, no build step.
 
 Docs: https://auvyx-ui.vercel.app
 
@@ -41,4 +41,4 @@ Components and blocks can also be copied into your project with [`@auvyx/cli`](h
 
 ## License
 
-MIT. Includes Basecoat (MIT, Ronan Berder); see LICENSE.
+MIT, see LICENSE.

@@ -46,7 +46,7 @@
       try {
         element._destroy();
       } catch (error) {
-        console.error('Failed to destroy Basecoat component:', error);
+        console.error('Failed to destroy component:', error);
       }
     }
 

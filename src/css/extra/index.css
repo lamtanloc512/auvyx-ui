@@ -1,4 +1,4 @@
-/* Fork additions: shadcn/ui components Basecoat does not ship yet.
+/* Fork additions: shadcn/ui components the core set does not ship yet.
    Structure in components/, visuals per style pack in styles/. */
 @import "./tokens.css";
 @import "./components/aspect-ratio.css";

@@ -87,8 +87,8 @@ BLOCK_PRESET = """<script>
 def guides(sizes, js_modules, wc_modules):
     t = lambda s: TILE.format(s)
     return [
-        {"slug": "introduction", "title": "Introduction", "description": "A drop-in design system with the shadcn look, built on a fork of Basecoat.", "html": f"""
-<p>Auvyx UI gives you shadcn/ui's visual language without React and without a build step. It is a fork of <a href="https://basecoatui.com" target="_blank" rel="noopener">Basecoat</a> (MIT) that adds the components and blocks Basecoat does not ship yet, a zero-JavaScript path built on modern browser features, and a Bootstrap-style CDN bundle.</p>
+        {"slug": "introduction", "title": "Introduction", "description": "A drop-in design system with the shadcn look: plain HTML, optional JavaScript, no build step.", "html": f"""
+<p>Auvyx UI gives you shadcn/ui's visual language without React and without a build step. It covers the shadcn/ui components and blocks, adds a zero-JavaScript path built on modern browser features, and ships as a Bootstrap-style CDN bundle.</p>
 <h2 class="d-h2">Two ways to use it</h2>
 <div class="d-tablewrap"><table><thead><tr><th>Channel</th><th>For</th><th>What you get</th></tr></thead><tbody>
 <tr><td><code>auvyx.min.css</code> (CDN)</td><td>Server-rendered apps, prototypes, no build step</td><td>Every component plus layout primitives. No utility classes, so it never clashes with your own Tailwind.</td></tr>
@@ -106,7 +106,7 @@ def guides(sizes, js_modules, wc_modules):
 {code(f'<link rel="stylesheet" href="{CDN}/auvyx.min.css">')}
 <h2 class="d-h2">JavaScript</h2><p>Some components need JavaScript for their behavior; each component page says so and shows the script to add. Load one module per component you use, or <code>auvyx.min.js</code> ({sizes['js']} gzip) for all of them:</p>
 {code(f'<!-- only what the page uses -->' + chr(10) + f'<script src="{CDN}/js/tabs.min.js" defer></script>' + chr(10) + f'<script src="{CDN}/js/select.min.js" defer></script>' + chr(10) + chr(10) + f'<!-- or everything -->' + chr(10) + f'<script src="{CDN}/auvyx.min.js" defer></script>')}
-<p>Modules are independent: load any combination, in any order, even after the page has loaded. Basecoat components share a small core that only the first module sets up.</p>
+<p>Modules are independent: load any combination, in any order, even after the page has loaded. Components share a small core that only the first module sets up.</p>
 <div class="d-tablewrap"><table><thead><tr><th>Module</th><th>Size (gzip)</th><th>Needed for</th></tr></thead><tbody>
 {"".join(f'<tr><td><code>js/{n}.min.js</code></td><td>{m["gzip"] / 1024:.1f} kB</td><td>{"Optional: " if m["kind"] == "enhance" else ""}{n.replace("-", " ").capitalize()}{(". " + html_escape(m["note"])) if m.get("note") else ""}</td></tr>' for n, m in js_modules.items())}
 </tbody></table></div>

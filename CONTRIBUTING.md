@@ -1,13 +1,6 @@
-# Contributing to Basecoat
+# Contributing to Auvyx UI
 
-- Support development by sponsoring the author: https://github.com/sponsors/hunvreus
-- Submit pull requests (PRs) against the `main` branch.
-- Branches:
-  - `main` is the default branch. All work lands here, and https://main-basecoat.hunvreus.workers.dev previews it.
-  - `release` is what https://basecoatui.com deploys. Only the release workflow moves it (see below).
-  - New features are worked in `feature/name-of-the-feature` branches.
-  - Issues are addressed in `issue/123-main-issue` branches.
-  - When ready, open a PR against `main`.
+- Submit pull requests (PRs) against the `main` branch, which Vercel deploys to https://auvyx-ui.vercel.app (other branches get preview URLs).
 - Keep changes focused: one feature or fix per PR.
 - Test locally before submitting: `npm run check` (package), and `npm run auvyx:build` plus `npm run auvyx:test` for `packages/*` and the docs. CI runs them on every PR.
 - Follow existing code style.

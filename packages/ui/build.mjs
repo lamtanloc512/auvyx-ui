@@ -49,7 +49,7 @@ await fs.writeFile(cssOut, linkShadows(await fs.readFile(cssOut, 'utf8')));
 const { code: minCss, warnings } = await transform(await fs.readFile(cssOut, 'utf8'), { loader: 'css', minify: true, target: cssTargets });
 if (warnings.length) throw new Error(warnings.map((w) => w.text).join('; '));
 const { version } = JSON.parse(await fs.readFile(path.join(here, 'package.json'), 'utf8'));
-const banner = `/*! @auvyx/ui v${version} | MIT | based on Basecoat (MIT) */\n`;
+const banner = `/*! @auvyx/ui v${version} | MIT License | see LICENSE */\n`;
 await fs.writeFile(path.join(dist, 'auvyx.min.css'), banner + minCss);
 
 // JS: concatenate the IIFE sources, then minify as one script.
@@ -233,9 +233,9 @@ await writeTypes(dist, version);
     if (m.element) src = (await build({ entryPoints: [path.join(root, m.src)], bundle: true, format: 'iife', write: false, target: 'es2022' })).outputFiles[0].text;
     else {
       src = await fs.readFile(path.join(root, m.src), 'utf8');
-      if (m.core) src = `// Basecoat core, once per page.\nif (!window.basecoat) ${core.trim()}\n\n${src.trim()}\n\n// Loaded after the DOM is ready: initialize now.\nif (document.readyState !== 'loading') { window.basecoat.initAll(); window.basecoat.start(); }\n`;
+      if (m.core) src = `// Shared core, once per page.\nif (!window.basecoat) ${core.trim()}\n\n${src.trim()}\n\n// Loaded after the DOM is ready: initialize now.\nif (document.readyState !== 'loading') { window.basecoat.initAll(); window.basecoat.start(); }\n`;
     }
-    await fs.writeFile(path.join(dist, 'ui', `${mod}.js`), `/* @auvyx/ui v${version} | MIT | based on Basecoat (MIT) */\n${src}`);
+    await fs.writeFile(path.join(dist, 'ui', `${mod}.js`), `/* @auvyx/ui v${version} | MIT License | see LICENSE */\n${src}`);
   }
   // Dependencies: the components whose rules the examples use (tools/ui-deps.mjs finds them in a browser).
   const deps = JSON.parse(await fs.readFile(path.join(here, 'tools/ui-deps.json'), 'utf8'));
