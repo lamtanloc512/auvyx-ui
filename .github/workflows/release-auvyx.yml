@@ -16,6 +16,14 @@ name: Release Auvyx
 on:
   release:
     types: [published]
+  # Or from the Actions tab: stages the version in packages/<package>/package.json.
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Package to publish
+        required: true
+        type: choice
+        options: [ui, cli]
 
 permissions:
   contents: read
@@ -23,7 +31,7 @@ permissions:
 
 jobs:
   publish:
-    if: ${{ !github.event.release.prerelease && (startsWith(github.event.release.tag_name, 'ui@') || startsWith(github.event.release.tag_name, 'cli@')) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (!github.event.release.prerelease && (startsWith(github.event.release.tag_name, 'ui@') || startsWith(github.event.release.tag_name, 'cli@'))) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -45,7 +53,11 @@ jobs:
       - name: Tag matches the package version
         env:
           TAG: ${{ github.event.release.tag_name }}
+          INPUT_PACKAGE: ${{ inputs.package }}
         run: |
+          if [ -n "$INPUT_PACKAGE" ]; then
+            TAG="$INPUT_PACKAGE@$(node -p "require('./packages/$INPUT_PACKAGE/package.json').version")"
+          fi
           [[ "$TAG" =~ ^(ui|cli)@([0-9]+\.[0-9]+\.[0-9]+)$ ]] || { echo "Tag $TAG is not ui@x.y.z or cli@x.y.z"; exit 1; }
           pkg="${BASH_REMATCH[1]}"
           version="${BASH_REMATCH[2]}"

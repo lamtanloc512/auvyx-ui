@@ -14,7 +14,7 @@ The docs site is `packages/docs` (built to `packages/docs/out` by `npm run auvyx
 `@auvyx/ui` and `@auvyx/cli` are published to npm from GitHub releases, one package per release:
 
 1. Bump the version on `main`: `npm version 0.1.1 -w @auvyx/ui --no-git-tag-version`, commit and push.
-2. Publish a GitHub release tagged `<package>@<version>`: `ui@0.1.1` or `cli@0.1.1`.
+2. Publish a GitHub release tagged `<package>@<version>` (`ui@0.1.1` or `cli@0.1.1`), or run the "Release Auvyx" workflow from the Actions tab and pick the package.
 
 3. Approve the staged version on npmjs.com (Staged Packages) or with `npm stage approve <stage-id>`, with 2FA.
 
