@@ -42,12 +42,12 @@
   "types": "dist/types/elements.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lamtanloc512/basecoat.git",
+    "url": "git+https://github.com/lamtanloc512/auvyx-ui.git",
     "directory": "packages/ui"
   },
   "homepage": "https://auvyx-ui.vercel.app",
   "bugs": {
-    "url": "https://github.com/lamtanloc512/basecoat/issues"
+    "url": "https://github.com/lamtanloc512/auvyx-ui/issues"
   },
   "keywords": [
     "css",

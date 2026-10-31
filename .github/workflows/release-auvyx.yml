@@ -6,7 +6,7 @@ name: Release Auvyx
 #
 # npm trusted publishing (OIDC): no token. On npmjs.com, each package's
 # Settings -> Trusted Publisher -> GitHub Actions: repository
-# lamtanloc512/basecoat, workflow release-auvyx.yml, no environment, "Allow
+# lamtanloc512/auvyx-ui, workflow release-auvyx.yml, no environment, "Allow
 # npm publish" off. Renaming this file breaks publishing.
 #
 # The workflow only stages the version (npm stage publish). It is installable
