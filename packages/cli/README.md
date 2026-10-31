@@ -44,19 +44,20 @@ npx @auvyx/cli list
 
 ```json
 {
+  "framework": "html",
   "dir": "auvyx",
   "icons": "tabler",
   "registries": {
     "@auvyx": "https://auvyx-ui.vercel.app/r/{framework}/{icons}/{name}.json",
     "@acme": {
-      "url": "https://registry.acme.dev/r/{icons}/{name}.json",
+      "url": "https://registry.acme.dev/r/{framework}/{icons}/{name}.json",
       "headers": { "Authorization": "Bearer ${ACME_TOKEN}" }
     }
   }
 }
 ```
 
-Any registry that serves the same item format works, public or private. Header values expand `${VAR}` from the environment, so tokens never live in the file. Auvyx's own registry is public and free; commercial blocks (for example Beamui's) are served by their own registries.
+`@acme` stands for any other registry, such as a paid one. Any registry that serves the same item format works, public or private. Header values expand `${VAR}` from the environment, so tokens never live in the file. Auvyx's own registry is public and free; commercial blocks (for example Beamui's) are served by their own registries.
 
 ```bash
 ACME_TOKEN=... npx @auvyx/cli add @acme/dashboard-02
