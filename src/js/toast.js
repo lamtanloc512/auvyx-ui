@@ -190,8 +190,8 @@
     return template.content.firstChild;
   }
 
-  if (window.basecoat) {
-    window.basecoat.register('toaster', '#toaster:not([data-toaster-initialized])', initToaster);
-    window.basecoat.register('toast', '.toast:not([data-toast-initialized])', initToast);
+  if (window.auvyx) {
+    window.auvyx.register('toaster', '#toaster:not([data-toaster-initialized])', initToaster);
+    window.auvyx.register('toast', '.toast:not([data-toast-initialized])', initToast);
   }
 })();

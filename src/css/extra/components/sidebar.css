@@ -1,4 +1,4 @@
-/* Sidebar extensions (fork addition), on top of Basecoat's .sidebar.
+/* Sidebar extensions (fork addition), on top of the core .sidebar.
  *
  *   <aside class="sidebar" data-collapsible="icon" data-variant="floating" id="app-sidebar">…</aside>
  *   <main>…<button class="btn" data-variant="ghost" data-size="icon" data-sidebar-toggle="app-sidebar">…</button></main>

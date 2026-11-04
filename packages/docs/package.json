@@ -1,0 +1,9 @@
+{
+  "name": "@auvyx/docs",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The Auvyx UI docs site and public registry (out/). Its build runs the ui build and the registry builder first.",
+  "scripts": {
+    "build": "python3 build.py"
+  }
+}

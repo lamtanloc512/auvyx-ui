@@ -1,0 +1,23 @@
+<h3 class="d-h3">HTML structure</h3>
+<dl>
+  <dt><code>&lt;div class="avatar-group"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>
+    Optional parent that groups avatars with overlap.
+    <dl>
+      <dt><code>&lt;span class="avatar"&gt;</code></dt>
+      <dd>
+        Avatar root. Use it standalone or as a direct child of <code>.avatar-group</code>. Add <code>data-size="sm"</code> or <code>data-size="lg"</code> for alternate sizes.
+        <dl>
+          <dt><code>&lt;img&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+          <dd>The avatar image. Provide meaningful <code>alt</code> text.</dd>
+          <dt><code>&lt;span&gt;</code></dt>
+          <dd>Fallback initials or icon.</dd>
+          <dt><code>&lt;span class="avatar-badge"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+          <dd>Status badge positioned at the block-end inline-end corner. It can be empty or contain an icon.</dd>
+        </dl>
+      </dd>
+      <dt><code>&lt;span data-count&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+      <dd>Count or icon indicator displayed at the end of the group.</dd>
+    </dl>
+  </dd>
+</dl>

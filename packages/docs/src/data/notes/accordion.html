@@ -1,0 +1,24 @@
+<p>Auvyx uses native <code>&lt;details&gt;</code> and <code>&lt;summary&gt;</code> elements for disclosure semantics. The accordion JavaScript only enforces single-item behavior by default and prevents disabled items from toggling. Add <code>data-multiple</code> to the root when more than one item can be open at a time.</p>
+<h3 class="d-h3">HTML structure</h3>
+<dl>
+  <dt><code>&lt;section class="accordion"&gt;</code></dt>
+  <dd>
+    Root accordion container. Add <code>data-multiple</code> to allow multiple open items.
+    <dl>
+      <dt><code>&lt;details open&gt;</code></dt>
+      <dd>
+        Accordion item. Use the native <code>open</code> attribute for the default expanded item. Add <code>aria-disabled="true"</code> when an item should not toggle.
+        <dl>
+          <dt><code>&lt;summary&gt;</code></dt>
+          <dd>Accordion trigger. Keep the trigger text visible and add an optional trailing icon.</dd>
+          <dt><code>&lt;section&gt;</code></dt>
+          <dd>Accordion content. Use any semantic element that fits your content.</dd>
+        </dl>
+      </dd>
+    </dl>
+  </dd>
+</dl>
+
+<h3 class="d-h3">JavaScript API</h3>
+<p>Accordion does not expose custom methods or events. Programmatically open or close an item with the native <code>details.open</code> boolean.</p>
+<div class="d-code"><pre><code>document.querySelector("#billing").open = true</code></pre></div>

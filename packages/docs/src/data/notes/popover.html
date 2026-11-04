@@ -1,0 +1,17 @@
+<p class="d-note">This component ships a <code>popover()</code> macro for Jinja and Nunjucks. See <a href="#templates">Templates</a>.</p>
+
+
+<p>Auvyx popovers are inline-positioned relative to the <code>.popover</code> wrapper. This differs from shadcn/ui&#39;s portalled Base UI implementation, but keeps the markup dependency-free and works with Auvyx&#39;s existing dropdown/select positioning model. The native variant (<code>popover</code> attribute, no JavaScript) renders in the top layer and is positioned with CSS anchor positioning instead.</p>
+<h3 class="d-h3">HTML structure</h3>
+<dl>
+  <dt><code>&lt;div class="popover"&gt;</code></dt>
+  <dd>
+    Relative wrapper for the trigger and inline popover content.
+    <dl>
+      <dt><code>&lt;button type="button" aria-expanded="false" aria-controls="&#123; POPOVER_ID &#125;"&gt;</code></dt>
+      <dd>Trigger button. The script toggles <code>aria-expanded</code> and opens or closes the content.</dd>
+      <dt><code>&lt;div data-popover id="&#123; POPOVER_ID &#125;" aria-hidden="true"&gt;</code></dt>
+      <dd>Popover content. Supports <code>data-side="top|right|bottom|left|inline-start|inline-end"</code> and <code>data-align="start|center|end"</code>.</dd>
+    </dl>
+  </dd>
+</dl>

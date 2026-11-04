@@ -455,8 +455,8 @@
     root.dispatchEvent(new CustomEvent('basecoat:initialized'));
   };
 
-  if (window.basecoat) {
-    window.basecoat.register('select', {
+  if (window.auvyx) {
+    window.auvyx.register('select', {
       selector: 'div.select:not([data-select-initialized])',
       init: initSelect,
       refresh: refreshSelect,

@@ -97,8 +97,8 @@
     root.dispatchEvent(new CustomEvent('basecoat:initialized'));
   };
 
-  if (window.basecoat) {
-    window.basecoat.register('tabs', {
+  if (window.auvyx) {
+    window.auvyx.register('tabs', {
       selector: '.tabs:not([data-tabs-initialized])',
       init: initTabs,
       refresh: refreshTabs,

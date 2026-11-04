@@ -1,5 +1,5 @@
 /* Fork addition: zero-JS variants built on native platform features.
-   Import after the Basecoat components and style pack. */
+   Import after the core components and style pack. */
 @import "./popover.css";
 @import "./accordion.css";
 @import "./dialog.css";

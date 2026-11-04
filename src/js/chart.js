@@ -534,8 +534,8 @@
     document.addEventListener('basecoat:stylechange', scheduleRefresh);
   };
 
-  if (window.basecoat) {
-    window.basecoat.chart = chart;
+  if (window.auvyx) {
+    window.auvyx.chart = chart;
   }
 
   observeTokenChanges();

@@ -19,7 +19,7 @@
     element.dataset.rangeInitialized = 'true';
   }
 
-  if (window.basecoat) {
-    window.basecoat.register('range', 'input[type="range"]:not([data-range-initialized])', initRange);
+  if (window.auvyx) {
+    window.auvyx.register('range', 'input[type="range"]:not([data-range-initialized])', initRange);
   }
 })();

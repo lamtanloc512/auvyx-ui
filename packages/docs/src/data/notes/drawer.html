@@ -1,0 +1,26 @@
+<h3 class="d-h3">HTML structure</h3>
+<div class="alert" data-variant="warning"><h2>No drag handle</h2><section>Auvyx does not implement Vaul&#39;s drag-to-close gesture, snap points, or drag handle. Drawers close with outside click, Escape, or explicit close controls.</section></div>
+
+
+<dl>
+  <dt><code>&lt;button type="button" onclick="drawer.showModal()"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>Trigger button. Auvyx intentionally uses the native <code>HTMLDialogElement.showModal()</code> method.</dd>
+  <dt><code>&lt;dialog class="drawer" data-side="bottom|top|left|right"&gt;</code></dt>
+  <dd>
+    Native modal drawer. Omit <code>data-side</code> for the default bottom drawer. Add <code>aria-labelledby</code> and <code>aria-describedby</code> when title and description are present. JavaScript adds the <code>data-drawer-initialized</code> flag and manages animated close behavior.
+    <dl>
+      <dt><code>&lt;article&gt;</code></dt>
+      <dd>
+        Drawer content surface.
+        <dl>
+          <dt><code>&lt;header&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+          <dd>Drawer header with a title and optional description.</dd>
+          <dt><code>&lt;section&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+          <dd>Scrollable body/content area.</dd>
+          <dt><code>&lt;footer&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+          <dd>Action area pinned after the drawer body.</dd>
+        </dl>
+      </dd>
+    </dl>
+  </dd>
+</dl>

@@ -1,0 +1,59 @@
+<p class="d-note">This component ships a <code>select()</code> macro for Jinja and Nunjucks. See <a href="#templates">Templates</a>.</p>
+
+
+
+<h3 class="d-h3">HTML structure</h3>
+<dl>
+  <dt><code>&lt;div class="select"&gt;</code></dt>
+  <dd>
+    Select root. Add <code>data-placeholder</code> to show placeholder text when no value is selected. Supports <code>data-close-on-select="true"</code> for multiple select and <code>data-format="object"</code> for serialized object values.
+    <dl>
+      <dt><code>&lt;button type="button"&gt;</code></dt>
+      <dd>Trigger button. Use <code>aria-haspopup="listbox"</code>, <code>aria-expanded</code>, and <code>aria-controls</code>.</dd>
+      <dt><code>&lt;div data-popover aria-hidden="true"&gt;</code></dt>
+      <dd>
+        Popover content. Supports <code>data-side</code> and <code>data-align</code> through the shared Popover rules.
+        <dl>
+          <dt><code>&lt;div role="listbox"&gt;</code></dt>
+          <dd>
+            Options container. Add <code>aria-multiselectable="true"</code> for multiple selection.
+            <dl>
+              <dt><code>&lt;div role="option" data-value="..." data-label="..."&gt;</code></dt>
+              <dd>Selectable option. <code>data-value</code> is submitted. <code>data-label</code> is optional and controls the selected display label and <code>data-format="object"</code> label; when omitted, Auvyx uses trimmed text content.</dd>
+              <dt><code>&lt;hr role="separator"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+              <dd>Separator between groups or options.</dd>
+              <dt><code>&lt;div role="group"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+              <dd>Option group. Use <code>aria-labelledby</code> to connect it to its heading.</dd>
+              <dt><code>&lt;span role="heading"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+              <dd>Group heading.</dd>
+            </dl>
+          </dd>
+        </dl>
+      </dd>
+      <dt><code>&lt;input type="hidden"&gt;</code></dt>
+      <dd>Submitted value. Empty value means no selection when the root has <code>data-placeholder</code>. Single select stores a string; multiple select stores a JSON array. With <code>data-format="object"</code>, values are serialized as <code>&#123; value, label &#125;</code> objects.</dd>
+    </dl>
+  </dd>
+</dl>
+
+<h3 class="d-h3">JavaScript API</h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>API</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>change</code></td>
+<td>Event</td>
+<td>Dispatched on selection changes with <code>event.detail.value</code> and <code>event.detail.selected</code>.</td>
+</tr>
+<tr>
+<td><code>select.refresh()</code></td>
+<td>Method</td>
+<td>Rescans options after children change inside the existing <code>role=&quot;listbox&quot;</code> element.</td>
+</tr>
+</tbody></table>
+</div>

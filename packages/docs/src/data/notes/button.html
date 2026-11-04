@@ -1,0 +1,90 @@
+<p>Add <code>class=&quot;btn&quot;</code> to a <code>&lt;button&gt;</code> or <code>&lt;a&gt;</code>. Add <code>data-variant</code> and <code>data-size</code> when needed. Add <code>data-icon=&quot;inline-start&quot;</code> or <code>data-icon=&quot;inline-end&quot;</code> to inline icons when a text button needs icon-aware spacing.</p>
+<h4 class="d-h4">HTML structure</h4>
+<dl>
+  <dt><code>&lt;button class="btn"&gt;</code></dt>
+  <dd>Button root. Use a native <code>&lt;button&gt;</code> for actions and <code>&lt;a&gt;</code> for navigation.</dd>
+  <dt><code>data-variant="primary|secondary|outline|ghost|link|destructive"</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>Visual variant. Omit it for the primary variant.</dd>
+  <dt><code>data-size="xs|sm|default|lg|icon|icon-xs|icon-sm|icon-lg"</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>Button size. Omit it for the default size.</dd>
+</dl>
+
+<h3 class="d-h3">Variants</h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Markup</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Primary</td>
+<td><code>&lt;button class=&quot;btn&quot;&gt;</code></td>
+</tr>
+<tr>
+<td>Secondary</td>
+<td><code>&lt;button class=&quot;btn&quot; data-variant=&quot;secondary&quot;&gt;</code></td>
+</tr>
+<tr>
+<td>Outline</td>
+<td><code>&lt;button class=&quot;btn&quot; data-variant=&quot;outline&quot;&gt;</code></td>
+</tr>
+<tr>
+<td>Ghost</td>
+<td><code>&lt;button class=&quot;btn&quot; data-variant=&quot;ghost&quot;&gt;</code></td>
+</tr>
+<tr>
+<td>Link</td>
+<td><code>&lt;button class=&quot;btn&quot; data-variant=&quot;link&quot;&gt;</code></td>
+</tr>
+<tr>
+<td>Destructive</td>
+<td><code>&lt;button class=&quot;btn&quot; data-variant=&quot;destructive&quot;&gt;</code></td>
+</tr>
+</tbody></table>
+</div>
+<h3 class="d-h3">Sizes</h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>Size</th>
+<th>Markup</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Extra small</td>
+<td><code>&lt;button class=&quot;btn&quot; data-size=&quot;xs&quot;&gt;</code></td>
+</tr>
+<tr>
+<td>Small</td>
+<td><code>&lt;button class=&quot;btn&quot; data-size=&quot;sm&quot;&gt;</code></td>
+</tr>
+<tr>
+<td>Default</td>
+<td><code>&lt;button class=&quot;btn&quot;&gt;</code></td>
+</tr>
+<tr>
+<td>Large</td>
+<td><code>&lt;button class=&quot;btn&quot; data-size=&quot;lg&quot;&gt;</code></td>
+</tr>
+<tr>
+<td>Icon extra small</td>
+<td><code>&lt;button class=&quot;btn&quot; data-size=&quot;icon-xs&quot;&gt;</code></td>
+</tr>
+<tr>
+<td>Icon small</td>
+<td><code>&lt;button class=&quot;btn&quot; data-size=&quot;icon-sm&quot;&gt;</code></td>
+</tr>
+<tr>
+<td>Icon</td>
+<td><code>&lt;button class=&quot;btn&quot; data-size=&quot;icon&quot;&gt;</code></td>
+</tr>
+<tr>
+<td>Icon large</td>
+<td><code>&lt;button class=&quot;btn&quot; data-size=&quot;icon-lg&quot;&gt;</code></td>
+</tr>
+</tbody></table>
+</div>
+<p>Use <code>data-size=&quot;icon&quot;</code> or one of the icon size variants for square buttons. Icon-only buttons need an accessible name, usually with <code>aria-label</code>.</p>
+<p>Use <code>data-icon=&quot;inline-start&quot;</code> or <code>data-icon=&quot;inline-end&quot;</code> on inline icons when a text button needs icon-aware spacing. Use icon size variants only for icon-only buttons.</p>
+<p>To group related buttons, use the <a href="#c-button-group">Button Group</a> component.</p>

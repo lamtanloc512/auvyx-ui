@@ -16,9 +16,8 @@
 - Do not hand-edit build outputs:
   - `dist/**`
   - `templates/**`
-  - `site/dist/**`
-  - `site/public/assets/js/**`
-  - `site/public/fragments/**`
+  - `packages/*/dist/**`
+  - `packages/docs/out/**`
 - Generated source entrypoints such as `src/css/basecoat-vega.css` are committed, but must be regenerated through `scripts/generate-css-entrypoints.js` or build scripts, not manually maintained.
 
 ## Public API and Markup
@@ -47,7 +46,7 @@
 
 ## JavaScript
 - JavaScript is behavior only; do not use JS to paper over CSS architecture issues.
-- Register JS components with `window.basecoat.register()` and make initialization idempotent with `data-*-initialized` flags.
+- Register JS components with `window.auvyx.register()` (`window.basecoat` is an alias of the same object) and make initialization idempotent with `data-*-initialized` flags.
 - Component init functions must return before attaching listeners or mutating DOM when the root already has its initialized flag.
 - Keep generated DOM minimal and aligned with documented HTML.
 - Prefer native browser APIs and events.
@@ -67,7 +66,7 @@
   - style packs: `src/css/styles/{vega,nova,maia,lyra,mira,luma,sera,rhea}.css`
   - JS: `src/js/<component>.js` when behavior changes
   - templates: `src/templates/nunjucks/*.njk` and `src/templates/jinja/*.html.jinja` when markup changes
-  - docs: `site/src/docs/components/<component>.mdx`
+  - docs: examples in `packages/docs/src/data/components.json`, reference in `packages/docs/src/data/notes/<component>.html`
 - Map upstream concepts, not implementation details. Do not port `cn-*` selectors directly.
 - Classify differences as `drift fixed`, `intentional`, or `deferred`.
 
@@ -78,7 +77,7 @@
 - Do not include React-only APIs such as `asChild`.
 - Do not add "Composition" sections unless they describe stable Basecoat markup.
 - Do not add API Reference sections for native/CSS-only components unless there is a real Basecoat API.
-- Structure component docs as: title and preview, `## Usage`, optional `### HTML structure` for stable markup requirements, optional `### JavaScript API` for components with Basecoat JS methods/events/options, then `## Examples`.
+- Component pages are built from `packages/docs/src/data/components.json` (title, description, examples) and `packages/docs/src/data/notes/<component>.html` (the Usage reference: optional `### HTML structure` for stable markup requirements, optional `### JavaScript API` for components with JS methods/events/options). Guides live in `packages/docs/build.py` and `packages/docs/src/data/guides/`.
 - Keep `Usage` focused on the minimal working snippet and important Basecoat/upstream differences; put variants, states, RTL, and richer patterns under `Examples`.
 - Keep snippets minimal and aligned with current behavior.
 - In HTML snippets, keep text-only elements on one line, such as `<p>Text</p>`; use multiline formatting when the element contains child elements or when line length would hurt readability.
@@ -87,7 +86,7 @@
 
 ## Validation
 - Run `npm run build` after source/package changes.
-- Run `npm run docs:build` after docs or docs asset changes.
+- Run `npm run auvyx:build` and `npm run auvyx:test` after changes to `packages/*` or to CSS/JS they bundle; run `npm run deps -w @auvyx/ui` when components or their docs examples change.
 - Manually verify changed components in docs across light/dark mode, style packs, variants, RTL when supported, and relevant interaction states.
 
 ## Change Management

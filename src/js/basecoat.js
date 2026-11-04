@@ -46,7 +46,7 @@
       try {
         element._destroy();
       } catch (error) {
-        console.error('Failed to destroy Basecoat component:', error);
+        console.error('Failed to destroy component:', error);
       }
     }
 
@@ -154,7 +154,8 @@
 
   const getTheme = () => document.documentElement.classList.contains('dark') ? 'dark' : 'light';
 
-  window.basecoat = {
+  // window.auvyx is the API; window.auvyx is the same object, kept as an alias.
+  window.auvyx = window.basecoat = {
     register: registerComponent,
     init: initRegisteredComponent,
     initAll: initAllRegisteredComponents,

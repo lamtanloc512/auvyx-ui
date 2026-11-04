@@ -1,0 +1,37 @@
+<p class="d-note">This component ships a <code>dialog()</code> macro for Jinja and Nunjucks. See <a href="#templates">Templates</a>.</p>
+
+
+
+<h3 class="d-h3">HTML structure</h3>
+<dl>
+  <dt><code>&lt;button type="button" onclick="dialog.showModal()"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>Trigger button. Auvyx intentionally uses the native <code>HTMLDialogElement.showModal()</code> method.</dd>
+  <dt><code>&lt;dialog class="dialog" id="&#123; DIALOG_ID &#125;"&gt;</code></dt>
+  <dd>
+    Native modal dialog. Add <code>aria-labelledby="&#123; TITLE_ID &#125;"</code> and <code>aria-describedby="&#123; DESCRIPTION_ID &#125;"</code> when title and description are present. Add width utilities to the inner <code>&lt;div&gt;</code> when a dialog needs a custom size. The macro also adds backdrop-click close handling.
+    <dl>
+      <dt><code>&lt;div&gt;</code></dt>
+      <dd>
+        Dialog content surface.
+        <dl>
+          <dt><code>&lt;header&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+          <dd>
+            Dialog header.
+            <dl>
+              <dt><code>&lt;h2 id="&#123; TITLE_ID &#125;"&gt;</code></dt>
+              <dd>Dialog title. Reference it from <code>aria-labelledby</code>.</dd>
+              <dt><code>&lt;p id="&#123; DESCRIPTION_ID &#125;"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+              <dd>Dialog description. Reference it from <code>aria-describedby</code>.</dd>
+            </dl>
+          </dd>
+          <dt><code>&lt;section&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+          <dd>Dialog body/content area. Add overflow utilities when the body should scroll.</dd>
+          <dt><code>&lt;footer&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+          <dd>Action area. It stacks actions on small screens and aligns them to the end on larger screens.</dd>
+          <dt><code>&lt;button type="button" onclick="this.closest('dialog').close()"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+          <dd>Close button. You can also wrap a button in <code>&lt;form method="dialog"&gt;</code>.</dd>
+        </dl>
+      </dd>
+    </dl>
+  </dd>
+</dl>

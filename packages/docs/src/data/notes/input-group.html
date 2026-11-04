@@ -1,0 +1,21 @@
+<p>Add <code>class=&quot;input-group&quot;</code> to the root. Native controls stay semantic and become borderless children inside that shell.</p>
+<dl>
+  <dt><code>&lt;div class="input-group"&gt;</code></dt>
+  <dd>
+    The root shell. Add <code>role="group"</code> and an accessible label only when the group itself needs to be named.
+    <dl>
+      <dt><code>&lt;input&gt;</code>, <code>&lt;textarea&gt;</code>, <code>&lt;select&gt;</code></dt>
+      <dd>The native control. Use <code>aria-invalid="true"</code> for invalid state and <code>disabled</code> for disabled state.</dd>
+      <dt><code>&lt;span&gt;</code>, <code>&lt;svg&gt;</code>, <code>&lt;kbd&gt;</code></dt>
+      <dd>Decorative or helper content. Use <code>aria-hidden="true"</code> for decorative icons.</dd>
+      <dt><code>&lt;button&gt;</code>, <code>&lt;div role="group"&gt;</code></dt>
+      <dd>Interactive actions. Use <code>role="group"</code> with an accessible label when multiple related actions share one side of the input.</dd>
+      <dt><code>&lt;header&gt;</code>, <code>&lt;footer&gt;</code></dt>
+      <dd>Header or footer addon rows for vertically oriented input groups.</dd>
+      <dt><code>data-align="start|end"</code></dt>
+      <dd>Optional visual placement. Values use logical direction, so start/end automatically flip in RTL. Use <code>data-orientation="vertical"</code> on the root for header/footer layouts.</dd>
+      <dt><code>[data-control]</code></dt>
+      <dd>Escape hatch for custom controls that are not native <code>input</code>, <code>textarea</code>, or <code>select</code>.</dd>
+    </dl>
+  </dd>
+</dl>

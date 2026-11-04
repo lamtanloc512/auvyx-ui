@@ -7,8 +7,8 @@
   Sera, Rhea from shadcn `apps/v4/registry/styles/style-*.css`.
 - Hover Card: `data-align="center"` relies on anchor positioning; without it
   the card aligns start.
-- Docs pages in `site/` for fork-added components (preview lives in
-  `packages/ui/preview.html` for now).
+- Usage reference (`packages/docs/src/data/notes/`) for fork-added components:
+  only upstream Basecoat components have one so far.
 - Date Picker: range mode (Calendar already supports mode="range"), month/year dropdowns.
 - Menus: submenus (nested popovers) for dropdown, menubar and context menu.
 - Navigation Menu: shared animated viewport and indicator arrow from upstream.

@@ -94,6 +94,99 @@ html[data-motion='off'] {
     }
   }
 
+  /* ---- Form controls: hover and press feedback.
+     The style packs give fields a focus ring but no hover in light mode, and
+     checkboxes, radios and switches no hover or press at all. Fields darken
+     their border towards --ring on hover; choices also take a short press.
+     These rules come before the components, so a pack that styles its own
+     hover (same or higher specificity) still wins. */
+  :is(
+    .field > input:is([type='text'], [type='email'], [type='password'], [type='number'], [type='file'], [type='tel'], [type='url'], [type='search'], [type='date'], [type='datetime-local'], [type='month'], [type='week'], [type='time']),
+    .input:is([type='text'], [type='email'], [type='password'], [type='number'], [type='file'], [type='tel'], [type='url'], [type='search'], [type='date'], [type='datetime-local'], [type='month'], [type='week'], [type='time']),
+    .field > textarea,
+    .textarea,
+    .field > select,
+    select.select,
+    .select:not(select) > button,
+    .combobox > input[role='combobox'],
+    .input-group,
+    .input-otp
+  ) {
+    transition:
+      color var(--motion-fast) var(--motion-ease-standard),
+      background-color var(--motion-fast) var(--motion-ease-standard),
+      border-color var(--motion-fast) var(--motion-ease-standard),
+      box-shadow var(--motion-fast) var(--motion-ease-standard);
+  }
+
+  :is(
+    .field > input:is([type='text'], [type='email'], [type='password'], [type='number'], [type='file'], [type='tel'], [type='url'], [type='search'], [type='date'], [type='datetime-local'], [type='month'], [type='week'], [type='time']),
+    .input:is([type='text'], [type='email'], [type='password'], [type='number'], [type='file'], [type='tel'], [type='url'], [type='search'], [type='date'], [type='datetime-local'], [type='month'], [type='week'], [type='time']),
+    .field > textarea,
+    .textarea,
+    .field > select,
+    select.select,
+    .select:not(select) > button,
+    .combobox > input[role='combobox'],
+    .input-group,
+    .input-otp
+  ):hover:not(:focus, :focus-within, :disabled, :has(:disabled), [aria-invalid='true'], [aria-expanded='true']) {
+    border-color: color-mix(in oklch, var(--ring) 70%, var(--input));
+  }
+
+  :is(.field > input:is([type='checkbox'], [type='radio']), .input:is([type='checkbox'], [type='radio'])) {
+    transition:
+      color var(--motion-fast) var(--motion-ease-standard),
+      background-color var(--motion-fast) var(--motion-ease-standard),
+      border-color var(--motion-fast) var(--motion-ease-standard),
+      box-shadow var(--motion-fast) var(--motion-ease-standard),
+      scale var(--motion-spring-snappy-duration) var(--motion-spring-snappy);
+  }
+
+  :is(.field > input:is([type='checkbox'], [type='radio']), .input:is([type='checkbox'], [type='radio'])):not([role='switch']):hover:not(:checked, :focus-visible, :disabled, [aria-invalid='true']) {
+    border-color: color-mix(in oklch, var(--ring) 70%, var(--input));
+  }
+
+  /* Switches: some packs draw them without a border, so the track darkens instead. */
+  :is(.field > input:is([type='checkbox'], [type='radio']), .input:is([type='checkbox'], [type='radio']))[role='switch']:hover:not(:checked, :disabled, [aria-invalid='true']) {
+    background-color: color-mix(in oklch, var(--input), var(--foreground) 12%);
+  }
+
+  /* Dark mode: the packs tint unchecked tracks with a .dark rule; outrank it. */
+  :is(.dark, .dark *) :is(.field > input:is([type='checkbox'], [type='radio']), .input:is([type='checkbox'], [type='radio']))[role='switch']:hover:not(:checked, :disabled, [aria-invalid='true']) {
+    background-color: color-mix(in oklch, var(--input), var(--foreground) 18%);
+  }
+
+  :is(.field > input:is([type='checkbox'], [type='radio']), .input:is([type='checkbox'], [type='radio'])):active:not(:disabled) {
+    scale: 0.92;
+  }
+
+  /* Slider: the thumb grows a little while it is held. */
+  :is(.field > input[type='range'], .input[type='range'])::-webkit-slider-thumb {
+    transition: scale var(--motion-spring-snappy-duration) var(--motion-spring-snappy), box-shadow var(--motion-fast) var(--motion-ease-standard);
+  }
+  :is(.field > input[type='range'], .input[type='range'])::-moz-range-thumb {
+    transition: scale var(--motion-spring-snappy-duration) var(--motion-spring-snappy), box-shadow var(--motion-fast) var(--motion-ease-standard);
+  }
+  :is(.field > input[type='range'], .input[type='range']):active:not(:disabled)::-webkit-slider-thumb {
+    scale: 1.15;
+  }
+  :is(.field > input[type='range'], .input[type='range']):active:not(:disabled)::-moz-range-thumb {
+    scale: 1.15;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :is(.field > input:is([type='checkbox'], [type='radio']), .input:is([type='checkbox'], [type='radio'])):active {
+      scale: none;
+    }
+    :is(.field > input[type='range'], .input[type='range']):active::-webkit-slider-thumb {
+      scale: none;
+    }
+    :is(.field > input[type='range'], .input[type='range']):active::-moz-range-thumb {
+      scale: none;
+    }
+  }
+
   /* ---- Anchored surfaces: scale in from the anchor, leave faster. */
   [data-popover]:not([popover]) {
     transition-property: opacity, scale, translate, visibility;

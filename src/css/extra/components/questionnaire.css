@@ -11,7 +11,7 @@
  *     </fieldset>
  *     <footer><button class="btn">Continue</button></footer>
  *   </form>
- * Inputs take class="input" for the Basecoat radio/checkbox look; type="checkbox" for multiple answers. A <kbd> at the end of a label shows a shortcut.
+ * Inputs take class="input" for the radio/checkbox look; type="checkbox" for multiple answers. A <kbd> at the end of a label shows a shortcut.
  */
 @layer components {
   .questionnaire {

@@ -1,0 +1,71 @@
+name: Release Auvyx
+
+# Publishing a GitHub release tagged <package>@<version> publishes that package
+# to npm: ui@0.1.1 -> @auvyx/ui 0.1.1, cli@0.1.1 -> @auvyx/cli 0.1.1.
+# The tag's version must match packages/<package>/package.json.
+#
+# npm trusted publishing (OIDC): no token. On npmjs.com, each package's
+# Settings -> Trusted Publisher -> GitHub Actions: repository
+# lamtanloc512/auvyx-ui, workflow release-auvyx.yml, no environment, "Allow
+# npm publish" off. Renaming this file breaks publishing.
+#
+# The workflow only stages the version (npm stage publish). It is installable
+# once a maintainer approves it on npmjs.com (Staged Packages) or with
+# `npm stage approve <stage-id>`, with 2FA.
+
+on:
+  release:
+    types: [published]
+  # Or from the Actions tab: stages the version in packages/<package>/package.json.
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Package to publish
+        required: true
+        type: choice
+        options: [ui, cli]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    if: ${{ github.event_name == 'workflow_dispatch' || (!github.event.release.prerelease && (startsWith(github.event.release.tag_name, 'ui@') || startsWith(github.event.release.tag_name, 'cli@'))) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+          registry-url: https://registry.npmjs.org
+
+      # Trusted publishing needs npm 11.5.1 or later.
+      - run: npm install -g npm@latest
+
+      - run: npm ci
+
+      - name: Tag matches the package version
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+          INPUT_PACKAGE: ${{ inputs.package }}
+        run: |
+          if [ -n "$INPUT_PACKAGE" ]; then
+            TAG="$INPUT_PACKAGE@$(node -p "require('./packages/$INPUT_PACKAGE/package.json').version")"
+          fi
+          [[ "$TAG" =~ ^(ui|cli)@([0-9]+\.[0-9]+\.[0-9]+)$ ]] || { echo "Tag $TAG is not ui@x.y.z or cli@x.y.z"; exit 1; }
+          pkg="${BASH_REMATCH[1]}"
+          version="${BASH_REMATCH[2]}"
+          actual=$(node -p "require('./packages/$pkg/package.json').version")
+          [ "$actual" = "$version" ] || { echo "packages/$pkg/package.json is $actual, the tag says $version"; exit 1; }
+          echo "PKG=$pkg" >> "$GITHUB_ENV"
+
+      # @auvyx/ui builds dist/ in prepublishOnly; the docs build also checks the registry.
+      - run: npm run auvyx:build
+
+      - run: npm stage publish -w "@auvyx/$PKG" --provenance --access public

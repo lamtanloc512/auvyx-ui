@@ -58,7 +58,8 @@ ROWS = [
     ("Customer Feedback and Satisfaction Levels", "Narrative", "Done", 15, 34, "Assign reviewer"),
 ]
 def status(s):
-    return (f'<span class="badge" data-variant="outline" class="db-status">{ic("check") if s == "Done" else ic("clock")}{s}</span>')
+    done = s == "Done"
+    return (f'<span class="badge db-status" data-variant="outline"{" data-done" if done else ""}>{ic("check") if done else ic("clock")}{s}</span>')
 
 rows = "\n".join(
     f'<tr><td><input class="input" type="checkbox" data-select aria-label="Select {h}"></td><td><a href="#" class="db-link">{h}</a></td>'
@@ -132,6 +133,9 @@ CSS = sb.SB_CSS + """
   .db-kpi > header > h2 { margin: 0; font-size: 1.5rem; font-weight: 600; font-variant-numeric: tabular-nums; }
   @container (width >= 40rem) { .db-kpi > header > h2 { font-size: 1.875rem; } }
   .db-kpi .badge svg { inline-size: 0.75rem; block-size: 0.75rem; }
+  .db-status { padding-inline: 0.375rem; color: var(--muted-foreground); }
+  .db-status svg { inline-size: 0.75rem; block-size: 0.75rem; }
+  .db-status[data-done] svg { color: oklch(0.723 0.219 149.579); }
   .db-kpi > footer { flex-direction: column; align-items: flex-start; gap: 0.375rem; font-size: 0.875rem; }
   .db-kpi-trend { margin: 0; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; }
   .db-kpi-trend svg { inline-size: 1rem; block-size: 1rem; }
@@ -163,7 +167,7 @@ const DATA = {json.dumps(days)};
 function draw() {{
   const n = +document.querySelector('[name=range]:checked').value;
   const rows = DATA.slice(-n).map(d => ({{ ...d, label: new Date(d.date + 'T00:00').toLocaleDateString(undefined, {{ month: 'short', day: 'numeric' }}) }}));
-  window.basecoat.chart('#visitors', {{
+  window.auvyx.chart('#visitors', {{
     type: 'line', labelKey: 'label', data: rows, legend: false,
     series: {{
       mobile: {{ label: 'Mobile', color: 'var(--chart-1)', surface: 'gradient', dataset: {{ fill: 'origin', tension: 0.35, pointRadius: 0, borderWidth: 1.5 }} }},
@@ -173,7 +177,9 @@ function draw() {{
   }});
 }}
 document.getElementById('range').addEventListener('change', draw);
-window.addEventListener('DOMContentLoaded', () => window.Chart && window.basecoat?.chart ? draw() : window.addEventListener('load', draw, {{ once: true }}));
+// Chart.js and auvyx.chart.min.js load deferred: wait for them unless they are there (also when mounted later by a framework).
+if (window.Chart && window.auvyx?.chart) draw();
+else window.addEventListener('load', draw, {{ once: true }});
 </script>
 """
 

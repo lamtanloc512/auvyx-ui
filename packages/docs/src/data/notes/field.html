@@ -1,0 +1,17 @@
+<h3 class="d-h3">HTML structure</h3>
+<dl>
+  <dt><code>&lt;fieldset class="fieldset"&gt;</code></dt>
+  <dd>Native group for related fields. Use <code>&lt;legend&gt;</code> for the label and a following <code>&lt;p&gt;</code> for description.</dd>
+  <dt><code>&lt;div role="group" class="fieldset"&gt;</code></dt>
+  <dd>Structural group when <code>&lt;fieldset&gt;</code> is not appropriate. Add <code>aria-label</code> or <code>aria-labelledby</code>.</dd>
+  <dt><code>&lt;div role="group" class="field"&gt;</code></dt>
+  <dd>Single field wrapper. Add <code>data-orientation</code> when needed.</dd>
+  <dt><code>&lt;label&gt;</code></dt>
+  <dd>Label for the control. Use <code>for</code> when the control has an <code>id</code>.</dd>
+  <dt><code>&lt;input&gt;</code>, <code>&lt;select&gt;</code>, <code>&lt;textarea&gt;</code></dt>
+  <dd>Native form control. Put <code>aria-invalid="true"</code> on the invalid control, not only on the wrapper.</dd>
+  <dt><code>&lt;section&gt;</code></dt>
+  <dd>Optional content wrapper for label and description when the control sits beside text.</dd>
+  <dt><code>&lt;p&gt;</code></dt>
+  <dd>Helper text or error text. Use <code>role="alert"</code> for validation errors and connect it with <code>aria-describedby</code>.</dd>
+</dl>

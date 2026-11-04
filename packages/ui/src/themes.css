@@ -1,5 +1,5 @@
 /* Brand themes: CSS variables only, no rebuild needed to switch.
- * Default (neutral) tokens live in Basecoat's base.css on :root / .dark.
+ * Default (neutral) tokens live in src/css/base/base.css on :root / .dark.
  * A theme overrides only what changes. Apply on <html> or any subtree:
  *   <html data-theme="ocean" class="dark">
  */

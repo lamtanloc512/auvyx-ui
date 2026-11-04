@@ -62,7 +62,7 @@
     root.dispatchEvent(new CustomEvent('basecoat:initialized'));
   };
 
-  if (window.basecoat) {
-    window.basecoat.register('accordion', '.accordion:not([data-accordion-initialized])', initAccordion);
+  if (window.auvyx) {
+    window.auvyx.register('accordion', '.accordion:not([data-accordion-initialized])', initAccordion);
   }
 })();

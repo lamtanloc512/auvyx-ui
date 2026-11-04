@@ -1,0 +1,73 @@
+<p class="d-note">This component ships a <code>dropdown_menu()</code> macro for Jinja and Nunjucks. See <a href="#templates">Templates</a>.</p>
+
+
+<p>Auvyx dropdown menus are inline-positioned relative to the <code>.dropdown-menu</code> wrapper. This differs from shadcn/ui&#39;s portalled Base UI implementation, but keeps the markup dependency-free and matches Auvyx&#39;s current popover/select positioning model. The native variant (<code>popover</code> attribute, no JavaScript) renders in the top layer and is positioned with CSS anchor positioning instead.</p>
+<h3 class="d-h3">HTML structure</h3>
+<dl>
+  <dt><code>&lt;div class="dropdown-menu"&gt;</code></dt>
+  <dd>
+    Relative wrapper for the trigger and inline menu content.
+    <dl>
+      <dt><code>&lt;button aria-haspopup="menu" aria-expanded="false"&gt;</code></dt>
+      <dd>Trigger button. The script toggles <code>aria-expanded</code> and manages keyboard navigation.</dd>
+      <dt><code>&lt;div data-popover aria-hidden="true"&gt;</code></dt>
+      <dd>
+        Menu content popover. Set <code>data-side="top|right|bottom|left|inline-start|inline-end"</code> and <code>data-align="start|center|end"</code> to control placement.
+        <dl>
+          <dt><code>&lt;div role="menu"&gt;</code></dt>
+          <dd>
+            Container for menu items, groups, labels, and separators.
+            <dl>
+              <dt><code>&lt;div role="group" aria-labelledby="&#123; HEADING_ID &#125;"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+              <dd>Groups related menu items.</dd>
+              <dt><code>&lt;div role="heading" id="&#123; HEADING_ID &#125;"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+              <dd>Group heading/label.</dd>
+              <dt><code>&lt;div role="menuitem"&gt;</code></dt>
+              <dd>Standard action item. Use <code>aria-disabled="true"</code> for disabled items.</dd>
+              <dt><code>&lt;div role="menuitemcheckbox" aria-checked="true"&gt;</code></dt>
+              <dd>Checkbox-style item. Add a child with <code>data-indicator</code> for the checked icon.</dd>
+              <dt><code>&lt;div role="menuitemradio" aria-checked="true"&gt;</code></dt>
+              <dd>Radio-style item. Add a child with <code>data-indicator</code> for the selected icon.</dd>
+              <dt><code>&lt;kbd&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+              <dd>Shortcut hint aligned to the inline end of the item.</dd>
+              <dt><code>&lt;hr role="separator"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+              <dd>Separator between groups or options.</dd>
+            </dl>
+          </dd>
+        </dl>
+      </dd>
+    </dl>
+  </dd>
+</dl>
+
+<h3 class="d-h3">JavaScript API</h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>API</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>dropdown.open()</code></td>
+<td>Method</td>
+<td>Opens the menu.</td>
+</tr>
+<tr>
+<td><code>dropdown.close()</code></td>
+<td>Method</td>
+<td>Closes the menu.</td>
+</tr>
+<tr>
+<td><code>dropdown.toggle()</code></td>
+<td>Method</td>
+<td>Toggles the menu.</td>
+</tr>
+<tr>
+<td><code>dropdown.refresh()</code></td>
+<td>Method</td>
+<td>Rescans menu items after children change inside the existing <code>role=&quot;menu&quot;</code> element.</td>
+</tr>
+</tbody></table>
+</div>

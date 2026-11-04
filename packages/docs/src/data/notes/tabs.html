@@ -1,0 +1,45 @@
+<p class="d-note">This component ships a <code>tabs()</code> macro for Jinja and Nunjucks. See <a href="#templates">Templates</a>.</p>
+
+
+
+<h3 class="d-h3">HTML structure</h3>
+<dl>
+  <dt><code>&lt;div class="tabs"&gt;</code></dt>
+  <dd>
+    Root tabs container. It becomes horizontal or vertical based on the child tablist's <code>aria-orientation</code>.
+    <dl>
+      <dt><code>&lt;nav role="tablist" aria-orientation="horizontal"&gt;</code></dt>
+      <dd>
+        Tablist containing tab buttons. Set <code>aria-orientation="vertical"</code> for vertical tabs and <code>data-variant="line"</code> for the line style.
+        <dl>
+          <dt><code>&lt;button role="tab" id="&#123; TAB_ID &#125;" aria-controls="&#123; PANEL_ID &#125;" aria-selected="true" tabindex="0"&gt;</code></dt>
+          <dd>Tab trigger. The active tab has <code>aria-selected="true"</code> and <code>tabindex="0"</code>. Inactive tabs use <code>tabindex="-1"</code>. Disabled tabs use <code>disabled</code> or <code>aria-disabled="true"</code>.</dd>
+        </dl>
+      </dd>
+      <dt><code>&lt;div role="tabpanel" id="&#123; PANEL_ID &#125;" aria-labelledby="&#123; TAB_ID &#125;"&gt;</code></dt>
+      <dd>Panel controlled by a tab. Inactive panels are hidden.</dd>
+    </dl>
+  </dd>
+</dl>
+
+<h3 class="d-h3">JavaScript API</h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>API</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>tabs.select(tab)</code></td>
+<td>Method</td>
+<td>Selects a tab button in the tablist.</td>
+</tr>
+<tr>
+<td><code>tabs.refresh()</code></td>
+<td>Method</td>
+<td>Rescans tabs and panels after children change inside the existing tablist/panel structure.</td>
+</tr>
+</tbody></table>
+</div>

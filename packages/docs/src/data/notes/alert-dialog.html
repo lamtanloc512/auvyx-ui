@@ -1,0 +1,31 @@
+<h3 class="d-h3">HTML structure</h3>
+<dl>
+  <dt><code>&lt;button type="button" onclick="dialog.showModal()"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>Trigger button. Auvyx uses the native <code>HTMLDialogElement.showModal()</code> method.</dd>
+  <dt><code>&lt;dialog class="alert-dialog" id="&#123; DIALOG_ID &#125;"&gt;</code></dt>
+  <dd>
+    Native modal dialog. Add <code>aria-labelledby</code> and <code>aria-describedby</code> when title and description are present. Use <code>data-size="sm"</code> for the compact upstream size.
+    <dl>
+      <dt><code>&lt;div&gt;</code></dt>
+      <dd>
+        Dialog content surface.
+        <dl>
+          <dt><code>&lt;header&gt;</code></dt>
+          <dd>
+            Alert dialog header.
+            <dl>
+              <dt><code>&lt;figure&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+              <dd>Media area for an icon or image.</dd>
+              <dt><code>&lt;h2 id="&#123; TITLE_ID &#125;"&gt;</code></dt>
+              <dd>Alert dialog title. Reference it from <code>aria-labelledby</code>.</dd>
+              <dt><code>&lt;p id="&#123; DESCRIPTION_ID &#125;"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+              <dd>Alert dialog description. Reference it from <code>aria-describedby</code>.</dd>
+            </dl>
+          </dd>
+          <dt><code>&lt;footer&gt;</code></dt>
+          <dd>Action area. Include a cancel action and the primary action.</dd>
+        </dl>
+      </dd>
+    </dl>
+  </dd>
+</dl>

@@ -1,12 +1,14 @@
 {
   "name": "@auvyx/ui",
-  "version": "0.1.0",
-  "description": "Drop-in CSS design system (shadcn look, Basecoat-based). One CSS file, optional tiny JS.",
+  "version": "0.1.2",
+  "description": "Drop-in CSS design system with the shadcn look. One CSS file, optional tiny JS.",
   "license": "MIT",
   "type": "module",
   "style": "dist/auvyx.min.css",
   "main": "dist/auvyx.min.css",
-  "files": ["dist/"],
+  "files": [
+    "dist/"
+  ],
   "exports": {
     ".": "./dist/auvyx.min.css",
     "./css": "./dist/auvyx.min.css",
@@ -17,9 +19,46 @@
     "./chart": "./dist/auvyx.chart.min.js",
     "./corners": "./dist/auvyx.corners.min.js",
     "./elements/*": "./dist/elements/*.min.js",
-    "./auvyx.bundle.css": "./dist/auvyx.bundle.css"
+    "./js/*": "./dist/js/*.min.js",
+    "./wc/*": "./dist/wc/*.min.js",
+    "./auvyx.bundle.css": "./dist/auvyx.bundle.css",
+    "./custom-elements.json": "./dist/custom-elements.json",
+    "./types": {
+      "types": "./dist/types/elements.d.ts"
+    },
+    "./types/react": {
+      "types": "./dist/types/react.d.ts"
+    },
+    "./types/vue": {
+      "types": "./dist/types/vue.d.ts"
+    }
   },
   "scripts": {
-    "build": "node ./build.mjs"
+    "build": "node ./build.mjs",
+    "deps": "node ./tools/ui-deps.mjs",
+    "prepublishOnly": "node ./build.mjs"
+  },
+  "customElements": "dist/custom-elements.json",
+  "types": "dist/types/elements.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lamtanloc512/auvyx-ui.git",
+    "directory": "packages/ui"
+  },
+  "homepage": "https://ui.auvyx.org",
+  "bugs": {
+    "url": "https://github.com/lamtanloc512/auvyx-ui/issues"
+  },
+  "keywords": [
+    "css",
+    "design system",
+    "shadcn",
+    "tailwind",
+    "html",
+    "components",
+    "web components"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }

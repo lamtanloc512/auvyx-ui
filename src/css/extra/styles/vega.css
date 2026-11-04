@@ -1,12 +1,14 @@
 /* Vega visuals for fork-added components.
  * Ported from shadcn/ui apps/v4/registry/styles/style-vega.css (cn-* rules),
  * mapped onto the semantic markup in src/css/extra/components/.
- * Other style packs: deferred (see TODO.md).
+ * Other style packs: deferred (see TODO.md). Corners use the pack's radius
+ * roles (--auvyx-r-control/surface/card, src/css/extra/tokens.css), so these
+ * components follow whichever pack is loaded.
  */
 @layer components {
   /* Toggle */
   .toggle {
-    @apply hover:bg-muted hover:text-foreground gap-1 rounded-md bg-transparent text-sm font-medium transition-[color,box-shadow] [&_svg:not([class*='size-'])]:size-4 h-9 min-w-9 px-2.5;
+    @apply hover:bg-muted hover:text-foreground gap-1 rounded-(--auvyx-r-control) bg-transparent text-sm font-medium transition-[color,box-shadow] [&_svg:not([class*='size-'])]:size-4 h-9 min-w-9 px-2.5;
   }
 
   .toggle:is([aria-pressed='true'], :has(> input:checked)) {
@@ -38,7 +40,7 @@
 
   /* Toggle Group: joined items (no data-spacing) */
   .toggle-group {
-    @apply rounded-md;
+    @apply rounded-(--auvyx-r-control);
   }
 
   .toggle-group[data-variant='outline']:not([data-spacing]) {
@@ -50,14 +52,14 @@
   }
 
   .toggle-group:not([data-spacing]):not([data-orientation='vertical']) > .toggle {
-    &:first-of-type { @apply rounded-s-md; }
-    &:last-of-type { @apply rounded-e-md; }
+    &:first-of-type { @apply rounded-s-(--auvyx-r-control); }
+    &:last-of-type { @apply rounded-e-(--auvyx-r-control); }
     &:not(:first-of-type) { border-inline-start-width: 0; }
   }
 
   .toggle-group:not([data-spacing])[data-orientation='vertical'] > .toggle {
-    &:first-of-type { @apply rounded-t-md; }
-    &:last-of-type { @apply rounded-b-md; }
+    &:first-of-type { @apply rounded-t-(--auvyx-r-control); }
+    &:last-of-type { @apply rounded-b-(--auvyx-r-control); }
     &:not(:first-of-type) { border-block-start-width: 0; }
   }
 
@@ -108,18 +110,18 @@
   }
 
   .sheet > :is(button, form[method='dialog']):last-child {
-    @apply top-4 end-4 inline-flex size-7 items-center justify-center rounded-md opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-ring/50 focus-visible:ring-[3px] outline-none [&_svg]:size-4;
+    @apply top-4 end-4 inline-flex size-7 items-center justify-center rounded-(--auvyx-r-control) opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-ring/50 focus-visible:ring-[3px] outline-none [&_svg]:size-4;
   }
 
   /* Hover Card */
   .hover-card > [data-popover] {
-    @apply w-64 rounded-lg duration-100;
+    @apply w-64 rounded-(--auvyx-r-surface) duration-100;
   }
 
   /* Input OTP */
   .input-otp {
     --otp-line: var(--input);
-    @apply border-input rounded-md border text-sm shadow-xs transition-[color,box-shadow] dark:bg-input/30;
+    @apply border-input rounded-(--auvyx-r-field) border text-sm shadow-xs transition-[color,box-shadow] dark:bg-input/30;
     box-sizing: content-box;
   }
 
@@ -196,7 +198,7 @@
   .bubble[data-variant='ghost'] { @apply max-w-full; }
   .message[data-align='end'] .bubble { @apply self-end; }
   .bubble > :not(aside) {
-    @apply bg-primary text-primary-foreground m-0 rounded-xl border border-transparent px-3 py-2 text-sm leading-relaxed;
+    @apply bg-primary text-primary-foreground m-0 rounded-(--auvyx-r-card) border border-transparent px-3 py-2 text-sm leading-relaxed;
   }
   .bubble > :is(a, button):not(aside) { @apply hover:bg-primary/80 focus-visible:border-ring focus-visible:ring-ring/50 outline-none focus-visible:ring-3; }
   .bubble[data-variant='secondary'] > :not(aside) { @apply bg-secondary text-secondary-foreground; }
@@ -227,13 +229,13 @@
 
   /* Attachment */
   .attachment-group { @apply gap-3 py-1; }
-  .attachment { @apply bg-card text-card-foreground w-fit min-w-40 gap-2 rounded-xl text-sm focus-within:ring-1 focus-within:ring-ring/50; }
+  .attachment { @apply bg-card text-card-foreground w-fit min-w-40 gap-2 rounded-(--auvyx-r-card) text-sm focus-within:ring-1 focus-within:ring-ring/50; }
   .attachment:has(> div:not([data-actions])) { @apply px-2.5 py-2; }
   .attachment:not(:has(> div:not([data-actions]))) { @apply p-2; }
   .attachment:has(a) { @apply hover:bg-muted/50; }
   .attachment[data-state='idle'] { @apply border-dashed; }
   .attachment[data-state='error'] { @apply border-destructive/30; }
-  .attachment > figure { @apply bg-muted text-foreground w-10 rounded-lg [&_svg:not([class*='size-'])]:size-4; }
+  .attachment > figure { @apply bg-muted text-foreground w-10 rounded-(--auvyx-r-surface) [&_svg:not([class*='size-'])]:size-4; }
   .attachment[data-state='error'] > figure { @apply bg-destructive/10 text-destructive; }
   .attachment > figure:has(> img) { @apply opacity-60; }
   .attachment:is([data-state='idle'], [data-state='done'], :not([data-state])) > figure:has(> img) { @apply opacity-100; }
@@ -243,15 +245,15 @@
   .attachment[data-state='error'] > div:not([data-actions]) > :is(small, p) { @apply text-destructive/80; }
   .attachment[data-size='sm'] { @apply gap-2.5 text-xs; }
   .attachment[data-size='sm'] > figure { @apply w-8; }
-  .attachment[data-size='xs'] { @apply gap-1.5 rounded-lg text-xs; }
-  .attachment[data-size='xs'] > figure { @apply w-7 rounded-md; }
+  .attachment[data-size='xs'] { @apply gap-1.5 rounded-(--auvyx-r-surface) text-xs; }
+  .attachment[data-size='xs'] > figure { @apply w-7 rounded-(--auvyx-r-control); }
   .attachment[data-orientation='vertical'] { @apply w-30 min-w-0; }
   .attachment[data-orientation='vertical'] > figure { @apply w-full; }
   .attachment[data-orientation='vertical'] > div:not([data-actions]) { @apply px-1; }
   .attachment[data-orientation='vertical'] > [data-actions] { @apply top-3 end-3 gap-1; }
 
   /* Code Block */
-  .code-block { @apply border-input text-foreground dark:bg-input/30 rounded-lg border text-sm; }
+  .code-block { @apply border-input text-foreground dark:bg-input/30 rounded-(--auvyx-r-surface) border text-sm; }
   .code-block:has(> pre:focus-visible) { @apply border-ring ring-ring/50 ring-3; }
   .code-block[data-variant='destructive'] { @apply border-destructive/30 text-destructive dark:border-destructive/40; }
   .code-block[data-size='sm'] { @apply text-xs; }
@@ -259,7 +261,7 @@
   .code-block > figcaption > :first-child { @apply text-foreground font-sans text-sm font-medium [&_svg:not([class*='size-'])]:size-4 [&>svg]:me-1.5; }
   .code-block[data-variant='destructive'] > figcaption > :first-child { @apply text-destructive; }
   .code-block > figcaption > :is(button, [data-actions]):last-child { @apply -my-1 -me-1.5 gap-1; }
-  .code-block > :is(button, [data-actions]) { @apply top-3 end-3 bg-background ring-foreground/10 rounded-md ring-1; }
+  .code-block > :is(button, [data-actions]) { @apply top-3 end-3 bg-background ring-foreground/10 rounded-(--auvyx-r-control) ring-1; }
   .code-block > pre { @apply px-4 py-4 leading-relaxed; }
   .code-block:has(> figcaption) > pre { @apply pt-2; }
   .code-block[data-size='sm'] > figcaption { @apply px-3 pt-3; }
@@ -279,7 +281,7 @@
   /* Trace */
   .trace { @apply gap-2; }
   .trace :is(li, summary) { @apply text-muted-foreground gap-2 text-sm; }
-  .trace > li > :is(a, button), .trace summary { @apply hover:text-foreground focus-visible:ring-ring/50 gap-1 rounded-md focus-visible:ring-3; }
+  .trace > li > :is(a, button), .trace summary { @apply hover:text-foreground focus-visible:ring-ring/50 gap-1 rounded-(--auvyx-r-control) focus-visible:ring-3; }
   .trace [data-status='error'] { @apply text-destructive; }
   .trace :is(li, summary) > svg { @apply size-4; }
   .trace :is(li, summary) > small { @apply text-muted-foreground/70 text-sm; }
@@ -292,7 +294,7 @@
   .questionnaire > fieldset > legend { @apply mb-2 text-base font-semibold; }
   .questionnaire > fieldset > p { @apply text-muted-foreground mb-2 text-sm; }
   .questionnaire > fieldset > label {
-    @apply border-input dark:bg-input/20 hover:bg-muted/50 gap-3 rounded-md border bg-transparent px-4 py-3.5 text-sm shadow-xs;
+    @apply border-input dark:bg-input/20 hover:bg-muted/50 gap-3 rounded-(--auvyx-r-field) border bg-transparent px-4 py-3.5 text-sm shadow-xs;
   }
   .questionnaire > fieldset > label:has(> input:checked) { @apply border-primary/40 bg-muted; }
   .questionnaire > fieldset > label:has(> input:focus-visible) { @apply border-ring ring-ring/50 ring-3; }
@@ -300,12 +302,12 @@
   .questionnaire > fieldset > label > input { @apply mt-0.5; }
   .questionnaire > fieldset > label > span { @apply gap-1; }
   .questionnaire > fieldset > label > span > small { @apply text-muted-foreground; }
-  .questionnaire > fieldset > label > kbd { @apply border-input bg-background text-muted-foreground size-5 rounded-md border font-mono text-[0.625rem] font-medium leading-none shadow-xs; }
+  .questionnaire > fieldset > label > kbd { @apply border-input bg-background text-muted-foreground size-5 rounded-(--auvyx-r-control) border font-mono text-[0.625rem] font-medium leading-none shadow-xs; }
   .questionnaire > footer { @apply gap-2 sm:min-h-9; }
 
   /* Menubar */
-  .menubar { @apply bg-background h-9 gap-1 rounded-md border p-1 shadow-xs; }
-  .menubar > .dropdown-menu > :is(button, [popovertarget]):first-child { @apply hover:bg-muted focus-visible:bg-muted rounded-sm px-2 py-1 text-sm font-medium; }
+  .menubar { @apply bg-background h-9 gap-1 rounded-(--auvyx-r-control) border p-1 shadow-xs; }
+  .menubar > .dropdown-menu > :is(button, [popovertarget]):first-child { @apply hover:bg-muted focus-visible:bg-muted rounded-[calc(var(--auvyx-r-control)-2px)] px-2 py-1 text-sm font-medium; }
   .menubar > .dropdown-menu:has(> [data-popover]:popover-open) > :is(button, [popovertarget]):first-child { @apply bg-muted; }
   .menubar > .dropdown-menu > [data-popover] { @apply min-w-36; margin-block-start: 0.5rem; }
 
@@ -315,11 +317,11 @@
 
   /* Navigation Menu */
   .navigation-menu > ul { @apply gap-0; }
-  .navigation-menu > ul > li > :is(a, button) { @apply hover:bg-muted focus-visible:ring-ring/50 h-9 rounded-md px-4 py-2 text-sm font-medium transition-all focus-visible:ring-3 disabled:opacity-50; }
+  .navigation-menu > ul > li > :is(a, button) { @apply hover:bg-muted focus-visible:ring-ring/50 h-9 rounded-(--auvyx-r-control) px-4 py-2 text-sm font-medium transition-all focus-visible:ring-3 disabled:opacity-50; }
   .navigation-menu > ul > li:has(> [data-popover]:popover-open) > button { @apply bg-muted/50; }
-  .navigation-menu [data-popover] { @apply rounded-lg p-2 shadow; margin-block-start: 0.375rem; }
+  .navigation-menu [data-popover] { @apply rounded-(--auvyx-r-surface) p-2 shadow; margin-block-start: 0.375rem; }
   .navigation-menu [data-popover] > ul { @apply gap-1; }
-  .navigation-menu [data-popover] a { @apply hover:bg-muted focus-visible:bg-muted focus-visible:ring-ring/50 gap-1 rounded-md p-2 text-sm transition-all focus-visible:ring-3; }
+  .navigation-menu [data-popover] a { @apply hover:bg-muted focus-visible:bg-muted focus-visible:ring-ring/50 gap-1 rounded-(--auvyx-r-control) p-2 text-sm transition-all focus-visible:ring-3; }
   .navigation-menu [data-popover] a > strong { @apply font-medium; }
   .navigation-menu [data-popover] a > span { @apply text-muted-foreground leading-snug; }
 
@@ -328,7 +330,7 @@
 
   /* Resizable */
   .resizable > [role='separator'] { @apply bg-border focus-visible:ring-ring focus-visible:ring-1 focus-visible:ring-offset-1; }
-  .resizable > [role='separator'][data-handle]::before { @apply bg-border h-6 w-1 rounded-lg; }
+  .resizable > [role='separator'][data-handle]::before { @apply bg-border h-6 w-1 rounded-(--auvyx-r-surface); }
   .resizable[data-orientation='vertical'] > [role='separator'][data-handle]::before { @apply h-1 w-6; }
   .resizable > [role='separator']:is(:hover, [data-active]) { @apply bg-ring; }
 
@@ -336,8 +338,8 @@
   .data-table { @apply gap-4; }
   .data-table > header { @apply gap-2; }
   .data-table > header > input[type='search'] { @apply max-w-sm; }
-  .data-table > div:has(> table) { @apply rounded-md border; }
-  .data-table th[aria-sort] > button { @apply hover:text-foreground focus-visible:ring-ring/50 -ms-2 h-8 rounded-md px-2 hover:bg-muted focus-visible:ring-3; }
+  .data-table > div:has(> table) { @apply rounded-(--auvyx-r-field) border; }
+  .data-table th[aria-sort] > button { @apply hover:text-foreground focus-visible:ring-ring/50 -ms-2 h-8 rounded-(--auvyx-r-control) px-2 hover:bg-muted focus-visible:ring-3; }
   .data-table { --data-table-sort-icon: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>'); }
   .data-table th:is([aria-sort='ascending'], [aria-sort='descending']) { --data-table-sort-icon: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>'); }
   .data-table tbody tr[aria-selected='true'] { @apply bg-muted; }
@@ -346,11 +348,11 @@
   /* Calendar */
   .calendar { @apply p-3; }
   .calendar-month > header > h2 { @apply text-sm font-medium; }
-  .calendar-month > header > button { @apply hover:bg-muted focus-visible:ring-ring/50 rounded-md focus-visible:ring-3; }
+  .calendar-month > header > button { @apply hover:bg-muted focus-visible:ring-ring/50 rounded-(--auvyx-r-control) focus-visible:ring-3; }
   .calendar-month .calendar-caption > select { @apply h-8 py-0 text-sm font-medium; }
   .calendar-month > table th { @apply text-muted-foreground pb-1 text-[0.8rem]; }
   .calendar-month > table th[data-week-number] { @apply text-muted-foreground/70 pe-1 pb-0 text-[0.75rem] align-middle; }
-  .calendar-month > table td > button { @apply hover:bg-muted focus-visible:ring-ring/50 rounded-md text-sm font-normal focus-visible:relative focus-visible:z-10 focus-visible:ring-3; }
+  .calendar-month > table td > button { @apply hover:bg-muted focus-visible:ring-ring/50 rounded-(--auvyx-r-control) text-sm font-normal focus-visible:relative focus-visible:z-10 focus-visible:ring-3; }
   .calendar-month > table td > button > small { @apply text-muted-foreground mt-0.5 text-[0.625rem]; }
   .calendar-month > table td[data-outside] > button { @apply text-muted-foreground; }
   .calendar-month > table td > button[aria-current='date'] { @apply bg-muted text-foreground; }
@@ -359,8 +361,8 @@
   .calendar-month > table td[data-range-middle] { @apply bg-muted; }
   .calendar-month > table td[data-range-middle] > button { @apply text-foreground hover:bg-accent rounded-none bg-transparent; }
   .calendar-month > table td[data-range-middle] > button > small { @apply text-muted-foreground; }
-  .calendar-month > table td[data-range-start]:not([data-range-end]) { @apply bg-muted rounded-s-md; }
-  .calendar-month > table td[data-range-end]:not([data-range-start]) { @apply bg-muted rounded-e-md; }
+  .calendar-month > table td[data-range-start]:not([data-range-end]) { @apply bg-muted rounded-s-(--auvyx-r-control); }
+  .calendar-month > table td[data-range-end]:not([data-range-start]) { @apply bg-muted rounded-e-(--auvyx-r-control); }
 
   /* Date Picker */
   .date-picker > button:first-child { @apply w-60 font-normal; }
@@ -369,10 +371,10 @@
 
   /* Sidebar extensions */
   @media (width >= 48rem) {
-    .sidebar[data-variant='floating'] > nav { @apply border-sidebar-border rounded-lg border shadow-sm; }
-    .sidebar[data-variant='inset'] + * { @apply bg-background rounded-xl shadow-sm; }
+    .sidebar[data-variant='floating'] > nav { @apply border-sidebar-border rounded-(--auvyx-r-surface) border shadow-sm; }
+    .sidebar[data-variant='inset'] + * { @apply bg-background rounded-(--auvyx-r-card) shadow-sm; }
   }
-  .sidebar > nav [data-sidebar-item] { @apply ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground gap-2 rounded-md p-2 text-sm focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0; }
+  .sidebar > nav [data-sidebar-item] { @apply ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground gap-2 rounded-(--auvyx-r-control) p-2 text-sm focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0; }
   .sidebar > nav [data-sidebar-item][data-size='lg'] { @apply h-12; }
   .sidebar > nav :is(li > a, li > button, [data-sidebar-item]) > span:has(> strong, > small) > strong { @apply font-medium; }
   .sidebar > nav :is(li > a, li > button, [data-sidebar-item]) > span:has(> strong, > small) > small { @apply text-xs opacity-70; }
@@ -395,7 +397,7 @@
     ol { @apply my-6 ms-6 list-decimal [&>li]:mt-2; }
     a { @apply text-primary font-medium underline underline-offset-4; }
     :not(pre) > code { @apply bg-muted relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold; }
-    pre { @apply bg-muted my-6 overflow-x-auto rounded-lg p-4 font-mono text-sm; }
+    pre { @apply bg-muted my-6 overflow-x-auto rounded-(--auvyx-r-surface) p-4 font-mono text-sm; }
     hr { @apply my-8; }
     table { @apply my-6 w-full text-sm; }
     th { @apply border px-4 py-2 text-start font-bold [&[align=center]]:text-center [&[align=right]]:text-end; }
