@@ -1319,10 +1319,6 @@
   "examples": [
    {
     "title": "Default",
-    "html": "<button\n  class=\"btn\"\n  data-variant=\"outline\"\n  hx-trigger=\"click\"\n  hx-select=\"unset\"\n  hx-get=\"/fragments/toast/success\"\n  hx-target=\"#toaster\"\n  hx-swap=\"beforeend\"\n  hx-push-url=\"false\">\n  Toast from backend (with HTMX)\n</button>"
-   },
-   {
-    "title": "Default",
     "html": "<button\n  class=\"btn\"\n  data-variant=\"outline\"\n  onclick=\"\n    document.getElementById('toaster').toast({\n      category: 'success',\n      title: 'Success',\n      description: 'A success toast called from the front-end.',\n      cancel: {\n        label: 'Dismiss',\n      },\n    })\n  \">\n  Toast from front-end\n</button>"
    }
   ],
