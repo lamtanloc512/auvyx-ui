@@ -24,6 +24,17 @@ npx @auvyx/cli add combobox tabs
 
 The first one also writes `ui/base.css` (tokens, themes, preflight, layout primitives, motion), and each brings the components its examples use. `add` keeps `ui/index.css` importing every installed CSS file in the order they cascade in the bundle (each file's first line records it). Load that one file instead of `auvyx.min.css`, plus the `ui/*.js` files `add` lists. In React, import `ui/index.css` and those JS files once from your entry file. The files are the same for every framework.
 
+### Tailwind source
+
+To edit components like shadcn/ui's, with Tailwind classes, install their CSS as Tailwind v4 source (`@apply` rules) instead of compiled CSS. `init` picks this when your `package.json` has Tailwind CSS v4 (`tailwindcss@4` or `@tailwindcss/vite`, `/postcss`, `/cli`) and saves `"css": "tailwind"` in `auvyx.json`; pass `--css tailwind` or `--css compiled` to `init` or `add` to choose yourself. Import the components from your CSS entry, after Tailwind:
+
+```css
+@import "tailwindcss";
+@import "./auvyx/ui/index.css";
+```
+
+The JavaScript is readable source in both modes (`ui/select.js`, ...): edit it like the CSS.
+
 ## Frameworks
 
 Blocks come as plain HTML (`html`, the default) or as React 19 components (`react`). `init` picks `react` when your `package.json` depends on React, and writes to `src/components/auvyx` (or `components/auvyx` without `src/`); pass `--framework` to choose yourself. It is saved in `auvyx.json`, and `add --framework <name>` overrides it for one install.
@@ -77,5 +88,6 @@ Built by `packages/blocks/tools/build_registry.mjs`. A subset of the shadcn regi
 | `meta.icons` | Icon library the item's inline SVGs use |
 | `meta.*` | Anything the registry's `registry.json` entry puts in `meta` (other registries use it for their own fields) |
 | `meta.scripts` | Extra scripts the block needs besides `auvyx.min.css`/`auvyx.min.js` |
+| `meta.tailwind` | `registry:ui`/`registry:style` items: `{ [file.path]: source }`, each CSS file as Tailwind v4 source, written instead of `content` with `--css tailwind` |
 | `registryDependencies` | Other items to install; unqualified names resolve in the same registry. A `registry:ui` item's list is complete for it, so the CLI does not follow its dependencies' own lists |
 | `files[]` | `{ path, type, target, content }`; `target` is relative to `dir` and may not leave it |

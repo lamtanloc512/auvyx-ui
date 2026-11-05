@@ -71,3 +71,24 @@ test('Components: base, direct dependencies only, ui/index.css in cascade order'
   assert.deepEqual(orders, [...orders].sort((a, b) => a - b), 'index.css follows the bundle order');
   assert.deepEqual([...imports].sort(), installed.filter((f) => f.endsWith('.css') && f !== 'index.css'), 'index.css imports every installed CSS file');
 });
+
+test('Tailwind v4 project: components install as Tailwind source', async () => {
+  const dir = await freshDir('cli-tailwind');
+  await fs.writeFile(path.join(dir, 'package.json'), JSON.stringify({ devDependencies: { tailwindcss: '^4.1.0' } }));
+  assert.match(auvyx(dir, 'init', '--registry', template), /Tailwind CSS v4 found in package.json/);
+  assert.equal((await json(path.join(dir, 'auvyx.json'))).css, 'tailwind');
+  assert.match(auvyx(dir, 'add', 'button'), /@import "\.\/auvyx\/ui\/index\.css";/);
+  const button = await fs.readFile(path.join(dir, 'auvyx/ui/button.css'), 'utf8');
+  assert.match(button, /^\/\* @auvyx\/ui button \| order \d+ \| Tailwind v4 source/);
+  assert.match(button, /@apply /);
+  assert.doesNotMatch(button, /--tw-/);
+  // --css compiled overrides the config.
+  auvyx(dir, 'add', 'button', '--css', 'compiled', '--overwrite');
+  assert.doesNotMatch(await fs.readFile(path.join(dir, 'auvyx/ui/button.css'), 'utf8'), /@apply /);
+  fails(dir, ['add', 'button', '--css', 'sass'], 'unknown CSS mode "sass"');
+  // No Tailwind v4 in package.json: compiled.
+  const plain = await freshDir('cli-tailwind-3');
+  await fs.writeFile(path.join(plain, 'package.json'), JSON.stringify({ devDependencies: { tailwindcss: '^3.4.0' } }));
+  auvyx(plain, 'init', '--registry', template);
+  assert.equal((await json(path.join(plain, 'auvyx.json'))).css, 'compiled');
+});

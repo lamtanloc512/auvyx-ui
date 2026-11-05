@@ -611,7 +611,7 @@
     return `<h2 class="d-h2" id="installation">Installation</h2><div class="d-prose">
       <p><code>auvyx.min.css</code> already includes it. To copy only this component into your project:</p>
       ${codeBox(`npx @auvyx/cli add ${key}`)}
-      <p>Writes ${files.map((f) => `<code>ui/${esc(f)}</code>`).join(', ')}${deps}, and updates <code>ui/index.css</code>. See <a href="#installation">Installation → Only the components you use</a>.</p>
+      <p>Writes ${files.map((f) => `<code>ui/${esc(f)}</code>`).join(', ')}${deps}, and updates <code>ui/index.css</code>. With Tailwind CSS v4 the CSS comes as Tailwind source you can edit: see <a href="#customizing">Customizing</a>.</p>
     </div>`;
   }
 

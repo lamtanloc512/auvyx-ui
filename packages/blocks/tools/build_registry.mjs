@@ -146,6 +146,9 @@ async function uiItems() {
   const { components } = JSON.parse(await fs.readFile(path.join(ui, 'manifest.json'), 'utf8'));
   const docs = JSON.parse(await fs.readFile(path.join(root, 'packages/docs/src/data/components.json'), 'utf8'));
   const file = async (rel, type) => ({ path: rel, type, target: rel, content: await fs.readFile(path.join(ui, '..', rel), 'utf8') });
+  // meta.tailwind: the same CSS files as uncompiled Tailwind v4 source (@apply),
+  // written by `auvyx add --css tailwind`. Other clients read the compiled `content`.
+  const tailwind = async (files) => Object.fromEntries(await Promise.all(files.filter((f) => f.path.endsWith('.css')).map(async (f) => [f.path, await fs.readFile(path.join(ui, 'src', path.basename(f.path)), 'utf8')])));
   const items = [{
     name: 'base',
     type: 'registry:style',
@@ -156,6 +159,7 @@ async function uiItems() {
     registryDependencies: [],
     files: [await file('ui/base.css', 'registry:style')],
   }];
+  items[0].meta.tailwind = await tailwind(items[0].files);
   for (const [name, c] of Object.entries(components)) {
     const files = await Promise.all([...c.css, ...c.js].map((f) => file(f, 'registry:ui')));
     items.push({
@@ -164,7 +168,7 @@ async function uiItems() {
       title: docs[name]?.title ?? 'Chart',
       description: docs[name]?.description ?? 'Chart.js styles: tooltips and legends.',
       categories: ['ui'],
-      meta: { version, docs: `https://ui.auvyx.org/#c-${name}` },
+      meta: { version, docs: `https://ui.auvyx.org/#c-${name}`, tailwind: await tailwind(files) },
       registryDependencies: ['base', ...c.dependencies],
       files,
     });

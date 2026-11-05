@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Auvyx CLI: copy blocks from a registry into your project (shadcn-style open code).
 //
-//   auvyx init [--framework html|react] [--registry <url-template>] [--icons <library>] [--dir <dir>]
-//   auvyx add <item...> [--framework html|react] [--icons <library>] [--page] [--overwrite] [--dry-run]
+//   auvyx init [--framework html|react] [--css compiled|tailwind] [--registry <url-template>] [--icons <library>] [--dir <dir>]
+//   auvyx add <item...> [--framework html|react] [--css compiled|tailwind] [--icons <library>] [--page] [--overwrite] [--dry-run]
 //   auvyx list [@namespace]
 //
 // Items: `login-01` (default namespace), `@acme/dashboard-02`, a URL, or a
@@ -10,6 +10,9 @@
 // and optionally `{framework}` (html or react) and `{icons}` (the icon library:
 // lucide, tabler, hugeicons, ph, ri); headers may reference env vars as
 // ${VAR}, so tokens stay out of the file.
+//
+// Components' CSS comes compiled (plain CSS) or, with --css tailwind, as the
+// Tailwind v4 source (@apply) to edit like shadcn/ui's class strings.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
@@ -18,6 +21,7 @@ const DEFAULT_NS = '@auvyx';
 const DEFAULT_REGISTRY = 'https://ui.auvyx.org/r/{framework}/{icons}/{name}.json';
 const ICON_LIBRARIES = ['lucide', 'tabler', 'hugeicons', 'ph', 'ri'];
 const FRAMEWORKS = ['html', 'react'];
+const CSS_MODES = ['compiled', 'tailwind'];
 const SETUP_URL = 'https://ui.auvyx.org/#installation';
 
 const argv = process.argv.slice(2);
@@ -26,7 +30,7 @@ const opt = (name) => {
   const i = argv.indexOf(`--${name}`);
   return i >= 0 ? argv[i + 1] : undefined;
 };
-const positional = argv.filter((a, i) => !a.startsWith('--') && !['--registry', '--dir', '--icons', '--framework'].includes(argv[i - 1]));
+const positional = argv.filter((a, i) => !a.startsWith('--') && !['--registry', '--dir', '--icons', '--framework', '--css'].includes(argv[i - 1]));
 const [command, ...rest] = positional;
 
 const fail = (msg) => {
@@ -63,16 +67,32 @@ function framework(config) {
   return fw;
 }
 
-// React when the project's package.json depends on it, HTML otherwise.
-async function detectFramework() {
+function cssMode(config) {
+  const mode = opt('css') ?? config.css ?? 'compiled';
+  if (!CSS_MODES.includes(mode)) fail(`unknown CSS mode "${mode}". Use one of: ${CSS_MODES.join(', ')}.`);
+  return mode;
+}
+
+async function projectDeps() {
   try {
     const pkg = JSON.parse(await fs.readFile('package.json', 'utf8'));
-    const deps = { ...pkg.dependencies, ...pkg.devDependencies };
-    if (deps.react) return 'react';
+    return { ...pkg.dependencies, ...pkg.devDependencies };
   } catch (e) {
     if (e.code !== 'ENOENT') fail(`cannot read package.json: ${e.message}`);
+    return {};
   }
-  return 'html';
+}
+
+// React when the project's package.json depends on it, HTML otherwise.
+async function detectFramework() {
+  return (await projectDeps()).react ? 'react' : 'html';
+}
+
+// Tailwind source when the project runs Tailwind v4, compiled CSS otherwise.
+async function detectCss() {
+  const deps = await projectDeps();
+  const v4 = /^\D*4(\.|$)/.test(deps.tailwindcss ?? '') || ['@tailwindcss/vite', '@tailwindcss/postcss', '@tailwindcss/cli'].some((d) => deps[d]);
+  return v4 ? 'tailwind' : 'compiled';
 }
 
 function resolve(config, spec) {
@@ -110,16 +130,21 @@ async function init() {
   }
   const detected = opt('framework') ? null : await detectFramework();
   const fw = framework({ framework: detected ?? undefined });
+  const detectedCss = opt('css') ? null : await detectCss();
+  const css = cssMode({ css: detectedCss ?? undefined });
   const src = await fs.access('src').then(() => true, () => false);
   const config = {
     framework: fw,
+    css,
     dir: opt('dir') ?? (fw === 'react' ? `${src ? 'src/' : ''}components/auvyx` : 'auvyx'),
     icons: iconLibrary({}),
     registries: { [DEFAULT_NS]: registry },
   };
   await fs.writeFile(CONFIG, JSON.stringify(config, null, 2) + '\n');
-  console.log(`wrote ${CONFIG}${detected === 'react' ? ' (React found in package.json)' : ''}`);
-  console.log(`\nLoad auvyx.min.css and auvyx.min.js once in your ${fw === 'react' ? 'root layout or index.html' : 'pages'}: ${SETUP_URL}`);
+  const found = [detected === 'react' && 'React', detectedCss === 'tailwind' && 'Tailwind CSS v4'].filter(Boolean);
+  console.log(`wrote ${CONFIG}${found.length ? ` (${found.join(' and ')} found in package.json)` : ''}`);
+  if (css === 'tailwind') console.log('\nComponents install as Tailwind source (@apply) you can edit. Add them with `auvyx add <component>`, then import ui/index.css from your CSS entry, after "tailwindcss".');
+  else console.log(`\nLoad auvyx.min.css and auvyx.min.js once in your ${fw === 'react' ? 'root layout or index.html' : 'pages'}: ${SETUP_URL}`);
 }
 
 async function add() {
@@ -167,7 +192,9 @@ async function add() {
         continue;
       }
       await fs.mkdir(path.dirname(target), { recursive: true });
-      await fs.writeFile(target, file.content);
+      // Tailwind source of a component's CSS, when the registry has it.
+      const tailwind = cssMode(config) === 'tailwind' && target.endsWith('.css') ? item.meta?.tailwind?.[file.path] : undefined;
+      await fs.writeFile(target, tailwind ?? file.content);
       console.log(`write   ${rel}`);
     }
   }
@@ -175,7 +202,8 @@ async function add() {
   if (uiCss || uiScripts.size) {
     const rel = (f) => path.relative(process.cwd(), path.join(root, f)).split(path.sep).join('/');
     const react = framework(config) === 'react';
-    console.log(`\nComponents: load ${rel('ui/index.css')} once${react ? ' (import it in your root layout or entry file)' : ''}, instead of auvyx.min.css.`);
+    if (cssMode(config) === 'tailwind') console.log(`\nComponents: in your CSS entry, after @import "tailwindcss";, add\n  @import "./${rel('ui/index.css')}";\n(path relative to that file). Do not also load auvyx.min.css.`);
+    else console.log(`\nComponents: load ${rel('ui/index.css')} once${react ? ' (import it in your root layout or entry file)' : ''}, instead of auvyx.min.css.`);
     if (uiScripts.size) console.log(react ? 'And import these once from your entry file (they register their behavior):' : 'And add:');
     for (const f of uiScripts) console.log(react ? `  ${rel(f)}` : `  <script src="${rel(f)}" defer></script>`);
   }

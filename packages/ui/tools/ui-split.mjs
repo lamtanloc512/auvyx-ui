@@ -168,6 +168,72 @@ export async function splitCss(root, dist, names, post = (s) => s) {
     await fs.writeFile(path.join(dist, 'ui', `${k}.css`), text);
     sizes[k] = { bytes: text.length, order: order - 1 };
   }
+  // The same pieces, uncompiled: dist/ui/src/<name>.css keeps the @apply source
+  // for projects that run Tailwind v4 (`auvyx add --css tailwind`).
+  const source = cutSource(await inline(path.join(tmp, 'packages/ui/src/auvyx.source.css')));
+  await fs.mkdir(path.join(dist, 'ui/src'), { recursive: true });
+  for (const [k, parts] of Object.entries(source)) {
+    if (!sizes[k]) throw new Error(`ui-split: source piece "${k}" has no compiled file`);
+    const text = `/* @auvyx/ui ${k} | order ${sizes[k].order} | Tailwind v4 source: import after "tailwindcss" */\n${parts.join('\n\n')}\n`;
+    await fs.writeFile(path.join(dist, 'ui/src', `${k}.css`), text);
+  }
   await fs.rm(path.join(root, 'packages/ui/.tmp'), { recursive: true, force: true });
   return sizes;
+}
+
+// Inline every relative @import, as dist/auvyx.bundle.css does.
+async function inline(file, seen = new Set()) {
+  const abs = path.resolve(file);
+  if (seen.has(abs)) return '';
+  seen.add(abs);
+  const out = [];
+  for (const line of (await fs.readFile(abs, 'utf8')).split('\n')) {
+    const m = line.match(/^\s*@import\s+["'](\.{1,2}\/[^"']+)["']\s*;\s*$/);
+    out.push(m ? (await inline(path.join(path.dirname(abs), m[1]), seen)).replace(/\n+$/, '') : line);
+  }
+  return out.join('\n');
+}
+
+// Cut the marked, uncompiled source at the markers. A marker inside a block
+// (a style pack section) closes that block for the piece before it and reopens
+// it for the next one, so every piece stands alone.
+function cutSource(text) {
+  const top = new RegExp(`^@layer components \\{ \\.${MARK}\\[data-key="([\\w.-]+)"\\] \\{ --${MARK}: 1; \\} \\}$`);
+  const nested = new RegExp(`^\\s*\\.${MARK}\\[data-key="([\\w.-]+)"\\] \\{ --${MARK}: 1; \\}$`);
+  const pieces = {};
+  const stack = [];
+  let key = 'base', lines = [], headText = '', comment = false, quote = null;
+  const flush = (close) => {
+    while (lines.length && !lines.at(-1).trim()) lines.pop();
+    if (close) for (let i = stack.length - 1; i >= 0; i--) lines.push(`${'  '.repeat(i)}}`);
+    const piece = lines.join('\n').replace(/^\n+|\s+$/g, '');
+    // Keep pieces with rules in them, not only comments and empty wrappers.
+    if (piece.replace(/\/\*[\s\S]*?\*\//g, '').replace(/@layer [\w, ]+\{|[{}\s]/g, '')) (pieces[key] ??= []).push(piece);
+    lines = [];
+  };
+  for (const line of text.split('\n')) {
+    const m = line.match(top) ?? line.match(nested);
+    if (m && !comment) {
+      if (line.match(top) && stack.length) throw new Error('ui-split: top-level marker inside a block');
+      flush(true);
+      key = m[1];
+      stack.forEach((h, i) => lines.push(`${'  '.repeat(i)}${h} {`));
+      continue;
+    }
+    lines.push(line);
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (comment) { if (c === '*' && line[i + 1] === '/') { comment = false; i++; } continue; }
+      if (quote) { if (c === '\\') i++; else if (c === quote) quote = null; headText += c; continue; }
+      if (c === '/' && line[i + 1] === '*') { comment = true; i++; continue; }
+      if (c === '"' || c === "'") { quote = c; headText += c; continue; }
+      if (c === '{') { stack.push(headText.trim()); headText = ''; }
+      else if (c === '}') { stack.pop(); headText = ''; }
+      else if (c === ';') headText = '';
+      else headText += c;
+    }
+    headText += ' ';
+  }
+  flush(false);
+  return pieces;
 }

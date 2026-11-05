@@ -34,7 +34,8 @@ With Tailwind v4, import the source instead so your build compiles it: `@import 
 | `dist/styles/auvyx-<style>.min.css` | The same bundle in another style pack: vega, nova, maia, lyra, mira, luma, sera, rhea |
 | `dist/js/<component>.min.js` | One component's behavior, for pages that need only a few |
 | `dist/wc/<component>.min.js` | Web Components edition (`<auvyx-select>`…) for React, Vue and other frameworks |
-| `dist/ui/` | The CSS split per component, used by `npx @auvyx/cli add <component>` |
+| `dist/ui/` | The CSS split per component, and each component's readable JS, used by `npx @auvyx/cli add <component>` |
+| `dist/ui/src/` | The same CSS pieces as Tailwind v4 source (`@apply`), installed by `npx @auvyx/cli add <component> --css tailwind` |
 | `dist/types/`, `dist/custom-elements.json` | TypeScript (DOM, React, Vue) and Custom Elements Manifest |
 
 Components and blocks can also be copied into your project with [`@auvyx/cli`](https://www.npmjs.com/package/@auvyx/cli).

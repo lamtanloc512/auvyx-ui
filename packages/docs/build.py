@@ -127,7 +127,7 @@ def guides(sizes, js_modules, wc_modules):
 <h2 class="d-h2">npm</h2>{code('npm install @auvyx/ui' + chr(10) + chr(10) + '/* in your CSS entry */' + chr(10) + '@import "@auvyx/ui";')}
 <h2 class="d-h2">Tailwind v4 (source channel)</h2><p>Import after Tailwind. Your build compiles the components and generates the utilities your markup uses.</p>
 {code('@import "tailwindcss";' + chr(10) + '@import "@auvyx/ui/bundle";')}
-<h2 class="d-h2">Only the components you use</h2><p>Instead of the whole <code>auvyx.min.css</code>, copy single components into your project with the CLI. Each one is its CSS split from the bundle (plain CSS, no Tailwind needed), its JavaScript if it has behavior, and the components its examples use; <code>base.css</code> (tokens, themes, preflight, layout, motion) comes with the first.</p>
+<h2 class="d-h2">Only the components you use</h2><p>Instead of the whole <code>auvyx.min.css</code>, copy single components into your project with the CLI. Each one is its CSS split from the bundle (plain CSS, or Tailwind source with <code>--css tailwind</code>: see <a href="#customizing">Customizing</a>), its JavaScript if it has behavior, and the components its examples use; <code>base.css</code> (tokens, themes, preflight, layout, motion) comes with the first.</p>
 {code('npx @auvyx/cli add combobox tabs')}
 <p>The CLI keeps <code>ui/index.css</code> importing every installed file in the order they cascade in the bundle, so load that one file (and the <code>ui/*.js</code> files it lists). Components override each other at equal specificity, so that order matters: link files by hand only in the order of the <code>order</code> number on their first line. The same files are on the CDN under <code>dist/ui/</code>, listed in <code>dist/ui/manifest.json</code>.</p>
 <h2 class="d-h2">Pick only the elements you use</h2><p>Each custom element also ships as an ES module:</p>
@@ -159,6 +159,23 @@ def guides(sizes, js_modules, wc_modules):
 <tr><td><code>--shadow-2xs…2xl</code>, <code>--tracking-normal</code>, <code>--spacing</code></td><td>Shadow scale, letter spacing, spacing unit (tweakcn tokens)</td></tr>
 <tr><td><code>--sidebar-*</code>, <code>--chart-1…5</code></td><td>Sidebar surfaces, chart series</td></tr>
 </tbody></table></div>"""},
+        {"slug": "customizing", "title": "Customizing", "description": "Copy components into your project and edit their Tailwind classes and JavaScript.", "html": f"""
+<p>Like shadcn/ui, you can own the code. The CLI copies a component's CSS and JavaScript into your project; from then on they are your files to edit.</p>
+<h2 class="d-h2">Copy the code</h2>
+{code('npx @auvyx/cli init' + chr(10) + 'npx @auvyx/cli add button select')}
+<p>Files land in <code>auvyx/ui/</code>: <code>button.css</code>, <code>select.css</code>, <code>select.js</code>, the components they use, and <code>index.css</code>, which imports them in the order they cascade. <code>add</code> skips files that already exist, so your edits stay, unless you pass <code>--overwrite</code>.</p>
+<h2 class="d-h2">Edit the look with Tailwind</h2>
+<p>When the project runs Tailwind CSS v4, <code>init</code> detects it and components install as Tailwind source: rules with <code>@apply</code> and the same classes shadcn/ui puts on its React components. Choose explicitly with <code>--css tailwind</code> or <code>--css compiled</code> (plain CSS, no Tailwind needed). Import the components from your CSS entry, after Tailwind, and drop <code>auvyx.min.css</code>:</p>
+{code('@import "tailwindcss";' + chr(10) + '@import "./auvyx/ui/index.css";')}
+<p>Then change the classes. Each file holds the component's structure rules, then its visual rules (colors, radius, sizes):</p>
+{code('/* auvyx/ui/button.css */' + chr(10) + '.btn:not([data-size]),' + chr(10) + ".btn[data-size='default'] {" + chr(10) + '  @apply h-10 gap-2 px-4;  /* was h-9 gap-1.5 px-2.5 */' + chr(10) + '}' + chr(10) + chr(10) + '/* a new variant: <button class="btn" data-variant="brand"> */' + chr(10) + ".btn[data-variant='brand'] {" + chr(10) + '  @apply bg-indigo-600 text-white hover:bg-indigo-700;' + chr(10) + '}')}
+<p>Component rules sit in <code>@layer components</code>, so a utility on the element still wins over them: <code>&lt;button class="btn rounded-full"&gt;</code>.</p>
+<h2 class="d-h2">Edit the behavior</h2>
+<p>Components with behavior install their JavaScript as readable source, such as <code>select.js</code>. Each file registers an init function with <code>window.auvyx.register(name, selector, init)</code>; change that function or replace it. Load the files with <code>&lt;script defer&gt;</code>, or import them once from your entry file.</p>
+<p>In React, Vue or Svelte, render the component's markup from your own components. Auvyx watches the page: it initializes components when they appear and cleans them up when they are removed, so there is nothing to wire up. For a <code>value</code> property and <code>change</code> events, use the <a href="#installation">Web Components edition</a>.</p>
+<h2 class="d-h2">Without the CLI</h2>
+<p>With <code>auvyx.min.css</code> from the CDN, override components with your own CSS loaded after it. Unlayered rules win over <code>@layer components</code> whatever their specificity:</p>
+{code('.btn { border-radius: 9999px; }' + chr(10) + ".btn[data-variant='brand'] { background: #4f46e5; color: #fff; }")}"""},
         {"slug": "motion", "title": "Motion", "description": "One motion language for every component: shared tokens, CSS springs and reduced-motion fallbacks.", "html": f"""
 <p>Every Auvyx component moves the same way. Buttons spring back from a press; fields, selects, checkboxes, radios and switches darken on hover, and choices and slider thumbs give under a press; menus and popovers scale in from their trigger, dialogs and sheets enter on an ease-out curve and leave faster, tab panels and accordion content fade in and rise. It is all CSS (transitions, <code>@starting-style</code> and <code>linear()</code> springs), so it works on the CDN build with no script.</p>
 {demo("""<div class="cluster" data-gap="3">
