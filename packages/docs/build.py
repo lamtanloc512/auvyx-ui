@@ -163,7 +163,7 @@ def guides(sizes, js_modules, wc_modules):
 <p>Like shadcn/ui, you can own the code. The CLI copies a component's CSS and JavaScript into your project; from then on they are your files to edit.</p>
 <h2 class="d-h2">Copy the code</h2>
 {code('npx @auvyx/cli init' + chr(10) + 'npx @auvyx/cli add button select')}
-<p>Files land in <code>auvyx/ui/</code>: <code>button.css</code>, <code>select.css</code>, <code>select.js</code>, the components they use, and <code>index.css</code>, which imports them in the order they cascade. <code>add</code> never overwrites a file you changed unless you pass <code>--overwrite</code>.</p>
+<p>Files land in <code>auvyx/ui/</code>: <code>button.css</code>, <code>select.css</code>, <code>select.js</code>, the components they use, and <code>index.css</code>, which imports them in the order they cascade. <code>add</code> skips files that already exist, so your edits stay, unless you pass <code>--overwrite</code>.</p>
 <h2 class="d-h2">Edit the look with Tailwind</h2>
 <p>When the project runs Tailwind CSS v4, <code>init</code> detects it and components install as Tailwind source: rules with <code>@apply</code> and the same classes shadcn/ui puts on its React components. Choose explicitly with <code>--css tailwind</code> or <code>--css compiled</code> (plain CSS, no Tailwind needed). Import the components from your CSS entry, after Tailwind, and drop <code>auvyx.min.css</code>:</p>
 {code('@import "tailwindcss";' + chr(10) + '@import "./auvyx/ui/index.css";')}
