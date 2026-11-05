@@ -12,6 +12,78 @@
     const FONTS = [['Geist', 'sans-serif'], ['Inter', 'sans-serif'], ['Figtree', 'sans-serif'], ['Manrope', 'sans-serif'], ['DM Sans', 'sans-serif'], ['Outfit', 'sans-serif'], ['Plus Jakarta Sans', 'sans-serif'], ['Public Sans', 'sans-serif'], ['Noto Sans', 'sans-serif'], ['Nunito Sans', 'sans-serif'], ['IBM Plex Sans', 'sans-serif'], ['Space Grotesk', 'sans-serif'], ['Lora', 'serif'], ['Playfair Display', 'serif'], ['Merriweather', 'serif'], ['JetBrains Mono', 'monospace'], ['System', 'system']];
     // Label -> icons.js set key. Inline icons are Lucide; icons.js swaps the others in.
     const ICON_LIBS = [['Lucide', 'lucide'], ['Tabler', 'tabler'], ['HugeIcons', 'hugeicons'], ['Phosphor', 'ph'], ['Remix', 'ri']];
+    // ---- theme presets: complete light + dark themes (colors, font, radius, shadows), like tweakcn's.
+    // shadowVars builds the --shadow-* scale from one shadow, as tweakcn's editor does.
+    function shadowVars({ color = '0 0% 0%', opacity = 0.1, blur = 3, spread = 0, x = 0, y = 1 }) {
+      const c = (o) => `hsl(${color} / ${+Math.min(o, 1).toFixed(2)})`;
+      const s1 = `${x}px ${y}px ${blur}px ${spread}px`;
+      const two = (y2, b2) => `${s1} ${c(opacity)}, ${x}px ${y2}px ${b2}px ${spread - 1}px ${c(opacity)}`;
+      return {
+        'shadow-2xs': `${s1} ${c(opacity / 2)}`, 'shadow-xs': `${s1} ${c(opacity / 2)}`,
+        'shadow-sm': two(1, 2), shadow: two(1, 2), 'shadow-md': two(2, 4), 'shadow-lg': two(4, 6), 'shadow-xl': two(8, 10),
+        'shadow-2xl': `${s1} ${c(opacity * 2.5)}`,
+      };
+    }
+    // One spec -> a full shadcn token set for light and dark.
+    // t: neutral tint chroma, h: neutral hue, p: [l, c, h] primary, a: accent hue, ch: chart hues.
+    function preset(name, { t = 0.01, h, p, a, ch, radius = '0.625rem', font = 'Inter', heading, shadow = {}, accent, mono }) {
+      const [pl, pc, ph] = p;
+      const darkText = pl > 0.72;
+      const light = {
+        background: N(0.99, t * 0.4, h), foreground: N(0.2, t * 2, h),
+        card: N(1, 0, 0), 'card-foreground': N(0.2, t * 2, h),
+        popover: N(1, 0, 0), 'popover-foreground': N(0.2, t * 2, h),
+        primary: N(pl, pc, ph), 'primary-foreground': darkText ? N(0.2, Math.min(pc, 0.06), ph) : N(0.985, 0.01, ph),
+        secondary: N(0.955, Math.min(0.02 + t, pc * 0.3), ph), 'secondary-foreground': N(0.3, Math.min(pc, 0.08), ph),
+        muted: N(0.96, t, h), 'muted-foreground': N(0.5, t * 2.5, h),
+        accent: accent ? N(...accent[0]) : N(0.945, 0.035, a), 'accent-foreground': accent ? N(...accent[1]) : N(0.32, 0.08, a),
+        destructive: N(0.577, 0.245, 27.3),
+        border: N(0.905, t * 1.5, h), input: N(0.905, t * 1.5, h), ring: N(Math.min(pl + 0.08, 0.8), pc * 0.7, ph),
+        sidebar: N(0.975, t * 0.8, h), 'sidebar-foreground': N(0.2, t * 2, h),
+        'sidebar-primary': N(pl, pc, ph), 'sidebar-primary-foreground': darkText ? N(0.2, Math.min(pc, 0.06), ph) : N(0.985, 0.01, ph),
+        'sidebar-accent': N(0.94, 0.03, a), 'sidebar-accent-foreground': N(0.32, 0.08, a),
+        'sidebar-border': N(0.905, t * 1.5, h), 'sidebar-ring': N(Math.min(pl + 0.08, 0.8), pc * 0.7, ph),
+      };
+      // Neutral primaries flip to near-white in dark mode, as in shadcn's neutral theme.
+      const dl = pc < 0.03 ? 0.92 : Math.max(pl, 0.7), dc = pc * 0.95;
+      const dark = {
+        background: N(0.16, t * 1.6 + 0.004, h), foreground: N(0.965, t * 0.6, h),
+        card: N(0.2, t * 1.8 + 0.004, h), 'card-foreground': N(0.965, t * 0.6, h),
+        popover: N(0.2, t * 1.8 + 0.004, h), 'popover-foreground': N(0.965, t * 0.6, h),
+        primary: N(dl, dc, ph), 'primary-foreground': N(0.18, Math.min(pc, 0.05), ph),
+        secondary: N(0.28, Math.min(0.03 + t, pc * 0.35), ph), 'secondary-foreground': N(0.96, 0.01, ph),
+        muted: N(0.26, t * 1.6 + 0.004, h), 'muted-foreground': N(0.72, t * 1.5, h),
+        accent: accent ? N(...accent[2]) : N(0.3, 0.05, a), 'accent-foreground': accent ? N(...accent[3]) : N(0.95, 0.03, a),
+        destructive: N(0.704, 0.191, 22.2),
+        border: N(1, 0, 0, '10%'), input: N(1, 0, 0, '15%'), ring: N(dl - 0.1, dc * 0.7, ph),
+        sidebar: N(0.19, t * 1.8 + 0.004, h), 'sidebar-foreground': N(0.965, t * 0.6, h),
+        'sidebar-primary': N(dl, dc, ph), 'sidebar-primary-foreground': N(0.18, Math.min(pc, 0.05), ph),
+        'sidebar-accent': N(0.28, 0.04, a), 'sidebar-accent-foreground': N(0.95, 0.03, a),
+        'sidebar-border': N(1, 0, 0, '10%'), 'sidebar-ring': N(dl - 0.1, dc * 0.7, ph),
+      };
+      ch.forEach((hh, n) => { light[`chart-${n + 1}`] = N(0.72 - n * 0.06, 0.15, hh); dark[`chart-${n + 1}`] = N(0.76 - n * 0.05, 0.14, hh); });
+      const stack = (f, tail) => `"${f}", ${tail}`;
+      const theme = {
+        radius, 'font-sans': mono ? stack(font, 'ui-monospace, monospace') : stack(font, 'ui-sans-serif, system-ui, sans-serif'),
+        ...(heading && { 'font-heading': stack(heading, 'ui-serif, Georgia, serif') }),
+        ...shadowVars(shadow),
+      };
+      return { name, theme, light, dark, shadow: { color: '0 0% 0%', opacity: 0.1, blur: 3, spread: 0, x: 0, y: 1, ...shadow } };
+    }
+    const PRESETS = [
+      preset('Ocean', { t: 0.012, h: 235, p: [0.55, 0.16, 245], a: 200, ch: [245, 200, 175, 265, 220], radius: '0.75rem', font: 'Inter', shadow: { opacity: 0.08, blur: 6, y: 2 } }),
+      preset('Sunset', { t: 0.012, h: 45, p: [0.565, 0.19, 36], a: 75, ch: [38, 60, 15, 80, 350], radius: '0.75rem', font: 'Outfit', shadow: { color: '20 60% 30%', opacity: 0.1, blur: 8, y: 3 } }),
+      preset('Forest', { t: 0.012, h: 140, p: [0.52, 0.13, 152], a: 115, ch: [152, 130, 175, 95, 200], radius: '0.5rem', font: 'Figtree' }),
+      preset('Lavender', { t: 0.016, h: 300, p: [0.54, 0.13, 300], a: 350, ch: [300, 330, 270, 355, 240], radius: '1rem', font: 'Plus Jakarta Sans', shadow: { opacity: 0.06, blur: 10, y: 3, spread: 1 } }),
+      preset('Midnight', { t: 0.022, h: 275, p: [0.55, 0.22, 278], a: 220, ch: [278, 220, 320, 190, 250], radius: '0.625rem', font: 'Space Grotesk', shadow: { color: '260 60% 10%', opacity: 0.18, blur: 12, y: 4 } }),
+      preset('Brutalist', { t: 0, h: 0, p: [0.2, 0, 0], a: 100, ch: [100, 25, 250, 145, 330], radius: '0rem', font: 'JetBrains Mono', mono: true, accent: [[0.93, 0.17, 105], [0.25, 0.05, 105], [0.88, 0.17, 105], [0.2, 0.04, 105]], shadow: { opacity: 1, blur: 0, x: 4, y: 4 } }),
+      preset('Rose', { t: 0.01, h: 10, p: [0.56, 0.2, 8], a: 35, ch: [8, 35, 340, 60, 315], radius: '0.75rem', font: 'DM Sans' }),
+      preset('Amber', { t: 0.014, h: 75, p: [0.77, 0.165, 70], a: 45, ch: [70, 45, 95, 25, 120], radius: '0.5rem', font: 'Manrope' }),
+      preset('Frost', { t: 0.02, h: 250, p: [0.52, 0.1, 235], a: 200, ch: [232, 200, 260, 180, 290], radius: '0.45rem', font: 'IBM Plex Sans', shadow: { color: '220 40% 30%', opacity: 0.08, blur: 4, y: 1 } }),
+      preset('Espresso', { t: 0.02, h: 55, p: [0.47, 0.075, 50], a: 75, ch: [50, 75, 30, 95, 15], radius: '0.625rem', font: 'Lora', heading: 'Playfair Display', shadow: { color: '25 40% 20%', opacity: 0.12, blur: 6, y: 2 } }),
+      preset('Citrus', { t: 0.012, h: 115, p: [0.8, 0.19, 128], a: 95, ch: [128, 95, 160, 70, 190], radius: '1rem', font: 'Nunito Sans' }),
+      preset('Graphite', { t: 0.006, h: 260, p: [0.3, 0.02, 260], a: 260, ch: [260, 220, 290, 200, 240], radius: '0.3rem', font: 'Geist', shadow: { opacity: 0.05, blur: 2, y: 1 } }),
+    ];
     const OPTS = {
       style: { label: 'Style', items: ['Vega', 'Nova', 'Maia', 'Lyra', 'Mira', 'Luma', 'Sera', 'Rhea'] },
       base: { label: 'Base Color', items: BASES.map((b) => b[0]) },
@@ -164,9 +236,65 @@
       return { name: 'Imported', ...blocks };
     }
 
+    // ---- editor helpers: any CSS color -> #rrggbb (via canvas), #rrggbb -> oklch() / hsl channels
+    let ctx2d;
+    function toHex(v) {
+      ctx2d ??= document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+      ctx2d.clearRect(0, 0, 1, 1);
+      ctx2d.fillStyle = '#000';
+      ctx2d.fillStyle = v;
+      ctx2d.fillRect(0, 0, 1, 1);
+      const [r, g, b] = ctx2d.getImageData(0, 0, 1, 1).data;
+      return '#' + [r, g, b].map((n) => n.toString(16).padStart(2, '0')).join('');
+    }
+    const rgb = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+    function hexToOklch(hex) {
+      const [r, g, b] = rgb(hex).map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+      const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+      const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+      const q = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+      const L = 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * q;
+      const A = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * q;
+      const B = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * q;
+      const C = Math.hypot(A, B);
+      return N(L, C, C < 0.0005 ? 0 : (Math.atan2(B, A) * 180 / Math.PI + 360) % 360);
+    }
+    function hexToHsl(hex) {
+      const [r, g, b] = rgb(hex);
+      const max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2, d = max - min;
+      const sat = d ? d / (1 - Math.abs(2 * l - 1)) : 0;
+      const h = !d ? 0 : max === r ? ((g - b) / d + 6) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+      return `${Math.round(h * 60)} ${Math.round(sat * 100)}% ${Math.round(l * 100)}%`;
+    }
+    const TOKEN_GROUPS = [
+      ['Primary', ['primary', 'primary-foreground']],
+      ['Secondary', ['secondary', 'secondary-foreground']],
+      ['Accent', ['accent', 'accent-foreground']],
+      ['Base', ['background', 'foreground']],
+      ['Card', ['card', 'card-foreground']],
+      ['Popover', ['popover', 'popover-foreground']],
+      ['Muted', ['muted', 'muted-foreground']],
+      ['Destructive', ['destructive']],
+      ['Border & input', ['border', 'input', 'ring']],
+      ['Chart', ['chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5']],
+      ['Sidebar', ['sidebar', 'sidebar-foreground', 'sidebar-primary', 'sidebar-primary-foreground', 'sidebar-accent', 'sidebar-accent-foreground', 'sidebar-border', 'sidebar-ring']],
+    ];
+    const DEFAULT_SHADOW = { color: '0 0% 0%', opacity: 0.1, blur: 3, spread: 0, x: 0, y: 1 };
+    let view = 'options', shownMode = null;
+    const modeNow = () => (isDark() ? 'dark' : 'light');
+    // Edits go into the imported/preset theme; without one they start a Custom theme.
+    function custom() {
+      state.imported ??= { name: 'Custom', theme: {}, light: {}, dark: {} };
+      state.imported.edited = true;
+      return state.imported;
+    }
+
     // ---- UI
     const CHECK = '<path d="M20 6 9 17l-5-5"/>';
     const SHUFFLE = '<path d="m18 14 4 4-4 4"/><path d="m18 2 4 4-4 4"/><path d="M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22"/><path d="M2 6h1.972a4 4 0 0 1 3.6 2.2"/><path d="M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45"/>';
+    const SLIDERS = '<path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/>';
+    const BACK = '<path d="m15 18-6-6 6-6"/>';
+    const CHEVRON = '<path d="m9 18 6-6-6-6"/>';
     const UPLOAD = '<path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>';
     const swatch = (k, v) => {
       if (k === 'theme' || k === 'chart') { const t = THEMES[OPTS[k].items.indexOf(v)]; return `<span class="d-sw" style="background:${t[1] ? N(t[1], t[2], t[3]) : 'var(--foreground)'}"></span>`; }
@@ -191,7 +319,7 @@
       const locked = square || (state.imported && /^(base|theme|font|heading|radius)$/.test(k) && hasImported(k));
       return `<div class="dropdown-menu d-cr-row">
         <button type="button" class="d-cr-btn" popovertarget="cr-${k}" aria-haspopup="menu"${locked ? ' data-locked' : ''}${square ? ' disabled title="Square style: corners stay square"' : ''}>
-          <span class="d-cr-text"><span class="d-cr-label">${esc(o.label)}</span><span class="d-cr-val">${esc(square ? `None (${pick('style')})` : locked ? 'From import' : fmt(k, v))}</span></span>
+          <span class="d-cr-text"><span class="d-cr-label">${esc(o.label)}</span><span class="d-cr-val">${esc(square ? `None (${pick('style')})` : locked ? 'From theme' : fmt(k, v))}</span></span>
           <span class="d-cr-icon">${swatch(k, v) || ICON(ROW_ICON[k])}</span>
         </button>
         <div id="cr-${k}" data-popover popover data-side="bottom" data-align="start" class="d-cr-pop"><div role="menu" aria-label="${esc(o.label)}">${items}</div></div>
@@ -204,9 +332,49 @@
       const all = { ...state.imported.theme, ...state.imported.light };
       return { base: 'background', theme: 'primary', font: 'font-sans', heading: 'font-sans', radius: 'radius' }[k] in all;
     }
+    const presetDots = (p) => `<span class="d-cr-dots">${[p.light.primary, p.light.accent, p.dark.background].map((c) => `<span class="d-sw" style="background:${c}"></span>`).join('')}</span>`;
+    function presetRow() {
+      const cur = state.imported?.preset;
+      const items = PRESETS.map((p, n) => `<button type="button" role="menuitemradio" aria-checked="${n === cur}" data-preset="${n}" popovertarget="cr-preset" popovertargetaction="hide">${presetDots(p)}<span>${esc(p.name)}</span>${n === cur ? ICON(CHECK, '0.875rem') : ''}</button>`).join('');
+      const val = state.imported ? state.imported.name + (state.imported.edited ? ' (edited)' : '') : 'None';
+      return `<div class="dropdown-menu d-cr-row">
+        <button type="button" class="d-cr-btn" popovertarget="cr-preset" aria-haspopup="menu">
+          <span class="d-cr-text"><span class="d-cr-label">Theme Preset</span><span class="d-cr-val">${esc(val)}</span></span>
+          <span class="d-cr-icon">${cur != null && PRESETS[cur] ? presetDots(PRESETS[cur]) : `<span class="d-sw" style="background:${tokens().light.primary || 'var(--foreground)'}"></span>`}</span>
+        </button>
+        <div id="cr-preset" data-popover popover data-side="bottom" data-align="start" class="d-cr-pop"><div role="menu" aria-label="Theme preset">${items}</div></div>
+      </div>`;
+    }
+    const tokLabel = (k) => k.replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase());
+    const tokRow = (k, v) => `<div class="d-cr-tok"><input type="color" id="cr-tok-${k}" data-tok="${k}" value="${toHex(v)}" aria-label="${esc(tokLabel(k))} color"><label for="cr-tok-${k}">${esc(tokLabel(k))}</label><input class="input" data-tok-text="${k}" value="${esc(v)}" aria-label="${esc(tokLabel(k))} value" spellcheck="false" autocomplete="off"></div>`;
+    const range = (key, label, min, max, step, value, unit) => `<div class="d-cr-range"><label for="cr-r-${key}"><span>${label}</span><output id="cr-o-${key}">${value}${unit}</output></label><input type="range" class="input" id="cr-r-${key}" data-num="${key}" data-unit="${unit}" min="${min}" max="${max}" step="${step}" value="${value}"></div>`;
+    const group = (title, body, open) => `<details class="d-cr-grp"${open ? ' open' : ''}><summary>${ICON(CHEVRON, '0.875rem')}${title}</summary><div>${body}</div></details>`;
+    // The tweakcn-style editor: every color token for the current mode, then font, radius, spacing and shadow.
+    function editor() {
+      const mode = (shownMode = modeNow());
+      const { shared, [mode]: set } = tokens();
+      const sh = { ...DEFAULT_SHADOW, ...state.imported?.shadow };
+      const num = (v, fb) => (Number.isFinite(parseFloat(v)) ? parseFloat(v) : fb);
+      const font = FONTS.find(([f]) => (shared['font-sans'] || '').includes(`"${f}"`))?.[0];
+      return `<div class="d-cr-edhead">
+          <button type="button" class="btn" data-variant="ghost" data-size="sm" data-cr="back">${ICON(BACK)}Back</button>
+          <div class="d-cr-seg" role="group" aria-label="Mode to edit">${['light', 'dark'].map((m) => `<button type="button" class="btn" data-size="sm" data-variant="${m === mode ? 'secondary' : 'ghost'}" aria-pressed="${m === mode}" data-cr="mode" data-mode="${m}">${m === 'light' ? 'Light' : 'Dark'}</button>`).join('')}</div>
+        </div>
+        <p class="d-cr-hint">Colors are edited for ${mode} mode. Font, radius, spacing and shadow apply to both.</p>
+        ${TOKEN_GROUPS.map(([title, keys], n) => group(title, keys.map((k) => tokRow(k, set[k] || '')).join(''), n < 2)).join('')}
+        ${group('Typography', `<div class="d-cr-range"><label for="cr-font">Font</label><select class="select" id="cr-font" data-font>${font ? '' : '<option selected>Custom</option>'}${FONTS.map(([f]) => `<option${f === font ? ' selected' : ''}>${esc(f)}</option>`).join('')}</select></div>${range('tracking-normal', 'Letter spacing', -0.05, 0.1, 0.005, num(shared['tracking-normal'], 0), 'em')}`)}
+        ${group('Radius &amp; spacing', range('radius', 'Radius', 0, 1.5, 0.025, num(shared.radius, 0.625), 'rem') + range('spacing', 'Spacing', 0.2, 0.32, 0.005, num(shared.spacing, 0.25), 'rem'), true)}
+        ${group('Shadow', `<div class="d-cr-tok"><input type="color" id="cr-shc" data-shcolor value="${toHex(`hsl(${sh.color})`)}" aria-label="Shadow color"><label for="cr-shc">Shadow color</label></div>${range('sh-opacity', 'Opacity', 0, 1, 0.01, sh.opacity, '')}${range('sh-blur', 'Blur', 0, 50, 1, sh.blur, 'px')}${range('sh-spread', 'Spread', -10, 10, 1, sh.spread, 'px')}${range('sh-x', 'Offset X', -10, 10, 1, sh.x, 'px')}${range('sh-y', 'Offset Y', -10, 10, 1, sh.y, 'px')}`)}
+        <div class="d-cr-actions">
+          <button type="button" class="btn" data-variant="outline" data-cr="clear-import">Reset theme</button>
+          <button type="button" class="btn" data-variant="outline" commandfor="cr-css" command="show-modal" data-cr="show-css">Copy CSS</button>
+        </div>`;
+    }
     function panel() {
+      if (view === 'edit') return editor();
       const imp = state.imported ? `<div class="d-cr-import"><span>${ICON(UPLOAD, '0.875rem')} ${esc(state.imported.name)} theme</span><button type="button" class="btn" data-variant="ghost" data-size="sm" data-cr="clear-import">Clear</button></div>` : '';
-      return `${imp}<div class="d-cr-rows">${KEYS.map(row).join('')}</div>
+      return `${imp}<div class="d-cr-rows">${presetRow()}${KEYS.map(row).join('')}</div>
+        <button type="button" class="btn d-cr-wide" data-variant="outline" data-cr="edit">${ICON(SLIDERS)}Customize theme</button>
         <button type="button" class="btn d-cr-wide" data-variant="outline" commandfor="cr-import" command="show-modal">${ICON(UPLOAD)}Import tweakcn theme</button>
         <div class="d-cr-preset"><code>--preset ${encode()}</code><button type="button" class="btn d-copy" data-variant="ghost" data-size="icon-sm" aria-label="Copy preset" data-text="--preset ${encode()}">${ICON(I.copy)}</button></div>
         <div class="d-cr-actions">
@@ -272,6 +440,15 @@
     function sync() {
       syncSite();
       document.querySelectorAll('iframe[data-preview]').forEach(syncPreview);
+      // The editor shows one mode's colors: redraw it when dark mode is toggled.
+      if (view === 'edit' && shownMode !== modeNow()) { const p = $('#cr-panel'); if (p) p.innerHTML = panel(); }
+    }
+    // Editor changes: save and re-theme once per frame, without redrawing the panel (keeps focus and drags).
+    let raf = 0;
+    function live() {
+      save();
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => applyTheme());
     }
     function refresh() {
       save();
@@ -290,13 +467,21 @@
         if (!$('#cr-panel')) return;
         const opt = e.target.closest('[data-opt]');
         if (opt) { state[opt.dataset.opt] = +opt.dataset.val; refresh(); return; }
+        const pre = e.target.closest('[data-preset]');
+        if (pre) { const n = +pre.dataset.preset; state.imported = { ...structuredClone(PRESETS[n]), preset: n }; refresh(); return; }
         const a = e.target.closest('[data-cr]');
         if (!a) return;
         const act = a.dataset.cr;
         if (act === 'shuffle') { for (const k of KEYS) if (k !== 'menu' && k !== 'accent') state[k] = Math.floor(Math.random() * OPTS[k].items.length); state.heading = Math.random() < 0.6 ? 0 : state.heading; refresh(); }
         else if (act === 'reset') { state = { ...DEFAULT, imported: null }; refresh(); }
         else if (act === 'clear-import') { state.imported = null; refresh(); }
-        else if (act === 'show-css') $('#cr-css-body').innerHTML = codeBox(css(), 'theme.css');
+        else if (act === 'mode') { if (a.dataset.mode !== modeNow()) $('#d-mode').click(); }
+        else if (act === 'edit' || act === 'back') { view = act === 'edit' ? 'edit' : 'options'; refresh(); }
+        else if (act === 'show-css') {
+          // Tailwind source (auvyx add --css tailwind) compiles shadow-* to fixed values unless @theme inline points them at the variables.
+          const sh = Object.keys(tokens().shared).filter((k) => k.startsWith('shadow-'));
+          $('#cr-css-body').innerHTML = codeBox(css(), 'theme.css') + (sh.length ? '<p class="d-cr-note">With components installed as Tailwind source (<code>--css tailwind</code>), also add this so <code>shadow-*</code> follows the theme:</p>' + codeBox(`@theme inline {\n${sh.map((k) => `  --${k}: var(--${k});`).join('\n')}\n}`, 'theme.css') : '');
+        }
         else if (act === 'show-init') $('#cr-init-body').innerHTML = codeBox(headSnippet(), 'index.html') + '<p class="d-cr-note">Add blocks with your icon library:</p>' + codeBox(cliSnippet(), 'terminal');
         else if (act === 'open') {
           const v = decode($('#cr-code').value);
@@ -307,6 +492,40 @@
           try { state.imported = parseTheme($('#cr-theme-src').value); err.hidden = true; $('#cr-import').close(); refresh(); }
           catch (x) { err.textContent = x.message; err.hidden = false; }
         }
+      });
+      const setShadow = (patch) => {
+        const t = custom();
+        t.shadow = { ...DEFAULT_SHADOW, ...t.shadow, ...patch };
+        Object.assign(t.theme, shadowVars(t.shadow));
+      };
+      document.addEventListener('input', (e) => {
+        const el = e.target;
+        if (!el.closest?.('#cr-panel')) return;
+        if (el.dataset.tok) {
+          const v = hexToOklch(el.value);
+          custom()[modeNow()][el.dataset.tok] = v;
+          el.parentElement.querySelector('[data-tok-text]').value = v;
+        } else if (el.dataset.num) {
+          const k = el.dataset.num, unit = el.dataset.unit, v = +el.value;
+          $(`#cr-o-${k}`).textContent = v + unit;
+          if (k.startsWith('sh-')) setShadow({ [k.slice(3)]: v });
+          else custom().theme[k] = v + unit;
+        } else if (el.matches('[data-shcolor]')) setShadow({ color: hexToHsl(el.value) });
+        else return;
+        live();
+      });
+      document.addEventListener('change', (e) => {
+        const el = e.target;
+        if (!el.closest?.('#cr-panel')) return;
+        if (el.dataset.tokText) {
+          const v = el.value.trim();
+          const ok = CSS.supports('color', v);
+          el.toggleAttribute('aria-invalid', !ok);
+          if (!ok) return;
+          custom()[modeNow()][el.dataset.tokText] = v;
+          el.parentElement.querySelector('[data-tok]').value = toHex(v);
+          live();
+        } else if (el.matches('[data-font]')) { custom().theme['font-sans'] = fontStack(el.value); live(); }
       });
     }
     return { page, mount, sync, syncBlock, parseTheme, css, encode, decode, get state() { return state; } };

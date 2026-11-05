@@ -235,6 +235,28 @@
   .d-cr-ta { font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.8125rem; }
   .d-cr-note { margin: 1rem 0 0.5rem; font-size: 0.875rem; color: var(--muted-foreground); }
   .d-cr-err { margin: 0.5rem 0 0; color: var(--destructive); font-size: 0.875rem; }
+  .d-cr-dots { display: inline-flex; }
+  .d-cr-dots .d-sw + .d-sw { margin-inline-start: -0.25rem; }
+  .d-cr-icon .d-cr-dots .d-sw { inline-size: 0.875rem; block-size: 0.875rem; }
+  .d-cr-edhead { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+  .d-cr-seg { display: inline-flex; gap: 0.25rem; }
+  .d-cr-hint { margin: 0 0.25rem; font-size: 0.75rem; color: var(--muted-foreground); }
+  .d-cr-grp { border: 1px solid var(--border); border-radius: var(--radius); }
+  .d-cr-grp > summary { display: flex; gap: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-weight: 500; list-style: none; }
+  .d-cr-grp > summary svg { color: var(--muted-foreground); transition: rotate 150ms; }
+  .d-cr-grp[open] > summary svg { rotate: 90deg; }
+  .d-cr-grp > div { display: grid; gap: 0.75rem; padding: 0.25rem 0.75rem 0.75rem; }
+  .d-cr-tok { display: grid; grid-template-columns: 1.75rem minmax(0, 1fr); align-items: center; gap: 0.375rem 0.5rem; }
+  .d-cr-tok label, .d-cr-range label { font-size: 0.8125rem; }
+  .d-cr-tok .input { grid-column: 1 / -1; block-size: 1.875rem; padding-block: 0; font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.75rem; }
+  .d-cr-tok input[type=color] { inline-size: 1.75rem; block-size: 1.75rem; padding: 2px; border: 1px solid var(--border); border-radius: calc(var(--radius) - 4px); background: transparent; cursor: pointer; }
+  .d-cr-tok input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
+  .d-cr-tok input[type=color]::-webkit-color-swatch { border: 0; border-radius: 3px; }
+  .d-cr-tok input[type=color]::-moz-color-swatch { border: 0; border-radius: 3px; }
+  .d-cr-range { display: grid; gap: 0.375rem; }
+  .d-cr-range label { display: flex; justify-content: space-between; gap: 0.5rem; }
+  .d-cr-range output { color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+  .d-cr-range .select { inline-size: 100%; }
   @media (width < 48rem) { .d-create { grid-template-columns: minmax(0, 1fr); } .d-cr-panel { position: static; max-block-size: none; } .d-cr-stage iframe { block-size: 80svh; } }
 
   /* Interaction feel (docs chrome only; component demos keep the library's own states). */
