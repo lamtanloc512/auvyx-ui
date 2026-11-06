@@ -31,7 +31,8 @@
     },
     "./types/vue": {
       "types": "./dist/types/vue.d.ts"
-    }
+    },
+    "./ax/*": "./dist/ax/*"
   },
   "scripts": {
     "build": "node ./build.mjs",

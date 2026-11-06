@@ -278,6 +278,34 @@ async function inline(file, seen = new Set()) {
 const bundleHeader = `/*! @auvyx/ui v${version} source bundle | MIT | import after "tailwindcss" */\n`;
 await fs.writeFile(path.join(dist, 'auvyx.bundle.css'), bundleHeader + (await inline(path.join(here, 'src/auvyx.source.css'))));
 
+// Prefixed build (dist/ax/): every class prefixed `ax-` in the CSS and in the JS (tools/prefix.mjs), so Auvyx UI can sit
+// inside a page whose theme uses the same class names (Bootstrap's .btn, .card...). Markup for it uses the prefixed names.
+{
+  const { prefixCss, prefixJs, PREFIX } = await import('./tools/prefix.mjs');
+  const ax = path.join(dist, 'ax');
+  await fs.mkdir(path.join(ax, 'styles'), { recursive: true });
+  const axBanner = `/*! @auvyx/ui v${version} (classes prefixed ${PREFIX}) | MIT License | see LICENSE */\n`;
+  const classes = new Set();
+  const write = async (from, to) => {
+    const css = (await fs.readFile(from, 'utf8')).replace(/^\/\*![^*]*\*\/\n?/, '');
+    const out = prefixCss(css);
+    out.classes.forEach((c) => classes.add(c));
+    await fs.writeFile(to, axBanner + out.css);
+  };
+  await write(path.join(dist, 'auvyx.min.css'), path.join(ax, 'auvyx.min.css'));
+  for (const file of await fs.readdir(path.join(dist, 'styles'))) {
+    if (file.endsWith('.min.css')) await write(path.join(dist, 'styles', file), path.join(ax, 'styles', file));
+  }
+  const axJs = prefixJs(jsSrc, classes);
+  await fs.writeFile(path.join(ax, 'auvyx.js'), axBanner + axJs);
+  const { code: axMin } = await transform(axJs, { loader: 'js', minify: true, target: 'es2022' });
+  await fs.writeFile(path.join(ax, 'auvyx.min.js'), axBanner + axMin);
+  // the chart runtime names its classes too (.chart, .chart-tooltip...)
+  const axChart = prefixJs(await fs.readFile(path.join(root, 'src/js/chart.js'), 'utf8'), classes);
+  const { code: axChartMin } = await transform(axChart, { loader: 'js', minify: true, target: 'es2020' });
+  await fs.writeFile(path.join(ax, 'auvyx.chart.min.js'), axBanner + axChartMin);
+}
+
 // Report + budgets
 let failed = false;
 for (const [file, limit] of Object.entries(budgets)) {
