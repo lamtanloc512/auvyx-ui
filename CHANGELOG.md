@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## @auvyx/ui 0.1.3 - 2026-11-06
+
+### Added
+
+- A prefixed build in `@auvyx/ui/ax/*` (`dist/ax/auvyx.min.css`, `auvyx.min.js`, `auvyx.chart.min.js` and every style pack in `dist/ax/styles/`). Every class carries an `ax-` prefix (`.btn` becomes `.ax-btn`) in the CSS and wherever the JavaScript finds, creates or toggles classes, so Auvyx UI can sit inside a page whose theme uses the same class names (Bootstrap's `.btn`, `.card`, `.alert`, `.dropdown-menu`). Markup for this build uses the prefixed class names; `data-*` attributes, ARIA and element names are unchanged, and `.dark` stays the color-scheme class. The default build is unchanged.
+
 ### Fixed
 
 - Restored the space under a Fieldset `<legend data-variant="label">`. Every style pack set its bottom margin to 0, so the label sat flush against the radio group, checkboxes or description below it; it now uses the same margin as other legends, matching upstream shadcn/ui.
