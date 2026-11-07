@@ -241,7 +241,8 @@
   .d-cr-stage iframe { display: block; inline-size: 100%; block-size: calc(100svh - var(--header-h) - 2.5rem); border: 0; }
   .d-cr-dialog > div { inline-size: min(40rem, calc(100vw - 2rem)); max-inline-size: none; }
   .d-cr-dialog .d-code pre { max-block-size: 50svh; }
-  .d-cr-ta { font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.8125rem; }
+  /* A pasted theme is long: keep the box a fixed height and scroll inside it, so Apply stays on screen. */
+  .d-cr-ta { font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.8125rem; field-sizing: fixed; block-size: min(18rem, 45svh); overflow-y: auto; resize: vertical; }
   .d-cr-note { margin: 1rem 0 0.5rem; font-size: 0.875rem; color: var(--muted-foreground); }
   .d-cr-err { margin: 0.5rem 0 0; color: var(--destructive); font-size: 0.875rem; }
   .d-cr-dots { display: inline-flex; }

@@ -8,6 +8,7 @@
 
 ### Fixed
 
+- Create: importing tweakcn's full CSS export (the one that starts with `@import "tailwindcss"` and `@custom-variant dark (&:is(.dark *))`) read the `:root` block as dark, so the light colors, radius and fonts were dropped. The import box also grew with a long paste until Apply was off screen; it now keeps a fixed height and scrolls.
 - Docs: choosing a style on Create replaced nothing; the style's stylesheet loaded on top of the Vega bundle inside `docs.css`, so whatever the style does not set kept Vega's value (the header's small buttons kept Vega's radius under Maia while the preview, which loads the style alone, did not). The site and block pages now load one component stylesheet, `dist/auvyx.min.css` or the chosen style's bundle in its place, and `docs.css` holds only the docs utilities (41 kB → 5 kB gzip).
 
 ## @auvyx/ui 0.1.4 - 2026-11-07

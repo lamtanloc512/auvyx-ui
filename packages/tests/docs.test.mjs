@@ -92,3 +92,33 @@ test('Create page: theme presets and the theme editor restyle the preview', asyn
     await server.close();
   }
 });
+
+// tweakcn's full export starts with @import and `@custom-variant dark (&:is(.dark *));`: the
+// :root block must still read as light, and the long paste must leave Apply on screen.
+test('Create page: a full tweakcn export imports', async () => {
+  const { serve, browser, open } = await import('./lib/env.mjs');
+  const server = await serve();
+  const b = await browser();
+  try {
+    const { page, errors } = await open(b, server.url(path.join(out, 'index.html')) + '#create', { width: 1440, height: 900 });
+    const vars = (pairs) => pairs.map(([k, v]) => `  --${k}: ${v};`).join('\n');
+    const light = [['background', 'oklch(0.985 0 0)'], ['primary', 'oklch(0.46 0.22 266)'], ['radius', '0.5rem'], ['font-sans', 'Geist, sans-serif']];
+    const filler = Array.from({ length: 40 }, (_, i) => [`chart-x${i}`, 'oklch(0.5 0 0)']);
+    const src = `@import "tailwindcss";\n\n@custom-variant dark (&:is(.dark *));\n\n:root {\n${vars([...light, ...filler])}\n}\n\n.dark {\n${vars([['background', 'oklch(0 0 0)'], ['primary', 'oklch(0.46 0.22 266)']])}\n}\n\n@theme inline {\n  --color-primary: var(--primary);\n}\n\n@layer base {\n  * {\n    @apply border-border outline-ring/50;\n  }\n}\n`;
+    await page.locator('#cr-panel [commandfor=cr-import]').click();
+    await page.fill('#cr-theme-src', src);
+    const apply = page.locator('#cr-import [data-cr=import]');
+    const box = await apply.boundingBox();
+    assert.ok(box && box.y + box.height <= 900, `Apply on screen: ${JSON.stringify(box)}`);
+    await apply.click();
+    await page.waitForTimeout(800);
+    const frameVar = (name) => page.frameLocator('#cr-frame').locator('html').evaluate((el, n) => getComputedStyle(el).getPropertyValue(`--${n}`).trim(), name);
+    assert.equal(await frameVar('radius'), '0.5rem');
+    assert.equal(await frameVar('primary'), 'oklch(0.46 0.22 266)');
+    assert.equal(await frameVar('background'), 'oklch(0.985 0 0)');
+    assert.deepEqual(errors, []);
+  } finally {
+    await b.close();
+    await server.close();
+  }
+});
