@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Wishlist 01 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-page {
+        padding-block: 2rem 4rem;
+      }
+      .shop-h1 {
+        margin: 0;
+        font-size: 1.875rem;
+        font-weight: 600;
+        letter-spacing: -0.025em;
+      }
+      .shop-lead {
+        margin: 0;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
+      .shop-header {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 10;
+        border-block-end: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 90%, transparent);
+        backdrop-filter: blur(8px);
+      }
+      .shop-header-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        block-size: 4rem;
+      }
+      .shop-nav {
+        display: flex;
+        gap: 1.25rem;
+        font-size: 0.875rem;
+      }
+      .shop-nav a {
+        color: var(--muted-foreground);
+        text-decoration: none;
+      }
+      .shop-nav a:hover,
+      .shop-nav a[aria-current] {
+        color: var(--foreground);
+      }
+      .shop-header-search {
+        flex: 1;
+        max-inline-size: 20rem;
+        margin-inline-start: auto;
+      }
+      .shop-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .shop-cart-btn {
+        position: relative;
+      }
+      .shop-count {
+        position: absolute;
+        inset-block-start: -0.25rem;
+        inset-inline-end: -0.25rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-inline-size: 1.125rem;
+        block-size: 1.125rem;
+        padding-inline: 0.25rem;
+        border-radius: 999px;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+      .shop-count:empty,
+      .shop-count[data-count="0"] {
+        display: none;
+      }
+      @media (width < 48rem) {
+        .shop-nav,
+        .shop-header-search {
+          display: none;
+        }
+        .shop-header-actions {
+          margin-inline-start: auto;
+        }
+      }
+      .shop-line-meta {
+        margin: 0;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .shop-account {
+        display: grid;
+        gap: 2rem;
+        align-items: start;
+      }
+      @media (width >= 48rem) {
+        .shop-account {
+          grid-template-columns: 14rem minmax(0, 1fr);
+        }
+      }
+      .shop-account-nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 0.125rem;
+      }
+      .shop-account-nav a,
+      .shop-account-nav button {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        inline-size: 100%;
+        padding: 0.5rem 0.75rem;
+        border: 0;
+        border-radius: var(--radius);
+        background: none;
+        color: var(--muted-foreground);
+        font: inherit;
+        font-size: 0.875rem;
+        text-align: start;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .shop-account-nav a:hover,
+      .shop-account-nav button:hover {
+        background: var(--accent);
+        color: var(--accent-foreground);
+      }
+      .shop-account-nav a[aria-current] {
+        background: var(--muted);
+        color: var(--foreground);
+        font-weight: 500;
+      }
+      .shop-account-nav svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+        flex: none;
+      }
+      .shop-account-nav hr {
+        margin: 0.5rem 0;
+        border: 0;
+        border-block-start: 1px solid var(--border);
+      }
+      .shop-profile {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-block-end: 1rem;
+        padding-inline: 0.75rem;
+      }
+      .shop-profile p {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+      .shop-profile small {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+        font-weight: 400;
+      }
+      @media (width < 48rem) {
+        .shop-account-nav ul {
+          display: flex;
+          overflow-x: auto;
+        }
+        .shop-account-nav a,
+        .shop-account-nav button {
+          white-space: nowrap;
+        }
+        .shop-account-nav hr,
+        .shop-profile {
+          display: none;
+        }
+      }
+
+      .block-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: inherit;
+        text-decoration: none;
+      }
+      .block-logo-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .block-logo-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .shop-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .shop-card-media {
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--radius);
+        background: var(--muted);
+      }
+      .shop-card-media > img {
+        display: block;
+        aspect-ratio: 4 / 5;
+        inline-size: 100%;
+        object-fit: cover;
+        transition: transform 300ms ease;
+      }
+      .shop-card:hover .shop-card-media > img {
+        transform: scale(1.03);
+      }
+      html.dark .shop-card-media > img {
+        filter: brightness(0.5) grayscale(1);
+      }
+      .shop-card-badge {
+        position: absolute;
+        inset-block-start: 0.75rem;
+        inset-inline-start: 0.75rem;
+      }
+      .shop-card-tools {
+        position: absolute;
+        inset-block-start: 0.5rem;
+        inset-inline-end: 0.5rem;
+        display: grid;
+        gap: 0.375rem;
+      }
+      .shop-card-tools .btn {
+        background: var(--background);
+      }
+      .shop-card-body {
+        display: grid;
+        gap: 0.25rem;
+      }
+      .shop-card-name {
+        margin: 0;
+        font-size: 0.9375rem;
+        font-weight: 500;
+      }
+      .shop-card-name a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .shop-card-name a::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+      }
+      .shop-card-name a:focus-visible {
+        outline: none;
+      }
+      .shop-card:has(.shop-card-name a:focus-visible) .shop-card-media {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+      .shop-card-tools {
+        z-index: 2;
+      }
+      .shop-card-actions {
+        position: relative;
+        z-index: 1;
+      }
+      .shop-price {
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        margin: 0;
+        font-variant-numeric: tabular-nums;
+      }
+      .shop-price strong {
+        font-size: 0.9375rem;
+        font-weight: 600;
+      }
+      .shop-price s {
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .shop-price[data-size="lg"] strong {
+        font-size: 1.5rem;
+      }
+      .shop-price[data-size="lg"] s {
+        font-size: 1rem;
+      }
+      .shop-card-actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .shop-card-actions > .btn:first-child {
+        flex: 1;
+      }
+      .shop-cards {
+        display: grid;
+        gap: 2rem 1.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+      }
+      .shop-cards[data-layout="list"] {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .shop-stock {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .shop-stock::before {
+        content: "";
+        inline-size: 0.5rem;
+        block-size: 0.5rem;
+        border-radius: 999px;
+        background: var(--primary);
+      }
+      .shop-stock[data-stock="low"]::before {
+        background: oklch(0.77 0.16 70);
+      }
+      .shop-stock[data-stock="out"]::before {
+        background: var(--destructive);
+      }
+      .shop-wl-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+
+      .shop-profile .avatar {
+        inline-size: 2.25rem;
+        block-size: 2.25rem;
+      }
+      .shop-wl-head .cluster .btn {
+        flex: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="shop-header">
+      <div class="wrapper shop-header-row">
+        <a href="#" class="block-logo">
+          <span class="block-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+          Acme Store
+        </a>
+        <nav class="shop-nav" aria-label="Main">
+          <a href="#" aria-current="page">Shop</a>
+          <a href="#">New in</a>
+          <a href="#">Collections</a>
+          <a href="#">Journal</a>
+        </nav>
+        <div class="input-group shop-header-search">
+          <input type="search" placeholder="Search products..." aria-label="Search products" />
+          <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        </div>
+        <div class="shop-header-actions">
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Wishlist">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </a>
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Account">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </a>
+          <a
+            href="#"
+            class="btn shop-cart-btn"
+            data-variant="ghost"
+            data-size="icon"
+            aria-label="Cart, 3 items">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+            <span class="shop-count" data-cart-count>3</span>
+          </a>
+        </div>
+      </div>
+    </header>
+    <main class="wrapper shop-page">
+      <div class="shop-account">
+        <nav class="shop-account-nav" aria-label="Account">
+          <div class="shop-profile">
+            <img class="avatar" src="assets/placeholder.svg" alt />
+            <p>
+              Olivia Martin
+              <small>olivia@example.com</small>
+            </p>
+          </div>
+          <ul>
+            <li>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                Overview
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73zm1 .27V12"/><path d="M3.29 7L12 12l8.71-5M7.5 4.27l9 5.15"/></svg>
+                Orders
+              </a>
+            </li>
+            <li>
+              <a href="#" aria-current="page">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+                Wishlist
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                Addresses
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                Payment methods
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                Account settings
+              </a>
+            </li>
+            <li><hr /></li>
+            <li>
+              <button type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                Sign out
+              </button>
+            </li>
+          </ul>
+        </nav>
+        <div class="stack" data-gap="8">
+          <div class="stack" data-gap="6" data-wishlist>
+            <div class="shop-wl-head">
+              <div class="stack" data-gap="1">
+                <h1 class="shop-h1">Wishlist</h1>
+                <p class="shop-lead" data-wish-label>5 items</p>
+              </div>
+              <div class="cluster" data-gap="2" data-wish-filled>
+                <button type="button" class="btn" data-variant="outline">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
+                  Share
+                </button>
+                <button type="button" class="btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+                  Add all to cart
+                </button>
+              </div>
+            </div>
+            <div class="shop-cards" data-wish-filled>
+              <article class="shop-card" data-wish-item>
+                <div class="shop-card-media">
+                  <img src="assets/placeholder.svg" alt />
+                  <span class="badge shop-card-badge" data-variant="destructive">Sale</span>
+                  <div class="shop-card-tools">
+                    <button
+                      type="button"
+                      class="btn"
+                      data-variant="outline"
+                      data-size="icon-sm"
+                      aria-label="Remove Merino Crew Sweater from wishlist"
+                      data-wish-remove>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="shop-card-body">
+                  <h3 class="shop-card-name"><a href="#">Merino Crew Sweater</a></h3>
+                  <p class="shop-line-meta">Charcoal · Size M</p>
+                  <div class="cluster" data-justify="between">
+                    <p class="shop-price">
+                      <strong>$89.00</strong>
+                      <s>$119.00</s>
+                      <span class="sr-only">Was $119.00</span>
+                    </p>
+                    <span class="shop-stock" data-stock="in">In stock</span>
+                  </div>
+                </div>
+                <div class="shop-card-actions">
+                  <button type="button" class="btn" data-wish-move>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+                    Move to cart
+                  </button>
+                </div>
+              </article>
+              <article class="shop-card" data-wish-item>
+                <div class="shop-card-media">
+                  <img src="assets/placeholder.svg" alt />
+                  <span class="badge shop-card-badge">New</span>
+                  <div class="shop-card-tools">
+                    <button
+                      type="button"
+                      class="btn"
+                      data-variant="outline"
+                      data-size="icon-sm"
+                      aria-label="Remove Arc Table Lamp from wishlist"
+                      data-wish-remove>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="shop-card-body">
+                  <h3 class="shop-card-name"><a href="#">Arc Table Lamp</a></h3>
+                  <p class="shop-line-meta">Brass · Size M</p>
+                  <div class="cluster" data-justify="between">
+                    <p class="shop-price"><strong>$129.00</strong></p>
+                    <span class="shop-stock" data-stock="in">In stock</span>
+                  </div>
+                </div>
+                <div class="shop-card-actions">
+                  <button type="button" class="btn" data-wish-move>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+                    Move to cart
+                  </button>
+                </div>
+              </article>
+              <article class="shop-card" data-wish-item>
+                <div class="shop-card-media">
+                  <img src="assets/placeholder.svg" alt />
+                  <span class="badge shop-card-badge" data-variant="destructive">Sale</span>
+                  <div class="shop-card-tools">
+                    <button
+                      type="button"
+                      class="btn"
+                      data-variant="outline"
+                      data-size="icon-sm"
+                      aria-label="Remove Linen Throw Pillow from wishlist"
+                      data-wish-remove>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="shop-card-body">
+                  <h3 class="shop-card-name"><a href="#">Linen Throw Pillow</a></h3>
+                  <p class="shop-line-meta">Clay · Size M</p>
+                  <div class="cluster" data-justify="between">
+                    <p class="shop-price">
+                      <strong>$32.00</strong>
+                      <s>$40.00</s>
+                      <span class="sr-only">Was $40.00</span>
+                    </p>
+                    <span class="shop-stock" data-stock="out">Out of stock</span>
+                  </div>
+                </div>
+                <div class="shop-card-actions">
+                  <button type="button" class="btn" data-variant="outline">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>
+                    Notify me
+                  </button>
+                </div>
+              </article>
+              <article class="shop-card" data-wish-item>
+                <div class="shop-card-media">
+                  <img src="assets/placeholder.svg" alt />
+                  <span class="badge shop-card-badge" data-variant="secondary">Bestseller</span>
+                  <div class="shop-card-tools">
+                    <button
+                      type="button"
+                      class="btn"
+                      data-variant="outline"
+                      data-size="icon-sm"
+                      aria-label="Remove Leather Card Holder from wishlist"
+                      data-wish-remove>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="shop-card-body">
+                  <h3 class="shop-card-name"><a href="#">Leather Card Holder</a></h3>
+                  <p class="shop-line-meta">Tan · Size M</p>
+                  <div class="cluster" data-justify="between">
+                    <p class="shop-price"><strong>$29.00</strong></p>
+                    <span class="shop-stock" data-stock="in">In stock</span>
+                  </div>
+                </div>
+                <div class="shop-card-actions">
+                  <button type="button" class="btn" data-wish-move>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+                    Move to cart
+                  </button>
+                </div>
+              </article>
+              <article class="shop-card" data-wish-item>
+                <div class="shop-card-media">
+                  <img src="assets/placeholder.svg" alt />
+                  <span class="badge shop-card-badge">New</span>
+                  <div class="shop-card-tools">
+                    <button
+                      type="button"
+                      class="btn"
+                      data-variant="outline"
+                      data-size="icon-sm"
+                      aria-label="Remove Everyday Tote from wishlist"
+                      data-wish-remove>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="shop-card-body">
+                  <h3 class="shop-card-name"><a href="#">Everyday Tote</a></h3>
+                  <p class="shop-line-meta">Natural · Size M</p>
+                  <div class="cluster" data-justify="between">
+                    <p class="shop-price"><strong>$48.00</strong></p>
+                    <span class="shop-stock" data-stock="in">In stock</span>
+                  </div>
+                </div>
+                <div class="shop-card-actions">
+                  <button type="button" class="btn" data-wish-move>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+                    Move to cart
+                  </button>
+                </div>
+              </article>
+            </div>
+            <section class="empty" data-wish-empty hidden>
+              <header>
+                <figure><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></figure>
+                <h3>Your wishlist is empty</h3>
+                <p>Tap the heart on any product to save it for later.</p>
+              </header>
+              <footer><a href="#" class="btn">Discover products</a></footer>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      document.querySelectorAll("[data-wishlist]").forEach((list) => {
+        const sync = () => {
+          const n = list.querySelectorAll("[data-wish-item]").length;
+          document.querySelectorAll("[data-wish-count]").forEach((el) => {
+            el.textContent = n;
+            el.dataset.count = n;
+          });
+          document.querySelectorAll("[data-wish-label]").forEach((el) => {
+            el.textContent = n + (n === 1 ? " item" : " items");
+          });
+          list.querySelectorAll("[data-wish-filled]").forEach((el) => {
+            el.hidden = !n;
+          });
+          list.querySelectorAll("[data-wish-empty]").forEach((el) => {
+            el.hidden = !!n;
+          });
+        };
+        list.addEventListener("click", (e) => {
+          const b = e.target.closest("[data-wish-remove], [data-wish-move]");
+          if (!b) return;
+          if (b.matches("[data-wish-move]"))
+            document.querySelectorAll("[data-cart-count]").forEach((el) => {
+              el.textContent = (parseInt(el.textContent, 10) || 0) + 1;
+            });
+          b.closest("[data-wish-item]").remove();
+          sync();
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -12,6 +12,17 @@
   - Bottom navigation: `bottom-nav-01` tab bar with a cart badge, `bottom-nav-02` floating pill tab bar, `bottom-nav-03` mobile product page with a sticky add-to-cart bar.
 - Create: a Corner Smoothing slider for Squircle and Smooth corners (disabled without a radius). It sets `corner-shape: superellipse(k)` for browsers with native `corner-shape` and `--corner-smoothing` for the Monoco fallback (`auvyx.corners.min.js`), which now also maps any `superellipse(k)` to the matching Monoco curve.
 - Create: a Font Size slider (12–20px base text). It scales every `--text-*` token the components use, so spacing and radius stay the same, and sets `body { font-size: var(--text-base) }`.
+- More ecommerce blocks (12, HTML and React, every icon library):
+  - Product cards: `product-card-01` grid cards (badge, rating, colors, wishlist toggle, quick add), `product-card-02` horizontal cards with description and stock, `product-card-03` cards with color swatches.
+  - Product: `product-01` product page (gallery, color and size, quantity, add to cart, perks, details, reviews, related products), `product-02` quick view Dialog.
+  - Wishlist: `wishlist-01` wishlist grid in the account area (move to cart, remove, empty state), `wishlist-02` wishlist table.
+  - Compare: `compare-01` comparison table (sticky labels, remove, highlight differences), `compare-02` compare checkboxes with a floating compare tray.
+  - Search: `search-01` product search Command dialog (⌘K) with recent searches, categories and product results, `search-02` results page with filters, sort, filter chips, grid and list views and pagination.
+  - Cart: `cart-05` mini cart in a bottom Drawer.
+
+### Fixed
+
+- Block styles with a selector list (`a, b { … }`) were dropped when one selector's block class was not used in that block, so some ecommerce blocks lost rules such as the dark-mode image filter. The rules are now one selector each.
 
 ## @auvyx/ui 0.1.3 - 2026-11-06
 

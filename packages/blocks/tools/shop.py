@@ -45,6 +45,15 @@ SHOP_ICONS = {
     "bell": '<path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/>',
     "clock": '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
     "info": '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+    "eye": '<path d="M2.062 12.348a1 1 0 0 1 0-.696a10.75 10.75 0 0 1 19.876 0a1 1 0 0 1 0 .696a10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/>',
+    "arrow-right-left": '<path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/>',
+    "sliders-horizontal": '<path d="M10 5H3m9 14H3M14 3v4m2 10v4m5-9h-9m9 7h-5m5-14h-7m-6 5v4m0-2H3"/>',
+    "trending-up": '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+    "list": '<path d="M3 5h.01"/><path d="M3 12h.01"/><path d="M3 19h.01"/><path d="M8 5h13"/><path d="M8 12h13"/><path d="M8 19h13"/>',
+    "rotate-ccw": '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+    "shield-check": '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12l2 2l4-4"/>',
+    "chevron-right": '<path d="m9 18 6-6-6-6"/>',
+    "share-2": '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/>',
 }
 
 
@@ -104,7 +113,8 @@ SHOP_CSS = """
   .shop-thumb { flex: none; inline-size: 5rem; block-size: 5rem; border-radius: var(--radius); border: 1px solid var(--border); background: var(--muted); object-fit: cover; }
   .shop-thumb[data-size='sm'] { inline-size: 3.5rem; block-size: 3.5rem; }
   .shop-thumb[data-size='xs'] { inline-size: 2.5rem; block-size: 2.5rem; border-radius: calc(var(--radius) - 2px); }
-  html.dark .shop-thumb, html.dark .shop-product-img { filter: brightness(0.5) grayscale(1); }
+  html.dark .shop-thumb { filter: brightness(0.5) grayscale(1); }
+  html.dark .shop-product-img { filter: brightness(0.5) grayscale(1); }
   .shop-lines { list-style: none; margin: 0; padding: 0; }
   .shop-lines > li { display: flex; gap: 1rem; padding-block: 1.25rem; border-block-end: 1px solid var(--border); }
   .shop-lines > li:first-child { padding-block-start: 0; }
@@ -1399,6 +1409,876 @@ add("bottom-nav-03", "Bottom Navigation 03", "A mobile product page with a stick
   </div>
 </div>
 """, SHOP_CSS + "\n  .shop-swatches label:has(:disabled) { opacity: 0.5; text-decoration: line-through; cursor: not-allowed; }", scripts=script(QTY_JS))
+
+
+# ================================================================== catalog data
+ITEMS = [
+    {"id": "tote", "name": "Everyday Tote", "cat": "Bags", "price": 48.00, "was": None, "rating": 4.7, "reviews": 128, "badge": "New", "colors": [("Natural", "#e8dcc4"), ("Black", "#262626"), ("Olive", "#6b6b3a")], "desc": "Heavy canvas tote with a leather handle and an inner pocket."},
+    {"id": "sweater", "name": "Merino Crew Sweater", "cat": "Apparel", "price": 89.00, "was": 119.00, "rating": 4.8, "reviews": 214, "badge": "Sale", "colors": [("Charcoal", "#3f3f46"), ("Oat", "#d6cbb5"), ("Navy", "#1e3a5f")], "desc": "Extra-fine merino in a relaxed fit. Knitted in Portugal."},
+    {"id": "pourover", "name": "Ceramic Pour-Over Set", "cat": "Kitchen", "price": 36.50, "was": None, "rating": 4.6, "reviews": 87, "badge": None, "colors": [("White", "#f4f4f5"), ("Sand", "#d8c3a5")], "desc": "Dripper, carafe and two cups in matte stoneware."},
+    {"id": "pillow", "name": "Linen Throw Pillow", "cat": "Home", "price": 32.00, "was": 40.00, "rating": 4.5, "reviews": 64, "badge": "Sale", "colors": [("Clay", "#c2856a"), ("Sage", "#9caf88"), ("Ivory", "#f1ead8")], "desc": "Stonewashed linen cover with a feather insert."},
+    {"id": "card", "name": "Leather Card Holder", "cat": "Accessories", "price": 29.00, "was": None, "rating": 4.9, "reviews": 301, "badge": "Bestseller", "colors": [("Tan", "#b07a4f"), ("Black", "#262626")], "desc": "Vegetable-tanned leather with four card slots."},
+    {"id": "mug", "name": "Stoneware Mug", "cat": "Kitchen", "price": 24.00, "was": None, "rating": 4.4, "reviews": 52, "badge": None, "colors": [("Speckle", "#e7e2d8"), ("Ink", "#2b3442")], "desc": "Set of two hand-glazed mugs, 12 oz."},
+    {"id": "lamp", "name": "Arc Table Lamp", "cat": "Home", "price": 129.00, "was": None, "rating": 4.7, "reviews": 39, "badge": "New", "colors": [("Brass", "#b8933f"), ("Black", "#262626")], "desc": "Dimmable LED table lamp with a brushed metal arm."},
+    {"id": "scarf", "name": "Wool Blend Scarf", "cat": "Apparel", "price": 45.00, "was": 60.00, "rating": 4.3, "reviews": 28, "badge": "Sale", "colors": [("Camel", "#c19a6b"), ("Grey", "#9ca3af")], "desc": "Soft brushed wool blend, 180 × 30 cm."},
+]
+
+CATALOG_CSS = """
+  .shop-card { position: relative; display: flex; flex-direction: column; gap: 0.75rem; }
+  .shop-card-media { position: relative; overflow: hidden; border-radius: var(--radius); background: var(--muted); }
+  .shop-card-media > img { display: block; aspect-ratio: 4 / 5; inline-size: 100%; object-fit: cover; transition: transform 300ms ease; }
+  .shop-card:hover .shop-card-media > img { transform: scale(1.03); }
+  html.dark .shop-card-media > img { filter: brightness(0.5) grayscale(1); }
+  html.dark .shop-pdp-main { filter: brightness(0.5) grayscale(1); }
+  html.dark .shop-pdp-thumbs img { filter: brightness(0.5) grayscale(1); }
+  .shop-card-badge { position: absolute; inset-block-start: 0.75rem; inset-inline-start: 0.75rem; }
+  .shop-card-tools { position: absolute; inset-block-start: 0.5rem; inset-inline-end: 0.5rem; display: grid; gap: 0.375rem; }
+  .shop-card-tools .btn { background: var(--background); }
+  .shop-card-quick { position: absolute; inset-inline: 0.75rem; inset-block-end: 0.75rem; opacity: 0; transform: translateY(0.5rem); transition: opacity 200ms ease, transform 200ms ease; }
+  .shop-card:hover .shop-card-quick, .shop-card:focus-within .shop-card-quick { opacity: 1; transform: none; }
+  @media (hover: none) { .shop-card-quick { opacity: 1; transform: none; } }
+  .shop-card-body { display: grid; gap: 0.25rem; }
+  .shop-card-cat { margin: 0; font-size: 0.75rem; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: 0.04em; }
+  .shop-card-name { margin: 0; font-size: 0.9375rem; font-weight: 500; }
+  .shop-card-name a { color: inherit; text-decoration: none; }
+  .shop-card-name a::after { content: ''; position: absolute; inset: 0; }
+  .shop-card-name a:focus-visible { outline: none; }
+  .shop-card:has(.shop-card-name a:focus-visible) .shop-card-media { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .shop-card-tools { z-index: 2; }
+  .shop-card-quick { z-index: 2; }
+  .shop-card-actions { position: relative; z-index: 1; }
+  .shop-dots { position: relative; z-index: 1; }
+  .shop-cmp-check { position: relative; z-index: 1; }
+  .shop-colors { position: relative; z-index: 1; }
+  .shop-price { display: flex; align-items: baseline; gap: 0.5rem; margin: 0; font-variant-numeric: tabular-nums; }
+  .shop-price strong { font-size: 0.9375rem; font-weight: 600; }
+  .shop-price s { font-size: 0.8125rem; color: var(--muted-foreground); }
+  .shop-price[data-size='lg'] strong { font-size: 1.5rem; }
+  .shop-price[data-size='lg'] s { font-size: 1rem; }
+  .shop-wish[aria-pressed='true'] { color: var(--destructive); }
+  .shop-wish[aria-pressed='true'] svg { fill: currentColor; }
+  .shop-dots { display: flex; gap: 0.375rem; }
+  .shop-dots > span { inline-size: 0.875rem; block-size: 0.875rem; border-radius: 999px; background: var(--dot); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 15%, transparent); }
+  .shop-colors { display: flex; flex-wrap: wrap; gap: 0.5rem; border: 0; margin: 0; padding: 0; }
+  .shop-colors legend { margin-block-end: 0.5rem; font-size: 0.875rem; font-weight: 500; }
+  .shop-colors legend span { color: var(--muted-foreground); font-weight: 400; }
+  .shop-colors label { position: relative; display: inline-flex; inline-size: 1.75rem; block-size: 1.75rem; border-radius: 999px; background: var(--dot); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 15%, transparent); cursor: pointer; }
+  .shop-colors input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+  .shop-colors label:has(:checked) { outline: 2px solid var(--primary); outline-offset: 2px; }
+  .shop-colors label:has(:focus-visible) { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .shop-colors[data-size='sm'] label { inline-size: 1.25rem; block-size: 1.25rem; }
+  .shop-card-actions { display: flex; gap: 0.5rem; }
+  .shop-card-actions > .btn:first-child { flex: 1; }
+  .shop-cards { display: grid; gap: 2rem 1.5rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr)); }
+  .shop-cards[data-layout='list'] { grid-template-columns: 1fr; gap: 1rem; }
+  .shop-hcard { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 1.25rem; align-items: start; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius); }
+  .shop-hcard .shop-card-media > img { aspect-ratio: 1; }
+  .shop-hcard-body { display: grid; gap: 0.5rem; }
+  .shop-hcard-body p { margin: 0; }
+  .shop-hcard-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+  .shop-hcard-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-block-start: 0.25rem; }
+  @media (width >= 40rem) { .shop-hcard { grid-template-columns: 12rem minmax(0, 1fr); } }
+  .shop-stock { display: inline-flex; align-items: center; gap: 0.375rem; font-size: 0.8125rem; color: var(--muted-foreground); }
+  .shop-stock::before { content: ''; inline-size: 0.5rem; block-size: 0.5rem; border-radius: 999px; background: var(--primary); }
+  .shop-stock[data-stock='low']::before { background: oklch(0.77 0.16 70); }
+  .shop-stock[data-stock='out']::before { background: var(--destructive); }
+  .shop-crumbs { font-size: 0.875rem; }
+  .shop-pdp { display: grid; gap: 2rem; align-items: start; }
+  @media (width >= 56rem) { .shop-pdp { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 3rem; } .shop-pdp-info { position: sticky; inset-block-start: 5.5rem; } }
+  .shop-pdp-gallery { display: grid; gap: 0.75rem; }
+  .shop-pdp-main { display: block; aspect-ratio: 1; inline-size: 100%; border-radius: var(--radius); background: var(--muted); object-fit: cover; }
+  .shop-pdp-thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; border: 0; margin: 0; padding: 0; }
+  .shop-pdp-thumbs label { position: relative; border-radius: var(--radius); overflow: hidden; cursor: pointer; opacity: 0.7; }
+  .shop-pdp-thumbs label:has(:checked) { opacity: 1; outline: 2px solid var(--primary); outline-offset: 2px; }
+  .shop-pdp-thumbs label:has(:focus-visible) { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .shop-pdp-thumbs input { position: absolute; opacity: 0; }
+  .shop-pdp-thumbs img { display: block; aspect-ratio: 1; inline-size: 100%; object-fit: cover; background: var(--muted); }
+  .shop-pdp-info { display: grid; gap: 1.5rem; }
+  .shop-pdp-title { margin: 0; font-size: 1.875rem; font-weight: 600; letter-spacing: -0.025em; text-wrap: balance; }
+  .shop-pdp-buy { display: flex; gap: 0.75rem; }
+  .shop-pdp-buy > .btn[data-size='lg'] { flex: 1; }
+  .shop-pdp-buy .shop-qty > input { block-size: 2.5rem; }
+  .shop-perks { display: grid; gap: 0.75rem; margin: 0; padding: 1rem; list-style: none; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.875rem; }
+  .shop-perks li { display: flex; gap: 0.75rem; align-items: center; }
+  .shop-perks svg { inline-size: 1.125rem; block-size: 1.125rem; flex: none; color: var(--muted-foreground); }
+  .shop-reviews { display: grid; gap: 2rem; }
+  @media (width >= 48rem) { .shop-reviews { grid-template-columns: 16rem minmax(0, 1fr); } }
+  .shop-bars { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; font-size: 0.8125rem; }
+  .shop-bars li { display: grid; grid-template-columns: 2rem minmax(0, 1fr) 2.5rem; align-items: center; gap: 0.5rem; }
+  .shop-bars li > span:last-child { text-align: end; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+  .shop-review-list { display: grid; gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
+  .shop-review-list li { display: grid; gap: 0.5rem; padding-block-end: 1.5rem; border-block-end: 1px solid var(--border); }
+  .shop-review-list p { margin: 0; font-size: 0.875rem; }
+  .shop-stars { display: inline-flex; gap: 0.125rem; color: var(--foreground); }
+  .shop-stars svg { inline-size: 0.875rem; block-size: 0.875rem; fill: currentColor; }
+  .shop-stars svg[data-empty] { fill: none; color: var(--muted-foreground); }
+  .shop-section { display: grid; gap: 1.5rem; padding-block-start: 3rem; }
+  .shop-qv { inline-size: min(56rem, calc(100vw - 2rem)); max-inline-size: none; }
+  .shop-qv-grid { display: grid; gap: 1.5rem; }
+  @media (width >= 40rem) { .shop-qv-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+  .shop-qv-grid .shop-pdp-main { aspect-ratio: 4 / 5; }
+  .shop-wl-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; }
+  .shop-cmp-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+  .shop-cmp { inline-size: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  .shop-cmp th, .shop-cmp td { padding: 0.875rem 1rem; border-block-end: 1px solid var(--border); text-align: start; vertical-align: top; min-inline-size: 13rem; }
+  .shop-cmp tr:last-child > * { border-block-end: 0; }
+  .shop-cmp tbody th { position: sticky; inset-inline-start: 0; z-index: 1; min-inline-size: 9rem; background: var(--muted); color: var(--muted-foreground); font-weight: 500; }
+  .shop-cmp thead th:first-child { position: sticky; inset-inline-start: 0; z-index: 1; background: var(--background); }
+  .shop-cmp thead td { position: relative; }
+  .shop-cmp-product { display: grid; gap: 0.75rem; }
+  .shop-cmp-product img { aspect-ratio: 1; inline-size: 100%; max-inline-size: 10rem; border-radius: var(--radius); background: var(--muted); object-fit: cover; }
+  html.dark .shop-cmp-product img { filter: brightness(0.5) grayscale(1); }
+  html.dark .shop-tray img { filter: brightness(0.5) grayscale(1); }
+  .shop-cmp-product h3 { margin: 0; font-size: 0.9375rem; font-weight: 500; }
+  .shop-cmp-remove { position: absolute; inset-block-start: 0.5rem; inset-inline-end: 0.5rem; }
+  .shop-cmp[data-highlight] tr[data-diff] > td { background: color-mix(in oklab, var(--primary) 7%, transparent); }
+  .shop-cmp[data-highlight] tr:not([data-diff]):not(:first-child) { opacity: 0.55; }
+  .shop-cmp svg.shop-yes { inline-size: 1rem; block-size: 1rem; color: var(--primary); }
+  .shop-cmp svg.shop-no { inline-size: 1rem; block-size: 1rem; color: var(--muted-foreground); }
+  .shop-cmp-check { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; }
+  .shop-tray { position: fixed; inset-block-end: 1rem; inset-inline: 1rem; z-index: 20; display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; max-inline-size: 48rem; margin-inline: auto; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px); background: var(--popover); color: var(--popover-foreground); box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.3); }
+  .shop-tray-slots { display: flex; gap: 0.5rem; flex: 1; }
+  .shop-tray-slots > li { position: relative; display: flex; align-items: center; justify-content: center; inline-size: 3rem; block-size: 3rem; border: 1px dashed var(--border); border-radius: var(--radius); color: var(--muted-foreground); font-size: 0.75rem; }
+  .shop-tray-slots > li img { inline-size: 100%; block-size: 100%; border-radius: inherit; object-fit: cover; }
+  .shop-tray-slots { list-style: none; margin: 0; padding: 0; }
+  .shop-tray p { margin: 0; font-size: 0.875rem; }
+  .shop-search-trigger { display: flex; align-items: center; gap: 0.5rem; inline-size: 100%; max-inline-size: 22rem; margin-inline-start: auto; padding-inline: 0.75rem; block-size: 2.25rem; border: 1px solid var(--input); border-radius: var(--radius); background: transparent; color: var(--muted-foreground); font: inherit; font-size: 0.875rem; cursor: pointer; }
+  .shop-search-trigger:hover { background: var(--accent); }
+  .shop-search-trigger svg { inline-size: 1rem; block-size: 1rem; }
+  .shop-search-trigger kbd { margin-inline-start: auto; }
+  .shop-search .command { inline-size: min(40rem, calc(100vw - 2rem)); }
+  .shop-search [role='menuitem'] img { inline-size: 2.5rem; block-size: 2.5rem; border-radius: calc(var(--radius) - 2px); object-fit: cover; background: var(--muted); }
+  .shop-search [role='menuitem'] .shop-hit { display: grid; flex: 1; min-inline-size: 0; }
+  .shop-search [role='menuitem'] .shop-hit small { color: var(--muted-foreground); font-size: 0.75rem; }
+  .shop-search [role='menuitem'] .shop-hit-price { font-variant-numeric: tabular-nums; font-size: 0.8125rem; }
+  .shop-search-foot { display: flex; gap: 1rem; padding: 0.625rem 0.75rem; border-block-start: 1px solid var(--border); font-size: 0.75rem; color: var(--muted-foreground); }
+  .shop-search-foot span { display: inline-flex; align-items: center; gap: 0.375rem; }
+  .shop-results { display: grid; gap: 2rem; align-items: start; }
+  @media (width >= 56rem) { .shop-results { grid-template-columns: 15rem minmax(0, 1fr); } }
+  .shop-filters-panel { display: grid; gap: 0.25rem; }
+  .shop-filters-panel .accordion summary { font-size: 0.875rem; }
+  .shop-check-list { display: grid; gap: 0.625rem; padding-block-end: 0.5rem; }
+  .shop-check-list label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; }
+  .shop-check-list label span { margin-inline-start: auto; color: var(--muted-foreground); font-size: 0.75rem; }
+  .shop-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; }
+  .shop-toolbar .select { inline-size: auto; }
+  .shop-chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .shop-chip-row .badge { gap: 0.25rem; }
+  .shop-chip-row .badge svg { inline-size: 0.75rem; block-size: 0.75rem; }
+  .shop-range-out { display: flex; justify-content: space-between; font-size: 0.8125rem; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+  .shop-drawer-lines { overflow-y: auto; max-block-size: 45vh; padding-inline: 1rem; }
+  .shop-drawer-foot { display: grid; gap: 0.75rem; }
+"""
+
+
+def stars(r):
+    full = int(round(r))
+    return '<span class="shop-stars" aria-hidden="true">' + "".join(si("star") if i < full else si("star").replace("<svg ", "<svg data-empty ") for i in range(5)) + "</span>"
+
+
+def rating(p):
+    return f'<p class="shop-rating">{si("star")}{p["rating"]} <span>({p["reviews"]})</span></p>'
+
+
+def price(p, size=None):
+    sz = f' data-size="{size}"' if size else ""
+    was = f'<s>{money(p["was"])}</s><span class="sr-only">Was {money(p["was"])}</span>' if p["was"] else ""
+    return f'<p class="shop-price"{sz}><strong>{money(p["price"])}</strong>{was}</p>'
+
+
+def badge(p):
+    if not p["badge"]:
+        return ""
+    v = "destructive" if p["badge"] == "Sale" else "secondary" if p["badge"] == "Bestseller" else ""
+    return f'<span class="badge shop-card-badge"{f" data-variant={chr(34)}{v}{chr(34)}" if v else ""}>{p["badge"]}</span>'
+
+
+def dots(p):
+    return '<div class="shop-dots" aria-label="' + f'{len(p["colors"])} colors">' + "".join(f'<span style="--dot: {c}" title="{n}"></span>' for n, c in p["colors"]) + "</div>"
+
+
+def wish_btn(p, pressed=False, size="icon-sm"):
+    return f'<button type="button" class="btn shop-wish" data-variant="outline" data-size="{size}" aria-pressed="{"true" if pressed else "false"}" aria-label="Save {p["name"]} to wishlist" data-wish>{si("heart")}</button>'
+
+
+def card(p, quick=None, compare=False, wished=False):
+    """Grid product card. quick: id of a quick-view dialog to open from the card."""
+    q = (f'<button type="button" class="btn" data-variant="outline" data-size="icon-sm" aria-label="Quick view {p["name"]}" commandfor="{quick}" command="show-modal">{si("eye")}</button>' if quick else "")
+    cmp = (f'<label class="shop-cmp-check"><input type="checkbox" class="input" data-compare="{p["id"]}"> Compare</label>' if compare else "")
+    return f"""<article class="shop-card">
+  <div class="shop-card-media">
+    <img src="{PH}" alt="">
+    {badge(p)}
+    <div class="shop-card-tools">{wish_btn(p, wished)}{q}</div>
+    <button type="button" class="btn shop-card-quick" data-size="sm">{si("plus")}Quick add</button>
+  </div>
+  <div class="shop-card-body">
+    <p class="shop-card-cat">{p["cat"]}</p>
+    <h3 class="shop-card-name"><a href="#">{p["name"]}</a></h3>
+    {rating(p)}
+    <div class="cluster" data-justify="between">{price(p)}{dots(p)}</div>
+    {cmp}
+  </div>
+</article>"""
+
+
+WISH_JS = """
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-wish]');
+  if (!b) return;
+  const on = b.getAttribute('aria-pressed') !== 'true';
+  b.setAttribute('aria-pressed', String(on));
+  document.querySelectorAll('[data-wish-count]').forEach((el) => {
+    const n = Math.max(0, (parseInt(el.textContent, 10) || 0) + (on ? 1 : -1));
+    el.textContent = n;
+    el.dataset.count = n;
+  });
+});
+"""
+
+CAT_CSS = SHOP_CSS + CATALOG_CSS
+
+
+def wish_header(n):
+    return store_header(2, cart_button=None).replace(
+        f'<a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Wishlist">{si("heart")}</a>',
+        f'<a href="#" class="btn shop-cart-btn" data-variant="ghost" data-size="icon" aria-label="Wishlist">{si("heart")}<span class="shop-count" data-wish-count data-count="{n}">{n}</span></a>')
+
+
+# ================================================================== product cards
+add("product-card-01", "Product Card 01", "Product cards with badges, rating, colors, a wishlist toggle and quick add.", "product-card", f"""
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="6">
+    <div class="cluster" data-justify="between" data-gap="4">
+      <h1 class="shop-h1">Best sellers</h1>
+      <a href="#" class="btn" data-variant="link" data-size="sm">Shop all{si("arrow-right")}</a>
+    </div>
+    <div class="shop-cards">
+      {"".join(card(p, wished=(i == 1)) for i, p in enumerate(ITEMS[:8]))}
+    </div>
+  </div>
+</main>
+""", CAT_CSS, scripts=script(WISH_JS))
+
+
+def hcard(p, stock=("in", "In stock")):
+    return f"""<article class="shop-hcard shop-card">
+  <div class="shop-card-media"><img src="{PH}" alt="">{badge(p)}</div>
+  <div class="shop-hcard-body">
+    <div class="shop-hcard-top">
+      <div class="stack" data-gap="1">
+        <p class="shop-card-cat">{p["cat"]}</p>
+        <h3 class="shop-card-name"><a href="#">{p["name"]}</a></h3>
+        {rating(p)}
+      </div>
+      {price(p)}
+    </div>
+    <p class="shop-lead">{p["desc"]}</p>
+    <div class="cluster" data-gap="3">{dots(p)}<span class="shop-stock" data-stock="{stock[0]}">{stock[1]}</span></div>
+    <div class="shop-hcard-foot shop-card-actions">
+      <button type="button" class="btn" data-size="sm">{si("shopping-bag")}Add to cart</button>
+      {wish_btn(p)}
+      <button type="button" class="btn" data-variant="outline" data-size="icon-sm" aria-label="Compare {p["name"]}">{si("arrow-right-left")}</button>
+    </div>
+  </div>
+</article>"""
+
+
+STOCKS = [("in", "In stock"), ("low", "Only 3 left"), ("in", "In stock"), ("out", "Out of stock")]
+add("product-card-02", "Product Card 02", "Horizontal product cards with description, stock and actions.", "product-card", f"""
+<main class="wrapper shop-page" data-size="md">
+  <div class="stack" data-gap="6">
+    <h1 class="shop-h1">Home &amp; kitchen</h1>
+    <div class="shop-cards" data-layout="list">
+      {"".join(hcard(p, STOCKS[i]) for i, p in enumerate([ITEMS[2], ITEMS[3], ITEMS[6], ITEMS[5]]))}
+    </div>
+  </div>
+</main>
+""", CAT_CSS + "\n  .shop-hcard-foot .btn:first-child { flex: none; }", scripts=script(WISH_JS))
+
+
+def swatch_card(p, i):
+    colors = "".join(f'<label style="--dot: {c}" title="{n}"><input type="radio" name="pc3-{i}" value="{n}" aria-label="{n}"{" checked" if j == 0 else ""}></label>' for j, (n, c) in enumerate(p["colors"]))
+    return f"""<article class="shop-card" data-swatch-card>
+  <div class="shop-card-media"><img src="{PH}" alt="">{badge(p)}<div class="shop-card-tools">{wish_btn(p)}</div></div>
+  <div class="shop-card-body">
+    <div class="shop-hcard-top"><h3 class="shop-card-name"><a href="#">{p["name"]}</a></h3>{price(p)}</div>
+    <p class="shop-line-meta" data-color-label>{p["colors"][0][0]}</p>
+    <fieldset class="shop-colors" data-size="sm"><legend class="sr-only">Color</legend>{colors}</fieldset>
+  </div>
+  <div class="shop-card-actions"><button type="button" class="btn" data-variant="outline">{si("shopping-bag")}Add to cart</button></div>
+</article>"""
+
+
+SWATCH_JS = """
+document.querySelectorAll('[data-swatch-card]').forEach((card) => {
+  card.addEventListener('change', (e) => {
+    if (e.target.matches('input[type=radio]')) card.querySelector('[data-color-label]').textContent = e.target.value;
+  });
+});
+"""
+add("product-card-03", "Product Card 03", "Product cards with color swatches and a full-width add to cart.", "product-card", f"""
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="6">
+    <div class="stack" data-gap="1">
+      <h1 class="shop-h1">Pick your color</h1>
+      <p class="shop-lead">Every piece comes in seasonal colors.</p>
+    </div>
+    <div class="shop-cards">
+      {"".join(swatch_card(p, i) for i, p in enumerate([ITEMS[0], ITEMS[1], ITEMS[3], ITEMS[4]]))}
+    </div>
+  </div>
+</main>
+""", CAT_CSS, scripts=script(WISH_JS + SWATCH_JS))
+
+
+# ================================================================== product details
+def gallery(prefix, n=4):
+    thumbs = "".join(f'<label><input type="radio" name="{prefix}-img" value="{i}" aria-label="Image {i + 1}"{" checked" if i == 0 else ""}><img src="{PH}" alt=""></label>' for i in range(n))
+    return f"""<div class="shop-pdp-gallery">
+  <img class="shop-pdp-main" src="{PH}" alt="Merino Crew Sweater in charcoal">
+  <fieldset class="shop-pdp-thumbs"><legend class="sr-only">Images</legend>{thumbs}</fieldset>
+</div>"""
+
+
+def color_picker(p, prefix):
+    return (f'<fieldset class="shop-colors" data-color-picker><legend>Color: <span data-color-label>{p["colors"][0][0]}</span></legend>'
+            + "".join(f'<label style="--dot: {c}" title="{n}"><input type="radio" name="{prefix}-color" value="{n}" aria-label="{n}"{" checked" if j == 0 else ""}></label>' for j, (n, c) in enumerate(p["colors"]))
+            + "</fieldset>")
+
+
+def size_picker(prefix):
+    return (f'<fieldset class="shop-swatches"><legend>Size</legend>'
+            + "".join(f'<label><input type="radio" name="{prefix}-size" value="{s_}"{" checked" if s_ == "M" else ""}{" disabled" if s_ == "XL" else ""}>{s_}</label>' for s_ in ["XS", "S", "M", "L", "XL"])
+            + "</fieldset>")
+
+
+PICKER_JS = """
+document.querySelectorAll('[data-color-picker]').forEach((f) => {
+  f.addEventListener('change', (e) => { f.querySelector('[data-color-label]').textContent = e.target.value; });
+});
+"""
+
+P = ITEMS[1]
+REVIEWS = [
+    ("Hannah K.", 5, "Oct 30, 2026", "Soft and warm without being bulky. True to size, I'm usually a medium."),
+    ("Marcus L.", 5, "Oct 21, 2026", "Second one I've bought. Still looks new after a winter of wear."),
+    ("Priya S.", 4, "Oct 4, 2026", "Lovely color. Slightly longer in the sleeves than I expected."),
+]
+bars = "".join(f'<li><span>{n} ★</span><div class="progress" role="progressbar" aria-label="{n} star reviews" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{v}"><span style="width: {v}%"></span></div><span>{v}%</span></li>' for n, v in [(5, 82), (4, 12), (3, 4), (2, 1), (1, 1)])
+reviews = "".join(f'<li><div class="cluster" data-justify="between"><strong class="shop-line-name">{a}</strong><time class="shop-line-meta">{d}</time></div>{stars(r)}<p>{t}</p></li>' for a, r, d, t in REVIEWS)
+crumb_sep = f'<li aria-hidden="true">{si("chevron-right").replace("<svg ", "<svg data-rtl-flip ")}</li>'
+
+add("product-01", "Product 01", "A product page: gallery, variants, quantity, add to cart, details and reviews.", "product", f"""
+{store_header(3)}
+<main class="wrapper shop-page" data-cart>
+  <div class="stack" data-gap="6">
+    <nav class="breadcrumb shop-crumbs" aria-label="Breadcrumb"><ol><li><a href="#">Home</a></li>{crumb_sep}<li><a href="#">Apparel</a></li>{crumb_sep}<li><span aria-current="page">{P["name"]}</span></li></ol></nav>
+    <div class="shop-pdp">
+      {gallery("p1")}
+      <div class="shop-pdp-info">
+        <div class="stack" data-gap="3">
+          <div class="cluster" data-gap="2"><span class="badge" data-variant="destructive">Sale</span><span class="shop-stock" data-stock="low">Only 3 left in M</span></div>
+          <h1 class="shop-pdp-title">{P["name"]}</h1>
+          <div class="cluster" data-gap="2">{stars(P["rating"])}<a href="#p1-reviews" class="shop-line-meta">{P["rating"]} · {P["reviews"]} reviews</a></div>
+          {price(P, "lg")}
+          <p class="shop-lead">{P["desc"]} A clean crew neck and ribbed trims make it the sweater you reach for every day.</p>
+        </div>
+        {color_picker(P, "p1")}
+        {size_picker("p1")}
+        <div class="shop-pdp-buy">
+          {qty("p1", 1)}
+          <button type="button" class="btn" data-size="lg">{si("shopping-bag")}Add to cart</button>
+          {wish_btn(P, size="icon-lg")}
+        </div>
+        <ul class="shop-perks">
+          <li>{si("truck")}<span>Free shipping on orders over $150</span></li>
+          <li>{si("rotate-ccw")}<span>Free returns within 30 days</span></li>
+          <li>{si("shield-check")}<span>2-year quality guarantee</span></li>
+        </ul>
+        <div class="accordion">
+          <details open>
+            <summary>Details</summary>
+            <section><p class="shop-lead">100% extra-fine merino wool, 16.5 micron. Relaxed fit, model is 185 cm and wears M.</p></section>
+          </details>
+          <details>
+            <summary>Care</summary>
+            <section><p class="shop-lead">Machine wash cold on a wool cycle. Dry flat. Do not tumble dry.</p></section>
+          </details>
+          <details>
+            <summary>Shipping and returns</summary>
+            <section><p class="shop-lead">Ships in 1–2 business days. Return unworn items within 30 days for a full refund.</p></section>
+          </details>
+        </div>
+      </div>
+    </div>
+    <section class="shop-section" id="p1-reviews" aria-labelledby="p1-reviews-title">
+      <h2 class="shop-h2" id="p1-reviews-title">Reviews</h2>
+      <div class="shop-reviews">
+        <div class="stack" data-gap="4">
+          <div class="stack" data-gap="1"><p class="shop-h1">{P["rating"]}</p>{stars(P["rating"])}<p class="shop-line-meta">Based on {P["reviews"]} reviews</p></div>
+          <ul class="shop-bars">{bars}</ul>
+          <button type="button" class="btn" data-variant="outline">Write a review</button>
+        </div>
+        <ul class="shop-review-list">{reviews}</ul>
+      </div>
+    </section>
+    <section class="shop-section" aria-labelledby="p1-more">
+      <h2 class="shop-h2" id="p1-more">You may also like</h2>
+      <div class="shop-cards">{"".join(card(p) for p in [ITEMS[7], ITEMS[0], ITEMS[4], ITEMS[3]])}</div>
+    </section>
+  </div>
+</main>
+""", CAT_CSS + "\n  .shop-bars .progress { block-size: 0.5rem; }", scripts=script(QTY_JS + PICKER_JS + WISH_JS))
+
+QV = ITEMS[0]
+add("product-02", "Product 02", "Product grid with a quick view dialog: images, color, quantity and add to cart.", "product", f"""
+{store_header(3)}
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="6">
+    <div class="stack" data-gap="1">
+      <h1 class="shop-h1">New in</h1>
+      <p class="shop-lead">Use the eye button on a card for a quick view.</p>
+    </div>
+    <div class="shop-cards">{"".join(card(p, quick="p2-qv") for p in ITEMS[:4])}</div>
+  </div>
+  <dialog id="p2-qv" class="dialog" closedby="any" aria-labelledby="p2-qv-title">
+    <div class="shop-qv">
+      <section>
+        <div class="shop-qv-grid">
+          <img class="shop-pdp-main" src="{PH}" alt="">
+          <div class="stack" data-gap="5">
+            <div class="stack" data-gap="2">
+              <p class="shop-card-cat">{QV["cat"]}</p>
+              <h2 class="shop-pdp-title" id="p2-qv-title">{QV["name"]}</h2>
+              {rating(QV)}
+              {price(QV, "lg")}
+              <p class="shop-lead">{QV["desc"]}</p>
+            </div>
+            {color_picker(QV, "p2")}
+            <div class="shop-pdp-buy">
+              {qty("p2", 1)}
+              <button type="button" class="btn" data-size="lg" commandfor="p2-qv" command="close">{si("shopping-bag")}Add to cart</button>
+            </div>
+            <a href="#" class="btn" data-variant="link">View full details{si("arrow-right")}</a>
+          </div>
+        </div>
+      </section>
+      <button type="button" aria-label="Close" commandfor="p2-qv" command="close">{si("x")}</button>
+    </div>
+  </dialog>
+</main>
+""", CAT_CSS, scripts=script(QTY_JS + PICKER_JS + WISH_JS))
+
+
+# ================================================================== wishlist
+def wish_card(p, i):
+    out = i == 2
+    return f"""<article class="shop-card" data-wish-item>
+  <div class="shop-card-media"><img src="{PH}" alt="">{badge(p)}
+    <div class="shop-card-tools"><button type="button" class="btn" data-variant="outline" data-size="icon-sm" aria-label="Remove {p["name"]} from wishlist" data-wish-remove>{si("x")}</button></div>
+  </div>
+  <div class="shop-card-body">
+    <h3 class="shop-card-name"><a href="#">{p["name"]}</a></h3>
+    <p class="shop-line-meta">{p["colors"][0][0]} · Size M</p>
+    <div class="cluster" data-justify="between">{price(p)}<span class="shop-stock" data-stock="{"out" if out else "in"}">{"Out of stock" if out else "In stock"}</span></div>
+  </div>
+  <div class="shop-card-actions">{f'<button type="button" class="btn" data-variant="outline">{si("bell")}Notify me</button>' if out else f'<button type="button" class="btn" data-wish-move>{si("shopping-bag")}Move to cart</button>'}</div>
+</article>"""
+
+
+WISHLIST_JS = """
+document.querySelectorAll('[data-wishlist]').forEach((list) => {
+  const sync = () => {
+    const n = list.querySelectorAll('[data-wish-item]').length;
+    document.querySelectorAll('[data-wish-count]').forEach((el) => { el.textContent = n; el.dataset.count = n; });
+    document.querySelectorAll('[data-wish-label]').forEach((el) => { el.textContent = n + (n === 1 ? ' item' : ' items'); });
+    list.querySelectorAll('[data-wish-filled]').forEach((el) => { el.hidden = !n; });
+    list.querySelectorAll('[data-wish-empty]').forEach((el) => { el.hidden = !!n; });
+  };
+  list.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-wish-remove], [data-wish-move]');
+    if (!b) return;
+    if (b.matches('[data-wish-move]')) document.querySelectorAll('[data-cart-count]').forEach((el) => { el.textContent = (parseInt(el.textContent, 10) || 0) + 1; });
+    b.closest('[data-wish-item]').remove();
+    sync();
+  });
+});
+"""
+
+WISH_EMPTY = f"""<section class="empty" data-wish-empty hidden>
+  <header>
+    <figure>{si("heart")}</figure>
+    <h3>Your wishlist is empty</h3>
+    <p>Tap the heart on any product to save it for later.</p>
+  </header>
+  <footer><a href="#" class="btn">Discover products</a></footer>
+</section>"""
+
+wl_items = [ITEMS[1], ITEMS[6], ITEMS[3], ITEMS[4], ITEMS[0]]
+add("wishlist-01", "Wishlist 01", "A wishlist grid in the account area with move to cart, remove and an empty state.", "wishlist", account("Wishlist", f"""
+<div class="stack" data-gap="6" data-wishlist>
+  <div class="shop-wl-head">
+    <div class="stack" data-gap="1">
+      <h1 class="shop-h1">Wishlist</h1>
+      <p class="shop-lead" data-wish-label>{len(wl_items)} items</p>
+    </div>
+    <div class="cluster" data-gap="2" data-wish-filled>
+      <button type="button" class="btn" data-variant="outline">{si("share-2")}Share</button>
+      <button type="button" class="btn">{si("shopping-bag")}Add all to cart</button>
+    </div>
+  </div>
+  <div class="shop-cards" data-wish-filled>{"".join(wish_card(p, i) for i, p in enumerate(wl_items))}</div>
+  {WISH_EMPTY}
+</div>
+"""), CAT_CSS + """
+  .shop-profile .avatar { inline-size: 2.25rem; block-size: 2.25rem; }
+  .shop-wl-head .cluster .btn { flex: none; }""", scripts=script(WISHLIST_JS))
+
+wl_rows = "\n".join(f"""<tr data-wish-item>
+  <td><div class="shop-wl-product"><img class="shop-thumb" data-size="sm" src="{PH}" alt=""><div><a href="#" class="shop-line-name shop-link">{p["name"]}</a><p class="shop-line-meta">{p["colors"][0][0]}</p></div></div></td>
+  <td>{price(p)}</td>
+  <td><span class="shop-stock" data-stock="{st[0]}">{st[1]}</span></td>
+  <td class="shop-num"><div class="shop-wl-actions">{f'<button type="button" class="btn" data-size="sm" data-wish-move>Add to cart</button>' if st[0] != "out" else '<button type="button" class="btn" data-variant="outline" data-size="sm">Notify me</button>'}<button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Remove {p["name"]}" data-wish-remove>{si("trash-2")}</button></div></td>
+</tr>""" for p, st in zip([ITEMS[2], ITEMS[5], ITEMS[7], ITEMS[6]], [("in", "In stock"), ("low", "Only 2 left"), ("out", "Out of stock"), ("in", "In stock")]))
+
+add("wishlist-02", "Wishlist 02", "A compact wishlist table with price, stock and actions.", "wishlist", f"""
+{wish_header(4)}
+<main class="wrapper shop-page" data-size="md">
+  <div class="stack" data-gap="6" data-wishlist>
+    <div class="shop-wl-head">
+      <div class="stack" data-gap="1">
+        <h1 class="shop-h1">Saved for later</h1>
+        <p class="shop-lead" data-wish-label>4 items</p>
+      </div>
+      <button type="button" class="btn" data-variant="outline" data-wish-filled>{si("share-2")}Share list</button>
+    </div>
+    <div class="shop-table-wrap" data-wish-filled>
+      <table class="table">
+        <thead><tr><th>Product</th><th>Price</th><th>Availability</th><th class="shop-num"><span class="sr-only">Actions</span></th></tr></thead>
+        <tbody>
+          {wl_rows}
+        </tbody>
+      </table>
+    </div>
+    {WISH_EMPTY}
+  </div>
+</main>
+""", CAT_CSS + """
+  .shop-num { text-align: end; }
+  .shop-table-wrap { overflow-x: auto; }
+  .shop-link { color: inherit; text-decoration: none; }
+  .shop-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .shop-wl-product { display: flex; align-items: center; gap: 0.75rem; min-inline-size: 14rem; }
+  .shop-wl-product p { margin: 0; }
+  .shop-wl-actions { display: inline-flex; align-items: center; gap: 0.25rem; }
+  .shop-table-wrap .shop-price { white-space: nowrap; }""", scripts=script(WISHLIST_JS))
+
+
+# ================================================================== compare
+CMP = [ITEMS[6], {**ITEMS[6], "id": "lamp2", "name": "Dome Table Lamp", "price": 98.00, "rating": 4.5, "reviews": 61, "badge": None}, {**ITEMS[6], "id": "lamp3", "name": "Globe Floor Lamp", "price": 189.00, "rating": 4.8, "reviews": 22, "badge": "New"}]
+CMP_ROWS = [
+    ("Rating", [f"{c['rating']} ({c['reviews']})" for c in CMP]),
+    ("Material", ["Brushed brass, steel", "Glass, steel", "Opal glass, brass"]),
+    ("Dimensions", ["H 45 × W 30 cm", "H 38 × W 25 cm", "H 150 × W 35 cm"]),
+    ("Light", ["LED, 2700 K", "LED, 2700 K", "E27 bulb (included)"]),
+    ("Dimmable", [True, True, False]),
+    ("USB charging", [True, False, False]),
+    ("Warranty", ["2 years", "2 years", "2 years"]),
+    ("Availability", ["In stock", "In stock", "Ships in 2 weeks"]),
+]
+
+
+def cmp_cell(v):
+    if v is True:
+        return f'<td>{si("check", cls="shop-yes")}<span class="sr-only">Yes</span></td>'
+    if v is False:
+        return f'<td>{si("minus", cls="shop-no")}<span class="sr-only">No</span></td>'
+    return f"<td>{v}</td>"
+
+
+cmp_head = "".join(f"""<td data-col="{i}">
+  <button type="button" class="btn shop-cmp-remove" data-variant="ghost" data-size="icon-xs" aria-label="Remove {c["name"]} from comparison" data-cmp-remove="{i}">{si("x")}</button>
+  <div class="shop-cmp-product"><img src="{PH}" alt=""><h3>{c["name"]}</h3>{price(c)}<button type="button" class="btn" data-size="sm">{si("shopping-bag")}Add to cart</button></div>
+</td>""" for i, c in enumerate(CMP))
+cmp_rows = "\n".join(
+    f'<tr{" data-diff" if len(set(map(str, vals))) > 1 else ""}><th scope="row">{label}</th>' + "".join(cmp_cell(v).replace("<td>", f'<td data-col="{i}">', 1) for i, v in enumerate(vals)) + "</tr>"
+    for label, vals in CMP_ROWS)
+
+COMPARE_JS = """
+document.querySelectorAll('[data-compare-table]').forEach((t) => {
+  const toggle = document.getElementById(t.dataset.compareTable);
+  toggle?.addEventListener('change', () => t.toggleAttribute('data-highlight', toggle.checked));
+  const diff = () => t.querySelectorAll('tbody tr').forEach((tr) => {
+    const vals = [...tr.querySelectorAll('td')].map((td) => td.textContent.trim());
+    tr.toggleAttribute('data-diff', new Set(vals).size > 1);
+  });
+  t.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-cmp-remove]');
+    if (!b) return;
+    t.querySelectorAll(`[data-col="${b.dataset.cmpRemove}"]`).forEach((c) => c.remove());
+    const left = t.querySelectorAll('thead td').length;
+    document.querySelectorAll('[data-cmp-count]').forEach((el) => { el.textContent = left + (left === 1 ? ' product' : ' products'); });
+    diff();
+  });
+});
+"""
+
+add("compare-01", "Compare 01", "A product comparison table with sticky labels, remove and highlight differences.", "compare", f"""
+{store_header(3)}
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="6">
+    <div class="shop-wl-head">
+      <div class="stack" data-gap="1">
+        <h1 class="shop-h1">Compare lamps</h1>
+        <p class="shop-lead" data-cmp-count>3 products</p>
+      </div>
+      <div class="cluster" data-gap="3">
+        <label class="shop-cmp-check" for="cmp1-diff"><input type="checkbox" role="switch" class="input" id="cmp1-diff"> Highlight differences</label>
+        <button type="button" class="btn" data-variant="outline" data-size="sm">{si("plus")}Add product</button>
+      </div>
+    </div>
+    <div class="shop-cmp-wrap">
+      <table class="shop-cmp" data-compare-table="cmp1-diff">
+        <thead><tr><th scope="col"><span class="sr-only">Feature</span></th>{cmp_head}</tr></thead>
+        <tbody>
+          {cmp_rows}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+""", CAT_CSS, scripts=script(COMPARE_JS))
+
+TRAY_JS = """
+document.querySelectorAll('[data-compare-tray]').forEach((tray) => {
+  const MAX = 3;
+  const slots = tray.querySelectorAll('[data-slot]');
+  const boxes = () => [...document.querySelectorAll('[data-compare]')];
+  const sync = () => {
+    const on = boxes().filter((b) => b.checked);
+    slots.forEach((s, i) => {
+      const b = on[i];
+      s.innerHTML = b ? `<img src="${b.closest('.shop-card').querySelector('img').getAttribute('src')}" alt="${b.closest('.shop-card').querySelector('.shop-card-name').textContent.trim()}">` : String(i + 1);
+    });
+    boxes().forEach((b) => { b.disabled = !b.checked && on.length >= MAX; });
+    tray.hidden = !on.length;
+    tray.querySelector('[data-tray-count]').textContent = `${on.length} of ${MAX} selected`;
+    tray.querySelector('[data-tray-go]').disabled = on.length < 2;
+  };
+  document.addEventListener('change', (e) => { if (e.target.matches('[data-compare]')) sync(); });
+  tray.querySelector('[data-tray-clear]').addEventListener('click', () => { boxes().forEach((b) => { b.checked = false; }); sync(); });
+  sync();
+});
+"""
+add("compare-02", "Compare 02", "Compare checkboxes on product cards with a floating compare tray.", "compare", f"""
+{store_header(3)}
+<main class="wrapper shop-page shop-tray-space">
+  <div class="stack" data-gap="6">
+    <div class="stack" data-gap="1">
+      <h1 class="shop-h1">Lighting</h1>
+      <p class="shop-lead">Select up to three products to compare.</p>
+    </div>
+    <div class="shop-cards">{"".join(card(p, compare=True) for p in [ITEMS[6], ITEMS[0], ITEMS[2], ITEMS[3]])}</div>
+  </div>
+</main>
+<div class="shop-tray" role="region" aria-label="Compare" data-compare-tray hidden>
+  <ul class="shop-tray-slots">{"".join(f'<li data-slot>{i + 1}</li>' for i in range(3))}</ul>
+  <p data-tray-count>0 of 3 selected</p>
+  <div class="cluster" data-gap="2">
+    <button type="button" class="btn" data-variant="ghost" data-size="sm" data-tray-clear>Clear</button>
+    <button type="button" class="btn" data-size="sm" data-tray-go disabled>{si("arrow-right-left")}Compare</button>
+  </div>
+</div>
+""", CAT_CSS + "\n  .shop-tray-space { padding-block-end: 8rem; }", scripts=script(TRAY_JS + WISH_JS))
+
+
+# ================================================================== search
+recent = ["merino sweater", "pour over", "linen"]
+hits = "".join(f"""<div role="menuitem" data-filter="{p["name"]}" data-keywords="{p["cat"].lower()} {" ".join(n.lower() for n, _ in p["colors"])}">
+  <img src="{PH}" alt="">
+  <span class="shop-hit"><span>{p["name"]}</span><small>{p["cat"]}</small></span>
+  <span class="shop-hit-price">{money(p["price"])}</span>
+</div>""" for p in ITEMS)
+search_dialog = f"""<dialog id="s1-search" class="command-dialog shop-search" closedby="any" aria-label="Search products">
+  <div class="command">
+    <header>
+      {si("search")}
+      <input type="text" id="s1-input" placeholder="Search products, categories..." autocomplete="off" autocorrect="off" spellcheck="false" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="s1-menu">
+    </header>
+    <div role="menu" id="s1-menu" aria-orientation="vertical" data-empty="No products found.">
+      <div role="group" aria-labelledby="s1-recent">
+        <span role="heading" id="s1-recent">Recent searches</span>
+        {"".join(f'<div role="menuitem" data-filter="{r}">{si("clock")}<span>{r}</span></div>' for r in recent)}
+      </div>
+      <div role="group" aria-labelledby="s1-popular">
+        <span role="heading" id="s1-popular">Popular categories</span>
+        {"".join(f'<div role="menuitem" data-filter="{c}">{si("trending-up")}<span>{c}</span></div>' for c in ["Apparel", "Kitchen", "Home"])}
+      </div>
+      <hr role="separator">
+      <div role="group" aria-labelledby="s1-products">
+        <span role="heading" id="s1-products">Products</span>
+        {hits}
+      </div>
+    </div>
+    <footer class="shop-search-foot"><span><kbd class="kbd">↑</kbd><kbd class="kbd">↓</kbd> to navigate</span><span><kbd class="kbd">↵</kbd> to select</span><span><kbd class="kbd">Esc</kbd> to close</span></footer>
+  </div>
+</dialog>"""
+
+SEARCH_JS = """
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    const d = document.getElementById('s1-search');
+    if (d.open) d.close(); else d.showModal();
+  }
+});
+"""
+search_trigger = f'<button type="button" class="shop-search-trigger" commandfor="s1-search" command="show-modal">{si("search")}<span>Search products...</span><kbd class="kbd">⌘K</kbd></button>'
+s1_header = store_header(3).replace(
+    store_header(3)[store_header(3).index('<div class="input-group shop-header-search">'):store_header(3).index('<div class="shop-header-actions">')],
+    search_trigger + "\n    ")
+add("search-01", "Search 01", "A product search dialog (⌘K) with recent searches, categories and product results.", "search", f"""
+{s1_header}
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="6">
+    <div class="stack" data-gap="1">
+      <h1 class="shop-h1">Shop</h1>
+      <p class="shop-lead">Press <kbd class="kbd">⌘K</kbd> or use the search box in the header.</p>
+    </div>
+    <div class="shop-cards">{"".join(card(p) for p in ITEMS[:4])}</div>
+  </div>
+</main>
+{search_dialog}
+""", CAT_CSS + "\n  @media (width < 48rem) { .shop-search-trigger { max-inline-size: none; } .shop-search-trigger kbd, .shop-search-trigger span { display: none; } .shop-search-trigger { inline-size: auto; border: 0; } }", scripts=script(SEARCH_JS + WISH_JS))
+
+
+def checks(name, opts):
+    return '<div class="shop-check-list">' + "".join(f'<label><input type="checkbox" class="input" name="{name}"{" checked" if c else ""}>{t}<span>{n}</span></label>' for t, n, c in opts) + "</div>"
+
+
+filters_panel = f"""<aside class="shop-filters-panel" aria-label="Filters">
+  <div class="cluster" data-justify="between"><h2 class="shop-section-title">Filters</h2><button type="button" class="btn" data-variant="link" data-size="sm">Clear all</button></div>
+  <div class="accordion" data-multiple>
+    <details open><summary>Category</summary><section>{checks("cat", [("Apparel", 24, True), ("Accessories", 12, False), ("Home", 18, False), ("Kitchen", 9, False)])}</section></details>
+    <details open><summary>Price</summary><section class="stack" data-gap="2">
+      <input type="range" class="input" id="s2-price" min="0" max="200" step="5" value="120" aria-label="Maximum price">
+      <div class="shop-range-out"><span>$0</span><span>Up to <output for="s2-price" id="s2-price-out">$120</output></span></div>
+    </section></details>
+    <details open><summary>Color</summary><section><fieldset class="shop-colors"><legend class="sr-only">Color</legend>{"".join(f'<label style="--dot: {c}" title="{n}"><input type="checkbox" aria-label="{n}"{" checked" if n == "Charcoal" else ""}></label>' for n, c in [("Charcoal", "#3f3f46"), ("Oat", "#d6cbb5"), ("Navy", "#1e3a5f"), ("Clay", "#c2856a"), ("Sage", "#9caf88")])}</fieldset></section></details>
+    <details><summary>Rating</summary><section>{checks("rating", [("4 stars and up", 38, False), ("3 stars and up", 52, False)])}</section></details>
+  </div>
+  <div class="shop-switch-row"><label for="s2-stock">In stock only</label><input type="checkbox" role="switch" class="input" id="s2-stock" checked></div>
+</aside>"""
+
+RESULTS_JS = """
+const priceIn = document.getElementById('s2-price');
+priceIn?.addEventListener('input', () => { document.getElementById('s2-price-out').textContent = '$' + priceIn.value; });
+document.querySelectorAll('[data-layout-toggle]').forEach((g) => {
+  g.addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-layout-value]');
+    if (!b) return;
+    g.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    document.getElementById(g.dataset.layoutToggle).dataset.layout = b.dataset.layoutValue;
+  });
+});
+"""
+pages = "".join(f'<li><a href="#" class="btn" data-variant="{"outline" if n == 1 else "ghost"}" data-size="icon"{" aria-current=\"page\"" if n == 1 else ""}>{n}</a></li>' for n in [1, 2, 3])
+add("search-02", "Search 02", "Search results with filters, sort, active filter chips, grid and list views and pagination.", "search", f"""
+{store_header(3)}
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="6">
+    <div class="stack" data-gap="1">
+      <p class="shop-lead">Search results for</p>
+      <h1 class="shop-h1">“sweater”</h1>
+    </div>
+    <div class="shop-results">
+      {filters_panel}
+      <div class="stack" data-gap="5">
+        <div class="shop-toolbar">
+          <p class="shop-lead">Showing 6 of 24 results</p>
+          <div class="cluster" data-gap="2">
+            <label class="sr-only" for="s2-sort">Sort by</label>
+            <select class="select" id="s2-sort"><option>Most relevant</option><option>Newest</option><option>Price: low to high</option><option>Price: high to low</option><option>Top rated</option></select>
+            <div class="button-group" role="group" aria-label="Layout" data-layout-toggle="s2-results">
+              <button type="button" class="btn" data-variant="outline" data-size="icon" aria-label="Grid view" aria-pressed="true" data-layout-value="grid">{si("layout-grid")}</button>
+              <button type="button" class="btn" data-variant="outline" data-size="icon" aria-label="List view" aria-pressed="false" data-layout-value="list">{si("list")}</button>
+            </div>
+          </div>
+        </div>
+        <div class="shop-chip-row">
+          {"".join(f'<button type="button" class="badge" data-variant="secondary" aria-label="Remove filter {t}">{t}{si("x")}</button>' for t in ["Apparel", "Charcoal", "Up to $120", "In stock"])}
+        </div>
+        <div class="shop-cards" id="s2-results" data-layout="grid">{"".join(card(p) for p in [ITEMS[1], ITEMS[7], ITEMS[0], ITEMS[4], ITEMS[3], ITEMS[2]])}</div>
+        <nav aria-label="Pagination" class="shop-pages"><ul>
+          <li><a href="#" class="btn" data-variant="ghost">{si("chevron-left")}<span>Previous</span></a></li>
+          {pages}
+          <li><a href="#" class="btn" data-variant="ghost"><span>Next</span>{si("chevron-right")}</a></li>
+        </ul></nav>
+      </div>
+    </div>
+  </div>
+</main>
+""", CAT_CSS + """
+  .button-group .btn[aria-pressed='true'] { background: var(--accent); color: var(--accent-foreground); }
+  .shop-switch-row > label { font-size: 0.875rem; }
+  .shop-switch-row { padding-block-start: 1rem; }
+  .shop-pages ul { display: flex; justify-content: center; gap: 0.25rem; list-style: none; margin: 0; padding: 0; }
+  .shop-cards[data-layout='list'] .shop-card { flex-direction: row; align-items: center; gap: 1rem; padding-block-end: 1rem; border-block-end: 1px solid var(--border); }
+  .shop-cards[data-layout='list'] .shop-card-media { inline-size: 7rem; flex: none; }
+  .shop-cards[data-layout='list'] .shop-card-body { flex: 1; }
+  .shop-cards[data-layout='list'] .shop-card-quick { display: none; }
+  @media (width < 56rem) { .shop-filters-panel { display: none; } }""", scripts=script(RESULTS_JS + WISH_JS))
+
+
+# ================================================================== minicart drawer
+drawer_lines = "\n".join(cart_line(p, "c5-", "sm") for p in PRODUCTS)
+drawer_trigger = (
+    f'<button type="button" class="btn shop-cart-btn" data-variant="ghost" data-size="icon" aria-label="Open cart" commandfor="c5-cart" command="show-modal">'
+    f'{si("shopping-bag")}<span class="shop-count" data-cart-count>{count(PRODUCTS)}</span></button>'
+)
+add("cart-05", "Cart 05", "A mini cart in a bottom drawer, for mobile shops.", "cart", f"""
+<div class="shop-app" data-cart>
+  <header class="shop-app-bar">
+    <h1>Acme Store</h1>
+    <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Search">{si("search")}</a>
+    {drawer_trigger}
+  </header>
+  <div class="shop-app-body">
+    <div class="shop-banner"><p>Free shipping</p><strong>On every order over $150</strong></div>
+    <div class="shop-grid shop-grid-2">{"".join(f'''<article class="shop-product">
+      <img class="shop-product-img" src="{PH}" alt="">
+      <div><h3>{n}</h3><p>{v}</p></div>
+      <div class="shop-product-foot"><strong>{money(pr)}</strong><button type="button" class="btn" data-variant="outline" data-size="icon-sm" aria-label="Add {n} to cart" commandfor="c5-cart" command="show-modal">{si("plus")}</button></div>
+    </article>''' for n, v, pr in CATALOG[:4])}</div>
+  </div>
+  <dialog id="c5-cart" class="drawer" aria-labelledby="c5-cart-title">
+    <article>
+      <header>
+        <h2 id="c5-cart-title">Your cart</h2>
+        <p data-item-count>{count(PRODUCTS)} items</p>
+      </header>
+      <section class="shop-drawer-lines">
+        <div class="stack" data-gap="4" data-cart-filled>
+          {free_progress(PRODUCTS)}
+          <ul class="shop-lines" data-size="sm">
+            {drawer_lines}
+          </ul>
+        </div>
+        {EMPTY_CART}
+      </section>
+      <footer>
+        <div class="shop-drawer-foot" data-cart-filled>
+          <div class="shop-row"><span class="shop-muted">Subtotal</span><strong data-subtotal>{money(totals(PRODUCTS)[0])}</strong></div>
+          <a href="#" class="btn">Checkout · <span data-grand-total>{money(totals(PRODUCTS)[3])}</span></a>
+        </div>
+        <button type="button" class="btn" data-variant="outline" commandfor="c5-cart" command="close">Continue shopping</button>
+      </footer>
+    </article>
+  </dialog>
+</div>
+""", APP_CSS + CATALOG_CSS + "\n  .shop-app { padding-block-end: 2rem; }\n  .shop-link { color: inherit; text-decoration: none; }", scripts=script(CART_JS))
+
 
 if __name__ == "__main__":
     from common import register
