@@ -6,6 +6,10 @@
 
 - Create: font weight controls. A Font Weight slider next to Font Size shifts regular, medium, semibold and bold together (`--font-weight-normal|medium|semibold|bold`, which every component reads), and Customize theme → Typography sets each one. The Google Fonts link now loads each family's whole weight axis, so any chosen weight renders with real glyphs.
 
+### Fixed
+
+- Docs: choosing a style on Create replaced nothing; the style's stylesheet loaded on top of the Vega bundle inside `docs.css`, so whatever the style does not set kept Vega's value (the header's small buttons kept Vega's radius under Maia while the preview, which loads the style alone, did not). The site and block pages now load one component stylesheet, `dist/auvyx.min.css` or the chosen style's bundle in its place, and `docs.css` holds only the docs utilities (41 kB → 5 kB gzip).
+
 ## @auvyx/ui 0.1.4 - 2026-11-07
 
 ### Added
