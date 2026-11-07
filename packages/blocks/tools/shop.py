@@ -5,6 +5,8 @@ page built from Auvyx components (card, item, field, badge, sheet, popover,
 table, dialog) plus a small block <style>; the scripts are demo behavior
 (quantities and totals, steps, filters) that apps replace with their own state.
 """
+import re
+
 from common import page, icon, logo, LOGO_CSS
 
 PH = "assets/placeholder.svg"
@@ -477,8 +479,33 @@ EMPTY_CART = f"""<section class="empty" data-cart-empty hidden>
 blocks = []
 
 
+BTN = re.compile(r'(<(button|a)\b[^>]*\bclass="[^"]*\bbtn\b[^"]*"[^>]*>)(.*?)(</\2>)', re.S)
+
+
+def mark_icons(html):
+    """Text buttons: tag a leading or trailing icon with data-icon so the button
+    trims that side's padding (inline-start / inline-end), as upstream."""
+    def fix(m):
+        open_, _, inner, close = m.groups()
+        if re.search(r'data-size="icon', open_) or "<svg" not in inner:
+            return m.group(0)
+        text = re.sub(r"<svg\b.*?</svg>", "", inner, flags=re.S)
+        if not re.sub(r"<[^>]+>", "", text).strip():
+            return m.group(0)
+        body = inner.strip()
+        if body.startswith("<svg") and "data-icon" not in body[:body.index(">")]:
+            inner = inner.replace("<svg", '<svg data-icon="inline-start"', 1)
+        body = inner.strip()
+        if body.endswith("</svg>"):
+            i = inner.rfind("<svg")
+            if "data-icon" not in inner[i:inner.index(">", i)]:
+                inner = inner[:i] + '<svg data-icon="inline-end"' + inner[i + 4:]
+        return open_ + inner + close
+    return BTN.sub(fix, html)
+
+
 def add(bid, title, desc, cat, body, css=SHOP_CSS, scripts="", body_class=""):
-    page(bid, title, body, css, body_class=body_class, scripts=scripts)
+    page(bid, title, mark_icons(body), css, body_class=body_class, scripts=scripts)
     blocks.append({"id": bid, "title": title, "description": desc, "category": cat})
 
 
