@@ -269,7 +269,9 @@
       const clean = src.replace(/\/\*[\s\S]*?\*\//g, '');
       const blocks = { light: {}, dark: {}, theme: {} };
       for (const m of clean.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
-        const sel = m[1].trim();
+        // Only the selector right before "{": the text before it can hold statements such as
+        // tweakcn's `@custom-variant dark (&:is(.dark *));`, which must not mark :root as dark.
+        const sel = m[1].split(/[;}]/).pop().trim();
         if (/@theme/.test(sel)) continue; // Tailwind @theme inline mapping, not values
         if (/\.dark|\[data-theme=["']?dark/.test(sel)) Object.assign(blocks.dark, parseVars(m[2]));
         else if (/:root|html|\[data-theme/.test(sel)) Object.assign(blocks.light, parseVars(m[2]));
