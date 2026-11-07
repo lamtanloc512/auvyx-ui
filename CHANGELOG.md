@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## @auvyx/ui 0.1.4 - 2026-11-07
+
 ### Added
 
 - Ecommerce blocks (15, in the registry for HTML and React with every icon library):
