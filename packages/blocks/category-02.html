@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Category 02 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-page {
+        padding-block: 2rem 4rem;
+      }
+      .shop-h1 {
+        margin: 0;
+        font-size: 1.875rem;
+        font-weight: 600;
+        letter-spacing: -0.025em;
+      }
+      .shop-lead {
+        margin: 0;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
+      .shop-header {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 10;
+        border-block-end: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 90%, transparent);
+        backdrop-filter: blur(8px);
+      }
+      .shop-header-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        block-size: 4rem;
+      }
+      .shop-nav {
+        display: flex;
+        gap: 1.25rem;
+        font-size: 0.875rem;
+      }
+      .shop-nav a {
+        color: var(--muted-foreground);
+        text-decoration: none;
+      }
+      .shop-nav a:hover,
+      .shop-nav a[aria-current] {
+        color: var(--foreground);
+      }
+      .shop-header-search {
+        flex: 1;
+        max-inline-size: 20rem;
+        margin-inline-start: auto;
+      }
+      .shop-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .shop-cart-btn {
+        position: relative;
+      }
+      .shop-count {
+        position: absolute;
+        inset-block-start: -0.25rem;
+        inset-inline-end: -0.25rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-inline-size: 1.125rem;
+        block-size: 1.125rem;
+        padding-inline: 0.25rem;
+        border-radius: 999px;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+      .shop-count:empty,
+      .shop-count[data-count="0"] {
+        display: none;
+      }
+      @media (width < 48rem) {
+        .shop-nav,
+        .shop-header-search {
+          display: none;
+        }
+        .shop-header-actions {
+          margin-inline-start: auto;
+        }
+      }
+
+      .block-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: inherit;
+        text-decoration: none;
+      }
+      .block-logo-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .block-logo-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+
+      .shop-shot {
+        display: block;
+        aspect-ratio: 4 / 5;
+        inline-size: 100%;
+        object-fit: cover;
+        background: var(--muted);
+      }
+      .shop-shot[data-shot="2"] {
+        transform: scaleX(-1);
+        filter: hue-rotate(160deg) saturate(1.6);
+      }
+      .shop-shot[data-shot="3"] {
+        filter: sepia(0.6) saturate(1.4);
+      }
+      .shop-shot[data-shot="4"] {
+        transform: scaleX(-1);
+        filter: grayscale(1) contrast(1.2);
+      }
+      html.dark .shop-shot {
+        opacity: 0.6;
+      }
+      @keyframes shop-pop {
+        from {
+          transform: scale(0.96);
+          opacity: 0.6;
+        }
+        to {
+          transform: none;
+          opacity: 1;
+        }
+      }
+      /* Reduced motion: the hover states still apply, without movement. !important so it wins over every card's transition rules. */
+
+      .shop-tile {
+        position: relative;
+        display: block;
+        overflow: hidden;
+        border-radius: calc(var(--radius) + 4px);
+        color: #fff;
+        text-decoration: none;
+        min-block-size: 14rem;
+      }
+      .shop-tile > img {
+        position: absolute;
+        inset: 0;
+        inline-size: 100%;
+        block-size: 100%;
+        object-fit: cover;
+        transition: transform 500ms ease;
+      }
+      .shop-tile::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgb(0 0 0 / 0.65), transparent 60%);
+      }
+      .shop-tile:hover > img {
+        transform: scale(1.06);
+      }
+      .shop-tile:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+      .shop-tile-body {
+        position: absolute;
+        inset-inline: 0;
+        inset-block-end: 0;
+        z-index: 1;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1.25rem;
+      }
+      .shop-tile-body h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+      .shop-tile-body p {
+        margin: 0;
+        font-size: 0.8125rem;
+        opacity: 0.85;
+      }
+      .shop-tile-go {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 2.25rem;
+        block-size: 2.25rem;
+        border-radius: 999px;
+        background: #fff;
+        color: #111;
+        transform: translateX(-0.5rem);
+        opacity: 0;
+        transition:
+          transform 200ms ease,
+          opacity 200ms ease;
+      }
+      .shop-tile-go svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .shop-tile:hover .shop-tile-go {
+        transform: none;
+        opacity: 1;
+      }
+      .shop-tile:focus-visible .shop-tile-go {
+        transform: none;
+        opacity: 1;
+      }
+      @media (hover: none) {
+        .shop-tile-go {
+          transform: none;
+          opacity: 1;
+        }
+      }
+      .shop-bento {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-auto-rows: 13rem;
+      }
+      @media (width >= 48rem) {
+        .shop-bento {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+        .shop-bento > [data-span="wide"] {
+          grid-column: span 2;
+        }
+        .shop-bento > [data-span="tall"] {
+          grid-row: span 2;
+        }
+        .shop-bento > [data-span="big"] {
+          grid-column: span 2;
+          grid-row: span 2;
+        }
+      }
+      .shop-bento > .shop-tile {
+        min-block-size: 0;
+      }
+      html.dark .shop-tile > img {
+        filter: brightness(0.6);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="shop-header">
+      <div class="wrapper shop-header-row">
+        <a href="#" class="block-logo">
+          <span class="block-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+          Acme Store
+        </a>
+        <nav class="shop-nav" aria-label="Main">
+          <a href="#" aria-current="page">Shop</a>
+          <a href="#">New in</a>
+          <a href="#">Collections</a>
+          <a href="#">Journal</a>
+        </nav>
+        <div class="input-group shop-header-search">
+          <input type="search" placeholder="Search products..." aria-label="Search products" />
+          <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        </div>
+        <div class="shop-header-actions">
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Wishlist">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </a>
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Account">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </a>
+          <a
+            href="#"
+            class="btn shop-cart-btn"
+            data-variant="ghost"
+            data-size="icon"
+            aria-label="Cart, 3 items">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+            <span class="shop-count" data-cart-count>3</span>
+          </a>
+        </div>
+      </div>
+    </header>
+    <main class="wrapper shop-page">
+      <div class="stack" data-gap="6">
+        <div class="cluster" data-justify="between" data-align="end" data-gap="4">
+          <div class="stack" data-gap="1">
+            <h1 class="shop-h1">Shop by category</h1>
+            <p class="shop-lead">Eight departments, one considered collection.</p>
+          </div>
+          <a href="#" class="btn" data-variant="outline">All products</a>
+        </div>
+        <div class="shop-bento">
+          <a href="#" class="shop-tile" data-span="big">
+            <img class="shop-shot" src="assets/placeholder.svg" alt />
+            <div class="shop-tile-body">
+              <div>
+                <h3>New in</h3>
+                <p>128 products</p>
+              </div>
+              <span class="shop-tile-go" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            </div>
+          </a>
+          <a href="#" class="shop-tile" data-span="tall">
+            <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="2" />
+            <div class="shop-tile-body">
+              <div>
+                <h3>Apparel</h3>
+                <p>212 products</p>
+              </div>
+              <span class="shop-tile-go" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            </div>
+          </a>
+          <a href="#" class="shop-tile">
+            <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="3" />
+            <div class="shop-tile-body">
+              <div>
+                <h3>Bags</h3>
+                <p>46 products</p>
+              </div>
+              <span class="shop-tile-go" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            </div>
+          </a>
+          <a href="#" class="shop-tile">
+            <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="4" />
+            <div class="shop-tile-body">
+              <div>
+                <h3>Kitchen</h3>
+                <p>93 products</p>
+              </div>
+              <span class="shop-tile-go" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            </div>
+          </a>
+          <a href="#" class="shop-tile" data-span="wide">
+            <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="3" />
+            <div class="shop-tile-body">
+              <div>
+                <h3>Home</h3>
+                <p>155 products</p>
+              </div>
+              <span class="shop-tile-go" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            </div>
+          </a>
+          <a href="#" class="shop-tile">
+            <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="2" />
+            <div class="shop-tile-body">
+              <div>
+                <h3>Accessories</h3>
+                <p>71 products</p>
+              </div>
+              <span class="shop-tile-go" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            </div>
+          </a>
+          <a href="#" class="shop-tile">
+            <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="4" />
+            <div class="shop-tile-body">
+              <div>
+                <h3>Sale</h3>
+                <p>Up to 40% off</p>
+              </div>
+              <span class="shop-tile-go" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

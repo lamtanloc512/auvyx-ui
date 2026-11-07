@@ -98,6 +98,9 @@ const INTERACTIONS = [
   ['cart-05', (p) => p.click('.shop-cart-btn')],
   ['product-card-05', (p) => p.click('.shop-fx-nav[data-dir="next"]')],
   ['product-card-07', (p) => p.click('[data-buy]')],
+  ['filter-01', (p) => p.check('input[name=cat][value=Apparel]')],
+  ['filter-02', (p) => p.click('[popovertarget=f2-cat]')],
+  ['category-03', (p) => p.click('[data-load-more]')],
 ];
 
 test('React blocks behave like the HTML blocks', async () => {

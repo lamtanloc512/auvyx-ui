@@ -214,6 +214,21 @@
     "description": "A mini cart in a bottom drawer, for mobile shops.",
     "category": "cart"
   },
+  "category-01": {
+    "title": "Category 01",
+    "description": "A category landing page: hero, subcategory circles, rooms, featured products, a promo and an FAQ.",
+    "category": "category"
+  },
+  "category-02": {
+    "title": "Category 02",
+    "description": "Shop by category: a bento grid of image tiles with hover zoom and an arrow that slides in.",
+    "category": "category"
+  },
+  "category-03": {
+    "title": "Category 03",
+    "description": "A category listing: subcategory tree, pills, sort and a load-more button with progress.",
+    "category": "category"
+  },
   "checkout-01": {
     "title": "Checkout 01",
     "description": "A one-page checkout: contact, shipping, delivery, payment and the order summary.",
@@ -243,6 +258,21 @@
     "title": "Dashboard 01",
     "description": "A dashboard with sidebar, charts and data table.",
     "category": "dashboard"
+  },
+  "filter-01": {
+    "title": "Filter 01",
+    "description": "A filter sidebar that filters the grid live: category, price, color, size, rating and stock, with chips and sort.",
+    "category": "filter"
+  },
+  "filter-02": {
+    "title": "Filter 02",
+    "description": "A horizontal filter bar with a popover per filter, active chips, a result count and sort.",
+    "category": "filter"
+  },
+  "filter-03": {
+    "title": "Filter 03",
+    "description": "Mobile filters in a bottom sheet: grouped filters, a live result count and a sticky show-results button.",
+    "category": "filter"
   },
   "login-01": {
     "title": "Login 01",

@@ -53,6 +53,7 @@ SHOP_ICONS = {
     "rotate-ccw": '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
     "shield-check": '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12l2 2l4-4"/>',
     "chevron-right": '<path d="m9 18 6-6-6-6"/>',
+    "chevron-down": '<path d="m6 9 6 6 6-6"/>',
     "share-2": '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/>',
 }
 
@@ -2666,6 +2667,533 @@ add("product-card-09", "Product Card 09", "Flash sale cards with a discount badg
   </div>
 </main>
 """, FX, scripts=script(TIMER_JS))
+
+
+
+# ================================================================== filter and category data
+# Each card carries its facets as data-* attributes; FILTER_JS reads the form.
+SHOP_ITEMS = [
+    {**ITEMS[0], "sizes": ["One size"], "stock": "in"},
+    {**ITEMS[1], "sizes": ["S", "M", "L"], "stock": "in"},
+    {**ITEMS[2], "sizes": ["One size"], "stock": "in"},
+    {**ITEMS[3], "sizes": ["One size"], "stock": "out"},
+    {**ITEMS[4], "sizes": ["One size"], "stock": "in"},
+    {**ITEMS[5], "sizes": ["One size"], "stock": "in"},
+    {**ITEMS[6], "sizes": ["One size"], "stock": "in"},
+    {**ITEMS[7], "sizes": ["One size"], "stock": "in"},
+    {**ITEMS[1], "id": "tee", "name": "Organic Cotton Tee", "price": 28.00, "was": None, "rating": 4.6, "reviews": 412, "badge": "Bestseller", "colors": [("Oat", "#d6cbb5"), ("Black", "#262626"), ("Navy", "#1e3a5f")], "sizes": ["XS", "S", "M", "L", "XL"], "stock": "in"},
+    {**ITEMS[7], "id": "coat", "name": "Wool Overshirt", "price": 149.00, "was": None, "rating": 4.8, "reviews": 57, "badge": "New", "colors": [("Camel", "#c19a6b"), ("Charcoal", "#3f3f46")], "sizes": ["S", "M", "L", "XL"], "stock": "in"},
+    {**ITEMS[2], "id": "bowl", "name": "Stoneware Bowl Set", "price": 42.00, "was": 56.00, "rating": 4.5, "reviews": 73, "badge": "Sale", "colors": [("Sand", "#d8c3a5"), ("Ink", "#2b3442")], "sizes": ["One size"], "stock": "in"},
+    {**ITEMS[3], "id": "throw", "name": "Waffle Knit Throw", "price": 68.00, "was": None, "rating": 4.2, "reviews": 19, "badge": None, "colors": [("Ivory", "#f1ead8"), ("Sage", "#9caf88")], "sizes": ["One size"], "stock": "in"},
+]
+FACET_COLORS = [("Black", "#262626"), ("Charcoal", "#3f3f46"), ("Oat", "#d6cbb5"), ("Navy", "#1e3a5f"), ("Sage", "#9caf88"), ("Camel", "#c19a6b"), ("Ivory", "#f1ead8"), ("Sand", "#d8c3a5")]
+FACET_CATS = ["Apparel", "Accessories", "Bags", "Home", "Kitchen"]
+FACET_SIZES = ["XS", "S", "M", "L", "XL", "One size"]
+
+
+def faceted(p, html):
+    attrs = (f' data-product data-cat="{p["cat"]}" data-price="{p["price"]:.2f}" data-rating="{p["rating"]}"'
+             f' data-stock="{p["stock"]}" data-colors="{" ".join(n for n, _ in p["colors"])}" data-sizes="{"|".join(p["sizes"])}"')
+    return html.replace('<article class="shop-card">', f'<article class="shop-card"{attrs}>', 1)
+
+
+def fcard(p):
+    return faceted(p, card(p))
+
+
+FILTER_JS = """
+document.querySelectorAll('[data-filter-form]').forEach((form) => {
+  const grid = document.getElementById(form.dataset.filterForm);
+  const cards = [...grid.querySelectorAll('[data-product]')];
+  const fmt = (v) => '$' + v;
+  const chips = document.querySelectorAll('[data-filter-chips]');
+  const run = () => {
+    const fd = new FormData(form);
+    const cats = fd.getAll('cat'), colors = fd.getAll('color'), sizes = fd.getAll('size');
+    const min = parseFloat(fd.get('min')) || 0;
+    const maxIn = form.elements.max;
+    const max = maxIn && maxIn.value !== '' && Number(maxIn.value) < Number(maxIn.max || Infinity) ? parseFloat(maxIn.value) : Infinity;
+    const rating = parseFloat(fd.get('rating')) || 0;
+    const stock = fd.get('stock');
+    let n = 0;
+    for (const c of cards) {
+      const d = c.dataset;
+      const ok = (!cats.length || cats.includes(d.cat))
+        && (!colors.length || d.colors.split(' ').some((x) => colors.includes(x)))
+        && (!sizes.length || d.sizes.split('|').some((x) => sizes.includes(x)))
+        && Number(d.price) >= min && Number(d.price) <= max
+        && Number(d.rating) >= rating && (!stock || d.stock === 'in');
+      c.hidden = !ok;
+      if (ok) n++;
+    }
+    const active = [
+      ...cats.map((v) => ['cat', v, v]), ...colors.map((v) => ['color', v, v]), ...sizes.map((v) => ['size', v, 'Size ' + v]),
+      ...(min || max !== Infinity ? [['price', '', (min ? fmt(min) : '$0') + ' – ' + (max !== Infinity ? fmt(max) : 'any')]] : []),
+      ...(rating ? [['rating', '', rating + '★ & up']] : []), ...(stock ? [['stock', '', 'In stock']] : []),
+    ];
+    document.querySelectorAll('[data-result-count]').forEach((el) => { el.textContent = n + (n === 1 ? ' product' : ' products'); });
+    document.querySelectorAll('[data-filter-active]').forEach((el) => { el.textContent = active.length; el.hidden = !active.length; });
+    document.querySelectorAll('[data-filter-empty]').forEach((el) => { el.hidden = n > 0; });
+    const out = form.querySelector('output[data-max-out]');
+    if (out && maxIn) out.textContent = 'Up to ' + fmt(maxIn.value);
+    chips.forEach((box) => {
+      box.replaceChildren(...active.map(([name, value, label]) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'badge';
+        b.dataset.variant = 'secondary';
+        b.dataset.clear = name;
+        b.dataset.value = value;
+        b.setAttribute('aria-label', 'Remove filter ' + label);
+        b.append(label, document.querySelector('[data-chip-icon] svg').cloneNode(true));
+        return b;
+      }));
+      box.hidden = !active.length;
+    });
+  };
+  const clear = (name, value) => {
+    if (name === 'price') { if (form.elements.min) form.elements.min.value = ''; if (form.elements.max) form.elements.max.value = form.elements.max.max || ''; }
+    else form.querySelectorAll(`[name="${name}"]`).forEach((i) => { if (!value || i.value === value) { if (i.type === 'radio' || i.type === 'checkbox') i.checked = false; else i.value = ''; } });
+    run();
+  };
+  form.addEventListener('input', run);
+  form.addEventListener('reset', () => setTimeout(run));
+  document.addEventListener('click', (e) => {
+    const chip = e.target.closest('[data-clear]');
+    if (chip) clear(chip.dataset.clear, chip.dataset.value);
+  });
+  const sort = document.querySelector(`[data-sort="${form.dataset.filterForm}"]`);
+  sort?.addEventListener('change', () => {
+    const by = {
+      'price-asc': (a, b) => a.dataset.price - b.dataset.price,
+      'price-desc': (a, b) => b.dataset.price - a.dataset.price,
+      rating: (a, b) => b.dataset.rating - a.dataset.rating,
+    }[sort.value];
+    const list = by ? [...cards].sort(by) : cards;
+    grid.prepend(...list);
+  });
+});
+"""
+
+def chip_box():
+    # The chip icon is cloned from a hidden copy, so it follows the icon library.
+    return f'<span data-chip-icon hidden>{si("x")}</span><div class="shop-chip-row" data-filter-chips hidden></div>'
+
+
+def filter_checks(name, values, counts=None, p="f"):
+    return '<div class="shop-check-list">' + "".join(
+        f'<label><input type="checkbox" class="input" name="{name}" value="{v}">{v}{f"<span>{counts[i]}</span>" if counts else ""}</label>' for i, v in enumerate(values)) + "</div>"
+
+
+def color_checks(name):
+    return ('<fieldset class="shop-colors"><legend class="sr-only">Color</legend>'
+            + "".join(f'<label style="--dot: {c}" title="{n}"><input type="checkbox" name="{name}" value="{n}" aria-label="{n}"></label>' for n, c in FACET_COLORS)
+            + "</fieldset>")
+
+
+def size_checks(name):
+    return ('<fieldset class="shop-swatches shop-swatches-wrap"><legend class="sr-only">Size</legend>'
+            + "".join(f'<label><input type="checkbox" name="{name}" value="{s_}">{s_}</label>' for s_ in FACET_SIZES)
+            + "</fieldset>")
+
+
+def rating_radios(name, p):
+    return '<div class="shop-check-list" role="radiogroup" aria-label="Rating">' + "".join(
+        f'<label><input type="radio" class="input" name="{name}" value="{r}">{stars(r)}<span class="shop-rate-label">{r} &amp; up</span></label>' for r in [4.5, 4, 3.5]) + "</div>"
+
+
+def price_fields(p):
+    return f"""<div class="shop-price-fields">
+  <div class="input-group"><input type="number" name="min" id="{p}-min" min="0" step="1" placeholder="Min" aria-label="Minimum price"><span data-align="start">$</span></div>
+  <span aria-hidden="true">–</span>
+  <div class="input-group"><input type="number" name="max" id="{p}-max" min="0" step="1" placeholder="Max" aria-label="Maximum price"><span data-align="start">$</span></div>
+</div>"""
+
+
+FILTER_CSS = """
+  .shop-price-fields { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 0.5rem; color: var(--muted-foreground); }
+  .shop-swatches-wrap { flex-wrap: wrap; }
+  .shop-check-list .shop-rate-label { margin-inline-start: 0.25rem; color: var(--muted-foreground); font-size: 0.8125rem; }
+  .shop-filter-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+  .shop-filter-head h2 { display: flex; align-items: center; gap: 0.5rem; }
+  .shop-filter-head .badge[hidden] { display: none; }
+  .shop-filter-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .shop-filter-pop { inline-size: 16rem; }
+  .shop-filter-pop[data-size='lg'] { inline-size: 20rem; }
+  .shop-filter-bar .btn svg:last-child { inline-size: 0.875rem; block-size: 0.875rem; color: var(--muted-foreground); }
+  .shop-filter-sep { inline-size: 1px; block-size: 1.5rem; background: var(--border); }
+  .shop-filter-end { margin-inline-start: auto; }
+  .shop-filter-sheet section { display: grid; gap: 0.5rem; }
+  .shop-filter-sheet .accordion summary { font-size: 0.9375rem; }
+  .shop-filter-sheet footer { display: grid; grid-template-columns: auto 1fr; gap: 0.5rem; }
+  .shop-filter-btn { position: relative; }
+  .shop-filter-btn .badge { min-inline-size: 1.25rem; padding-inline: 0.25rem; justify-content: center; }
+  .shop-filter-btn .badge[hidden] { display: none; }
+  .shop-mobile-toolbar { position: sticky; inset-block-start: 3.5rem; z-index: 4; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--background); border-block-end: 1px solid var(--border); }
+  .shop-mobile-toolbar .select { inline-size: 100%; }
+"""
+FILTER_ALL = CAT_CSS + FILTER_CSS + """
+  .shop-switch-row > label { font-size: 0.875rem; }
+  .shop-pages ul { display: flex; justify-content: center; gap: 0.25rem; list-style: none; margin: 0; padding: 0; }"""
+
+FILTER_EMPTY = f"""<section class="empty" data-filter-empty hidden>
+  <header>
+    <figure>{si("search")}</figure>
+    <h3>No products match</h3>
+    <p>Try removing a filter or widening the price range.</p>
+  </header>
+  <footer><button type="reset" class="btn" data-variant="outline" form="{{form}}">Clear filters</button></footer>
+</section>"""
+
+n_all = len(SHOP_ITEMS)
+cat_counts = [sum(1 for p in SHOP_ITEMS if p["cat"] == c) for c in FACET_CATS]
+SORT = '<option value="">Featured</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option><option value="rating">Top rated</option>'
+
+# ================================================================== filter 01: sidebar
+add("filter-01", "Filter 01", "A filter sidebar that filters the grid live: category, price, color, size, rating and stock, with chips and sort.", "filter", f"""
+{store_header(3)}
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="6">
+    <div class="stack" data-gap="1">
+      <h1 class="shop-h1">All products</h1>
+      <p class="shop-lead" data-result-count>{n_all} products</p>
+    </div>
+    <div class="shop-results">
+      <form class="shop-filters-panel" id="f1-form" data-filter-form="f1-grid" aria-label="Filters" onsubmit="event.preventDefault()">
+        <div class="shop-filter-head">
+          <h2 class="shop-section-title">Filters <span class="badge" data-filter-active hidden>0</span></h2>
+          <button type="reset" class="btn" data-variant="link" data-size="sm">Clear all</button>
+        </div>
+        <div class="accordion" data-multiple>
+          <details open><summary>Category</summary><section>{filter_checks("cat", FACET_CATS, cat_counts)}</section></details>
+          <details open><summary>Price</summary><section>{price_fields("f1")}</section></details>
+          <details open><summary>Color</summary><section>{color_checks("color")}</section></details>
+          <details><summary>Size</summary><section>{size_checks("size")}</section></details>
+          <details><summary>Rating</summary><section>{rating_radios("rating", "f1")}</section></details>
+        </div>
+        <div class="shop-switch-row"><label for="f1-stock">In stock only</label><input type="checkbox" role="switch" class="input" id="f1-stock" name="stock" value="in"></div>
+      </form>
+      <div class="stack" data-gap="5">
+        <div class="shop-toolbar">
+          {chip_box()}
+          <div class="cluster shop-filter-end" data-gap="2">
+            <label class="sr-only" for="f1-sort">Sort by</label>
+            <select class="select" id="f1-sort" data-sort="f1-grid">{SORT}</select>
+          </div>
+        </div>
+        <div class="shop-cards" id="f1-grid">{"".join(fcard(p) for p in SHOP_ITEMS)}</div>
+        {FILTER_EMPTY.replace("{form}", "f1-form")}
+      </div>
+    </div>
+  </div>
+</main>
+""", FILTER_ALL + "\n  @media (width < 56rem) { .shop-filters-panel { display: none; } }", scripts=script(FILTER_JS + WISH_JS))
+
+
+# ================================================================== filter 02: horizontal bar with popovers
+def pop(id_, label, body, size=None):
+    sz = f' data-size="{size}"' if size else ""
+    return f"""<div class="popover">
+  <button type="button" class="btn" data-variant="outline" data-size="sm" popovertarget="{id_}">{label}{si("chevron-down")}</button>
+  <div id="{id_}" class="shop-filter-pop"{sz} data-popover popover data-side="bottom" data-align="start">{body}</div>
+</div>"""
+
+
+f2_bar = "".join([
+    pop("f2-cat", "Category", filter_checks("cat", FACET_CATS, cat_counts)),
+    pop("f2-price", "Price", price_fields("f2"), "lg"),
+    pop("f2-color", "Color", color_checks("color")),
+    pop("f2-size", "Size", size_checks("size"), "lg"),
+    pop("f2-rating", "Rating", rating_radios("rating", "f2")),
+])
+add("filter-02", "Filter 02", "A horizontal filter bar with a popover per filter, active chips, a result count and sort.", "filter", f"""
+{store_header(3)}
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="5">
+    <div class="stack" data-gap="1">
+      <h1 class="shop-h1">Shop all</h1>
+      <p class="shop-lead">Considered pieces for every room and every day.</p>
+    </div>
+    <form class="shop-filter-bar" id="f2-form" data-filter-form="f2-grid" aria-label="Filters" onsubmit="event.preventDefault()">
+      {f2_bar}
+      <label class="btn shop-stock-toggle" data-variant="outline" data-size="sm"><input type="checkbox" class="input" name="stock" value="in">In stock</label>
+      <span class="shop-filter-sep" aria-hidden="true"></span>
+      <button type="reset" class="btn" data-variant="ghost" data-size="sm">Reset <span class="badge" data-filter-active hidden>0</span></button>
+      <div class="cluster shop-filter-end" data-gap="2">
+        <p class="shop-lead" data-result-count>{n_all} products</p>
+        <label class="sr-only" for="f2-sort">Sort by</label>
+        <select class="select" id="f2-sort" data-sort="f2-grid">{SORT}</select>
+      </div>
+    </form>
+    {chip_box()}
+    <div class="shop-cards" id="f2-grid">{"".join(fcard(p) for p in SHOP_ITEMS)}</div>
+    {FILTER_EMPTY.replace("{form}", "f2-form")}
+  </div>
+</main>
+""", FILTER_ALL + """
+  .shop-stock-toggle { gap: 0.5rem; cursor: pointer; }
+  .shop-filter-bar .btn .badge[hidden] { display: none; }""", scripts=script(FILTER_JS + WISH_JS))
+
+
+# ================================================================== filter 03: mobile sheet
+f3_items = SHOP_ITEMS[:8]
+add("filter-03", "Filter 03", "Mobile filters in a bottom sheet: grouped filters, a live result count and a sticky show-results button.", "filter", f"""
+<div class="shop-app">
+  <header class="shop-app-bar">
+    <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Back">{si("chevron-left")}</a>
+    <h1>All products</h1>
+    <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Search">{si("search")}</a>
+  </header>
+  <div class="shop-mobile-toolbar">
+    <button type="button" class="btn shop-filter-btn" data-variant="outline" commandfor="f3-sheet" command="show-modal">{si("sliders-horizontal")}Filters <span class="badge" data-filter-active hidden>0</span></button>
+    <label class="sr-only" for="f3-sort">Sort by</label>
+    <select class="select" id="f3-sort" data-sort="f3-grid">{SORT}</select>
+  </div>
+  <div class="shop-app-body">
+    {chip_box()}
+    <p class="shop-lead" data-result-count>{len(f3_items)} products</p>
+    <div class="shop-grid shop-grid-2" id="f3-grid">{"".join(fcard(p) for p in f3_items)}</div>
+    {FILTER_EMPTY.replace("{form}", "f3-form")}
+  </div>
+  <dialog id="f3-sheet" class="sheet shop-filter-sheet" data-side="bottom" closedby="any" aria-labelledby="f3-title">
+    <header>
+      <h2 id="f3-title">Filters</h2>
+      <p>Results update as you choose.</p>
+    </header>
+    <section>
+      <form id="f3-form" data-filter-form="f3-grid" onsubmit="event.preventDefault()">
+        <div class="accordion" data-multiple>
+          <details open><summary>Category</summary><section>{filter_checks("cat", FACET_CATS)}</section></details>
+          <details open><summary>Price</summary><section class="stack" data-gap="2">
+            <input type="range" class="input" name="max" min="0" max="150" step="5" value="150" aria-label="Maximum price">
+            <div class="shop-range-out"><span>$0</span><output data-max-out>Up to $150</output></div>
+          </section></details>
+          <details><summary>Color</summary><section>{color_checks("color")}</section></details>
+          <details><summary>Rating</summary><section>{rating_radios("rating", "f3")}</section></details>
+        </div>
+        <div class="shop-switch-row"><label for="f3-stock">In stock only</label><input type="checkbox" role="switch" class="input" id="f3-stock" name="stock" value="in"></div>
+      </form>
+    </section>
+    <footer>
+      <button type="reset" form="f3-form" class="btn" data-variant="outline">Reset</button>
+      <button type="button" class="btn" commandfor="f3-sheet" command="close">Show <span data-result-count>{len(f3_items)} products</span></button>
+    </footer>
+    <button type="button" aria-label="Close" commandfor="f3-sheet" command="close">{si("x")}</button>
+  </dialog>
+</div>
+""", APP_CSS + CATALOG_CSS + FILTER_CSS + """
+  .shop-app { padding-block-end: 2rem; }
+  .shop-app-body > .shop-chip-row[hidden] { display: none; }
+  .shop-switch-row { padding-block: 1rem; }
+  .shop-switch-row > label { font-size: 0.875rem; }
+  .shop-filter-sheet { max-block-size: 85svh; }""", scripts=script(FILTER_JS + WISH_JS))
+
+
+# ================================================================== category pages
+CATEGORY_CSS = """
+  .shop-hero { position: relative; display: grid; align-items: end; min-block-size: 20rem; overflow: hidden; border-radius: calc(var(--radius) + 4px); color: #fff; }
+  .shop-hero > img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
+  .shop-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgb(0 0 0 / 0.7), rgb(0 0 0 / 0.1) 70%); }
+  .shop-hero-body { position: relative; z-index: 1; display: grid; gap: 0.75rem; max-inline-size: 36rem; padding: 2rem; }
+  .shop-hero-body h1 { margin: 0; font-size: clamp(2rem, 5vw, 3rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; }
+  .shop-hero-body p { margin: 0; opacity: 0.85; }
+  .shop-hero-body .btn { justify-self: start; }
+  .shop-subcats { display: flex; gap: 1.25rem; overflow-x: auto; padding-block-end: 0.5rem; scroll-snap-type: x mandatory; list-style: none; margin: 0; padding-inline: 0; }
+  .shop-subcats > li { scroll-snap-align: start; }
+  .shop-subcats a { display: grid; justify-items: center; gap: 0.5rem; inline-size: 6.5rem; color: inherit; text-decoration: none; font-size: 0.875rem; text-align: center; }
+  .shop-subcats img { inline-size: 6.5rem; block-size: 6.5rem; border-radius: 999px; object-fit: cover; background: var(--muted); transition: transform 200ms ease, box-shadow 200ms ease; }
+  .shop-subcats a:hover img { transform: scale(1.05); box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--primary); }
+  .shop-subcats small { color: var(--muted-foreground); font-size: 0.75rem; }
+  .shop-tiles { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+  .shop-tile { position: relative; display: block; overflow: hidden; border-radius: calc(var(--radius) + 4px); color: #fff; text-decoration: none; min-block-size: 14rem; }
+  .shop-tile > img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; transition: transform 500ms ease; }
+  .shop-tile::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgb(0 0 0 / 0.65), transparent 60%); }
+  .shop-tile:hover > img { transform: scale(1.06); }
+  .shop-tile:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .shop-tile-body { position: absolute; inset-inline: 0; inset-block-end: 0; z-index: 1; display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; padding: 1.25rem; }
+  .shop-tile-body h3 { margin: 0; font-size: 1.25rem; font-weight: 600; }
+  .shop-tile-body p { margin: 0; font-size: 0.8125rem; opacity: 0.85; }
+  .shop-tile-go { display: inline-flex; align-items: center; justify-content: center; inline-size: 2.25rem; block-size: 2.25rem; border-radius: 999px; background: #fff; color: #111; transform: translateX(-0.5rem); opacity: 0; transition: transform 200ms ease, opacity 200ms ease; }
+  .shop-tile-go svg { inline-size: 1rem; block-size: 1rem; }
+  .shop-tile:hover .shop-tile-go { transform: none; opacity: 1; }
+  .shop-tile:focus-visible .shop-tile-go { transform: none; opacity: 1; }
+  @media (hover: none) { .shop-tile-go { transform: none; opacity: 1; } }
+  .shop-bento { display: grid; gap: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 13rem; }
+  @media (width >= 48rem) { .shop-bento { grid-template-columns: repeat(4, minmax(0, 1fr)); } .shop-bento > [data-span='wide'] { grid-column: span 2; } .shop-bento > [data-span='tall'] { grid-row: span 2; } .shop-bento > [data-span='big'] { grid-column: span 2; grid-row: span 2; } }
+  .shop-bento > .shop-tile { min-block-size: 0; }
+  .shop-promo-split { display: grid; gap: 1.5rem; align-items: center; padding: 2rem; border-radius: calc(var(--radius) + 4px); background: var(--muted); }
+  @media (width >= 48rem) { .shop-promo-split { grid-template-columns: 1fr 1fr; padding: 2.5rem; } }
+  .shop-promo-split img { inline-size: 100%; aspect-ratio: 16 / 10; border-radius: var(--radius); object-fit: cover; }
+  .shop-promo-split h2 { margin: 0; font-size: 1.5rem; font-weight: 600; }
+  .shop-promo-split p { margin: 0; color: var(--muted-foreground); }
+  .shop-tree ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.125rem; }
+  .shop-tree ul ul { padding-inline-start: 0.75rem; margin-block: 0.25rem; border-inline-start: 1px solid var(--border); }
+  .shop-tree a { display: flex; justify-content: space-between; gap: 0.5rem; padding: 0.375rem 0.625rem; border-radius: calc(var(--radius) - 2px); color: var(--muted-foreground); font-size: 0.875rem; text-decoration: none; }
+  .shop-tree a:hover { background: var(--accent); color: var(--accent-foreground); }
+  .shop-tree a[aria-current] { background: var(--muted); color: var(--foreground); font-weight: 500; }
+  .shop-tree a span { font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+  .shop-tree summary { display: flex; align-items: center; gap: 0.375rem; padding: 0.375rem 0.625rem; border-radius: calc(var(--radius) - 2px); font-size: 0.875rem; font-weight: 500; cursor: pointer; list-style: none; }
+  .shop-tree summary::-webkit-details-marker { display: none; }
+  .shop-tree summary svg { inline-size: 0.875rem; block-size: 0.875rem; transition: transform 150ms ease; }
+  .shop-tree details[open] > summary svg { transform: rotate(90deg); }
+  .shop-tree summary:hover { background: var(--accent); }
+  .shop-pills { display: flex; gap: 0.5rem; overflow-x: auto; scrollbar-width: none; }
+  .shop-pills a { flex: none; padding: 0.375rem 0.875rem; border: 1px solid var(--border); border-radius: 999px; color: inherit; font-size: 0.875rem; text-decoration: none; white-space: nowrap; }
+  .shop-pills a:hover { background: var(--accent); }
+  .shop-pills a[aria-current] { border-color: var(--primary); background: var(--primary); color: var(--primary-foreground); }
+  .shop-more { display: grid; justify-items: center; gap: 0.75rem; padding-block-start: 1rem; }
+  .shop-more p { margin: 0; font-size: 0.875rem; color: var(--muted-foreground); }
+  .shop-more .progress { inline-size: 12rem; }
+  .shop-seo { max-inline-size: 48rem; }
+  html.dark .shop-tile > img { filter: brightness(0.6); }
+  html.dark .shop-hero > img { filter: brightness(0.6); }
+"""
+CATP = CAT_CSS + FX_CSS + CATEGORY_CSS
+
+SUBCATS = [("Living room", 64, 1), ("Bedroom", 48, 2), ("Kitchen", 72, 3), ("Dining", 31, 4), ("Bath", 26, 1), ("Lighting", 39, 2), ("Textiles", 57, 3), ("Decor", 88, 4)]
+subcats = "".join(f'<li><a href="#"><img src="{PH}" alt=""{f" class={chr(34)}shop-shot{chr(34)} data-shot={chr(34)}{s_}{chr(34)}" if s_ > 1 else ""}><span>{n}</span><small>{c} items</small></a></li>' for n, c, s_ in SUBCATS)
+
+
+def tile(title, sub, n=1, span=None, heading="h3"):
+    sp = f' data-span="{span}"' if span else ""
+    return f"""<a href="#" class="shop-tile"{sp}>
+  {shot(n)}
+  <div class="shop-tile-body"><div><{heading}>{title}</{heading}><p>{sub}</p></div><span class="shop-tile-go" aria-hidden="true">{si("arrow-right")}</span></div>
+</a>"""
+
+
+add("category-01", "Category 01", "A category landing page: hero, subcategory circles, rooms, featured products, a promo and an FAQ.", "category", f"""
+{store_header(3)}
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="12">
+    <div class="stack" data-gap="4">
+      <nav class="breadcrumb shop-crumbs" aria-label="Breadcrumb"><ol><li><a href="#">Home</a></li>{crumb_sep}<li><span aria-current="page">Home &amp; Living</span></li></ol></nav>
+      <section class="shop-hero" aria-labelledby="c1-title">
+        {shot(3)}
+        <div class="shop-hero-body">
+          <span class="badge" data-variant="secondary">Autumn edit</span>
+          <h1 id="c1-title">Home &amp; Living</h1>
+          <p>Natural materials, soft light and pieces made to last. 425 products across every room.</p>
+          <a href="#c1-featured" class="btn" data-variant="secondary">Shop the edit{si("arrow-right")}</a>
+        </div>
+      </section>
+    </div>
+    <section class="stack" data-gap="4" aria-labelledby="c1-subs">
+      <h2 class="shop-h2" id="c1-subs">Shop by category</h2>
+      <ul class="shop-subcats">{subcats}</ul>
+    </section>
+    <section class="stack" data-gap="4" aria-labelledby="c1-rooms">
+      <div class="cluster" data-justify="between"><h2 class="shop-h2" id="c1-rooms">Shop by room</h2><a href="#" class="btn" data-variant="link" data-size="sm">All rooms{si("arrow-right")}</a></div>
+      <div class="shop-tiles">{tile("Living room", "Sofas, throws and lamps", 2)}{tile("Bedroom", "Linen, pillows and calm", 4)}{tile("Kitchen", "Stoneware and tools", 3)}</div>
+    </section>
+    <section class="stack" data-gap="4" id="c1-featured" aria-labelledby="c1-feat">
+      <div class="cluster" data-justify="between"><h2 class="shop-h2" id="c1-feat">Featured</h2><a href="#" class="btn" data-variant="link" data-size="sm">View all 425{si("arrow-right")}</a></div>
+      <div class="shop-cards">{"".join(card(p) for p in [ITEMS[6], ITEMS[3], ITEMS[2], ITEMS[5]])}</div>
+    </section>
+    <section class="shop-promo-split" aria-labelledby="c1-promo">
+      <div class="stack" data-gap="3" data-align="start">
+        <span class="badge">Members</span>
+        <h2 id="c1-promo">15% off textiles this week</h2>
+        <p>Throws, pillows and table linen in seasonal colors. Join free to unlock the price.</p>
+        <a href="#" class="btn">Join and save</a>
+      </div>
+      {shot(2)}
+    </section>
+    <section class="stack shop-seo" data-gap="4" aria-labelledby="c1-faq">
+      <h2 class="shop-h2" id="c1-faq">About Home &amp; Living</h2>
+      <div class="accordion">
+        <details><summary>How do I care for linen?</summary><section><p class="shop-lead">Wash at 40°C, line dry and iron while slightly damp. Linen softens with every wash.</p></section></details>
+        <details><summary>Do you deliver furniture?</summary><section><p class="shop-lead">Large items ship with a two-person crew to the room of your choice, free over $500.</p></section></details>
+        <details><summary>Can I return home items?</summary><section><p class="shop-lead">Yes, unused items within 30 days. Textiles must be in their original packaging.</p></section></details>
+      </div>
+    </section>
+  </div>
+</main>
+""", CATP, scripts=script(WISH_JS))
+
+add("category-02", "Category 02", "Shop by category: a bento grid of image tiles with hover zoom and an arrow that slides in.", "category", f"""
+{store_header(3)}
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="6">
+    <div class="cluster" data-justify="between" data-align="end" data-gap="4">
+      <div class="stack" data-gap="1">
+        <h1 class="shop-h1">Shop by category</h1>
+        <p class="shop-lead">Eight departments, one considered collection.</p>
+      </div>
+      <a href="#" class="btn" data-variant="outline">All products</a>
+    </div>
+    <div class="shop-bento">
+      {tile("New in", "128 products", 1, "big")}
+      {tile("Apparel", "212 products", 2, "tall")}
+      {tile("Bags", "46 products", 3)}
+      {tile("Kitchen", "93 products", 4)}
+      {tile("Home", "155 products", 3, "wide")}
+      {tile("Accessories", "71 products", 2)}
+      {tile("Sale", "Up to 40% off", 4)}
+    </div>
+  </div>
+</main>
+""", CATP)
+
+TREE = [
+    ("Apparel", True, [("Sweaters", 18, True), ("T-shirts", 24, False), ("Outerwear", 12, False), ("Scarves", 7, False)]),
+    ("Home", False, [("Pillows", 21, False), ("Throws", 14, False), ("Lighting", 39, False)]),
+    ("Kitchen", False, [("Mugs", 16, False), ("Bowls", 11, False), ("Coffee", 9, False)]),
+]
+tree = "".join(f"""<li><details{" open" if open_ else ""}><summary>{si("chevron-right")}{name}</summary><ul>{"".join(f'<li><a href="#"{" aria-current=\"page\"" if cur else ""}>{n}<span>{c}</span></a></li>' for n, c, cur in kids)}</ul></details></li>""" for name, open_, kids in TREE)
+c3_items = SHOP_ITEMS * 2
+c3_cards = "".join(card(p).replace('<article class="shop-card">', '<article class="shop-card" data-more hidden>' if i >= 8 else '<article class="shop-card">', 1) for i, p in enumerate(c3_items))
+MORE_JS = """
+document.querySelectorAll('[data-load-more]').forEach((btn) => {
+  const grid = document.getElementById(btn.dataset.loadMore);
+  const total = grid.children.length;
+  const sync = () => {
+    const shown = grid.querySelectorAll(':scope > :not([hidden])').length;
+    btn.closest('.shop-more').querySelector('[data-shown]').textContent = `Showing ${shown} of ${total}`;
+    const bar = btn.closest('.shop-more').querySelector('.progress');
+    bar.setAttribute('aria-valuenow', Math.round(shown / total * 100));
+    bar.querySelector('span').style.width = (shown / total * 100) + '%';
+    btn.hidden = shown >= total;
+  };
+  btn.addEventListener('click', () => {
+    const next = [...grid.querySelectorAll(':scope > [hidden]')].slice(0, 4);
+    next.forEach((c) => { c.hidden = false; });
+    next[0]?.querySelector('a')?.focus({ preventScroll: true });
+    sync();
+  });
+});
+"""
+pills = "".join(f'<a href="#"{" aria-current=\"page\"" if i == 0 else ""}>{t}</a>' for i, t in enumerate(["Sweaters", "Cardigans", "Crew neck", "V-neck", "Merino", "Cashmere", "Cotton"]))
+add("category-03", "Category 03", "A category listing: subcategory tree, pills, sort and a load-more button with progress.", "category", f"""
+{store_header(3)}
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="6">
+    <nav class="breadcrumb shop-crumbs" aria-label="Breadcrumb"><ol><li><a href="#">Home</a></li>{crumb_sep}<li><a href="#">Apparel</a></li>{crumb_sep}<li><span aria-current="page">Sweaters</span></li></ol></nav>
+    <div class="stack" data-gap="2">
+      <h1 class="shop-h1">Sweaters</h1>
+      <p class="shop-lead">Merino, cashmere and cotton knits for cool days. {len(c3_items)} products.</p>
+    </div>
+    <div class="shop-results">
+      <nav class="shop-tree shop-filters-panel" aria-label="Categories"><ul>{tree}</ul></nav>
+      <div class="stack" data-gap="5">
+        <div class="shop-toolbar">
+          <nav class="shop-pills" aria-label="Sweater types">{pills}</nav>
+          <div class="cluster" data-gap="2">
+            <label class="sr-only" for="c3-sort">Sort by</label>
+            <select class="select" id="c3-sort">{SORT}</select>
+          </div>
+        </div>
+        <div class="shop-cards" id="c3-grid">{c3_cards}</div>
+        <div class="shop-more">
+          <p data-shown>Showing 8 of {len(c3_items)}</p>
+          <div class="progress" role="progressbar" aria-label="Products shown" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{round(8 / len(c3_items) * 100)}"><span style="width: {8 / len(c3_items) * 100:.4f}%"></span></div>
+          <button type="button" class="btn" data-variant="outline" data-load-more="c3-grid">Load more</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+""", CATP + "\n  .shop-toolbar { flex-wrap: nowrap; }\n  .shop-pills { min-inline-size: 0; }\n  .shop-pills a { display: inline-block; }\n  @media (width < 56rem) { .shop-tree { display: none; } }", scripts=script(MORE_JS + WISH_JS))
 
 
 if __name__ == "__main__":

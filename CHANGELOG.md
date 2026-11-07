@@ -20,6 +20,9 @@
   - Search: `search-01` product search Command dialog (⌘K) with recent searches, categories and product results, `search-02` results page with filters, sort, filter chips, grid and list views and pagination.
   - Cart: `cart-05` mini cart in a bottom Drawer.
 - Interactive product cards: `product-card-04` second photo, side actions and an add-to-cart bar on hover, `product-card-05` hover zones that flip through photos (with arrows and color swatches), `product-card-06` quick add sizes on hover with a confirmation, `product-card-07` lift on hover and Add to cart that turns into a quantity stepper, `product-card-08` editorial card whose details slide up over the photo (an info button opens them on touch screens), `product-card-09` flash sale cards with a stock bar and a countdown. Hover states also open on keyboard focus, and motion is off with `prefers-reduced-motion`.
+- Filter and category blocks:
+  - Filter: `filter-01` filter sidebar (category with counts, price, color, size, rating, in stock) that filters the grid live, with active chips, a filter count, sort and an empty state; `filter-02` horizontal filter bar with a popover per filter; `filter-03` mobile filters in a bottom Sheet with a live “Show N products” button.
+  - Category: `category-01` category landing (hero, subcategory circles, room tiles, featured products, promo, FAQ); `category-02` shop-by-category bento grid with hover zoom; `category-03` category listing with a subcategory tree, pills, sort and load more with progress.
 
 ### Fixed
 
