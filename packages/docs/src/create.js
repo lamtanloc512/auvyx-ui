@@ -99,7 +99,7 @@
     };
     const KEYS = Object.keys(OPTS);
     const CORNER_CSS = { Round: 'round', Squircle: 'squircle', Smooth: 'superellipse(1.5)', Bevel: 'bevel', Scoop: 'scoop', Notch: 'notch' };
-    const DEFAULT = { style: 0, base: 0, theme: 0, chart: 0, heading: 0, font: 1, icons: 0, radius: 3, corners: 1, menu: 0, accent: 0, smoothing: 1, fontSize: 16 };
+    const DEFAULT = { style: 0, base: 0, theme: 0, chart: 0, heading: 0, font: 1, icons: 0, radius: 3, corners: 1, menu: 0, accent: 0, smoothing: 1, fontSize: 16, fontWeight: 0 };
     // Corner smoothing (0–1) for Squircle and Smooth corners. Native: superellipse(1 + s)
     // for Squircle (1 is squircle, the default) and superellipse(1 + s/2) for Smooth;
     // Monoco reads --corner-smoothing. Kept out of the preset code (like the editor).
@@ -108,6 +108,13 @@
     // the components use, so spacing and radius stay as they are.
     const TEXT = { xs: 0.75, sm: 0.875, base: 1, lg: 1.125, xl: 1.25, '2xl': 1.5, '3xl': 1.875, '4xl': 2.25 };
     const textScale = () => (state.fontSize ?? 16) / 16;
+    // Font weight: components read --font-weight-normal|medium|semibold|bold. The panel
+    // slider shifts all four; the editor sets each one. Google Fonts serves each family's
+    // whole weight axis (WEIGHT_AXIS), so any weight in range renders with real glyphs.
+    const WEIGHTS = { normal: 400, medium: 500, semibold: 600, bold: 700 };
+    const WEIGHT_AXIS = { Geist: '100..900', Inter: '100..900', 'IBM Plex Sans': '100..700', 'Space Grotesk': '300..700', Lora: '400..700', 'Playfair Display': '400..900', Merriweather: '300..900', 'JetBrains Mono': '100..800' };
+    const weightAxis = (name) => WEIGHT_AXIS[name] || (FONTS.some(([f]) => f === name) ? '300..800' : '400;500;600;700');
+    const clampWeight = (w) => Math.min(900, Math.max(100, Math.round(w / 50) * 50));
     // Locks: a locked option keeps its value when a theme preset or an imported
     // theme is applied, and Shuffle, Reset and Open Preset leave it alone.
     const THEME_KEYS = ['primary', 'primary-foreground', 'ring', 'sidebar-primary', 'sidebar-primary-foreground', 'sidebar-ring'];
@@ -168,6 +175,7 @@
       const light = { ...baseVars(false), ...themeVars(false), ...chartVars(false) };
       const dark = { ...baseVars(true), ...themeVars(true), ...chartVars(true) };
       const shared = { radius: boxy() ? '0' : pick('radius') + 'rem', 'corner-shape': CORNER_CSS[pick('corners')], 'font-sans': fontStack(pick('font')) };
+      if (state.fontWeight) for (const [k, w] of Object.entries(WEIGHTS)) shared[`font-weight-${k}`] = String(clampWeight(w + state.fontWeight));
       if (state.heading) shared['font-heading'] = fontStack(pick('heading'));
       if (state.imported) {
         Object.assign(shared, state.imported.theme);
@@ -207,7 +215,8 @@
       const { shared, light, dark } = tokens();
       const block = (sel, vars) => `${sel} {\n${Object.entries(vars).map(([k, v]) => `  --${k}: ${v};`).join('\n')}\n}`;
       const out = [block(':root', { ...shared, ...light }), block('.dark', dark)];
-      out.push(`body {\n  font-family: var(--font-sans);${textScale() !== 1 ? '\n  font-size: var(--text-base);' : ''}\n}`);
+      const bodyWeight = shared['font-weight-normal'] && shared['font-weight-normal'] !== '400' ? '\n  font-weight: var(--font-weight-normal);' : '';
+      out.push(`body {\n  font-family: var(--font-sans);${textScale() !== 1 ? '\n  font-size: var(--text-base);' : ''}${bodyWeight}\n}`);
       if (shared['font-heading']) out.push('h1, h2, h3, h4, h5, h6 {\n  font-family: var(--font-heading);\n}');
       if (state.menu === 1) out.push(':is([data-popover], .command-dialog > .command) {\n  background-color: color-mix(in oklab, var(--popover) 78%, transparent);\n  backdrop-filter: blur(16px) saturate(1.6);\n}');
       if (state.accent === 1) out.push(':is([data-popover], .command, [role="listbox"]) {\n  --accent: var(--primary);\n  --accent-foreground: var(--primary-foreground);\n}');
@@ -225,7 +234,7 @@
     }
     function fontsHref() {
       const f = fontFamilies();
-      return f.length ? `https://fonts.googleapis.com/css2?${f.map((n) => `family=${n.replace(/ /g, '+')}:wght@400;500;600;700`).join('&')}&display=swap` : '';
+      return f.length ? `https://fonts.googleapis.com/css2?${f.map((n) => `family=${n.replace(/ /g, '+')}:wght@${weightAxis(n)}`).join('&')}&display=swap` : '';
     }
     const styleFile = () => `auvyx-${pick('style').toLowerCase()}.min.css`;
     function headSnippet() {
@@ -402,7 +411,7 @@
         </div>
         <p class="d-cr-hint">Colors are edited for ${mode} mode. Font, radius, spacing and shadow apply to both.</p>
         ${TOKEN_GROUPS.map(([title, keys], n) => group(title, keys.map((k) => tokRow(k, set[k] || '')).join(''), n < 2)).join('')}
-        ${group('Typography', `<div class="d-cr-range"><label for="cr-font">Font</label><select class="select" id="cr-font" data-font>${font ? '' : '<option selected>Custom</option>'}${FONTS.map(([f]) => `<option${f === font ? ' selected' : ''}>${esc(f)}</option>`).join('')}</select></div>${range('tracking-normal', 'Letter spacing', -0.05, 0.1, 0.005, num(shared['tracking-normal'], 0), 'em')}`)}
+        ${group('Typography', `<div class="d-cr-range"><label for="cr-font">Font</label><select class="select" id="cr-font" data-font>${font ? '' : '<option selected>Custom</option>'}${FONTS.map(([f]) => `<option${f === font ? ' selected' : ''}>${esc(f)}</option>`).join('')}</select></div>${range('tracking-normal', 'Letter spacing', -0.05, 0.1, 0.005, num(shared['tracking-normal'], 0), 'em')}${Object.entries(WEIGHTS).map(([k, w]) => range(`font-weight-${k}`, `Weight: ${k === 'normal' ? 'regular' : k}`, 100, 900, 50, num(shared[`font-weight-${k}`], w), '')).join('')}`)}
         ${group('Radius &amp; spacing', range('radius', 'Radius', 0, 1.5, 0.025, num(shared.radius, 0.625), 'rem') + range('spacing', 'Spacing', 0.2, 0.32, 0.005, num(shared.spacing, 0.25), 'rem'), true)}
         ${group('Shadow', `<div class="d-cr-tok"><input type="color" id="cr-shc" data-shcolor value="${toHex(`hsl(${sh.color})`)}" aria-label="Shadow color"><label for="cr-shc">Shadow color</label></div>${range('sh-opacity', 'Opacity', 0, 1, 0.01, sh.opacity, '')}${range('sh-blur', 'Blur', 0, 50, 1, sh.blur, 'px')}${range('sh-spread', 'Spread', -10, 10, 1, sh.spread, 'px')}${range('sh-x', 'Offset X', -10, 10, 1, sh.x, 'px')}${range('sh-y', 'Offset Y', -10, 10, 1, sh.y, 'px')}`)}
         <div class="d-cr-actions">
@@ -429,6 +438,7 @@
     // Panel sliders write straight to state (not part of the preset code).
     const SLIDE = {
       fontSize: { label: 'Font Size', min: 12, max: 20, step: 0.5, show: (v) => `${v}px` },
+      fontWeight: { label: 'Font Weight', min: -200, max: 200, step: 50, show: (v) => (v ? `${v > 0 ? '+' : ''}${v}` : 'Default') },
       smoothing: { label: 'Corner Smoothing', min: 0, max: 1, step: 0.05, show: (v) => `${Math.round(v * 100)}%` },
     };
     function slider(k, hint, off = '') {
@@ -437,7 +447,7 @@
     }
     function sliderRows() {
       const off = !SMOOTH[pick('corners')] ? 'Pick Squircle or Smooth corners' : !parseFloat(tokens().shared.radius) ? 'Set a radius first' : '';
-      return slider('fontSize', 'Base text size; every text size scales with it.') + slider('smoothing', 'Native corner-shape in Chrome 139+; drawn with Monoco elsewhere.', off);
+      return slider('fontSize', 'Base text size; every text size scales with it.') + slider('fontWeight', 'Lighter or bolder: shifts regular, medium, semibold and bold together.') + slider('smoothing', 'Native corner-shape in Chrome 139+; drawn with Monoco elsewhere.', off);
     }
     const dlg = (id, title, desc, body, foot = '') => `<dialog id="${id}" class="dialog d-cr-dialog" closedby="any" aria-labelledby="${id}-t"><div><header><h2 id="${id}-t">${title}</h2><p>${desc}</p></header><section>${body}</section><footer>${foot}<button type="button" class="btn" data-variant="outline" commandfor="${id}" command="close">Close</button></footer></div></dialog>`;
     function page() {
