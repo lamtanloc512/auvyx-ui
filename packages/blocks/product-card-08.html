@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Product Card 08 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-page {
+        padding-block: 2rem 4rem;
+      }
+      .shop-h1 {
+        margin: 0;
+        font-size: 1.875rem;
+        font-weight: 600;
+        letter-spacing: -0.025em;
+      }
+      .shop-lead {
+        margin: 0;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
+      .shop-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .shop-rating svg {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+        fill: currentColor;
+        color: var(--foreground);
+      }
+
+      .shop-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .shop-card-cat {
+        margin: 0;
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .shop-dots {
+        position: relative;
+        z-index: 1;
+      }
+      .shop-price {
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        margin: 0;
+        font-variant-numeric: tabular-nums;
+      }
+      .shop-price strong {
+        font-size: 0.9375rem;
+        font-weight: 600;
+      }
+      .shop-price s {
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .shop-price[data-size="lg"] strong {
+        font-size: 1.5rem;
+      }
+      .shop-price[data-size="lg"] s {
+        font-size: 1rem;
+      }
+      .shop-dots {
+        display: flex;
+        gap: 0.375rem;
+      }
+      .shop-dots > span {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+        border-radius: 999px;
+        background: var(--dot);
+        box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 15%, transparent);
+      }
+
+      .shop-fx-grid {
+        display: grid;
+        gap: 2rem 1.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+      }
+      .shop-shot {
+        display: block;
+        aspect-ratio: 4 / 5;
+        inline-size: 100%;
+        object-fit: cover;
+        background: var(--muted);
+      }
+      .shop-shot[data-shot="2"] {
+        transform: scaleX(-1);
+        filter: hue-rotate(160deg) saturate(1.6);
+      }
+      .shop-shot[data-shot="3"] {
+        filter: sepia(0.6) saturate(1.4);
+      }
+      .shop-shot[data-shot="4"] {
+        transform: scaleX(-1);
+        filter: grayscale(1) contrast(1.2);
+      }
+      html.dark .shop-shot {
+        opacity: 0.6;
+      }
+      .shop-fx {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .shop-fx-media {
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--radius);
+        background: var(--muted);
+      }
+      .shop-fx-media > .shop-shot + .shop-shot {
+        position: absolute;
+        inset: 0;
+        block-size: 100%;
+      }
+      @keyframes shop-pop {
+        from {
+          transform: scale(0.96);
+          opacity: 0.6;
+        }
+        to {
+          transform: none;
+          opacity: 1;
+        }
+      }
+      .shop-fx-reveal {
+        color: #fff;
+      }
+      .shop-fx-reveal .shop-fx-media > .shop-shot {
+        aspect-ratio: 3 / 4;
+        transition: transform 500ms ease;
+      }
+      .shop-fx-reveal:hover .shop-fx-media > .shop-shot {
+        transform: scale(1.06);
+      }
+      .shop-fx-panel {
+        position: absolute;
+        inset-inline: 0;
+        inset-block-end: 0;
+        z-index: 2;
+        display: grid;
+        gap: 0.5rem;
+        padding: 3rem 1rem 1rem;
+        background: linear-gradient(to top, rgb(0 0 0 / 0.85), rgb(0 0 0 / 0.55) 60%, transparent);
+      }
+      .shop-fx-panel h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .shop-fx-panel h3 a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .shop-fx-more {
+        display: grid;
+        grid-template-rows: 0fr;
+        opacity: 0;
+        transition:
+          grid-template-rows 300ms ease,
+          opacity 300ms ease;
+      }
+      .shop-fx-more > div {
+        display: grid;
+        gap: 0.75rem;
+        min-block-size: 0;
+        overflow: hidden;
+      }
+      .shop-fx-more p {
+        margin: 0;
+        font-size: 0.8125rem;
+        opacity: 0.85;
+      }
+      .shop-fx-reveal:hover .shop-fx-more {
+        grid-template-rows: 1fr;
+        opacity: 1;
+      }
+      .shop-fx-reveal:focus-within .shop-fx-more {
+        grid-template-rows: 1fr;
+        opacity: 1;
+      }
+      .shop-fx-reveal[data-open] .shop-fx-more {
+        grid-template-rows: 1fr;
+        opacity: 1;
+      }
+      .shop-fx-panel .shop-price s {
+        color: rgb(255 255 255 / 0.7);
+      }
+      .shop-fx-panel .shop-rating {
+        color: rgb(255 255 255 / 0.8);
+      }
+      .shop-fx-panel .shop-rating svg {
+        color: #fff;
+      }
+      .shop-fx-info {
+        position: absolute;
+        inset-block-start: 0.75rem;
+        inset-inline-end: 0.75rem;
+        z-index: 3;
+        background: var(--background);
+      }
+      @media (hover: hover) {
+        .shop-fx-info {
+          display: none;
+        }
+      }
+      /* Reduced motion: the hover states still apply, without movement. !important so it wins over every card's transition rules. */
+      @media (prefers-reduced-motion: reduce) {
+        .shop-fx * {
+          transition: none !important;
+          animation: none !important;
+        }
+      }
+
+      .shop-fx-reveal .shop-card-cat {
+        color: rgb(255 255 255 / 0.75);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrapper shop-page">
+      <div class="stack" data-gap="6">
+        <div class="stack" data-gap="1">
+          <h1 class="shop-h1">Editorial reveal</h1>
+          <p class="shop-lead">
+            Hover a photo for details. On touch screens, the info button opens them.
+          </p>
+        </div>
+        <div class="shop-fx-grid">
+          <article class="shop-fx shop-fx-reveal shop-card" data-reveal>
+            <div class="shop-fx-media">
+              <img class="shop-shot" src="assets/placeholder.svg" alt />
+              <button
+                type="button"
+                class="btn shop-fx-info"
+                data-variant="outline"
+                data-size="icon-sm"
+                aria-expanded="false"
+                aria-label="Show details for Arc Table Lamp">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              </button>
+              <div class="shop-fx-panel">
+                <p class="shop-card-cat">Home</p>
+                <h3><a href="#">Arc Table Lamp</a></h3>
+                <p class="shop-price"><strong>$129.00</strong></p>
+                <div class="shop-fx-more">
+                  <div>
+                    <p>Dimmable LED table lamp with a brushed metal arm.</p>
+                    <p class="shop-rating">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                      4.7
+                      <span>(39)</span>
+                    </p>
+                    <div class="shop-dots" aria-label="2 colors">
+                      <span style="--dot: #b8933f" title="Brass"></span>
+                      <span style="--dot: #262626" title="Black"></span>
+                    </div>
+                    <button type="button" class="btn" data-variant="secondary" data-size="sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+                      Add to cart
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="shop-fx shop-fx-reveal shop-card" data-reveal>
+            <div class="shop-fx-media">
+              <img class="shop-shot" src="assets/placeholder.svg" alt />
+              <button
+                type="button"
+                class="btn shop-fx-info"
+                data-variant="outline"
+                data-size="icon-sm"
+                aria-expanded="false"
+                aria-label="Show details for Everyday Tote">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              </button>
+              <div class="shop-fx-panel">
+                <p class="shop-card-cat">Bags</p>
+                <h3><a href="#">Everyday Tote</a></h3>
+                <p class="shop-price"><strong>$48.00</strong></p>
+                <div class="shop-fx-more">
+                  <div>
+                    <p>Heavy canvas tote with a leather handle and an inner pocket.</p>
+                    <p class="shop-rating">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                      4.7
+                      <span>(128)</span>
+                    </p>
+                    <div class="shop-dots" aria-label="3 colors">
+                      <span style="--dot: #e8dcc4" title="Natural"></span>
+                      <span style="--dot: #262626" title="Black"></span>
+                      <span style="--dot: #6b6b3a" title="Olive"></span>
+                    </div>
+                    <button type="button" class="btn" data-variant="secondary" data-size="sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+                      Add to cart
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="shop-fx shop-fx-reveal shop-card" data-reveal>
+            <div class="shop-fx-media">
+              <img class="shop-shot" src="assets/placeholder.svg" alt />
+              <button
+                type="button"
+                class="btn shop-fx-info"
+                data-variant="outline"
+                data-size="icon-sm"
+                aria-expanded="false"
+                aria-label="Show details for Linen Throw Pillow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              </button>
+              <div class="shop-fx-panel">
+                <p class="shop-card-cat">Home</p>
+                <h3><a href="#">Linen Throw Pillow</a></h3>
+                <p class="shop-price">
+                  <strong>$32.00</strong>
+                  <s>$40.00</s>
+                  <span class="sr-only">Was $40.00</span>
+                </p>
+                <div class="shop-fx-more">
+                  <div>
+                    <p>Stonewashed linen cover with a feather insert.</p>
+                    <p class="shop-rating">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                      4.5
+                      <span>(64)</span>
+                    </p>
+                    <div class="shop-dots" aria-label="3 colors">
+                      <span style="--dot: #c2856a" title="Clay"></span>
+                      <span style="--dot: #9caf88" title="Sage"></span>
+                      <span style="--dot: #f1ead8" title="Ivory"></span>
+                    </div>
+                    <button type="button" class="btn" data-variant="secondary" data-size="sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+                      Add to cart
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="shop-fx shop-fx-reveal shop-card" data-reveal>
+            <div class="shop-fx-media">
+              <img class="shop-shot" src="assets/placeholder.svg" alt />
+              <button
+                type="button"
+                class="btn shop-fx-info"
+                data-variant="outline"
+                data-size="icon-sm"
+                aria-expanded="false"
+                aria-label="Show details for Merino Crew Sweater">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              </button>
+              <div class="shop-fx-panel">
+                <p class="shop-card-cat">Apparel</p>
+                <h3><a href="#">Merino Crew Sweater</a></h3>
+                <p class="shop-price">
+                  <strong>$89.00</strong>
+                  <s>$119.00</s>
+                  <span class="sr-only">Was $119.00</span>
+                </p>
+                <div class="shop-fx-more">
+                  <div>
+                    <p>Extra-fine merino in a relaxed fit. Knitted in Portugal.</p>
+                    <p class="shop-rating">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                      4.8
+                      <span>(214)</span>
+                    </p>
+                    <div class="shop-dots" aria-label="3 colors">
+                      <span style="--dot: #3f3f46" title="Charcoal"></span>
+                      <span style="--dot: #d6cbb5" title="Oat"></span>
+                      <span style="--dot: #1e3a5f" title="Navy"></span>
+                    </div>
+                    <button type="button" class="btn" data-variant="secondary" data-size="sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+                      Add to cart
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </main>
+    <script>
+      document.querySelectorAll("[data-reveal]").forEach((card) => {
+        const b = card.querySelector(".shop-fx-info");
+        b.addEventListener("click", () => {
+          const open = b.getAttribute("aria-expanded") !== "true";
+          b.setAttribute("aria-expanded", String(open));
+          card.toggleAttribute("data-open", open);
+        });
+      });
+    </script>
+  </body>
+</html>

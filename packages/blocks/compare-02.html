@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Compare 02 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-page {
+        padding-block: 2rem 4rem;
+      }
+      .shop-h1 {
+        margin: 0;
+        font-size: 1.875rem;
+        font-weight: 600;
+        letter-spacing: -0.025em;
+      }
+      .shop-lead {
+        margin: 0;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
+      .shop-header {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 10;
+        border-block-end: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 90%, transparent);
+        backdrop-filter: blur(8px);
+      }
+      .shop-header-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        block-size: 4rem;
+      }
+      .shop-nav {
+        display: flex;
+        gap: 1.25rem;
+        font-size: 0.875rem;
+      }
+      .shop-nav a {
+        color: var(--muted-foreground);
+        text-decoration: none;
+      }
+      .shop-nav a:hover,
+      .shop-nav a[aria-current] {
+        color: var(--foreground);
+      }
+      .shop-header-search {
+        flex: 1;
+        max-inline-size: 20rem;
+        margin-inline-start: auto;
+      }
+      .shop-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .shop-cart-btn {
+        position: relative;
+      }
+      .shop-count {
+        position: absolute;
+        inset-block-start: -0.25rem;
+        inset-inline-end: -0.25rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-inline-size: 1.125rem;
+        block-size: 1.125rem;
+        padding-inline: 0.25rem;
+        border-radius: 999px;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+      .shop-count:empty,
+      .shop-count[data-count="0"] {
+        display: none;
+      }
+      @media (width < 48rem) {
+        .shop-nav,
+        .shop-header-search {
+          display: none;
+        }
+        .shop-header-actions {
+          margin-inline-start: auto;
+        }
+      }
+      .shop-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .shop-rating svg {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+        fill: currentColor;
+        color: var(--foreground);
+      }
+
+      .block-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: inherit;
+        text-decoration: none;
+      }
+      .block-logo-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .block-logo-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .shop-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .shop-card-media {
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--radius);
+        background: var(--muted);
+      }
+      .shop-card-media > img {
+        display: block;
+        aspect-ratio: 4 / 5;
+        inline-size: 100%;
+        object-fit: cover;
+        transition: transform 300ms ease;
+      }
+      .shop-card:hover .shop-card-media > img {
+        transform: scale(1.03);
+      }
+      html.dark .shop-card-media > img {
+        filter: brightness(0.5) grayscale(1);
+      }
+      .shop-card-badge {
+        position: absolute;
+        inset-block-start: 0.75rem;
+        inset-inline-start: 0.75rem;
+      }
+      .shop-card-tools {
+        position: absolute;
+        inset-block-start: 0.5rem;
+        inset-inline-end: 0.5rem;
+        display: grid;
+        gap: 0.375rem;
+      }
+      .shop-card-tools .btn {
+        background: var(--background);
+      }
+      .shop-card-quick {
+        position: absolute;
+        inset-inline: 0.75rem;
+        inset-block-end: 0.75rem;
+        opacity: 0;
+        transform: translateY(0.5rem);
+        transition:
+          opacity 200ms ease,
+          transform 200ms ease;
+      }
+      .shop-card:hover .shop-card-quick,
+      .shop-card:focus-within .shop-card-quick {
+        opacity: 1;
+        transform: none;
+      }
+      @media (hover: none) {
+        .shop-card-quick {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .shop-card-body {
+        display: grid;
+        gap: 0.25rem;
+      }
+      .shop-card-cat {
+        margin: 0;
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .shop-card-name {
+        margin: 0;
+        font-size: 0.9375rem;
+        font-weight: 500;
+      }
+      .shop-card-name a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .shop-card-name a::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+      }
+      .shop-card-name a:focus-visible {
+        outline: none;
+      }
+      .shop-card:has(.shop-card-name a:focus-visible) .shop-card-media {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+      .shop-card-tools {
+        z-index: 2;
+      }
+      .shop-card-quick {
+        z-index: 2;
+      }
+      .shop-dots {
+        position: relative;
+        z-index: 1;
+      }
+      .shop-cmp-check {
+        position: relative;
+        z-index: 1;
+      }
+      .shop-price {
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        margin: 0;
+        font-variant-numeric: tabular-nums;
+      }
+      .shop-price strong {
+        font-size: 0.9375rem;
+        font-weight: 600;
+      }
+      .shop-price s {
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .shop-price[data-size="lg"] strong {
+        font-size: 1.5rem;
+      }
+      .shop-price[data-size="lg"] s {
+        font-size: 1rem;
+      }
+      .shop-wish[aria-pressed="true"] {
+        color: var(--destructive);
+      }
+      .shop-wish[aria-pressed="true"] svg {
+        fill: currentColor;
+      }
+      .shop-dots {
+        display: flex;
+        gap: 0.375rem;
+      }
+      .shop-dots > span {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+        border-radius: 999px;
+        background: var(--dot);
+        box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 15%, transparent);
+      }
+      .shop-cards {
+        display: grid;
+        gap: 2rem 1.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+      }
+      .shop-cards[data-layout="list"] {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      html.dark .shop-tray img {
+        filter: brightness(0.5) grayscale(1);
+      }
+      .shop-cmp-check {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8125rem;
+      }
+      .shop-tray {
+        position: fixed;
+        inset-block-end: 1rem;
+        inset-inline: 1rem;
+        z-index: 20;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1rem;
+        max-inline-size: 48rem;
+        margin-inline: auto;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--border);
+        border-radius: calc(var(--radius) + 4px);
+        background: var(--popover);
+        color: var(--popover-foreground);
+        box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.3);
+      }
+      .shop-tray-slots {
+        display: flex;
+        gap: 0.5rem;
+        flex: 1;
+      }
+      .shop-tray-slots > li {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 3rem;
+        block-size: 3rem;
+        border: 1px dashed var(--border);
+        border-radius: var(--radius);
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+      }
+      .shop-tray-slots > li img {
+        inline-size: 100%;
+        block-size: 100%;
+        border-radius: inherit;
+        object-fit: cover;
+      }
+      .shop-tray-slots {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .shop-tray p {
+        margin: 0;
+        font-size: 0.875rem;
+      }
+
+      .shop-tray-space {
+        padding-block-end: 8rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="shop-header">
+      <div class="wrapper shop-header-row">
+        <a href="#" class="block-logo">
+          <span class="block-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+          Acme Store
+        </a>
+        <nav class="shop-nav" aria-label="Main">
+          <a href="#" aria-current="page">Shop</a>
+          <a href="#">New in</a>
+          <a href="#">Collections</a>
+          <a href="#">Journal</a>
+        </nav>
+        <div class="input-group shop-header-search">
+          <input type="search" placeholder="Search products..." aria-label="Search products" />
+          <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        </div>
+        <div class="shop-header-actions">
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Wishlist">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </a>
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Account">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </a>
+          <a
+            href="#"
+            class="btn shop-cart-btn"
+            data-variant="ghost"
+            data-size="icon"
+            aria-label="Cart, 3 items">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+            <span class="shop-count" data-cart-count>3</span>
+          </a>
+        </div>
+      </div>
+    </header>
+    <main class="wrapper shop-page shop-tray-space">
+      <div class="stack" data-gap="6">
+        <div class="stack" data-gap="1">
+          <h1 class="shop-h1">Lighting</h1>
+          <p class="shop-lead">Select up to three products to compare.</p>
+        </div>
+        <div class="shop-cards">
+          <article class="shop-card">
+            <div class="shop-card-media">
+              <img src="assets/placeholder.svg" alt />
+              <span class="badge shop-card-badge">New</span>
+              <div class="shop-card-tools">
+                <button
+                  type="button"
+                  class="btn shop-wish"
+                  data-variant="outline"
+                  data-size="icon-sm"
+                  aria-pressed="false"
+                  aria-label="Save Arc Table Lamp to wishlist"
+                  data-wish>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+                </button>
+              </div>
+              <button type="button" class="btn shop-card-quick" data-size="sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                Quick add
+              </button>
+            </div>
+            <div class="shop-card-body">
+              <p class="shop-card-cat">Home</p>
+              <h3 class="shop-card-name"><a href="#">Arc Table Lamp</a></h3>
+              <p class="shop-rating">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                4.7
+                <span>(39)</span>
+              </p>
+              <div class="cluster" data-justify="between">
+                <p class="shop-price"><strong>$129.00</strong></p>
+                <div class="shop-dots" aria-label="2 colors">
+                  <span style="--dot: #b8933f" title="Brass"></span>
+                  <span style="--dot: #262626" title="Black"></span>
+                </div>
+              </div>
+              <label class="shop-cmp-check">
+                <input type="checkbox" class="input" data-compare="lamp" />
+                Compare
+              </label>
+            </div>
+          </article>
+          <article class="shop-card">
+            <div class="shop-card-media">
+              <img src="assets/placeholder.svg" alt />
+              <span class="badge shop-card-badge">New</span>
+              <div class="shop-card-tools">
+                <button
+                  type="button"
+                  class="btn shop-wish"
+                  data-variant="outline"
+                  data-size="icon-sm"
+                  aria-pressed="false"
+                  aria-label="Save Everyday Tote to wishlist"
+                  data-wish>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+                </button>
+              </div>
+              <button type="button" class="btn shop-card-quick" data-size="sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                Quick add
+              </button>
+            </div>
+            <div class="shop-card-body">
+              <p class="shop-card-cat">Bags</p>
+              <h3 class="shop-card-name"><a href="#">Everyday Tote</a></h3>
+              <p class="shop-rating">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                4.7
+                <span>(128)</span>
+              </p>
+              <div class="cluster" data-justify="between">
+                <p class="shop-price"><strong>$48.00</strong></p>
+                <div class="shop-dots" aria-label="3 colors">
+                  <span style="--dot: #e8dcc4" title="Natural"></span>
+                  <span style="--dot: #262626" title="Black"></span>
+                  <span style="--dot: #6b6b3a" title="Olive"></span>
+                </div>
+              </div>
+              <label class="shop-cmp-check">
+                <input type="checkbox" class="input" data-compare="tote" />
+                Compare
+              </label>
+            </div>
+          </article>
+          <article class="shop-card">
+            <div class="shop-card-media">
+              <img src="assets/placeholder.svg" alt />
+
+              <div class="shop-card-tools">
+                <button
+                  type="button"
+                  class="btn shop-wish"
+                  data-variant="outline"
+                  data-size="icon-sm"
+                  aria-pressed="false"
+                  aria-label="Save Ceramic Pour-Over Set to wishlist"
+                  data-wish>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+                </button>
+              </div>
+              <button type="button" class="btn shop-card-quick" data-size="sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                Quick add
+              </button>
+            </div>
+            <div class="shop-card-body">
+              <p class="shop-card-cat">Kitchen</p>
+              <h3 class="shop-card-name"><a href="#">Ceramic Pour-Over Set</a></h3>
+              <p class="shop-rating">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                4.6
+                <span>(87)</span>
+              </p>
+              <div class="cluster" data-justify="between">
+                <p class="shop-price"><strong>$36.50</strong></p>
+                <div class="shop-dots" aria-label="2 colors">
+                  <span style="--dot: #f4f4f5" title="White"></span>
+                  <span style="--dot: #d8c3a5" title="Sand"></span>
+                </div>
+              </div>
+              <label class="shop-cmp-check">
+                <input type="checkbox" class="input" data-compare="pourover" />
+                Compare
+              </label>
+            </div>
+          </article>
+          <article class="shop-card">
+            <div class="shop-card-media">
+              <img src="assets/placeholder.svg" alt />
+              <span class="badge shop-card-badge" data-variant="destructive">Sale</span>
+              <div class="shop-card-tools">
+                <button
+                  type="button"
+                  class="btn shop-wish"
+                  data-variant="outline"
+                  data-size="icon-sm"
+                  aria-pressed="false"
+                  aria-label="Save Linen Throw Pillow to wishlist"
+                  data-wish>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+                </button>
+              </div>
+              <button type="button" class="btn shop-card-quick" data-size="sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                Quick add
+              </button>
+            </div>
+            <div class="shop-card-body">
+              <p class="shop-card-cat">Home</p>
+              <h3 class="shop-card-name"><a href="#">Linen Throw Pillow</a></h3>
+              <p class="shop-rating">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                4.5
+                <span>(64)</span>
+              </p>
+              <div class="cluster" data-justify="between">
+                <p class="shop-price">
+                  <strong>$32.00</strong>
+                  <s>$40.00</s>
+                  <span class="sr-only">Was $40.00</span>
+                </p>
+                <div class="shop-dots" aria-label="3 colors">
+                  <span style="--dot: #c2856a" title="Clay"></span>
+                  <span style="--dot: #9caf88" title="Sage"></span>
+                  <span style="--dot: #f1ead8" title="Ivory"></span>
+                </div>
+              </div>
+              <label class="shop-cmp-check">
+                <input type="checkbox" class="input" data-compare="pillow" />
+                Compare
+              </label>
+            </div>
+          </article>
+        </div>
+      </div>
+    </main>
+    <div class="shop-tray" role="region" aria-label="Compare" data-compare-tray hidden>
+      <ul class="shop-tray-slots">
+        <li data-slot>1</li>
+        <li data-slot>2</li>
+        <li data-slot>3</li>
+      </ul>
+      <p data-tray-count>0 of 3 selected</p>
+      <div class="cluster" data-gap="2">
+        <button type="button" class="btn" data-variant="ghost" data-size="sm" data-tray-clear>
+          Clear
+        </button>
+        <button type="button" class="btn" data-size="sm" data-tray-go disabled>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>
+          Compare
+        </button>
+      </div>
+    </div>
+    <script>
+      document.querySelectorAll("[data-compare-tray]").forEach((tray) => {
+        const MAX = 3;
+        const slots = tray.querySelectorAll("[data-slot]");
+        const boxes = () => [...document.querySelectorAll("[data-compare]")];
+        const sync = () => {
+          const on = boxes().filter((b) => b.checked);
+          slots.forEach((s, i) => {
+            const b = on[i];
+            s.innerHTML = b
+              ? `<img src="${b.closest(".shop-card").querySelector("img").getAttribute("src")}" alt="${b.closest(".shop-card").querySelector(".shop-card-name").textContent.trim()}">`
+              : String(i + 1);
+          });
+          boxes().forEach((b) => {
+            b.disabled = !b.checked && on.length >= MAX;
+          });
+          tray.hidden = !on.length;
+          tray.querySelector("[data-tray-count]").textContent = `${on.length} of ${MAX} selected`;
+          tray.querySelector("[data-tray-go]").disabled = on.length < 2;
+        };
+        document.addEventListener("change", (e) => {
+          if (e.target.matches("[data-compare]")) sync();
+        });
+        tray.querySelector("[data-tray-clear]").addEventListener("click", () => {
+          boxes().forEach((b) => {
+            b.checked = false;
+          });
+          sync();
+        });
+        sync();
+      });
+
+      document.addEventListener("click", (e) => {
+        const b = e.target.closest("[data-wish]");
+        if (!b) return;
+        const on = b.getAttribute("aria-pressed") !== "true";
+        b.setAttribute("aria-pressed", String(on));
+        document.querySelectorAll("[data-wish-count]").forEach((el) => {
+          const n = Math.max(0, (parseInt(el.textContent, 10) || 0) + (on ? 1 : -1));
+          el.textContent = n;
+          el.dataset.count = n;
+        });
+      });
+    </script>
+  </body>
+</html>

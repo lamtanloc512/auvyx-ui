@@ -132,7 +132,9 @@
         block-size: 2.5rem;
         border-radius: calc(var(--radius) - 2px);
       }
-      html.dark .shop-thumb,
+      html.dark .shop-thumb {
+        filter: brightness(0.5) grayscale(1);
+      }
       html.dark .shop-product-img {
         filter: brightness(0.5) grayscale(1);
       }

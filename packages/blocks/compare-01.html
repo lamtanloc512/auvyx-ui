@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Compare 01 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-page {
+        padding-block: 2rem 4rem;
+      }
+      .shop-h1 {
+        margin: 0;
+        font-size: 1.875rem;
+        font-weight: 600;
+        letter-spacing: -0.025em;
+      }
+      .shop-lead {
+        margin: 0;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
+      .shop-header {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 10;
+        border-block-end: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 90%, transparent);
+        backdrop-filter: blur(8px);
+      }
+      .shop-header-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        block-size: 4rem;
+      }
+      .shop-nav {
+        display: flex;
+        gap: 1.25rem;
+        font-size: 0.875rem;
+      }
+      .shop-nav a {
+        color: var(--muted-foreground);
+        text-decoration: none;
+      }
+      .shop-nav a:hover,
+      .shop-nav a[aria-current] {
+        color: var(--foreground);
+      }
+      .shop-header-search {
+        flex: 1;
+        max-inline-size: 20rem;
+        margin-inline-start: auto;
+      }
+      .shop-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .shop-cart-btn {
+        position: relative;
+      }
+      .shop-count {
+        position: absolute;
+        inset-block-start: -0.25rem;
+        inset-inline-end: -0.25rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-inline-size: 1.125rem;
+        block-size: 1.125rem;
+        padding-inline: 0.25rem;
+        border-radius: 999px;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+      .shop-count:empty,
+      .shop-count[data-count="0"] {
+        display: none;
+      }
+      @media (width < 48rem) {
+        .shop-nav,
+        .shop-header-search {
+          display: none;
+        }
+        .shop-header-actions {
+          margin-inline-start: auto;
+        }
+      }
+
+      .block-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: inherit;
+        text-decoration: none;
+      }
+      .block-logo-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .block-logo-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .shop-cmp-check {
+        position: relative;
+        z-index: 1;
+      }
+      .shop-price {
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        margin: 0;
+        font-variant-numeric: tabular-nums;
+      }
+      .shop-price strong {
+        font-size: 0.9375rem;
+        font-weight: 600;
+      }
+      .shop-price s {
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .shop-price[data-size="lg"] strong {
+        font-size: 1.5rem;
+      }
+      .shop-price[data-size="lg"] s {
+        font-size: 1rem;
+      }
+      .shop-wl-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .shop-cmp-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+      }
+      .shop-cmp {
+        inline-size: 100%;
+        border-collapse: collapse;
+        font-size: 0.875rem;
+      }
+      .shop-cmp th,
+      .shop-cmp td {
+        padding: 0.875rem 1rem;
+        border-block-end: 1px solid var(--border);
+        text-align: start;
+        vertical-align: top;
+        min-inline-size: 13rem;
+      }
+      .shop-cmp tr:last-child > * {
+        border-block-end: 0;
+      }
+      .shop-cmp tbody th {
+        position: sticky;
+        inset-inline-start: 0;
+        z-index: 1;
+        min-inline-size: 9rem;
+        background: var(--muted);
+        color: var(--muted-foreground);
+        font-weight: 500;
+      }
+      .shop-cmp thead th:first-child {
+        position: sticky;
+        inset-inline-start: 0;
+        z-index: 1;
+        background: var(--background);
+      }
+      .shop-cmp thead td {
+        position: relative;
+      }
+      .shop-cmp-product {
+        display: grid;
+        gap: 0.75rem;
+      }
+      .shop-cmp-product img {
+        aspect-ratio: 1;
+        inline-size: 100%;
+        max-inline-size: 10rem;
+        border-radius: var(--radius);
+        background: var(--muted);
+        object-fit: cover;
+      }
+      html.dark .shop-cmp-product img {
+        filter: brightness(0.5) grayscale(1);
+      }
+      .shop-cmp-product h3 {
+        margin: 0;
+        font-size: 0.9375rem;
+        font-weight: 500;
+      }
+      .shop-cmp-remove {
+        position: absolute;
+        inset-block-start: 0.5rem;
+        inset-inline-end: 0.5rem;
+      }
+      .shop-cmp[data-highlight] tr[data-diff] > td {
+        background: color-mix(in oklab, var(--primary) 7%, transparent);
+      }
+      .shop-cmp[data-highlight] tr:not([data-diff]):not(:first-child) {
+        opacity: 0.55;
+      }
+      .shop-cmp svg.shop-yes {
+        inline-size: 1rem;
+        block-size: 1rem;
+        color: var(--primary);
+      }
+      .shop-cmp svg.shop-no {
+        inline-size: 1rem;
+        block-size: 1rem;
+        color: var(--muted-foreground);
+      }
+      .shop-cmp-check {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8125rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="shop-header">
+      <div class="wrapper shop-header-row">
+        <a href="#" class="block-logo">
+          <span class="block-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+          Acme Store
+        </a>
+        <nav class="shop-nav" aria-label="Main">
+          <a href="#" aria-current="page">Shop</a>
+          <a href="#">New in</a>
+          <a href="#">Collections</a>
+          <a href="#">Journal</a>
+        </nav>
+        <div class="input-group shop-header-search">
+          <input type="search" placeholder="Search products..." aria-label="Search products" />
+          <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        </div>
+        <div class="shop-header-actions">
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Wishlist">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </a>
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Account">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </a>
+          <a
+            href="#"
+            class="btn shop-cart-btn"
+            data-variant="ghost"
+            data-size="icon"
+            aria-label="Cart, 3 items">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+            <span class="shop-count" data-cart-count>3</span>
+          </a>
+        </div>
+      </div>
+    </header>
+    <main class="wrapper shop-page">
+      <div class="stack" data-gap="6">
+        <div class="shop-wl-head">
+          <div class="stack" data-gap="1">
+            <h1 class="shop-h1">Compare lamps</h1>
+            <p class="shop-lead" data-cmp-count>3 products</p>
+          </div>
+          <div class="cluster" data-gap="3">
+            <label class="shop-cmp-check" for="cmp1-diff">
+              <input type="checkbox" role="switch" class="input" id="cmp1-diff" />
+              Highlight differences
+            </label>
+            <button type="button" class="btn" data-variant="outline" data-size="sm">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+              Add product
+            </button>
+          </div>
+        </div>
+        <div class="shop-cmp-wrap">
+          <table class="shop-cmp" data-compare-table="cmp1-diff">
+            <thead>
+              <tr>
+                <th scope="col"><span class="sr-only">Feature</span></th>
+                <td data-col="0">
+                  <button
+                    type="button"
+                    class="btn shop-cmp-remove"
+                    data-variant="ghost"
+                    data-size="icon-xs"
+                    aria-label="Remove Arc Table Lamp from comparison"
+                    data-cmp-remove="0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                  </button>
+                  <div class="shop-cmp-product">
+                    <img src="assets/placeholder.svg" alt />
+                    <h3>Arc Table Lamp</h3>
+                    <p class="shop-price"><strong>$129.00</strong></p>
+                    <button type="button" class="btn" data-size="sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+                      Add to cart
+                    </button>
+                  </div>
+                </td>
+                <td data-col="1">
+                  <button
+                    type="button"
+                    class="btn shop-cmp-remove"
+                    data-variant="ghost"
+                    data-size="icon-xs"
+                    aria-label="Remove Dome Table Lamp from comparison"
+                    data-cmp-remove="1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                  </button>
+                  <div class="shop-cmp-product">
+                    <img src="assets/placeholder.svg" alt />
+                    <h3>Dome Table Lamp</h3>
+                    <p class="shop-price"><strong>$98.00</strong></p>
+                    <button type="button" class="btn" data-size="sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+                      Add to cart
+                    </button>
+                  </div>
+                </td>
+                <td data-col="2">
+                  <button
+                    type="button"
+                    class="btn shop-cmp-remove"
+                    data-variant="ghost"
+                    data-size="icon-xs"
+                    aria-label="Remove Globe Floor Lamp from comparison"
+                    data-cmp-remove="2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                  </button>
+                  <div class="shop-cmp-product">
+                    <img src="assets/placeholder.svg" alt />
+                    <h3>Globe Floor Lamp</h3>
+                    <p class="shop-price"><strong>$189.00</strong></p>
+                    <button type="button" class="btn" data-size="sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+                      Add to cart
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-diff>
+                <th scope="row">Rating</th>
+                <td data-col="0">4.7 (39)</td>
+                <td data-col="1">4.5 (61)</td>
+                <td data-col="2">4.8 (22)</td>
+              </tr>
+              <tr data-diff>
+                <th scope="row">Material</th>
+                <td data-col="0">Brushed brass, steel</td>
+                <td data-col="1">Glass, steel</td>
+                <td data-col="2">Opal glass, brass</td>
+              </tr>
+              <tr data-diff>
+                <th scope="row">Dimensions</th>
+                <td data-col="0">H 45 × W 30 cm</td>
+                <td data-col="1">H 38 × W 25 cm</td>
+                <td data-col="2">H 150 × W 35 cm</td>
+              </tr>
+              <tr data-diff>
+                <th scope="row">Light</th>
+                <td data-col="0">LED, 2700 K</td>
+                <td data-col="1">LED, 2700 K</td>
+                <td data-col="2">E27 bulb (included)</td>
+              </tr>
+              <tr data-diff>
+                <th scope="row">Dimmable</th>
+                <td data-col="0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shop-yes"><path d="M20 6 9 17l-5-5"/></svg>
+                  <span class="sr-only">Yes</span>
+                </td>
+                <td data-col="1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shop-yes"><path d="M20 6 9 17l-5-5"/></svg>
+                  <span class="sr-only">Yes</span>
+                </td>
+                <td data-col="2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shop-no"><path d="M5 12h14"/></svg>
+                  <span class="sr-only">No</span>
+                </td>
+              </tr>
+              <tr data-diff>
+                <th scope="row">USB charging</th>
+                <td data-col="0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shop-yes"><path d="M20 6 9 17l-5-5"/></svg>
+                  <span class="sr-only">Yes</span>
+                </td>
+                <td data-col="1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shop-no"><path d="M5 12h14"/></svg>
+                  <span class="sr-only">No</span>
+                </td>
+                <td data-col="2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shop-no"><path d="M5 12h14"/></svg>
+                  <span class="sr-only">No</span>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Warranty</th>
+                <td data-col="0">2 years</td>
+                <td data-col="1">2 years</td>
+                <td data-col="2">2 years</td>
+              </tr>
+              <tr data-diff>
+                <th scope="row">Availability</th>
+                <td data-col="0">In stock</td>
+                <td data-col="1">In stock</td>
+                <td data-col="2">Ships in 2 weeks</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+    <script>
+      document.querySelectorAll("[data-compare-table]").forEach((t) => {
+        const toggle = document.getElementById(t.dataset.compareTable);
+        toggle?.addEventListener("change", () =>
+          t.toggleAttribute("data-highlight", toggle.checked),
+        );
+        const diff = () =>
+          t.querySelectorAll("tbody tr").forEach((tr) => {
+            const vals = [...tr.querySelectorAll("td")].map((td) => td.textContent.trim());
+            tr.toggleAttribute("data-diff", new Set(vals).size > 1);
+          });
+        t.addEventListener("click", (e) => {
+          const b = e.target.closest("[data-cmp-remove]");
+          if (!b) return;
+          t.querySelectorAll(`[data-col="${b.dataset.cmpRemove}"]`).forEach((c) => c.remove());
+          const left = t.querySelectorAll("thead td").length;
+          document.querySelectorAll("[data-cmp-count]").forEach((el) => {
+            el.textContent = left + (left === 1 ? " product" : " products");
+          });
+          diff();
+        });
+      });
+    </script>
+  </body>
+</html>

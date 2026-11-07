@@ -209,6 +209,11 @@
     "description": "A mini cart in a popover from the header cart button.",
     "category": "cart"
   },
+  "cart-05": {
+    "title": "Cart 05",
+    "description": "A mini cart in a bottom drawer, for mobile shops.",
+    "category": "cart"
+  },
   "checkout-01": {
     "title": "Checkout 01",
     "description": "A one-page checkout: contact, shipping, delivery, payment and the order summary.",
@@ -223,6 +228,16 @@
     "title": "Checkout 03",
     "description": "An order confirmation page with the order details and next steps.",
     "category": "checkout"
+  },
+  "compare-01": {
+    "title": "Compare 01",
+    "description": "A product comparison table with sticky labels, remove and highlight differences.",
+    "category": "compare"
+  },
+  "compare-02": {
+    "title": "Compare 02",
+    "description": "Compare checkboxes on product cards with a floating compare tray.",
+    "category": "compare"
   },
   "dashboard-01": {
     "title": "Dashboard 01",
@@ -288,6 +303,71 @@
     "title": "OTP 05",
     "description": "A simple centered OTP page.",
     "category": "otp"
+  },
+  "product-01": {
+    "title": "Product 01",
+    "description": "A product page: gallery, variants, quantity, add to cart, details and reviews.",
+    "category": "product"
+  },
+  "product-02": {
+    "title": "Product 02",
+    "description": "Product grid with a quick view dialog: images, color, quantity and add to cart.",
+    "category": "product"
+  },
+  "product-card-01": {
+    "title": "Product Card 01",
+    "description": "Product cards with badges, rating, colors, a wishlist toggle and quick add.",
+    "category": "product-card"
+  },
+  "product-card-02": {
+    "title": "Product Card 02",
+    "description": "Horizontal product cards with description, stock and actions.",
+    "category": "product-card"
+  },
+  "product-card-03": {
+    "title": "Product Card 03",
+    "description": "Product cards with color swatches and a full-width add to cart.",
+    "category": "product-card"
+  },
+  "product-card-04": {
+    "title": "Product Card 04",
+    "description": "Hover reveal: a second photo, side actions and an add-to-cart bar slide in on hover.",
+    "category": "product-card"
+  },
+  "product-card-05": {
+    "title": "Product Card 05",
+    "description": "Hover gallery: move across the photo to flip through images; arrows and color swatches pick one.",
+    "category": "product-card"
+  },
+  "product-card-06": {
+    "title": "Product Card 06",
+    "description": "Quick add on hover: pick a size on the photo and get a confirmation.",
+    "category": "product-card"
+  },
+  "product-card-07": {
+    "title": "Product Card 07",
+    "description": "Lift on hover and an Add to cart button that turns into a quantity stepper.",
+    "category": "product-card"
+  },
+  "product-card-08": {
+    "title": "Product Card 08",
+    "description": "Editorial reveal: details, rating and add to cart slide up over the photo on hover.",
+    "category": "product-card"
+  },
+  "product-card-09": {
+    "title": "Product Card 09",
+    "description": "Flash sale cards with a discount badge, stock bar and a live countdown.",
+    "category": "product-card"
+  },
+  "search-01": {
+    "title": "Search 01",
+    "description": "A product search dialog (⌘K) with recent searches, categories and product results.",
+    "category": "search"
+  },
+  "search-02": {
+    "title": "Search 02",
+    "description": "Search results with filters, sort, active filter chips, grid and list views and pagination.",
+    "category": "search"
   },
   "sidebar-01": {
     "title": "Sidebar 01",
@@ -393,5 +473,15 @@
     "title": "Signup 05",
     "description": "A simple email-only signup page.",
     "category": "signup"
+  },
+  "wishlist-01": {
+    "title": "Wishlist 01",
+    "description": "A wishlist grid in the account area with move to cart, remove and an empty state.",
+    "category": "wishlist"
+  },
+  "wishlist-02": {
+    "title": "Wishlist 02",
+    "description": "A compact wishlist table with price, stock and actions.",
+    "category": "wishlist"
   }
 }

@@ -257,6 +257,12 @@
   "arrow-square-out",
   "external-link-line"
  ],
+ "eye": [
+  "eye",
+  "view",
+  "eye",
+  "eye-line"
+ ],
  "eye-off": [
   "eye-off",
   "view-off",
@@ -557,11 +563,23 @@
   "shapes",
   "shapes-line"
  ],
+ "share-2": [
+  "share",
+  "share-08",
+  "share-network",
+  "share-line"
+ ],
  "shield-alert": [
   "shield-exclamation",
   "shield-01",
   "shield-warning",
   "shield-line"
+ ],
+ "shield-check": [
+  "shield-check",
+  "shield-01",
+  "shield-check",
+  "shield-check-line"
  ],
  "shopping-bag": [
   "shopping-bag",

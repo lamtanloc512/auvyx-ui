@@ -90,6 +90,14 @@ const INTERACTIONS = [
   ['cart-03', (p) => p.click('.shop-cart-btn')],
   ['checkout-02', (p) => p.click('[data-step-go="1"]')],
   ['orders-01', (p) => p.click('[data-filter="delivered"]')],
+  ['product-card-01', (p) => p.click('[data-wish]')],
+  ['product-02', (p) => p.click('[commandfor="p2-qv"]')],
+  ['compare-01', (p) => p.click('[data-cmp-remove="1"]')],
+  ['search-01', (p) => p.click('.shop-search-trigger')],
+  ['wishlist-01', (p) => p.click('[data-wish-remove]')],
+  ['cart-05', (p) => p.click('.shop-cart-btn')],
+  ['product-card-05', (p) => p.click('.shop-fx-nav[data-dir="next"]')],
+  ['product-card-07', (p) => p.click('[data-buy]')],
 ];
 
 test('React blocks behave like the HTML blocks', async () => {
