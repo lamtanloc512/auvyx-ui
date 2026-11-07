@@ -96,6 +96,8 @@ const INTERACTIONS = [
   ['search-01', (p) => p.click('.shop-search-trigger')],
   ['wishlist-01', (p) => p.click('[data-wish-remove]')],
   ['cart-05', (p) => p.click('.shop-cart-btn')],
+  ['product-card-05', (p) => p.click('.shop-fx-nav[data-dir="next"]')],
+  ['product-card-07', (p) => p.click('[data-buy]')],
 ];
 
 test('React blocks behave like the HTML blocks', async () => {

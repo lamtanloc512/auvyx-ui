@@ -2280,6 +2280,394 @@ add("cart-05", "Cart 05", "A mini cart in a bottom drawer, for mobile shops.", "
 """, APP_CSS + CATALOG_CSS + "\n  .shop-app { padding-block-end: 2rem; }\n  .shop-link { color: inherit; text-decoration: none; }", scripts=script(CART_JS))
 
 
+
+# ================================================================== interactive product cards
+# Demo images: one placeholder, so the "other" photos are shown as tinted or
+# mirrored copies (data-shot). Real shops use their own images.
+FX_CSS = """
+  .shop-fx-grid { display: grid; gap: 2rem 1.5rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
+  .shop-shot { display: block; aspect-ratio: 4 / 5; inline-size: 100%; object-fit: cover; background: var(--muted); }
+  .shop-shot[data-shot='2'] { transform: scaleX(-1); filter: hue-rotate(160deg) saturate(1.6); }
+  .shop-shot[data-shot='3'] { filter: sepia(0.6) saturate(1.4); }
+  .shop-shot[data-shot='4'] { transform: scaleX(-1); filter: grayscale(1) contrast(1.2); }
+  html.dark .shop-shot { opacity: 0.6; }
+  .shop-fx { position: relative; display: flex; flex-direction: column; gap: 0.75rem; }
+  .shop-fx-media { position: relative; overflow: hidden; border-radius: var(--radius); background: var(--muted); }
+  .shop-fx-media > .shop-shot + .shop-shot { position: absolute; inset: 0; block-size: 100%; }
+  .shop-fx-body { display: grid; gap: 0.25rem; }
+  .shop-fx-body .cluster { margin-block-start: 0.25rem; }
+  .shop-fx-swap > .shop-shot + .shop-shot { opacity: 0; transition: opacity 400ms ease, transform 600ms ease; }
+  .shop-fx:hover .shop-fx-swap > .shop-shot + .shop-shot { opacity: 1; }
+  .shop-fx-side { position: absolute; inset-block-start: 0.75rem; inset-inline-end: 0.75rem; z-index: 2; display: grid; gap: 0.375rem; }
+  .shop-fx-side > .btn { background: var(--background); opacity: 0; transform: translateX(0.75rem); transition: opacity 200ms ease, transform 200ms ease; }
+  .shop-fx-side > .btn:nth-child(2) { transition-delay: 50ms; }
+  .shop-fx-side > .btn:nth-child(3) { transition-delay: 100ms; }
+  .shop-fx:hover .shop-fx-side > .btn { opacity: 1; transform: none; }
+  .shop-fx:focus-within .shop-fx-side > .btn { opacity: 1; transform: none; }
+  .shop-fx-side > .btn[aria-pressed='true'] { opacity: 1; transform: none; }
+  .shop-fx-bar { position: absolute; inset-inline: 0; inset-block-end: 0; z-index: 2; display: flex; padding: 0.75rem; transform: translateY(100%); transition: transform 250ms ease; }
+  .shop-fx-bar > .btn { flex: 1; }
+  .shop-fx:hover .shop-fx-bar { transform: none; }
+  .shop-fx:focus-within .shop-fx-bar { transform: none; }
+  @media (hover: none) { .shop-fx-side > .btn { opacity: 1; transform: none; } .shop-fx-bar { transform: none; } }
+  .shop-fx-zones { position: absolute; inset: 0; z-index: 1; display: flex; }
+  .shop-fx-zones > span { flex: 1; }
+  .shop-fx-ticks { position: absolute; inset-inline: 0.75rem; inset-block-start: 0.625rem; z-index: 2; display: flex; gap: 0.25rem; opacity: 0; transition: opacity 200ms ease; }
+  .shop-fx-ticks > span { flex: 1; block-size: 2px; border-radius: 2px; background: rgb(255 255 255 / 0.45); }
+  .shop-fx-ticks > span[data-on] { background: #fff; }
+  .shop-fx:hover .shop-fx-ticks { opacity: 1; }
+  .shop-fx-gallery > .shop-shot { transition: opacity 150ms ease; }
+  .shop-fx-gallery > .shop-shot:not([data-on]) { opacity: 0; }
+  .shop-fx-nav { position: absolute; inset-block-start: 50%; z-index: 2; translate: 0 -50%; background: var(--background); opacity: 0; transition: opacity 200ms ease; }
+  .shop-fx-nav[data-dir='prev'] { inset-inline-start: 0.5rem; }
+  .shop-fx-nav[data-dir='next'] { inset-inline-end: 0.5rem; }
+  .shop-fx:hover .shop-fx-nav { opacity: 1; }
+  .shop-fx-nav:focus-visible { opacity: 1; }
+  .shop-fx-swatches { display: flex; gap: 0.375rem; }
+  .shop-fx-swatches > button { inline-size: 1.25rem; block-size: 1.25rem; padding: 0; border: 0; border-radius: 999px; background: var(--dot); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 15%, transparent); cursor: pointer; }
+  .shop-fx-swatches > button[aria-pressed='true'] { outline: 2px solid var(--primary); outline-offset: 2px; }
+  .shop-fx-swatches > button:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .shop-fx-sizes { position: absolute; inset-inline: 0.5rem; inset-block-end: 0.5rem; z-index: 2; display: grid; gap: 0.5rem; padding: 0.75rem; border-radius: calc(var(--radius) - 2px); background: color-mix(in oklab, var(--background) 92%, transparent); backdrop-filter: blur(8px); opacity: 0; transform: translateY(0.75rem); transition: opacity 200ms ease, transform 200ms ease; }
+  .shop-fx:hover .shop-fx-sizes { opacity: 1; transform: none; }
+  .shop-fx:focus-within .shop-fx-sizes { opacity: 1; transform: none; }
+  .shop-fx-sizes p { margin: 0; font-size: 0.75rem; font-weight: 500; text-align: center; }
+  .shop-fx-sizes > div { display: flex; justify-content: center; gap: 0.375rem; }
+  .shop-fx-sizes .btn { min-inline-size: 2.25rem; }
+  .shop-fx-sizes .btn:disabled { text-decoration: line-through; }
+  .shop-fx-done { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; background: color-mix(in oklab, var(--background) 85%, transparent); backdrop-filter: blur(4px); font-size: 0.875rem; font-weight: 500; }
+  .shop-fx-done svg { inline-size: 1.5rem; block-size: 1.5rem; color: var(--primary); }
+  .shop-fx-done[hidden] { display: none; }
+  @media (hover: none) { .shop-fx-sizes { opacity: 1; transform: none; } .shop-fx-nav { opacity: 1; } .shop-fx-ticks { opacity: 1; } }
+  .shop-fx-lift { padding: 0.75rem; border: 1px solid transparent; border-radius: calc(var(--radius) + 4px); transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease; }
+  .shop-fx-lift:hover { transform: translateY(-4px); border-color: var(--border); box-shadow: 0 16px 32px -16px rgb(0 0 0 / 0.25); }
+  .shop-fx-lift .shop-fx-media > .shop-shot { transition: transform 400ms ease; }
+  .shop-fx-lift:hover .shop-fx-media > .shop-shot { transform: scale(1.05); }
+  .shop-fx-buy { display: grid; }
+  .shop-fx-buy > .shop-qty { inline-size: 100%; justify-content: space-between; }
+  .shop-fx-buy > .shop-qty > input { flex: 1; }
+  .shop-fx-buy > [hidden] { display: none; }
+  .shop-fx-pop { animation: shop-pop 250ms ease; }
+  @keyframes shop-pop { from { transform: scale(0.96); opacity: 0.6; } to { transform: none; opacity: 1; } }
+  .shop-fx-reveal { color: #fff; }
+  .shop-fx-reveal .shop-fx-media > .shop-shot { aspect-ratio: 3 / 4; transition: transform 500ms ease; }
+  .shop-fx-reveal:hover .shop-fx-media > .shop-shot { transform: scale(1.06); }
+  .shop-fx-panel { position: absolute; inset-inline: 0; inset-block-end: 0; z-index: 2; display: grid; gap: 0.5rem; padding: 3rem 1rem 1rem; background: linear-gradient(to top, rgb(0 0 0 / 0.85), rgb(0 0 0 / 0.55) 60%, transparent); }
+  .shop-fx-panel h3 { margin: 0; font-size: 1rem; font-weight: 600; }
+  .shop-fx-panel h3 a { color: inherit; text-decoration: none; }
+  .shop-fx-more { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 300ms ease, opacity 300ms ease; }
+  .shop-fx-more > div { display: grid; gap: 0.75rem; min-block-size: 0; overflow: hidden; }
+  .shop-fx-more p { margin: 0; font-size: 0.8125rem; opacity: 0.85; }
+  .shop-fx-reveal:hover .shop-fx-more { grid-template-rows: 1fr; opacity: 1; }
+  .shop-fx-reveal:focus-within .shop-fx-more { grid-template-rows: 1fr; opacity: 1; }
+  .shop-fx-reveal[data-open] .shop-fx-more { grid-template-rows: 1fr; opacity: 1; }
+  .shop-fx-panel .shop-price s { color: rgb(255 255 255 / 0.7); }
+  .shop-fx-panel .shop-rating { color: rgb(255 255 255 / 0.8); }
+  .shop-fx-panel .shop-rating svg { color: #fff; }
+  .shop-fx-info { position: absolute; inset-block-start: 0.75rem; inset-inline-end: 0.75rem; z-index: 3; background: var(--background); }
+  @media (hover: hover) { .shop-fx-info { display: none; } }
+  .shop-fx-timer { display: flex; gap: 0.375rem; font-variant-numeric: tabular-nums; }
+  .shop-fx-timer > span { display: grid; place-items: center; min-inline-size: 2.25rem; padding: 0.25rem; border-radius: calc(var(--radius) - 2px); background: var(--muted); font-size: 0.875rem; font-weight: 600; }
+  .shop-fx-timer small { font-size: 0.625rem; font-weight: 400; color: var(--muted-foreground); }
+  /* Reduced motion: the hover states still apply, without movement. !important so it wins over every card's transition rules. */
+  @media (prefers-reduced-motion: reduce) { .shop-fx * { transition: none !important; animation: none !important; } }
+  @media (prefers-reduced-motion: reduce) { .shop-fx-lift { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .shop-fx-lift:hover { transform: none; } }
+"""
+FX = CAT_CSS + FX_CSS
+
+
+def shot(n, extra=""):
+    return f'<img class="shop-shot" src="{PH}" alt=""{f" data-shot={chr(34)}{n}{chr(34)}" if n > 1 else ""}{extra}>'
+
+
+def fx_body(p, extra=""):
+    return f"""<div class="shop-fx-body">
+    <p class="shop-card-cat">{p["cat"]}</p>
+    <h3 class="shop-card-name"><a href="#">{p["name"]}</a></h3>
+    <div class="cluster" data-justify="between">{price(p)}{rating(p)}</div>
+    {extra}
+  </div>"""
+
+
+def fx_header(title, lead):
+    return f"""<div class="stack" data-gap="1">
+      <h1 class="shop-h1">{title}</h1>
+      <p class="shop-lead">{lead}</p>
+    </div>"""
+
+
+def page_fx(bid, title, desc, lead, cards, js, css=""):
+    add(bid, title, desc, "product-card", f"""
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="6">
+    {fx_header(desc.split(":")[0], lead)}
+    <div class="shop-fx-grid">
+      {cards}
+    </div>
+  </div>
+</main>
+""", FX + css, scripts=script(js) if js else "")
+
+
+# 04 — second image on hover, side actions and an add-to-cart bar slide in.
+def fx04(p):
+    return f"""<article class="shop-fx shop-card">
+  <div class="shop-fx-media shop-fx-swap">
+    {shot(1)}{shot(2)}
+    {badge(p)}
+    <div class="shop-fx-side">
+      {wish_btn(p)}
+      <button type="button" class="btn" data-variant="outline" data-size="icon-sm" aria-label="Quick view {p["name"]}">{si("eye")}</button>
+      <button type="button" class="btn" data-variant="outline" data-size="icon-sm" aria-label="Compare {p["name"]}">{si("arrow-right-left")}</button>
+    </div>
+    <div class="shop-fx-bar"><button type="button" class="btn" data-size="sm">{si("shopping-bag")}Add to cart</button></div>
+  </div>
+  {fx_body(p, dots(p))}
+</article>"""
+
+
+page_fx("product-card-04", "Product Card 04", "Hover reveal: a second photo, side actions and an add-to-cart bar slide in on hover.",
+        "Hover a card (or focus it with the keyboard): the photo changes and the actions slide in.",
+        "".join(fx04(p) for p in ITEMS[:4]), WISH_JS)
+
+
+# 05 — hover zones flip through photos; arrows and swatches pick a photo.
+def fx05(p, i):
+    n = 4
+    shots = "".join(shot(k + 1, " data-on" if k == 0 else "") for k in range(n))
+    sw = "".join(f'<button type="button" style="--dot: {c}" aria-label="{name}" aria-pressed="{"true" if j == 0 else "false"}" data-shot-to="{j}"></button>' for j, (name, c) in enumerate(p["colors"]))
+    return f"""<article class="shop-fx shop-card" data-gallery>
+  <div class="shop-fx-media shop-fx-gallery" aria-roledescription="carousel" aria-label="{p["name"]} photos">
+    {shots}
+    <div class="shop-fx-zones" aria-hidden="true">{"".join(f'<span data-zone="{k}"></span>' for k in range(n))}</div>
+    <div class="shop-fx-ticks" aria-hidden="true">{"".join(f'<span{" data-on" if k == 0 else ""}></span>' for k in range(n))}</div>
+    <button type="button" class="btn shop-fx-nav" data-dir="prev" data-variant="outline" data-size="icon-sm" aria-label="Previous photo">{si("chevron-left")}</button>
+    <button type="button" class="btn shop-fx-nav" data-dir="next" data-variant="outline" data-size="icon-sm" aria-label="Next photo">{si("chevron-right")}</button>
+    {badge(p)}
+  </div>
+  {fx_body(p, f'<div class="shop-fx-swatches" role="group" aria-label="Colors">{sw}</div>')}
+</article>"""
+
+
+GALLERY_JS = """
+document.querySelectorAll('[data-gallery]').forEach((card) => {
+  const media = card.querySelector('.shop-fx-gallery');
+  const shots = media.querySelectorAll('.shop-shot');
+  const ticks = media.querySelectorAll('.shop-fx-ticks > span');
+  let i = 0;
+  const show = (n) => {
+    i = (n + shots.length) % shots.length;
+    shots.forEach((s, k) => s.toggleAttribute('data-on', k === i));
+    ticks.forEach((t, k) => t.toggleAttribute('data-on', k === i));
+  };
+  media.addEventListener('pointerover', (e) => { const z = e.target.closest('[data-zone]'); if (z) show(Number(z.dataset.zone)); });
+  card.addEventListener('pointerleave', () => show(0));
+  card.querySelector('[data-dir=prev]').addEventListener('click', () => show(i - 1));
+  card.querySelector('[data-dir=next]').addEventListener('click', () => show(i + 1));
+  card.querySelectorAll('[data-shot-to]').forEach((b) => {
+    const pick = () => {
+      card.querySelectorAll('[data-shot-to]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      show(Number(b.dataset.shotTo));
+    };
+    b.addEventListener('click', pick);
+    b.addEventListener('pointerenter', () => show(Number(b.dataset.shotTo)));
+  });
+});
+"""
+page_fx("product-card-05", "Product Card 05", "Hover gallery: move across the photo to flip through images; arrows and color swatches pick one.",
+        "Move the pointer across a photo to flip through it, or use the arrows and swatches.",
+        "".join(fx05(p, i) for i, p in enumerate([ITEMS[1], ITEMS[0], ITEMS[3], ITEMS[7]])), GALLERY_JS)
+
+
+# 06 — size picker on hover; picking a size adds to the cart with a confirmation.
+def fx06(p, i):
+    sizes = "".join(f'<button type="button" class="btn" data-variant="outline" data-size="xs" data-add-size="{s_}"{" disabled" if (s_ == "XL" and i % 2 == 0) or (s_ == "XS" and i == 1) else ""}>{s_}</button>' for s_ in ["XS", "S", "M", "L", "XL"])
+    return f"""<article class="shop-fx shop-card" data-size-card>
+  <div class="shop-fx-media">
+    {shot(1)}
+    {badge(p)}
+    <div class="shop-fx-sizes" role="group" aria-label="Quick add {p["name"]}">
+      <p>Quick add · pick a size</p>
+      <div>{sizes}</div>
+    </div>
+    <div class="shop-fx-done" role="status" hidden>{si("circle-check")}<span data-done-text>Added to cart</span></div>
+  </div>
+  {fx_body(p)}
+</article>"""
+
+
+SIZE_JS = """
+document.querySelectorAll('[data-size-card]').forEach((card) => {
+  const done = card.querySelector('.shop-fx-done');
+  let t;
+  card.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-add-size]');
+    if (!b) return;
+    done.querySelector('[data-done-text]').textContent = 'Size ' + b.dataset.addSize + ' added to cart';
+    done.hidden = false;
+    document.querySelectorAll('[data-cart-count]').forEach((el) => { el.textContent = (parseInt(el.textContent, 10) || 0) + 1; el.dataset.count = el.textContent; });
+    clearTimeout(t);
+    t = setTimeout(() => { done.hidden = true; }, 1600);
+  });
+});
+"""
+APPAREL = [ITEMS[1], ITEMS[7], {**ITEMS[1], "id": "tee", "name": "Organic Cotton Tee", "price": 28.00, "was": None, "rating": 4.6, "reviews": 412, "badge": "Bestseller"}, {**ITEMS[7], "id": "coat", "name": "Wool Overshirt", "price": 149.00, "was": None, "rating": 4.8, "reviews": 57, "badge": "New"}]
+add("product-card-06", "Product Card 06", "Quick add on hover: pick a size on the photo and get a confirmation.", "product-card", f"""
+{store_header(2)}
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="6">
+    {fx_header("Quick add sizes", "Hover a card and pick a size: it goes straight to the cart (watch the cart count).")}
+    <div class="shop-fx-grid">
+      {"".join(fx06(p, i) for i, p in enumerate(APPAREL))}
+    </div>
+  </div>
+</main>
+""", FX, scripts=script(SIZE_JS))
+
+
+# 07 — the card lifts on hover; Add to cart turns into a quantity stepper.
+def fx07(p, i):
+    return f"""<article class="shop-fx shop-fx-lift shop-card" data-stepper-card>
+  <div class="shop-fx-media">{shot(1)}{badge(p)}<div class="shop-fx-side">{wish_btn(p)}</div></div>
+  {fx_body(p)}
+  <div class="shop-fx-buy shop-card-actions">
+    <button type="button" class="btn" data-variant="outline" data-buy>{si("plus")}Add to cart</button>
+    {qty(f"fx7-{i}", 1).replace('min="1"', 'min="0"').replace('class="shop-qty"', 'class="shop-qty" hidden data-stepper')}
+  </div>
+</article>"""
+
+
+STEPPER_JS = """
+document.querySelectorAll('[data-stepper-card]').forEach((card) => {
+  const add = card.querySelector('[data-buy]');
+  const step = card.querySelector('[data-stepper]');
+  const input = step.querySelector('[data-qty]');
+  const bump = (d) => document.querySelectorAll('[data-cart-count]').forEach((el) => {
+    const n = Math.max(0, (parseInt(el.textContent, 10) || 0) + d);
+    el.textContent = n;
+    el.dataset.count = n;
+  });
+  const swap = (showStep) => {
+    add.hidden = showStep;
+    step.hidden = !showStep;
+    (showStep ? step : add).classList.remove('shop-fx-pop');
+    void (showStep ? step : add).offsetWidth;
+    (showStep ? step : add).classList.add('shop-fx-pop');
+    (showStep ? step.querySelector('[data-qty-step="1"]') : add).focus();
+  };
+  add.addEventListener('click', () => { input.value = 1; bump(1); swap(true); });
+  step.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-qty-step]');
+    if (!b) return;
+    const d = Number(b.dataset.qtyStep);
+    const v = (parseInt(input.value, 10) || 0) + d;
+    if (v > 10) return;
+    input.value = v;
+    bump(d);
+    if (v <= 0) swap(false);
+  });
+});
+"""
+add("product-card-07", "Product Card 07", "Lift on hover and an Add to cart button that turns into a quantity stepper.", "product-card", f"""
+{store_header(0)}
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="6">
+    {fx_header("Add, then adjust", "Add to cart becomes a stepper; going down to zero removes the item.")}
+    <div class="shop-fx-grid">
+      {"".join(fx07(p, i) for i, p in enumerate([ITEMS[2], ITEMS[5], ITEMS[4], ITEMS[6]]))}
+    </div>
+  </div>
+</main>
+""", FX, scripts=script(STEPPER_JS + WISH_JS))
+
+
+# 08 — editorial card: details slide up over the photo; a button opens them on touch.
+def fx08(p):
+    return f"""<article class="shop-fx shop-fx-reveal shop-card" data-reveal>
+  <div class="shop-fx-media">
+    {shot(1)}
+    <button type="button" class="btn shop-fx-info" data-variant="outline" data-size="icon-sm" aria-expanded="false" aria-label="Show details for {p["name"]}">{si("info")}</button>
+    <div class="shop-fx-panel">
+      <p class="shop-card-cat">{p["cat"]}</p>
+      <h3><a href="#">{p["name"]}</a></h3>
+      {price(p)}
+      <div class="shop-fx-more"><div>
+        <p>{p["desc"]}</p>
+        {rating(p)}
+        {dots(p)}
+        <button type="button" class="btn" data-variant="secondary" data-size="sm">{si("shopping-bag")}Add to cart</button>
+      </div></div>
+    </div>
+  </div>
+</article>"""
+
+
+REVEAL_JS = """
+document.querySelectorAll('[data-reveal]').forEach((card) => {
+  const b = card.querySelector('.shop-fx-info');
+  b.addEventListener('click', () => {
+    const open = b.getAttribute('aria-expanded') !== 'true';
+    b.setAttribute('aria-expanded', String(open));
+    card.toggleAttribute('data-open', open);
+  });
+});
+"""
+page_fx("product-card-08", "Product Card 08", "Editorial reveal: details, rating and add to cart slide up over the photo on hover.",
+        "Hover a photo for details. On touch screens, the info button opens them.",
+        "".join(fx08(p) for p in [ITEMS[6], ITEMS[0], ITEMS[3], ITEMS[1]]), REVEAL_JS,
+        "\n  .shop-fx-reveal .shop-card-cat { color: rgb(255 255 255 / 0.75); }\n  .shop-fx-reveal .shop-card-name a::after { content: none; }")
+
+
+# 09 — flash sale: stock bar and a countdown to the end of the sale.
+def fx09(p, sold, left):
+    pct = round(sold / (sold + left) * 100)
+    return f"""<article class="shop-fx shop-fx-lift shop-card">
+  <div class="shop-fx-media">{shot(1)}<span class="badge shop-card-badge" data-variant="destructive">-{round((1 - p["price"] / p["was"]) * 100)}%</span></div>
+  {fx_body(p)}
+  <div class="stack" data-gap="1">
+    <div class="progress" role="progressbar" aria-label="Sold" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{pct}"><span style="width: {pct}%"></span></div>
+    <p class="shop-line-meta">{sold} sold · only {left} left</p>
+  </div>
+  <div class="shop-card-actions"><button type="button" class="btn">{si("shopping-bag")}Buy now</button></div>
+</article>"""
+
+
+# The countdown starts from a fixed time left (a real shop renders its end time);
+# it ticks once a second.
+TIMER_JS = """
+document.querySelectorAll('[data-countdown]').forEach((el) => {
+  let left = Number(el.dataset.countdown);
+  const parts = el.querySelectorAll('[data-unit]');
+  const pad = (n) => String(n).padStart(2, '0');
+  const draw = () => {
+    const v = [Math.floor(left / 3600), Math.floor(left / 60) % 60, left % 60];
+    parts.forEach((p, k) => { p.firstChild.textContent = pad(v[k]); });
+  };
+  draw();
+  setInterval(() => { if (left > 0) { left--; draw(); } }, 1000);
+});
+"""
+SALE = [{**ITEMS[1], "was": 129.00}, {**ITEMS[3]}, {**ITEMS[7]}, {**ITEMS[6], "price": 99.00, "was": 129.00}]
+add("product-card-09", "Product Card 09", "Flash sale cards with a discount badge, stock bar and a live countdown.", "product-card", f"""
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="6">
+    <div class="cluster" data-justify="between" data-gap="4">
+      {fx_header("Flash sale", "Up to 40% off while stock lasts.")}
+      <div class="stack" data-gap="1">
+        <p class="shop-line-meta">Ends in</p>
+        <div class="shop-fx-timer" data-countdown="22735" role="timer" aria-label="Time left in the sale">
+          <span data-unit>06<small>hrs</small></span><span data-unit>18<small>min</small></span><span data-unit>55<small>sec</small></span>
+        </div>
+      </div>
+    </div>
+    <div class="shop-fx-grid">
+      {"".join(fx09(p, s_, l) for p, (s_, l) in zip(SALE, [(86, 14), (42, 18), (61, 9), (23, 27)]))}
+    </div>
+  </div>
+</main>
+""", FX, scripts=script(TIMER_JS))
+
+
 if __name__ == "__main__":
     from common import register
     register(blocks)
