@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- Create: font weight controls. A Font Weight slider next to Font Size shifts regular, medium, semibold and bold together (`--font-weight-normal|medium|semibold|bold`, which every component reads), and Customize theme → Typography sets each one. The Google Fonts link now loads each family's whole weight axis, so any chosen weight renders with real glyphs.
+
 ## @auvyx/ui 0.1.4 - 2026-11-07
 
 ### Added
