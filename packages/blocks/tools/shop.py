@@ -54,6 +54,8 @@ SHOP_ICONS = {
     "shield-check": '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12l2 2l4-4"/>',
     "chevron-right": '<path d="m9 18 6-6-6-6"/>',
     "chevron-down": '<path d="m6 9 6 6 6-6"/>',
+    "upload": '<path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>',
+    "sparkles": '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>',
     "copy": '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
     "share-2": '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/>',
 }
@@ -3274,7 +3276,7 @@ SUCCESS_CSS = """
   .shop-status-hero h2 { margin: 0; font-size: 1.25rem; font-weight: 600; }
   .shop-status-hero p { margin: 0; font-size: 0.875rem; color: var(--muted-foreground); }
   .shop-map { position: relative; overflow: hidden; border-radius: var(--radius); background: color-mix(in oklab, var(--muted) 70%, var(--background)); aspect-ratio: 16 / 9; }
-  .shop-map svg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; }
+  .shop-map > svg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; }
   .shop-map .shop-map-grid { stroke: var(--border); stroke-width: 1; }
   .shop-map .shop-map-road { fill: none; stroke: var(--card); stroke-width: 10; stroke-linecap: round; }
   .shop-map .shop-map-route { fill: none; stroke: var(--primary); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 2 10; }
@@ -3619,6 +3621,404 @@ add("tracking-03", "Tracking 03", "An order shipped in two packages: tabs per pa
   .shop-switch-row small { display: block; font-size: 0.8125rem; color: var(--muted-foreground); }
   .shop-pkg-head h2 { margin: 0; font-size: 1rem; font-weight: 600; }
   .tabs [role='tab'] .badge { margin-inline-start: 0.375rem; }""")
+
+
+
+# ================================================================== reviews
+REVIEW_CSS = """
+  .shop-rv { display: grid; gap: 2rem; align-items: start; }
+  @media (width >= 56rem) { .shop-rv { grid-template-columns: 18rem minmax(0, 1fr); gap: 3rem; } .shop-rv-aside { position: sticky; inset-block-start: 5.5rem; } }
+  .shop-rv-score { display: flex; align-items: center; gap: 1rem; }
+  .shop-rv-score strong { font-size: 3rem; font-weight: 600; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .shop-rv-bars { display: grid; gap: 0.25rem; margin: 0; padding: 0; list-style: none; }
+  .shop-rv-bars button { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr) 2.25rem; align-items: center; gap: 0.5rem; inline-size: 100%; padding: 0.25rem 0.375rem; border: 0; border-radius: calc(var(--radius) - 4px); background: none; color: inherit; font: inherit; font-size: 0.8125rem; text-align: start; cursor: pointer; }
+  .shop-rv-bars button:hover { background: var(--accent); }
+  .shop-rv-bars button[aria-pressed='true'] { background: var(--muted); font-weight: 600; }
+  .shop-rv-bars button:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
+  .shop-rv-bars button > span:first-child { display: inline-flex; align-items: center; gap: 0.25rem; }
+  .shop-rv-bars button > span:last-child { text-align: end; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+  .shop-rv-bars .progress { block-size: 0.5rem; }
+  .shop-rv-attrs { display: grid; gap: 0.875rem; margin: 0; }
+  .shop-rv-attrs > div { display: grid; gap: 0.375rem; font-size: 0.8125rem; }
+  .shop-rv-attrs dt { display: flex; justify-content: space-between; color: var(--muted-foreground); }
+  .shop-rv-attrs dd { margin: 0; }
+  .shop-rv-scale { position: relative; block-size: 0.375rem; border-radius: 999px; background: var(--muted); }
+  .shop-rv-scale > span { position: absolute; inset-block-start: 50%; inline-size: 0.875rem; block-size: 0.875rem; translate: -50% -50%; border-radius: 999px; background: var(--primary); box-shadow: 0 0 0 2px var(--background); corner-shape: round; }
+  .shop-rv-scale-labels { display: flex; justify-content: space-between; font-size: 0.6875rem; color: var(--muted-foreground); }
+  .shop-rv-list { display: grid; margin: 0; padding: 0; list-style: none; }
+  .shop-rv-list > li { display: grid; gap: 0.75rem; padding-block: 1.5rem; border-block-end: 1px solid var(--border); }
+  .shop-rv-list > li:first-child { padding-block-start: 0; }
+  .shop-rv-head { display: flex; align-items: flex-start; gap: 0.75rem; }
+  .shop-rv-head > div { flex: 1; min-inline-size: 0; display: grid; gap: 0.125rem; }
+  .shop-rv-head p { margin: 0; font-size: 0.875rem; font-weight: 500; }
+  .shop-rv-head small { color: var(--muted-foreground); font-size: 0.75rem; }
+  .shop-rv-verified { display: inline-flex; align-items: center; gap: 0.25rem; color: var(--primary); font-size: 0.75rem; }
+  .shop-rv-verified svg { inline-size: 0.875rem; block-size: 0.875rem; }
+  .shop-rv-list h3 { margin: 0; font-size: 0.9375rem; font-weight: 600; }
+  .shop-rv-list p { margin: 0; font-size: 0.875rem; line-height: 1.6; }
+  .shop-rv-meta { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; font-size: 0.75rem; color: var(--muted-foreground); }
+  .shop-rv-meta strong { color: var(--foreground); font-weight: 500; }
+  .shop-rv-photos { display: flex; gap: 0.5rem; }
+  .shop-rv-photos img { inline-size: 4rem; block-size: 4rem; border-radius: calc(var(--radius) - 2px); object-fit: cover; background: var(--muted); }
+  .shop-rv-reply { padding: 0.75rem 1rem; border-inline-start: 2px solid var(--primary); border-radius: 0 var(--radius) var(--radius) 0; background: var(--muted); }
+  .shop-rv-reply p { font-size: 0.8125rem; }
+  .shop-rv-reply strong { display: block; margin-block-end: 0.25rem; font-size: 0.75rem; }
+  .shop-rv-help { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; color: var(--muted-foreground); }
+  .shop-rv-help .btn[aria-pressed='true'] { background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
+  .shop-rv-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; padding-block-end: 1rem; border-block-end: 1px solid var(--border); }
+  .shop-rv-toolbar .select { inline-size: auto; }
+  .shop-rv-toggle { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; }
+  .shop-rv-active { display: inline-flex; align-items: center; gap: 0.25rem; }
+  .shop-rv-active[hidden] { display: none; }
+  .shop-star-input { display: flex; gap: 0.25rem; border: 0; margin: 0; padding: 0; }
+  .shop-star-input legend { margin-block-end: 0.5rem; font-size: 0.875rem; font-weight: 500; }
+  .shop-star-input label { position: relative; display: inline-flex; padding: 0.125rem; border-radius: calc(var(--radius) - 4px); color: var(--muted-foreground); cursor: pointer; }
+  .shop-star-input label svg { inline-size: 2rem; block-size: 2rem; transition: transform 120ms ease, color 120ms ease; }
+  .shop-star-input label:hover svg { transform: scale(1.12); }
+  .shop-star-input label[data-on] { color: oklch(0.8 0.16 80); }
+  .shop-star-input label[data-on] svg { fill: currentColor; }
+  .shop-star-input input { position: absolute; opacity: 0; inline-size: 1px; block-size: 1px; }
+  .shop-star-input label:has(:focus-visible) { outline: 2px solid var(--ring); outline-offset: 1px; }
+  .shop-star-text { margin-block-end: 0.625rem; margin-inline-start: 0.5rem; font-size: 0.875rem; font-weight: 500; }
+  .shop-seg { display: grid; grid-template-columns: repeat(3, 1fr); padding: 0.25rem; border-radius: var(--radius); background: var(--muted); }
+  .shop-seg label { position: relative; padding: 0.5rem; border-radius: calc(var(--radius) - 4px); font-size: 0.8125rem; text-align: center; cursor: pointer; color: var(--muted-foreground); }
+  .shop-seg label:has(:checked) { background: var(--background); color: var(--foreground); font-weight: 500; box-shadow: 0 1px 3px rgb(0 0 0 / 0.1); }
+  .shop-seg label:has(:focus-visible) { outline: 2px solid var(--ring); outline-offset: 1px; }
+  .shop-seg input { position: absolute; opacity: 0; }
+  .shop-seg-wrap { display: grid; gap: 0.5rem; }
+  .shop-drop { display: grid; justify-items: center; gap: 0.375rem; padding: 1.5rem; border: 1px dashed var(--border); border-radius: var(--radius); color: var(--muted-foreground); font-size: 0.875rem; text-align: center; cursor: pointer; }
+  .shop-drop:hover { border-color: var(--ring); background: var(--accent); }
+  .shop-drop[data-over] { border-color: var(--primary); background: color-mix(in oklab, var(--primary) 6%, transparent); }
+  .shop-drop:has(:focus-visible) { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .shop-drop svg { inline-size: 1.25rem; block-size: 1.25rem; }
+  .shop-drop strong { color: var(--foreground); font-weight: 500; }
+  .shop-previews { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+  .shop-previews li { position: relative; }
+  .shop-previews img { inline-size: 4.5rem; block-size: 4.5rem; border-radius: calc(var(--radius) - 2px); object-fit: cover; }
+  .shop-previews button { position: absolute; inset-block-start: -0.375rem; inset-inline-end: -0.375rem; display: inline-flex; align-items: center; justify-content: center; inline-size: 1.25rem; block-size: 1.25rem; padding: 0; border: 0; border-radius: 999px; background: var(--foreground); color: var(--background); cursor: pointer; corner-shape: round; }
+  .shop-previews button svg { inline-size: 0.75rem; block-size: 0.75rem; }
+  .shop-count-line { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted-foreground); }
+  .shop-count-line[data-warn] span:last-child { color: var(--destructive); }
+  .shop-rv-done[hidden] { display: none; }
+  .shop-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .shop-tags button { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.375rem 0.75rem; border: 1px solid var(--border); border-radius: 999px; background: none; color: inherit; font: inherit; font-size: 0.8125rem; cursor: pointer; corner-shape: round; }
+  .shop-tags button span { color: var(--muted-foreground); font-size: 0.75rem; }
+  .shop-tags button[data-tone='con'] { border-style: dashed; }
+  .shop-tags button[aria-pressed='true'] { border-color: var(--primary); background: var(--primary); color: var(--primary-foreground); }
+  .shop-tags button[aria-pressed='true'] span { color: inherit; opacity: 0.8; }
+  .shop-tags button:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .shop-summary-ai { display: grid; gap: 0.75rem; padding: 1.25rem; border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px); background: color-mix(in oklab, var(--muted) 50%, transparent); }
+  .shop-summary-ai p { margin: 0; font-size: 0.875rem; line-height: 1.6; }
+  .shop-summary-ai h2 { display: flex; align-items: center; gap: 0.5rem; margin: 0; font-size: 1rem; font-weight: 600; }
+  .shop-summary-ai h2 svg { inline-size: 1rem; block-size: 1rem; }
+  .shop-reel-wrap { display: grid; gap: 1rem; }
+  .shop-reel { display: grid; grid-auto-flow: column; grid-auto-columns: min(20rem, 85%); gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 1px 1px 0.25rem; }
+  .shop-reel > .card { scroll-snap-align: start; }
+  .shop-reel > .card[hidden] { display: none; }
+  .shop-reel .card p { margin: 0; font-size: 0.875rem; line-height: 1.6; }
+  .shop-reel .card mark { background: color-mix(in oklab, var(--primary) 15%, transparent); color: inherit; border-radius: 2px; padding-inline: 0.125rem; }
+"""
+RV_CSS = CAT_CSS + REVIEW_CSS
+
+RVS = [
+    {"name": "Hannah K.", "r": 5, "d": "Oct 30, 2026", "t": "My new everyday sweater", "b": "Soft and warm without being bulky. I wore it all week and it still looks new. True to size, I'm usually a medium.", "size": "M", "fit": "True to size", "help": 24, "photos": 2, "reply": None},
+    {"name": "Marcus L.", "r": 5, "d": "Oct 21, 2026", "t": "Second one I've bought", "b": "Still looks new after a winter of wear. The charcoal goes with everything.", "size": "L", "fit": "True to size", "help": 17, "photos": 0, "reply": None},
+    {"name": "Priya S.", "r": 4, "d": "Oct 4, 2026", "t": "Lovely color, long sleeves", "b": "The oat color is beautiful in daylight. Slightly longer in the sleeves than I expected, so I fold them once.", "size": "S", "fit": "Runs large", "help": 9, "photos": 1, "reply": "Thanks Priya! Our sleeves run about 2 cm long by design. If you'd like a shorter fit, the Organic Cotton Tee pairs nicely underneath."},
+    {"name": "Tom W.", "r": 3, "d": "Sep 18, 2026", "t": "Good, but it pilled a little", "b": "Comfortable and warm. After a month there's some pilling under the arms, which a comb took care of.", "size": "XL", "fit": "True to size", "help": 6, "photos": 0, "reply": "Sorry about that, Tom. Light pilling is normal for fine merino in the first weeks; it settles after a few washes. Reach out if it doesn't."},
+    {"name": "Ana R.", "r": 2, "d": "Aug 27, 2026", "t": "Too small for me", "b": "Nice quality, but it fit a size small across the shoulders. The exchange was quick and easy.", "size": "M", "fit": "Runs small", "help": 4, "photos": 0, "reply": None},
+]
+DIST = [(5, 82, 176), (4, 12, 26), (3, 4, 8), (2, 1, 2), (1, 1, 2)]
+
+
+def rv_item(v, i):
+    photos = f'<div class="shop-rv-photos">{"".join(shot(k + 1) .replace("shop-shot", "shop-shot shop-rv-photo") for k in range(v["photos"]))}</div>' if v["photos"] else ""
+    reply = f'<div class="shop-rv-reply"><strong>Response from Acme Store</strong><p>{v["reply"]}</p></div>' if v["reply"] else ""
+    return f"""<li data-review data-rating="{v["r"]}" data-helpful="{v["help"]}" data-date="{len(RVS) - i}" data-photos="{v["photos"]}">
+  <div class="shop-rv-head">
+    <span class="avatar"><span>{"".join(w[0] for w in v["name"].split())}</span></span>
+    <div><p>{v["name"]}</p><small class="shop-rv-verified">{si("circle-check")}Verified purchase</small></div>
+    <time class="shop-line-meta">{v["d"]}</time>
+  </div>
+  <div class="stack" data-gap="2">{stars(v["r"])}<h3>{v["t"]}</h3><p>{v["b"]}</p></div>
+  {photos}
+  <div class="shop-rv-meta"><span>Size bought: <strong>{v["size"]}</strong></span><span>Fit: <strong>{v["fit"]}</strong></span></div>
+  {reply}
+  <div class="shop-rv-help"><span>Helpful?</span><button type="button" class="btn" data-variant="outline" data-size="xs" aria-pressed="false" data-helpful-btn>Yes · <span data-helpful-count>{v["help"]}</span></button><button type="button" class="btn" data-variant="ghost" data-size="xs">Report</button></div>
+</li>"""
+
+
+REVIEWS_JS = """
+document.querySelectorAll('[data-reviews]').forEach((root) => {
+  const list = root.querySelector('.shop-rv-list');
+  const items = [...list.querySelectorAll('[data-review]')];
+  const bars = root.querySelectorAll('[data-star-filter]');
+  const photos = root.querySelector('[data-photos-only]');
+  const sort = root.querySelector('[data-review-sort]');
+  const active = root.querySelector('.shop-rv-active');
+  let star = 0;
+  const run = () => {
+    let n = 0;
+    items.forEach((it) => {
+      const ok = (!star || Number(it.dataset.rating) === star) && (!photos.checked || Number(it.dataset.photos) > 0);
+      it.hidden = !ok;
+      if (ok) n++;
+    });
+    bars.forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.starFilter) === star)));
+    active.hidden = !star;
+    active.querySelector('[data-star-label]').textContent = star + ' stars';
+    root.querySelector('[data-review-count]').textContent = n + (n === 1 ? ' review' : ' reviews');
+    root.querySelector('[data-review-empty]').hidden = n > 0;
+  };
+  bars.forEach((b) => b.addEventListener('click', () => { const v = Number(b.dataset.starFilter); star = star === v ? 0 : v; run(); }));
+  active.querySelector('button').addEventListener('click', () => { star = 0; run(); });
+  photos.addEventListener('change', run);
+  sort.addEventListener('change', () => {
+    const key = { helpful: (a, b) => b.dataset.helpful - a.dataset.helpful, newest: (a, b) => b.dataset.date - a.dataset.date, high: (a, b) => b.dataset.rating - a.dataset.rating, low: (a, b) => a.dataset.rating - b.dataset.rating }[sort.value];
+    list.prepend(...[...items].sort(key));
+  });
+  list.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-helpful-btn]');
+    if (!b) return;
+    const on = b.getAttribute('aria-pressed') !== 'true';
+    b.setAttribute('aria-pressed', String(on));
+    const c = b.querySelector('[data-helpful-count]');
+    c.textContent = Number(c.textContent) + (on ? 1 : -1);
+  });
+});
+"""
+
+ATTRS = [("Fit", "Runs small", "Runs large", 52), ("Softness", "Rough", "Very soft", 88), ("Warmth", "Light", "Very warm", 70)]
+bars_html = "".join(f'<li><button type="button" data-star-filter="{n}" aria-pressed="false" aria-label="Show {n}-star reviews ({c})"><span>{n} {si("star")}</span><span class="progress" role="presentation"><span style="width: {pct}%"></span></span><span>{c}</span></button></li>' for n, pct, c in DIST)
+attrs_html = "".join(f'<div><dt><span>{a}</span></dt><dd><div class="shop-rv-scale" role="img" aria-label="{a}: {v}% toward {hi}"><span style="inset-inline-start: {v}%"></span></div><div class="shop-rv-scale-labels"><span>{lo}</span><span>{hi}</span></div></dd></div>' for a, lo, hi, v in ATTRS)
+
+add("reviews-01", "Reviews 01", "Product reviews: rating summary with clickable star bars, fit and feel scales, photo filter, sort, helpful votes and store replies.", "reviews", f"""
+<main class="wrapper shop-page">
+  <section class="shop-rv" data-reviews aria-labelledby="rv1-title">
+    <aside class="shop-rv-aside stack" data-gap="6">
+      <div class="stack" data-gap="2">
+        <h2 class="shop-h2" id="rv1-title">Customer reviews</h2>
+        <div class="shop-rv-score"><strong>4.8</strong><div class="stack" data-gap="1">{stars(4.8)}<span class="shop-line-meta">Based on 214 reviews</span></div></div>
+      </div>
+      <ul class="shop-rv-bars" aria-label="Filter by rating">{bars_html}</ul>
+      <dl class="shop-rv-attrs">{attrs_html}</dl>
+      <div class="stack" data-gap="2">
+        <p class="shop-line-meta">Share your thoughts with other customers.</p>
+        <a href="#" class="btn" data-variant="outline">{si("pencil")}Write a review</a>
+      </div>
+    </aside>
+    <div class="stack" data-gap="4">
+      <div class="shop-rv-toolbar">
+        <div class="cluster" data-gap="3">
+          <p class="shop-lead" data-review-count>{len(RVS)} reviews</p>
+          <span class="badge shop-rv-active" data-variant="secondary" hidden><span data-star-label>5 stars</span><button type="button" class="btn" data-variant="ghost" data-size="icon-xs" aria-label="Clear rating filter">{si("x")}</button></span>
+        </div>
+        <div class="cluster" data-gap="3">
+          <label class="shop-rv-toggle" for="rv1-photos"><input type="checkbox" role="switch" class="input" id="rv1-photos" data-photos-only>With photos</label>
+          <label class="sr-only" for="rv1-sort">Sort reviews</label>
+          <select class="select" id="rv1-sort" data-review-sort><option value="helpful">Most helpful</option><option value="newest">Newest</option><option value="high">Highest rating</option><option value="low">Lowest rating</option></select>
+        </div>
+      </div>
+      <ul class="shop-rv-list">
+        {"".join(rv_item(v, i) for i, v in enumerate(RVS))}
+      </ul>
+      <section class="empty" data-review-empty hidden>
+        <header><figure>{si("star")}</figure><h3>No reviews match</h3><p>Try another rating or turn off “With photos”.</p></header>
+      </section>
+      <button type="button" class="btn" data-variant="outline">Show more reviews</button>
+    </div>
+  </section>
+</main>
+""", RV_CSS + """
+  .shop-rv-bars button svg { inline-size: 0.75rem; block-size: 0.75rem; fill: currentColor; vertical-align: -1px; }
+  .shop-rv-list .avatar { inline-size: 2.25rem; block-size: 2.25rem; font-size: 0.75rem; }
+  .shop-rv-photo { inline-size: 4rem; block-size: 4rem; aspect-ratio: 1; border-radius: calc(var(--radius) - 2px); }""", scripts=script(REVIEWS_JS))
+
+STAR_WORDS = ["Terrible", "Poor", "Okay", "Good", "Excellent"]
+star_input = "".join(f'<label title="{w}"><input type="radio" name="rating" value="{i + 1}" required aria-label="{i + 1} star{"s" if i else ""}, {w}">{si("star")}</label>' for i, w in enumerate(STAR_WORDS))
+WRITE_JS = """
+document.querySelectorAll('[data-review-form]').forEach((form) => {
+  const words = %s;
+  const stars = form.querySelector('.shop-star-input');
+  const labels = [...stars.querySelectorAll('label')];
+  const text = form.querySelector('[data-star-text]');
+  const paint = (n) => labels.forEach((l, i) => l.toggleAttribute('data-on', i < n));
+  const chosen = () => Number(stars.querySelector('input:checked')?.value || 0);
+  const show = (n) => { paint(n); text.textContent = n ? words[n - 1] : 'Select a rating'; };
+  labels.forEach((l, i) => l.addEventListener('pointerenter', () => show(i + 1)));
+  stars.addEventListener('pointerleave', () => show(chosen()));
+  stars.addEventListener('change', () => { show(chosen()); form.querySelector('[data-rating-error]').hidden = true; });
+  const body = form.elements.body;
+  const line = form.querySelector('.shop-count-line');
+  const counter = form.querySelector('[data-chars]');
+  body.addEventListener('input', () => {
+    counter.textContent = body.value.length + ' / ' + body.maxLength;
+    line.toggleAttribute('data-warn', body.value.length > 0 && body.value.length < 20);
+  });
+  const file = form.querySelector('input[type=file]');
+  const drop = form.querySelector('.shop-drop');
+  const list = form.querySelector('.shop-previews');
+  const tpl = form.querySelector('[data-remove-icon] svg');
+  let files = [];
+  const draw = () => {
+    list.replaceChildren(...files.map((f, i) => {
+      const li = document.createElement('li');
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(f);
+      img.alt = f.name;
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('aria-label', 'Remove ' + f.name);
+      b.append(tpl.cloneNode(true));
+      b.addEventListener('click', () => { files.splice(i, 1); draw(); });
+      li.append(img, b);
+      return li;
+    }));
+  };
+  const addFiles = (fl) => { files = [...files, ...[...fl].filter((f) => f.type.startsWith('image/'))].slice(0, 4); draw(); };
+  file.addEventListener('change', () => { addFiles(file.files); file.value = ''; });
+  ['dragenter', 'dragover'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.setAttribute('data-over', ''); }));
+  ['dragleave', 'drop'].forEach((t) => drop.addEventListener(t, () => drop.removeAttribute('data-over')));
+  drop.addEventListener('drop', (e) => { e.preventDefault(); addFiles(e.dataTransfer.files); });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const err = form.querySelector('[data-rating-error]');
+    err.hidden = !!chosen();
+    if (!chosen()) { stars.querySelector('input').focus(); return; }
+    form.hidden = true;
+    const done = document.getElementById(form.dataset.reviewForm);
+    done.hidden = false;
+    done.querySelector('h2').focus();
+  });
+});
+""".replace("%s", "[" + ", ".join(f"'{w}'" for w in STAR_WORDS) + "]")
+
+
+add("reviews-02", "Reviews 02", "Write a review: star rating with hover preview, fit feedback, a character counter, photo upload with previews and a thank-you state.", "reviews", f"""
+<main class="wrapper shop-page" data-size="sm">
+  <div class="stack" data-gap="6">
+    <div class="cluster" data-gap="4">
+      <img class="shop-thumb" src="{PH}" alt="">
+      <div class="stack" data-gap="1">
+        <p class="shop-line-meta">Write a review</p>
+        <h1 class="shop-h2">Merino Crew Sweater</h1>
+        <p class="shop-line-meta">Charcoal · Size M · Delivered Nov 10</p>
+      </div>
+    </div>
+    <form class="card" data-review-form="rv2-done" novalidate>
+      <section class="stack" data-gap="6">
+        <div class="stack" data-gap="1">
+          <div class="cluster" data-gap="1" data-align="end">
+            <fieldset class="shop-star-input"><legend>Overall rating</legend>{star_input}</fieldset>
+            <span class="shop-star-text" data-star-text aria-live="polite">Select a rating</span>
+          </div>
+          <p class="shop-error" data-rating-error hidden>{si("info")}Choose a star rating.</p>
+        </div>
+        <div class="shop-seg-wrap">
+          <span class="label" id="rv2-fit">How does it fit?</span>
+          <div class="shop-seg" role="radiogroup" aria-labelledby="rv2-fit">{"".join(f'<label><input type="radio" name="fit" value="{v}"{" checked" if v == "True to size" else ""}>{v}</label>' for v in ["Runs small", "True to size", "Runs large"])}</div>
+        </div>
+        <div role="group" class="field"><label for="rv2-title">Title</label><input id="rv2-title" name="title" type="text" placeholder="Sum it up in a few words" maxlength="80"></div>
+        <div role="group" class="field">
+          <label for="rv2-body">Your review</label>
+          <textarea class="textarea" id="rv2-body" name="body" rows="5" maxlength="500" placeholder="What did you like? How do you wear it?"></textarea>
+          <div class="shop-count-line"><span>At least 20 characters</span><span data-chars>0 / 500</span></div>
+        </div>
+        <div class="stack" data-gap="2">
+          <span class="label">Photos <span class="shop-muted">(optional, up to 4)</span></span>
+          <label class="shop-drop">{si("upload")}<span><strong>Click to upload</strong> or drag photos here</span><span>PNG or JPG</span><input type="file" class="sr-only" accept="image/*" multiple></label>
+          <ul class="shop-previews" aria-label="Selected photos"></ul>
+          <span data-remove-icon hidden>{si("x")}</span>
+        </div>
+        <div class="shop-switch-row"><label for="rv2-rec"><span class="shop-switch-title">I'd recommend this product</span></label><input type="checkbox" role="switch" class="input" id="rv2-rec" checked></div>
+        <div role="group" class="field"><label for="rv2-name">Display name</label><input id="rv2-name" type="text" value="Olivia M." autocomplete="nickname"></div>
+      </section>
+      <footer class="cluster" data-justify="end" data-gap="2">
+        <button type="button" class="btn" data-variant="outline">Cancel</button>
+        <button type="submit" class="btn">Submit review</button>
+      </footer>
+    </form>
+    <section class="card shop-rv-done" id="rv2-done" hidden aria-live="polite">
+      <section class="shop-done">
+        <span class="shop-success">{si("circle-check")}</span>
+        <h2 tabindex="-1" class="shop-h2">Thanks for your review!</h2>
+        <p>It will appear on the product page once it has been checked, usually within a day.</p>
+        <a href="#" class="btn" data-variant="outline">Back to your orders</a>
+      </section>
+    </section>
+  </div>
+</main>
+""", RV_CSS + SUCCESS_CSS + """
+  .shop-done h2:focus { outline: none; }
+  .shop-switch-row > label { flex: 1; cursor: pointer; }
+  .shop-switch-title { font-size: 0.875rem; font-weight: 500; }
+  .shop-success { display: inline-flex; align-items: center; justify-content: center; inline-size: 3rem; block-size: 3rem; border-radius: 999px; background: color-mix(in oklab, var(--primary) 12%, transparent); color: var(--primary); }
+  .shop-success svg { inline-size: 1.5rem; block-size: 1.5rem; }""", scripts=script(WRITE_JS))
+
+TAGS = [("Soft", 86, "pro"), ("Warm", 64, "pro"), ("True to size", 51, "pro"), ("Holds color", 27, "pro"), ("Long sleeves", 18, "con"), ("Some pilling", 9, "con")]
+REEL = [
+    ("Hannah K.", 5, "Soft and warm without being bulky. True to size, I'm usually a medium.", ["Soft", "Warm", "True to size"]),
+    ("Marcus L.", 5, "Still looks new after a winter of wear. The color holds after many washes.", ["Holds color"]),
+    ("Priya S.", 4, "Lovely color. Slightly longer in the sleeves than I expected.", ["Long sleeves"]),
+    ("Jo P.", 5, "So soft I bought a second color. Fits exactly as described.", ["Soft", "True to size"]),
+    ("Tom W.", 3, "Warm and comfortable, some pilling under the arms after a month.", ["Warm", "Some pilling"]),
+    ("Lena F.", 5, "Warm enough for autumn walks without a coat.", ["Warm"]),
+]
+reel = "".join(f'''<article class="card" data-tags="{"|".join(tg)}">
+  <header><div class="cluster" data-justify="between">{stars(r)}<span class="shop-line-meta">{n}</span></div></header>
+  <section><p>{t}</p></section>
+  <footer class="shop-tags-mini">{"".join(f'<span class="badge" data-variant="outline">{x}</span>' for x in tg)}</footer>
+</article>''' for n, r, t, tg in REEL)
+TAGS_JS = """
+document.querySelectorAll('[data-review-tags]').forEach((root) => {
+  const reel = root.querySelector('.shop-reel');
+  const cards = [...reel.children];
+  const count = root.querySelector('[data-reel-count]');
+  root.querySelector('.shop-tags').addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-tag]');
+    if (!b) return;
+    const on = b.getAttribute('aria-pressed') !== 'true';
+    root.querySelectorAll('button[data-tag]').forEach((x) => x.setAttribute('aria-pressed', String(x === b && on)));
+    let n = 0;
+    cards.forEach((c) => { c.hidden = on && !c.dataset.tags.split('|').includes(b.dataset.tag); if (!c.hidden) n++; });
+    count.textContent = on ? n + ' reviews mention “' + b.dataset.tag + '”' : 'Recent reviews';
+    reel.scrollTo({ left: 0 });
+  });
+  const page = (d) => reel.scrollBy({ left: d * reel.clientWidth * 0.9, behavior: 'smooth' });
+  root.querySelector('[data-reel=prev]').addEventListener('click', () => page(-1));
+  root.querySelector('[data-reel=next]').addEventListener('click', () => page(1));
+});
+"""
+add("reviews-03", "Reviews 03", "Review highlights: a summary, pro and con tags that filter a scrolling row of reviews, with previous and next buttons.", "reviews", f"""
+<main class="wrapper shop-page">
+  <section class="stack" data-gap="6" data-review-tags aria-labelledby="rv3-title">
+    <div class="cluster" data-justify="between" data-align="end" data-gap="4">
+      <div class="stack" data-gap="2">
+        <h2 class="shop-h1" id="rv3-title">What customers say</h2>
+        <div class="cluster" data-gap="2">{stars(4.8)}<span class="shop-line-meta">4.8 out of 5 · 214 reviews · 96% recommend</span></div>
+      </div>
+      <a href="#" class="btn" data-variant="outline">See all reviews</a>
+    </div>
+    <div class="shop-summary-ai">
+      <h2>{si("sparkles")}Review summary</h2>
+      <p>Customers love how <strong>soft</strong> and <strong>warm</strong> this sweater is and say it fits <strong>true to size</strong> and keeps its color. A few mention <strong>long sleeves</strong> and <strong>light pilling</strong> in the first weeks.</p>
+      <div class="shop-tags" role="group" aria-label="Filter reviews by topic">{"".join(f'<button type="button" data-tag="{t}" data-tone="{tone}" aria-pressed="false">{si("check") if tone == "pro" else si("info")}{t}<span>{c}</span></button>' for t, c, tone in TAGS)}</div>
+    </div>
+    <div class="shop-reel-wrap">
+      <div class="cluster" data-justify="between">
+        <p class="shop-lead" data-reel-count aria-live="polite">Recent reviews</p>
+        <div class="cluster" data-gap="2">
+          <button type="button" class="btn" data-variant="outline" data-size="icon-sm" aria-label="Previous reviews" data-reel="prev">{si("chevron-left")}</button>
+          <button type="button" class="btn" data-variant="outline" data-size="icon-sm" aria-label="Next reviews" data-reel="next">{si("chevron-right")}</button>
+        </div>
+      </div>
+      <div class="shop-reel" tabindex="0" aria-label="Reviews">{reel}</div>
+    </div>
+  </section>
+</main>
+""", RV_CSS + """
+  .shop-tags button svg { inline-size: 0.875rem; block-size: 0.875rem; }
+  .shop-tags-mini { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+  .shop-reel:focus-visible { outline: 2px solid var(--ring); outline-offset: 4px; }""", scripts=script(TAGS_JS))
 
 
 if __name__ == "__main__":

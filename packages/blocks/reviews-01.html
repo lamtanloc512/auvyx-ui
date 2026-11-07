@@ -1,0 +1,868 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reviews 01 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-page {
+        padding-block: 2rem 4rem;
+      }
+      .shop-h2 {
+        margin: 0;
+        font-size: 1.125rem;
+        font-weight: 600;
+      }
+      .shop-lead {
+        margin: 0;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
+      .shop-line-meta {
+        margin: 0;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+
+      .shop-stars {
+        display: inline-flex;
+        gap: 0.125rem;
+        color: var(--foreground);
+      }
+      .shop-stars svg {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+        fill: currentColor;
+      }
+      .shop-stars svg[data-empty] {
+        fill: none;
+        color: var(--muted-foreground);
+      }
+
+      .shop-rv {
+        display: grid;
+        gap: 2rem;
+        align-items: start;
+      }
+      @media (width >= 56rem) {
+        .shop-rv {
+          grid-template-columns: 18rem minmax(0, 1fr);
+          gap: 3rem;
+        }
+        .shop-rv-aside {
+          position: sticky;
+          inset-block-start: 5.5rem;
+        }
+      }
+      .shop-rv-score {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .shop-rv-score strong {
+        font-size: 3rem;
+        font-weight: 600;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        font-variant-numeric: tabular-nums;
+      }
+      .shop-rv-bars {
+        display: grid;
+        gap: 0.25rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .shop-rv-bars button {
+        display: grid;
+        grid-template-columns: 2.5rem minmax(0, 1fr) 2.25rem;
+        align-items: center;
+        gap: 0.5rem;
+        inline-size: 100%;
+        padding: 0.25rem 0.375rem;
+        border: 0;
+        border-radius: calc(var(--radius) - 4px);
+        background: none;
+        color: inherit;
+        font: inherit;
+        font-size: 0.8125rem;
+        text-align: start;
+        cursor: pointer;
+      }
+      .shop-rv-bars button:hover {
+        background: var(--accent);
+      }
+      .shop-rv-bars button[aria-pressed="true"] {
+        background: var(--muted);
+        font-weight: 600;
+      }
+      .shop-rv-bars button:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 1px;
+      }
+      .shop-rv-bars button > span:first-child {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .shop-rv-bars button > span:last-child {
+        text-align: end;
+        color: var(--muted-foreground);
+        font-variant-numeric: tabular-nums;
+      }
+      .shop-rv-bars .progress {
+        block-size: 0.5rem;
+      }
+      .shop-rv-attrs {
+        display: grid;
+        gap: 0.875rem;
+        margin: 0;
+      }
+      .shop-rv-attrs > div {
+        display: grid;
+        gap: 0.375rem;
+        font-size: 0.8125rem;
+      }
+      .shop-rv-attrs dt {
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted-foreground);
+      }
+      .shop-rv-attrs dd {
+        margin: 0;
+      }
+      .shop-rv-scale {
+        position: relative;
+        block-size: 0.375rem;
+        border-radius: 999px;
+        background: var(--muted);
+      }
+      .shop-rv-scale > span {
+        position: absolute;
+        inset-block-start: 50%;
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+        translate: -50% -50%;
+        border-radius: 999px;
+        background: var(--primary);
+        box-shadow: 0 0 0 2px var(--background);
+        corner-shape: round;
+      }
+      .shop-rv-scale-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.6875rem;
+        color: var(--muted-foreground);
+      }
+      .shop-rv-list {
+        display: grid;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .shop-rv-list > li {
+        display: grid;
+        gap: 0.75rem;
+        padding-block: 1.5rem;
+        border-block-end: 1px solid var(--border);
+      }
+      .shop-rv-list > li:first-child {
+        padding-block-start: 0;
+      }
+      .shop-rv-head {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      .shop-rv-head > div {
+        flex: 1;
+        min-inline-size: 0;
+        display: grid;
+        gap: 0.125rem;
+      }
+      .shop-rv-head p {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+      .shop-rv-head small {
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+      }
+      .shop-rv-verified {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        color: var(--primary);
+        font-size: 0.75rem;
+      }
+      .shop-rv-verified svg {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+      }
+      .shop-rv-list h3 {
+        margin: 0;
+        font-size: 0.9375rem;
+        font-weight: 600;
+      }
+      .shop-rv-list p {
+        margin: 0;
+        font-size: 0.875rem;
+        line-height: 1.6;
+      }
+      .shop-rv-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 1rem;
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+      }
+      .shop-rv-meta strong {
+        color: var(--foreground);
+        font-weight: 500;
+      }
+      .shop-rv-photos {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .shop-rv-photos img {
+        inline-size: 4rem;
+        block-size: 4rem;
+        border-radius: calc(var(--radius) - 2px);
+        object-fit: cover;
+        background: var(--muted);
+      }
+      .shop-rv-reply {
+        padding: 0.75rem 1rem;
+        border-inline-start: 2px solid var(--primary);
+        border-radius: 0 var(--radius) var(--radius) 0;
+        background: var(--muted);
+      }
+      .shop-rv-reply p {
+        font-size: 0.8125rem;
+      }
+      .shop-rv-reply strong {
+        display: block;
+        margin-block-end: 0.25rem;
+        font-size: 0.75rem;
+      }
+      .shop-rv-help {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .shop-rv-help .btn[aria-pressed="true"] {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .shop-rv-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding-block-end: 1rem;
+        border-block-end: 1px solid var(--border);
+      }
+      .shop-rv-toolbar .select {
+        inline-size: auto;
+      }
+      .shop-rv-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+      }
+      .shop-rv-active {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .shop-rv-active[hidden] {
+        display: none;
+      }
+
+      .shop-rv-bars button svg {
+        inline-size: 0.75rem;
+        block-size: 0.75rem;
+        fill: currentColor;
+        vertical-align: -1px;
+      }
+      .shop-rv-list .avatar {
+        inline-size: 2.25rem;
+        block-size: 2.25rem;
+        font-size: 0.75rem;
+      }
+      .shop-rv-photo {
+        inline-size: 4rem;
+        block-size: 4rem;
+        aspect-ratio: 1;
+        border-radius: calc(var(--radius) - 2px);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrapper shop-page">
+      <section class="shop-rv" data-reviews aria-labelledby="rv1-title">
+        <aside class="shop-rv-aside stack" data-gap="6">
+          <div class="stack" data-gap="2">
+            <h2 class="shop-h2" id="rv1-title">Customer reviews</h2>
+            <div class="shop-rv-score">
+              <strong>4.8</strong>
+              <div class="stack" data-gap="1">
+                <span class="shop-stars" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                </span>
+                <span class="shop-line-meta">Based on 214 reviews</span>
+              </div>
+            </div>
+          </div>
+          <ul class="shop-rv-bars" aria-label="Filter by rating">
+            <li>
+              <button
+                type="button"
+                data-star-filter="5"
+                aria-pressed="false"
+                aria-label="Show 5-star reviews (176)">
+                <span>
+                  5
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                </span>
+                <span class="progress" role="presentation"><span style="width: 82%"></span></span>
+                <span>176</span>
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                data-star-filter="4"
+                aria-pressed="false"
+                aria-label="Show 4-star reviews (26)">
+                <span>
+                  4
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                </span>
+                <span class="progress" role="presentation"><span style="width: 12%"></span></span>
+                <span>26</span>
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                data-star-filter="3"
+                aria-pressed="false"
+                aria-label="Show 3-star reviews (8)">
+                <span>
+                  3
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                </span>
+                <span class="progress" role="presentation"><span style="width: 4%"></span></span>
+                <span>8</span>
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                data-star-filter="2"
+                aria-pressed="false"
+                aria-label="Show 2-star reviews (2)">
+                <span>
+                  2
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                </span>
+                <span class="progress" role="presentation"><span style="width: 1%"></span></span>
+                <span>2</span>
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                data-star-filter="1"
+                aria-pressed="false"
+                aria-label="Show 1-star reviews (2)">
+                <span>
+                  1
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                </span>
+                <span class="progress" role="presentation"><span style="width: 1%"></span></span>
+                <span>2</span>
+              </button>
+            </li>
+          </ul>
+          <dl class="shop-rv-attrs">
+            <div>
+              <dt><span>Fit</span></dt>
+              <dd>
+                <div class="shop-rv-scale" role="img" aria-label="Fit: 52% toward Runs large">
+                  <span style="inset-inline-start: 52%"></span>
+                </div>
+                <div class="shop-rv-scale-labels">
+                  <span>Runs small</span>
+                  <span>Runs large</span>
+                </div>
+              </dd>
+            </div>
+            <div>
+              <dt><span>Softness</span></dt>
+              <dd>
+                <div class="shop-rv-scale" role="img" aria-label="Softness: 88% toward Very soft">
+                  <span style="inset-inline-start: 88%"></span>
+                </div>
+                <div class="shop-rv-scale-labels">
+                  <span>Rough</span>
+                  <span>Very soft</span>
+                </div>
+              </dd>
+            </div>
+            <div>
+              <dt><span>Warmth</span></dt>
+              <dd>
+                <div class="shop-rv-scale" role="img" aria-label="Warmth: 70% toward Very warm">
+                  <span style="inset-inline-start: 70%"></span>
+                </div>
+                <div class="shop-rv-scale-labels">
+                  <span>Light</span>
+                  <span>Very warm</span>
+                </div>
+              </dd>
+            </div>
+          </dl>
+          <div class="stack" data-gap="2">
+            <p class="shop-line-meta">Share your thoughts with other customers.</p>
+            <a href="#" class="btn" data-variant="outline">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497zM15 5l4 4"/></svg>
+              Write a review
+            </a>
+          </div>
+        </aside>
+        <div class="stack" data-gap="4">
+          <div class="shop-rv-toolbar">
+            <div class="cluster" data-gap="3">
+              <p class="shop-lead" data-review-count>5 reviews</p>
+              <span class="badge shop-rv-active" data-variant="secondary" hidden>
+                <span data-star-label>5 stars</span>
+                <button
+                  type="button"
+                  class="btn"
+                  data-variant="ghost"
+                  data-size="icon-xs"
+                  aria-label="Clear rating filter">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+              </span>
+            </div>
+            <div class="cluster" data-gap="3">
+              <label class="shop-rv-toggle" for="rv1-photos">
+                <input
+                  type="checkbox"
+                  role="switch"
+                  class="input"
+                  id="rv1-photos"
+                  data-photos-only />
+                With photos
+              </label>
+              <label class="sr-only" for="rv1-sort">Sort reviews</label>
+              <select class="select" id="rv1-sort" data-review-sort>
+                <option value="helpful">Most helpful</option>
+                <option value="newest">Newest</option>
+                <option value="high">Highest rating</option>
+                <option value="low">Lowest rating</option>
+              </select>
+            </div>
+          </div>
+          <ul class="shop-rv-list">
+            <li data-review data-rating="5" data-helpful="24" data-date="5" data-photos="2">
+              <div class="shop-rv-head">
+                <span class="avatar"><span>HK</span></span>
+                <div>
+                  <p>Hannah K.</p>
+                  <small class="shop-rv-verified">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                    Verified purchase
+                  </small>
+                </div>
+                <time class="shop-line-meta">Oct 30, 2026</time>
+              </div>
+              <div class="stack" data-gap="2">
+                <span class="shop-stars" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                </span>
+                <h3>My new everyday sweater</h3>
+                <p>
+                  Soft and warm without being bulky. I wore it all week and it still looks new. True
+                  to size, I'm usually a medium.
+                </p>
+              </div>
+              <div class="shop-rv-photos">
+                <img class="shop-shot shop-rv-photo" src="assets/placeholder.svg" alt />
+                <img
+                  class="shop-shot shop-rv-photo"
+                  src="assets/placeholder.svg"
+                  alt
+                  data-shot="2" />
+              </div>
+              <div class="shop-rv-meta">
+                <span>
+                  Size bought:
+                  <strong>M</strong>
+                </span>
+                <span>
+                  Fit:
+                  <strong>True to size</strong>
+                </span>
+              </div>
+
+              <div class="shop-rv-help">
+                <span>Helpful?</span>
+                <button
+                  type="button"
+                  class="btn"
+                  data-variant="outline"
+                  data-size="xs"
+                  aria-pressed="false"
+                  data-helpful-btn>
+                  Yes ·
+                  <span data-helpful-count>24</span>
+                </button>
+                <button type="button" class="btn" data-variant="ghost" data-size="xs">
+                  Report
+                </button>
+              </div>
+            </li>
+            <li data-review data-rating="5" data-helpful="17" data-date="4" data-photos="0">
+              <div class="shop-rv-head">
+                <span class="avatar"><span>ML</span></span>
+                <div>
+                  <p>Marcus L.</p>
+                  <small class="shop-rv-verified">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                    Verified purchase
+                  </small>
+                </div>
+                <time class="shop-line-meta">Oct 21, 2026</time>
+              </div>
+              <div class="stack" data-gap="2">
+                <span class="shop-stars" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                </span>
+                <h3>Second one I've bought</h3>
+                <p>Still looks new after a winter of wear. The charcoal goes with everything.</p>
+              </div>
+
+              <div class="shop-rv-meta">
+                <span>
+                  Size bought:
+                  <strong>L</strong>
+                </span>
+                <span>
+                  Fit:
+                  <strong>True to size</strong>
+                </span>
+              </div>
+
+              <div class="shop-rv-help">
+                <span>Helpful?</span>
+                <button
+                  type="button"
+                  class="btn"
+                  data-variant="outline"
+                  data-size="xs"
+                  aria-pressed="false"
+                  data-helpful-btn>
+                  Yes ·
+                  <span data-helpful-count>17</span>
+                </button>
+                <button type="button" class="btn" data-variant="ghost" data-size="xs">
+                  Report
+                </button>
+              </div>
+            </li>
+            <li data-review data-rating="4" data-helpful="9" data-date="3" data-photos="1">
+              <div class="shop-rv-head">
+                <span class="avatar"><span>PS</span></span>
+                <div>
+                  <p>Priya S.</p>
+                  <small class="shop-rv-verified">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                    Verified purchase
+                  </small>
+                </div>
+                <time class="shop-line-meta">Oct 4, 2026</time>
+              </div>
+              <div class="stack" data-gap="2">
+                <span class="shop-stars" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg data-empty xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                </span>
+                <h3>Lovely color, long sleeves</h3>
+                <p>
+                  The oat color is beautiful in daylight. Slightly longer in the sleeves than I
+                  expected, so I fold them once.
+                </p>
+              </div>
+              <div class="shop-rv-photos">
+                <img class="shop-shot shop-rv-photo" src="assets/placeholder.svg" alt />
+              </div>
+              <div class="shop-rv-meta">
+                <span>
+                  Size bought:
+                  <strong>S</strong>
+                </span>
+                <span>
+                  Fit:
+                  <strong>Runs large</strong>
+                </span>
+              </div>
+              <div class="shop-rv-reply">
+                <strong>Response from Acme Store</strong>
+                <p>
+                  Thanks Priya! Our sleeves run about 2 cm long by design. If you'd like a shorter
+                  fit, the Organic Cotton Tee pairs nicely underneath.
+                </p>
+              </div>
+              <div class="shop-rv-help">
+                <span>Helpful?</span>
+                <button
+                  type="button"
+                  class="btn"
+                  data-variant="outline"
+                  data-size="xs"
+                  aria-pressed="false"
+                  data-helpful-btn>
+                  Yes ·
+                  <span data-helpful-count>9</span>
+                </button>
+                <button type="button" class="btn" data-variant="ghost" data-size="xs">
+                  Report
+                </button>
+              </div>
+            </li>
+            <li data-review data-rating="3" data-helpful="6" data-date="2" data-photos="0">
+              <div class="shop-rv-head">
+                <span class="avatar"><span>TW</span></span>
+                <div>
+                  <p>Tom W.</p>
+                  <small class="shop-rv-verified">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                    Verified purchase
+                  </small>
+                </div>
+                <time class="shop-line-meta">Sep 18, 2026</time>
+              </div>
+              <div class="stack" data-gap="2">
+                <span class="shop-stars" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg data-empty xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg data-empty xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                </span>
+                <h3>Good, but it pilled a little</h3>
+                <p>
+                  Comfortable and warm. After a month there's some pilling under the arms, which a
+                  comb took care of.
+                </p>
+              </div>
+
+              <div class="shop-rv-meta">
+                <span>
+                  Size bought:
+                  <strong>XL</strong>
+                </span>
+                <span>
+                  Fit:
+                  <strong>True to size</strong>
+                </span>
+              </div>
+              <div class="shop-rv-reply">
+                <strong>Response from Acme Store</strong>
+                <p>
+                  Sorry about that, Tom. Light pilling is normal for fine merino in the first weeks;
+                  it settles after a few washes. Reach out if it doesn't.
+                </p>
+              </div>
+              <div class="shop-rv-help">
+                <span>Helpful?</span>
+                <button
+                  type="button"
+                  class="btn"
+                  data-variant="outline"
+                  data-size="xs"
+                  aria-pressed="false"
+                  data-helpful-btn>
+                  Yes ·
+                  <span data-helpful-count>6</span>
+                </button>
+                <button type="button" class="btn" data-variant="ghost" data-size="xs">
+                  Report
+                </button>
+              </div>
+            </li>
+            <li data-review data-rating="2" data-helpful="4" data-date="1" data-photos="0">
+              <div class="shop-rv-head">
+                <span class="avatar"><span>AR</span></span>
+                <div>
+                  <p>Ana R.</p>
+                  <small class="shop-rv-verified">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                    Verified purchase
+                  </small>
+                </div>
+                <time class="shop-line-meta">Aug 27, 2026</time>
+              </div>
+              <div class="stack" data-gap="2">
+                <span class="shop-stars" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg data-empty xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg data-empty xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <svg data-empty xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                </span>
+                <h3>Too small for me</h3>
+                <p>
+                  Nice quality, but it fit a size small across the shoulders. The exchange was quick
+                  and easy.
+                </p>
+              </div>
+
+              <div class="shop-rv-meta">
+                <span>
+                  Size bought:
+                  <strong>M</strong>
+                </span>
+                <span>
+                  Fit:
+                  <strong>Runs small</strong>
+                </span>
+              </div>
+
+              <div class="shop-rv-help">
+                <span>Helpful?</span>
+                <button
+                  type="button"
+                  class="btn"
+                  data-variant="outline"
+                  data-size="xs"
+                  aria-pressed="false"
+                  data-helpful-btn>
+                  Yes ·
+                  <span data-helpful-count>4</span>
+                </button>
+                <button type="button" class="btn" data-variant="ghost" data-size="xs">
+                  Report
+                </button>
+              </div>
+            </li>
+          </ul>
+          <section class="empty" data-review-empty hidden>
+            <header>
+              <figure><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></figure>
+              <h3>No reviews match</h3>
+              <p>Try another rating or turn off “With photos”.</p>
+            </header>
+          </section>
+          <button type="button" class="btn" data-variant="outline">Show more reviews</button>
+        </div>
+      </section>
+    </main>
+    <script>
+      document.querySelectorAll("[data-reviews]").forEach((root) => {
+        const list = root.querySelector(".shop-rv-list");
+        const items = [...list.querySelectorAll("[data-review]")];
+        const bars = root.querySelectorAll("[data-star-filter]");
+        const photos = root.querySelector("[data-photos-only]");
+        const sort = root.querySelector("[data-review-sort]");
+        const active = root.querySelector(".shop-rv-active");
+        let star = 0;
+        const run = () => {
+          let n = 0;
+          items.forEach((it) => {
+            const ok =
+              (!star || Number(it.dataset.rating) === star) &&
+              (!photos.checked || Number(it.dataset.photos) > 0);
+            it.hidden = !ok;
+            if (ok) n++;
+          });
+          bars.forEach((b) =>
+            b.setAttribute("aria-pressed", String(Number(b.dataset.starFilter) === star)),
+          );
+          active.hidden = !star;
+          active.querySelector("[data-star-label]").textContent = star + " stars";
+          root.querySelector("[data-review-count]").textContent =
+            n + (n === 1 ? " review" : " reviews");
+          root.querySelector("[data-review-empty]").hidden = n > 0;
+        };
+        bars.forEach((b) =>
+          b.addEventListener("click", () => {
+            const v = Number(b.dataset.starFilter);
+            star = star === v ? 0 : v;
+            run();
+          }),
+        );
+        active.querySelector("button").addEventListener("click", () => {
+          star = 0;
+          run();
+        });
+        photos.addEventListener("change", run);
+        sort.addEventListener("change", () => {
+          const key = {
+            helpful: (a, b) => b.dataset.helpful - a.dataset.helpful,
+            newest: (a, b) => b.dataset.date - a.dataset.date,
+            high: (a, b) => b.dataset.rating - a.dataset.rating,
+            low: (a, b) => a.dataset.rating - b.dataset.rating,
+          }[sort.value];
+          list.prepend(...[...items].sort(key));
+        });
+        list.addEventListener("click", (e) => {
+          const b = e.target.closest("[data-helpful-btn]");
+          if (!b) return;
+          const on = b.getAttribute("aria-pressed") !== "true";
+          b.setAttribute("aria-pressed", String(on));
+          const c = b.querySelector("[data-helpful-count]");
+          c.textContent = Number(c.textContent) + (on ? 1 : -1);
+        });
+      });
+    </script>
+  </body>
+</html>

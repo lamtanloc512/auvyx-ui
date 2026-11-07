@@ -399,6 +399,21 @@
     "description": "Flash sale cards with a discount badge, stock bar and a live countdown.",
     "category": "product-card"
   },
+  "reviews-01": {
+    "title": "Reviews 01",
+    "description": "Product reviews: rating summary with clickable star bars, fit and feel scales, photo filter, sort, helpful votes and store replies.",
+    "category": "reviews"
+  },
+  "reviews-02": {
+    "title": "Reviews 02",
+    "description": "Write a review: star rating with hover preview, fit feedback, a character counter, photo upload with previews and a thank-you state.",
+    "category": "reviews"
+  },
+  "reviews-03": {
+    "title": "Reviews 03",
+    "description": "Review highlights: a summary, pro and con tags that filter a scrolling row of reviews, with previous and next buttons.",
+    "category": "reviews"
+  },
   "search-01": {
     "title": "Search 01",
     "description": "A product search dialog (⌘K) with recent searches, categories and product results.",

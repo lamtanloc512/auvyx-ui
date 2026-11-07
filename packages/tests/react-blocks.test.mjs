@@ -103,6 +103,9 @@ const INTERACTIONS = [
   ['category-03', (p) => p.click('[data-load-more]')],
   ['tracking-01', async (p) => { await p.fill('#t1-order', 'A-10251'); await p.fill('#t1-email', 'me@example.com'); await p.click('form[data-lookup] button[type=submit]'); }],
   ['tracking-03', (p) => p.click('#t3-tab-2')],
+  ['reviews-01', (p) => p.click('[data-star-filter="5"]')],
+  ['reviews-02', (p) => p.click('.shop-star-input label:nth-of-type(4)')],
+  ['reviews-03', (p) => p.click('button[data-tag="Warm"]')],
 ];
 
 test('React blocks behave like the HTML blocks', async () => {
