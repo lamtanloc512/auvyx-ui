@@ -284,9 +284,11 @@ def charts():
     ]
 
 
-BLOCK_CATS = [("dashboard", "Dashboard"), ("sidebar", "Sidebar"), ("login", "Login"), ("signup", "Signup"), ("otp", "OTP"), ("calendar", "Calendar")]
+BLOCK_CATS = [("dashboard", "Dashboard"), ("sidebar", "Sidebar"), ("login", "Login"), ("signup", "Signup"), ("otp", "OTP"), ("calendar", "Calendar"),
+              ("cart", "Cart"), ("checkout", "Checkout"), ("orders", "Orders"), ("account", "Account"), ("bottom-nav", "Bottom Navigation")]
 FEATURED = ["dashboard-01", "sidebar-07", "sidebar-03", "login-03", "login-04", "calendar-20"]
-HEIGHTS = {"dashboard": 58, "sidebar": 50, "login": 46, "signup": 50, "otp": 40, "calendar": 34}
+HEIGHTS = {"dashboard": 58, "sidebar": 50, "login": 46, "signup": 50, "otp": 40, "calendar": 34,
+           "cart": 52, "checkout": 64, "orders": 64, "account": 60, "bottom-nav": 48}
 TALL = {"calendar-20": 36, "calendar-21": 38, "calendar-27": 38, "calendar-31": 44, "calendar-03": 34, "signup-02": 54, "signup-03": 54, "signup-01": 54}
 
 

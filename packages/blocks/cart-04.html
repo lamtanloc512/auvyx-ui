@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cart 04 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-muted {
+        color: var(--muted-foreground);
+      }
+      .shop-page {
+        padding-block: 2rem 4rem;
+      }
+      .shop-h1 {
+        margin: 0;
+        font-size: 1.875rem;
+        font-weight: 600;
+        letter-spacing: -0.025em;
+      }
+      .shop-lead {
+        margin: 0;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
+      .shop-header {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 10;
+        border-block-end: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 90%, transparent);
+        backdrop-filter: blur(8px);
+      }
+      .shop-header-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        block-size: 4rem;
+      }
+      .shop-nav {
+        display: flex;
+        gap: 1.25rem;
+        font-size: 0.875rem;
+      }
+      .shop-nav a {
+        color: var(--muted-foreground);
+        text-decoration: none;
+      }
+      .shop-nav a:hover,
+      .shop-nav a[aria-current] {
+        color: var(--foreground);
+      }
+      .shop-header-search {
+        flex: 1;
+        max-inline-size: 20rem;
+        margin-inline-start: auto;
+      }
+      .shop-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .shop-cart-btn {
+        position: relative;
+      }
+      .shop-count {
+        position: absolute;
+        inset-block-start: -0.25rem;
+        inset-inline-end: -0.25rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-inline-size: 1.125rem;
+        block-size: 1.125rem;
+        padding-inline: 0.25rem;
+        border-radius: 999px;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+      .shop-count:empty,
+      .shop-count[data-count="0"] {
+        display: none;
+      }
+      @media (width < 48rem) {
+        .shop-nav,
+        .shop-header-search {
+          display: none;
+        }
+        .shop-header-actions {
+          margin-inline-start: auto;
+        }
+      }
+      .shop-thumb {
+        flex: none;
+        inline-size: 5rem;
+        block-size: 5rem;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        background: var(--muted);
+        object-fit: cover;
+      }
+      .shop-thumb[data-size="sm"] {
+        inline-size: 3.5rem;
+        block-size: 3.5rem;
+      }
+      .shop-thumb[data-size="xs"] {
+        inline-size: 2.5rem;
+        block-size: 2.5rem;
+        border-radius: calc(var(--radius) - 2px);
+      }
+      html.dark .shop-thumb,
+      html.dark .shop-product-img {
+        filter: brightness(0.5) grayscale(1);
+      }
+      .shop-lines {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .shop-lines > li {
+        display: flex;
+        gap: 1rem;
+        padding-block: 1.25rem;
+        border-block-end: 1px solid var(--border);
+      }
+      .shop-lines > li:first-child {
+        padding-block-start: 0;
+      }
+      .shop-lines[data-size="sm"] > li {
+        gap: 0.75rem;
+        padding-block: 0.875rem;
+      }
+      .shop-lines[data-size="sm"] > li:last-child {
+        border-block-end: 0;
+      }
+      .shop-line-body {
+        flex: 1;
+        min-inline-size: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+      .shop-line-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .shop-line-name {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+      .shop-line-meta {
+        margin: 0;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .shop-line-price {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+      .shop-note {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .shop-note svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+        flex: none;
+      }
+      .shop-grid {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+      }
+      .shop-product {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .shop-product-img {
+        aspect-ratio: 1;
+        inline-size: 100%;
+        border-radius: var(--radius);
+        background: var(--muted);
+        object-fit: cover;
+      }
+      .shop-product h3 {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+      .shop-product p {
+        margin: 0;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .shop-product-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+      }
+      .shop-product-foot strong {
+        font-size: 0.875rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+      }
+      .shop-mini {
+        inline-size: min(24rem, calc(100vw - 2rem));
+      }
+      .shop-mini .shop-lines {
+        max-block-size: 18rem;
+        overflow-y: auto;
+      }
+      .shop-mini-foot {
+        display: grid;
+        gap: 0.75rem;
+        padding-block-start: 0.75rem;
+        border-block-start: 1px solid var(--border);
+      }
+      .shop-mini-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+      }
+      .shop-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 1rem;
+        font-size: 0.875rem;
+      }
+      .shop-row strong {
+        font-variant-numeric: tabular-nums;
+      }
+
+      .block-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: inherit;
+        text-decoration: none;
+      }
+      .block-logo-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .block-logo-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .shop-lines[data-size="sm"] > li {
+        align-items: flex-start;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="shop-header">
+      <div class="wrapper shop-header-row">
+        <a href="#" class="block-logo">
+          <span class="block-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+          Acme Store
+        </a>
+        <nav class="shop-nav" aria-label="Main">
+          <a href="#" aria-current="page">Shop</a>
+          <a href="#">New in</a>
+          <a href="#">Collections</a>
+          <a href="#">Journal</a>
+        </nav>
+        <div class="input-group shop-header-search">
+          <input type="search" placeholder="Search products..." aria-label="Search products" />
+          <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        </div>
+        <div class="shop-header-actions">
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Wishlist">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </a>
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Account">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </a>
+          <div class="popover" data-cart>
+            <button
+              type="button"
+              class="btn shop-cart-btn"
+              data-variant="ghost"
+              data-size="icon"
+              popovertarget="c4-mini"
+              aria-label="Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+              <span class="shop-count" data-cart-count>3</span>
+            </button>
+            <div
+              id="c4-mini"
+              class="shop-mini"
+              data-popover
+              popover
+              data-side="bottom"
+              data-align="end">
+              <header>
+                <h4>Cart</h4>
+                <p data-item-count>3 items</p>
+              </header>
+              <div class="stack" data-gap="3" data-cart-filled>
+                <ul class="shop-lines" data-size="sm">
+                  <li data-line data-price="48.00">
+                    <img class="shop-thumb" data-size="sm" src="assets/placeholder.svg" alt />
+                    <div class="shop-line-body">
+                      <div class="shop-line-top">
+                        <div>
+                          <p class="shop-line-name">Everyday Tote</p>
+                          <p class="shop-line-meta">Canvas · Natural · Qty 1</p>
+                        </div>
+                        <p class="shop-line-price">$48.00</p>
+                      </div>
+                    </div>
+                    <input type="hidden" value="1" data-qty />
+                    <button
+                      type="button"
+                      class="btn"
+                      data-variant="ghost"
+                      data-size="icon-xs"
+                      aria-label="Remove Everyday Tote"
+                      data-remove>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </button>
+                  </li>
+                  <li data-line data-price="89.00">
+                    <img class="shop-thumb" data-size="sm" src="assets/placeholder.svg" alt />
+                    <div class="shop-line-body">
+                      <div class="shop-line-top">
+                        <div>
+                          <p class="shop-line-name">Merino Crew Sweater</p>
+                          <p class="shop-line-meta">Size M · Charcoal · Qty 2</p>
+                        </div>
+                        <p class="shop-line-price">$178.00</p>
+                      </div>
+                    </div>
+                    <input type="hidden" value="2" data-qty />
+                    <button
+                      type="button"
+                      class="btn"
+                      data-variant="ghost"
+                      data-size="icon-xs"
+                      aria-label="Remove Merino Crew Sweater"
+                      data-remove>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </button>
+                  </li>
+                </ul>
+                <div class="shop-mini-foot">
+                  <div class="shop-row">
+                    <span class="shop-muted">Subtotal</span>
+                    <strong data-subtotal>$226.00</strong>
+                  </div>
+                  <p class="shop-note">Shipping and taxes calculated at checkout.</p>
+                  <div class="shop-mini-actions">
+                    <a href="#" class="btn" data-variant="outline">View cart</a>
+                    <a href="#" class="btn">Checkout</a>
+                  </div>
+                </div>
+              </div>
+              <p class="shop-note" data-cart-empty hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+                Your cart is empty.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="wrapper shop-page">
+      <div class="stack" data-gap="6">
+        <div class="stack" data-gap="1">
+          <h1 class="shop-h1">Collections</h1>
+          <p class="shop-lead">Open the cart in the header to see the mini cart.</p>
+        </div>
+        <div class="shop-grid">
+          <article class="shop-product">
+            <img class="shop-product-img" src="assets/placeholder.svg" alt />
+            <div>
+              <h3>Everyday Tote</h3>
+              <p>Canvas · Natural</p>
+            </div>
+            <div class="shop-product-foot"><strong>$48.00</strong></div>
+          </article>
+          <article class="shop-product">
+            <img class="shop-product-img" src="assets/placeholder.svg" alt />
+            <div>
+              <h3>Merino Crew Sweater</h3>
+              <p>6 colors</p>
+            </div>
+            <div class="shop-product-foot"><strong>$89.00</strong></div>
+          </article>
+          <article class="shop-product">
+            <img class="shop-product-img" src="assets/placeholder.svg" alt />
+            <div>
+              <h3>Ceramic Pour-Over Set</h3>
+              <p>Matte white</p>
+            </div>
+            <div class="shop-product-foot"><strong>$36.50</strong></div>
+          </article>
+          <article class="shop-product">
+            <img class="shop-product-img" src="assets/placeholder.svg" alt />
+            <div>
+              <h3>Linen Throw Pillow</h3>
+              <p>3 colors</p>
+            </div>
+            <div class="shop-product-foot"><strong>$32.00</strong></div>
+          </article>
+        </div>
+      </div>
+    </main>
+    <script>
+      document.querySelectorAll("[data-cart]").forEach((cart) => {
+        const fmt = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+        const FREE = 150.0,
+          SHIP = 9.95,
+          TAX = 0.08;
+        const set = (sel, text) =>
+          document.querySelectorAll(sel).forEach((el) => {
+            el.textContent = text;
+          });
+        const update = () => {
+          let sub = 0,
+            count = 0;
+          cart.querySelectorAll("[data-line]").forEach((line) => {
+            const q = Math.min(
+              10,
+              Math.max(1, parseInt(line.querySelector("[data-qty]").value, 10) || 1),
+            );
+            line.querySelector("[data-qty]").value = q;
+            const price = parseFloat(line.dataset.price);
+            sub += price * q;
+            count += q;
+            const t = line.querySelector("[data-line-total]");
+            if (t) t.textContent = fmt.format(price * q);
+          });
+          const ship = sub === 0 || sub >= FREE ? 0 : SHIP;
+          const tax = Math.round(sub * TAX * 100) / 100;
+          set("[data-subtotal]", fmt.format(sub));
+          set("[data-shipping]", ship ? fmt.format(ship) : "Free");
+          set("[data-tax]", fmt.format(tax));
+          set("[data-grand-total]", fmt.format(sub + ship + tax));
+          set("[data-item-count]", count + (count === 1 ? " item" : " items"));
+          document.querySelectorAll("[data-cart-count]").forEach((el) => {
+            el.textContent = count;
+            el.dataset.count = count;
+          });
+          const bar = cart.querySelector("[data-free-progress]");
+          if (bar) {
+            const pct = Math.round((Math.min(sub, FREE) / FREE) * 100);
+            bar.setAttribute("aria-valuenow", pct);
+            bar.querySelector("span").style.width = pct + "%";
+            set(
+              "[data-free-label]",
+              sub >= FREE
+                ? "You have free shipping."
+                : fmt.format(FREE - sub) + " away from free shipping.",
+            );
+          }
+          const empty = !cart.querySelector("[data-line]");
+          cart.querySelectorAll("[data-cart-filled]").forEach((el) => {
+            el.hidden = empty;
+          });
+          cart.querySelectorAll("[data-cart-empty]").forEach((el) => {
+            el.hidden = !empty;
+          });
+        };
+        cart.addEventListener("click", (e) => {
+          const step = e.target.closest("[data-qty-step]");
+          if (step) {
+            const input = step.parentElement.querySelector("[data-qty]");
+            input.value = (parseInt(input.value, 10) || 1) + Number(step.dataset.qtyStep);
+            update();
+          }
+          const remove = e.target.closest("[data-remove]");
+          if (remove) {
+            remove.closest("[data-line]").remove();
+            update();
+          }
+        });
+        cart.addEventListener("change", (e) => {
+          if (e.target.matches("[data-qty]")) update();
+        });
+      });
+    </script>
+  </body>
+</html>

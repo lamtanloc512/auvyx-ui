@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Checkout 01 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-page {
+        padding-block: 2rem 4rem;
+      }
+      .shop-header {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 10;
+        border-block-end: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 90%, transparent);
+        backdrop-filter: blur(8px);
+      }
+      .shop-header-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        block-size: 4rem;
+      }
+      .shop-thumb {
+        flex: none;
+        inline-size: 5rem;
+        block-size: 5rem;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        background: var(--muted);
+        object-fit: cover;
+      }
+      .shop-thumb[data-size="sm"] {
+        inline-size: 3.5rem;
+        block-size: 3.5rem;
+      }
+      .shop-thumb[data-size="xs"] {
+        inline-size: 2.5rem;
+        block-size: 2.5rem;
+        border-radius: calc(var(--radius) - 2px);
+      }
+      .shop-lines {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .shop-lines > li {
+        display: flex;
+        gap: 1rem;
+        padding-block: 1.25rem;
+        border-block-end: 1px solid var(--border);
+      }
+      .shop-lines > li:first-child {
+        padding-block-start: 0;
+      }
+      .shop-lines[data-size="sm"] > li {
+        gap: 0.75rem;
+        padding-block: 0.875rem;
+      }
+      .shop-lines[data-size="sm"] > li:last-child {
+        border-block-end: 0;
+      }
+      .shop-line-body {
+        flex: 1;
+        min-inline-size: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+      .shop-line-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .shop-line-name {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+      .shop-line-meta {
+        margin: 0;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .shop-line-price {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+      .shop-summary {
+        display: grid;
+        gap: 0.75rem;
+        margin: 0;
+        font-size: 0.875rem;
+      }
+      .shop-summary > div {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .shop-summary dt {
+        color: var(--muted-foreground);
+      }
+      .shop-summary dd {
+        margin: 0;
+        font-variant-numeric: tabular-nums;
+      }
+      .shop-summary > [data-total] {
+        padding-block-start: 0.75rem;
+        border-block-start: 1px solid var(--border);
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .shop-summary > [data-total] dt {
+        color: var(--foreground);
+      }
+      .shop-summary > [data-discount] dd {
+        color: var(--primary);
+      }
+      .shop-cols {
+        display: grid;
+        gap: 2rem;
+        align-items: start;
+      }
+      @media (width >= 56rem) {
+        .shop-cols {
+          grid-template-columns: minmax(0, 1fr) 22rem;
+          gap: 3rem;
+        }
+        .shop-sticky {
+          position: sticky;
+          inset-block-start: 5.5rem;
+        }
+      }
+      .shop-note {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .shop-note svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+        flex: none;
+      }
+      .shop-full {
+        inline-size: 100%;
+      }
+      .shop-form-grid {
+        display: grid;
+        gap: 1rem;
+      }
+      @media (width >= 36rem) {
+        .shop-form-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      .shop-form-grid select {
+        inline-size: 100%;
+      }
+      .shop-form-grid > [data-span="full"] {
+        grid-column: 1 / -1;
+      }
+      .shop-payment-fields[hidden] {
+        display: none;
+      }
+
+      .block-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: inherit;
+        text-decoration: none;
+      }
+      .block-logo-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .block-logo-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .shop-choice-price {
+        font-size: 0.875rem;
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+      }
+      .shop-header-secure {
+        margin-inline-start: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="shop-header">
+      <div class="wrapper shop-header-row">
+        <a href="#" class="block-logo">
+          <span class="block-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+          Acme Store
+        </a>
+        <p class="shop-note shop-header-secure">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Secure checkout
+        </p>
+      </div>
+    </header>
+    <main class="wrapper shop-page">
+      <form class="shop-cols" onsubmit="event.preventDefault()">
+        <div class="stack" data-gap="8">
+          <fieldset class="fieldset">
+            <legend>Contact</legend>
+            <p>We'll send the receipt and shipping updates here.</p>
+            <div role="group" class="field">
+              <label for="co1-email">Email</label>
+              <input
+                id="co1-email"
+                type="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+                required />
+            </div>
+            <div role="group" class="field" data-orientation="horizontal">
+              <input type="checkbox" id="co1-news" class="input" checked />
+              <label for="co1-news">Email me with news and offers</label>
+            </div>
+          </fieldset>
+          <fieldset class="fieldset">
+            <legend>Shipping address</legend>
+            <div class="shop-form-grid">
+              <div role="group" class="field">
+                <label for="co1-first">First name</label>
+                <input id="co1-first" type="text" autocomplete="given-name" required />
+              </div>
+              <div role="group" class="field">
+                <label for="co1-last">Last name</label>
+                <input id="co1-last" type="text" autocomplete="family-name" required />
+              </div>
+              <div role="group" class="field" data-span="full">
+                <label for="co1-address">Address</label>
+                <input
+                  id="co1-address"
+                  type="text"
+                  placeholder="Street and house number"
+                  autocomplete="address-line1"
+                  required />
+              </div>
+              <div role="group" class="field" data-span="full">
+                <label for="co1-address2">Apartment, suite, etc.</label>
+                <input id="co1-address2" type="text" autocomplete="address-line2" />
+              </div>
+              <div role="group" class="field">
+                <label for="co1-city">City</label>
+                <input id="co1-city" type="text" autocomplete="address-level2" required />
+              </div>
+              <div role="group" class="field">
+                <label for="co1-country">Country</label>
+                <select class="select" id="co1-country" autocomplete="country-name">
+                  <option>United States</option>
+                  <option>Canada</option>
+                  <option>United Kingdom</option>
+                  <option>Vietnam</option>
+                </select>
+              </div>
+              <div role="group" class="field">
+                <label for="co1-zip">ZIP code</label>
+                <input id="co1-zip" type="text" autocomplete="postal-code" required />
+              </div>
+              <div role="group" class="field">
+                <label for="co1-phone">Phone</label>
+                <input id="co1-phone" type="tel" autocomplete="tel" />
+              </div>
+            </div>
+          </fieldset>
+          <fieldset class="fieldset">
+            <legend>Delivery</legend>
+            <div role="radiogroup" aria-label="Delivery method" data-slot="radio-group">
+              <label for="co1-standard">
+                <div role="group" class="field" data-orientation="horizontal">
+                  <section>
+                    <h3>Standard</h3>
+                    <p>4–6 business days</p>
+                  </section>
+                  <span class="shop-choice-price">Free</span>
+                  <input
+                    type="radio"
+                    id="co1-standard"
+                    name="co1-delivery"
+                    value="standard"
+                    class="input"
+                    checked />
+                </div>
+              </label>
+              <label for="co1-express">
+                <div role="group" class="field" data-orientation="horizontal">
+                  <section>
+                    <h3>Express</h3>
+                    <p>1–2 business days</p>
+                  </section>
+                  <span class="shop-choice-price">$14.00</span>
+                  <input
+                    type="radio"
+                    id="co1-express"
+                    name="co1-delivery"
+                    value="express"
+                    class="input" />
+                </div>
+              </label>
+              <label for="co1-pickup">
+                <div role="group" class="field" data-orientation="horizontal">
+                  <section>
+                    <h3>Store pickup</h3>
+                    <p>Ready tomorrow</p>
+                  </section>
+                  <span class="shop-choice-price">Free</span>
+                  <input
+                    type="radio"
+                    id="co1-pickup"
+                    name="co1-delivery"
+                    value="pickup"
+                    class="input" />
+                </div>
+              </label>
+            </div>
+          </fieldset>
+          <fieldset class="fieldset">
+            <legend>Payment</legend>
+            <p>All transactions are secure and encrypted.</p>
+            <div data-payment>
+              <div role="radiogroup" aria-label="Payment method" data-slot="radio-group">
+                <label for="co1-pay-card">
+                  <div role="group" class="field" data-orientation="horizontal">
+                    <section>
+                      <h3>Credit card</h3>
+                      <p>Visa, Mastercard, Amex</p>
+                    </section>
+                    <span class="shop-choice-price"></span>
+                    <input
+                      type="radio"
+                      id="co1-pay-card"
+                      name="co1-pay"
+                      value="card"
+                      class="input"
+                      checked />
+                  </div>
+                </label>
+                <label for="co1-pay-paypal">
+                  <div role="group" class="field" data-orientation="horizontal">
+                    <section>
+                      <h3>PayPal</h3>
+                      <p>You'll be redirected to PayPal</p>
+                    </section>
+                    <span class="shop-choice-price"></span>
+                    <input
+                      type="radio"
+                      id="co1-pay-paypal"
+                      name="co1-pay"
+                      value="paypal"
+                      class="input" />
+                  </div>
+                </label>
+                <label for="co1-pay-cod">
+                  <div role="group" class="field" data-orientation="horizontal">
+                    <section>
+                      <h3>Cash on delivery</h3>
+                      <p>Pay when the order arrives</p>
+                    </section>
+                    <span class="shop-choice-price"></span>
+                    <input type="radio" id="co1-pay-cod" name="co1-pay" value="cod" class="input" />
+                  </div>
+                </label>
+              </div>
+            </div>
+            <div class="shop-form-grid shop-payment-fields" data-payment-fields="card">
+              <div role="group" class="field" data-span="full">
+                <label for="co1-cc">Card number</label>
+                <input
+                  id="co1-cc"
+                  type="text"
+                  placeholder="1234 1234 1234 1234"
+                  autocomplete="cc-number"
+                  required />
+              </div>
+              <div role="group" class="field">
+                <label for="co1-exp">Expiry</label>
+                <input
+                  id="co1-exp"
+                  type="text"
+                  placeholder="MM / YY"
+                  autocomplete="cc-exp"
+                  required />
+              </div>
+              <div role="group" class="field">
+                <label for="co1-cvc">CVC</label>
+                <input id="co1-cvc" type="text" placeholder="123" autocomplete="cc-csc" required />
+              </div>
+              <div role="group" class="field" data-span="full">
+                <label for="co1-ccname">Name on card</label>
+                <input id="co1-ccname" type="text" autocomplete="cc-name" required />
+              </div>
+            </div>
+          </fieldset>
+        </div>
+        <aside class="card shop-sticky" aria-labelledby="co1-summary">
+          <header>
+            <h2 id="co1-summary">Order summary</h2>
+            <div class="card-action">
+              <a href="#" class="btn" data-variant="link" data-size="sm">Edit cart</a>
+            </div>
+          </header>
+          <section class="stack" data-gap="6">
+            <ul class="shop-lines" data-size="sm">
+              <li>
+                <img class="shop-thumb" data-size="sm" src="assets/placeholder.svg" alt />
+                <div class="shop-line-body">
+                  <div class="shop-line-top">
+                    <div>
+                      <p class="shop-line-name">Everyday Tote</p>
+                      <p class="shop-line-meta">Canvas · Natural · Qty 1</p>
+                    </div>
+                    <p class="shop-line-price">$48.00</p>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <img class="shop-thumb" data-size="sm" src="assets/placeholder.svg" alt />
+                <div class="shop-line-body">
+                  <div class="shop-line-top">
+                    <div>
+                      <p class="shop-line-name">Merino Crew Sweater</p>
+                      <p class="shop-line-meta">Size M · Charcoal · Qty 2</p>
+                    </div>
+                    <p class="shop-line-price">$178.00</p>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <img class="shop-thumb" data-size="sm" src="assets/placeholder.svg" alt />
+                <div class="shop-line-body">
+                  <div class="shop-line-top">
+                    <div>
+                      <p class="shop-line-name">Ceramic Pour-Over Set</p>
+                      <p class="shop-line-meta">Matte white · Qty 1</p>
+                    </div>
+                    <p class="shop-line-price">$36.50</p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+            <dl class="shop-summary">
+              <div>
+                <dt>Subtotal</dt>
+                <dd data-subtotal>$262.50</dd>
+              </div>
+              <div>
+                <dt>Shipping</dt>
+                <dd data-shipping>Free</dd>
+              </div>
+              <div>
+                <dt>Estimated tax</dt>
+                <dd data-tax>$21.00</dd>
+              </div>
+
+              <div data-total>
+                <dt>Total</dt>
+                <dd data-grand-total>$283.50</dd>
+              </div>
+            </dl>
+          </section>
+          <footer class="stack" data-gap="3">
+            <button type="submit" class="btn shop-full" data-size="lg">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Pay $283.50
+            </button>
+            <p class="shop-note">
+              By placing your order you agree to our Terms and Privacy Policy.
+            </p>
+          </footer>
+        </aside>
+      </form>
+    </main>
+    <script>
+      document.querySelectorAll("[data-payment]").forEach((group) => {
+        const sync = () => {
+          const v = group.querySelector("input:checked")?.value;
+          document.querySelectorAll("[data-payment-fields]").forEach((el) => {
+            el.hidden = el.dataset.paymentFields !== v;
+          });
+        };
+        group.addEventListener("change", sync);
+        sync();
+      });
+    </script>
+  </body>
+</html>

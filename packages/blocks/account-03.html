@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Account 03 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-page {
+        padding-block: 2rem 4rem;
+      }
+      .shop-h1 {
+        margin: 0;
+        font-size: 1.875rem;
+        font-weight: 600;
+        letter-spacing: -0.025em;
+      }
+      .shop-lead {
+        margin: 0;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
+      .shop-header {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 10;
+        border-block-end: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 90%, transparent);
+        backdrop-filter: blur(8px);
+      }
+      .shop-header-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        block-size: 4rem;
+      }
+      .shop-nav {
+        display: flex;
+        gap: 1.25rem;
+        font-size: 0.875rem;
+      }
+      .shop-nav a {
+        color: var(--muted-foreground);
+        text-decoration: none;
+      }
+      .shop-nav a:hover,
+      .shop-nav a[aria-current] {
+        color: var(--foreground);
+      }
+      .shop-header-search {
+        flex: 1;
+        max-inline-size: 20rem;
+        margin-inline-start: auto;
+      }
+      .shop-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .shop-cart-btn {
+        position: relative;
+      }
+      .shop-count {
+        position: absolute;
+        inset-block-start: -0.25rem;
+        inset-inline-end: -0.25rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-inline-size: 1.125rem;
+        block-size: 1.125rem;
+        padding-inline: 0.25rem;
+        border-radius: 999px;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+      .shop-count:empty,
+      .shop-count[data-count="0"] {
+        display: none;
+      }
+      @media (width < 48rem) {
+        .shop-nav,
+        .shop-header-search {
+          display: none;
+        }
+        .shop-header-actions {
+          margin-inline-start: auto;
+        }
+      }
+      .shop-address {
+        margin: 0;
+        font-style: normal;
+        font-size: 0.875rem;
+        line-height: 1.6;
+      }
+      .shop-account {
+        display: grid;
+        gap: 2rem;
+        align-items: start;
+      }
+      @media (width >= 48rem) {
+        .shop-account {
+          grid-template-columns: 14rem minmax(0, 1fr);
+        }
+      }
+      .shop-account-nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 0.125rem;
+      }
+      .shop-account-nav a,
+      .shop-account-nav button {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        inline-size: 100%;
+        padding: 0.5rem 0.75rem;
+        border: 0;
+        border-radius: var(--radius);
+        background: none;
+        color: var(--muted-foreground);
+        font: inherit;
+        font-size: 0.875rem;
+        text-align: start;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .shop-account-nav a:hover,
+      .shop-account-nav button:hover {
+        background: var(--accent);
+        color: var(--accent-foreground);
+      }
+      .shop-account-nav a[aria-current] {
+        background: var(--muted);
+        color: var(--foreground);
+        font-weight: 500;
+      }
+      .shop-account-nav svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+        flex: none;
+      }
+      .shop-account-nav hr {
+        margin: 0.5rem 0;
+        border: 0;
+        border-block-start: 1px solid var(--border);
+      }
+      .shop-profile {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-block-end: 1rem;
+        padding-inline: 0.75rem;
+      }
+      .shop-profile p {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+      .shop-profile small {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+        font-weight: 400;
+      }
+      @media (width < 48rem) {
+        .shop-account-nav ul {
+          display: flex;
+          overflow-x: auto;
+        }
+        .shop-account-nav a,
+        .shop-account-nav button {
+          white-space: nowrap;
+        }
+        .shop-account-nav hr,
+        .shop-profile {
+          display: none;
+        }
+      }
+      .shop-addresses {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+      }
+      .shop-add-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        min-block-size: 12rem;
+        border: 1px dashed var(--border);
+        border-radius: var(--radius);
+        background: none;
+        color: var(--muted-foreground);
+        font: inherit;
+        font-size: 0.875rem;
+        cursor: pointer;
+      }
+      .shop-add-card:hover {
+        border-color: var(--ring);
+        color: var(--foreground);
+      }
+      .shop-add-card svg {
+        inline-size: 1.25rem;
+        block-size: 1.25rem;
+      }
+      .shop-form-grid {
+        display: grid;
+        gap: 1rem;
+      }
+      @media (width >= 36rem) {
+        .shop-form-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      .shop-form-grid select {
+        inline-size: 100%;
+      }
+      .shop-form-grid > [data-span="full"] {
+        grid-column: 1 / -1;
+      }
+
+      .block-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: inherit;
+        text-decoration: none;
+      }
+      .block-logo-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .block-logo-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .shop-addr-title {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .shop-addr-title svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+        color: var(--muted-foreground);
+      }
+      .shop-push {
+        margin-inline-start: auto;
+      }
+      .shop-profile .avatar {
+        inline-size: 2.25rem;
+        block-size: 2.25rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="shop-header">
+      <div class="wrapper shop-header-row">
+        <a href="#" class="block-logo">
+          <span class="block-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+          Acme Store
+        </a>
+        <nav class="shop-nav" aria-label="Main">
+          <a href="#" aria-current="page">Shop</a>
+          <a href="#">New in</a>
+          <a href="#">Collections</a>
+          <a href="#">Journal</a>
+        </nav>
+        <div class="input-group shop-header-search">
+          <input type="search" placeholder="Search products..." aria-label="Search products" />
+          <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        </div>
+        <div class="shop-header-actions">
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Wishlist">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </a>
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Account">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </a>
+          <a
+            href="#"
+            class="btn shop-cart-btn"
+            data-variant="ghost"
+            data-size="icon"
+            aria-label="Cart, 3 items">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+            <span class="shop-count" data-cart-count>3</span>
+          </a>
+        </div>
+      </div>
+    </header>
+    <main class="wrapper shop-page">
+      <div class="shop-account">
+        <nav class="shop-account-nav" aria-label="Account">
+          <div class="shop-profile">
+            <img class="avatar" src="assets/placeholder.svg" alt />
+            <p>
+              Olivia Martin
+              <small>olivia@example.com</small>
+            </p>
+          </div>
+          <ul>
+            <li>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                Overview
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73zm1 .27V12"/><path d="M3.29 7L12 12l8.71-5M7.5 4.27l9 5.15"/></svg>
+                Orders
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+                Wishlist
+              </a>
+            </li>
+            <li>
+              <a href="#" aria-current="page">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                Addresses
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                Payment methods
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                Account settings
+              </a>
+            </li>
+            <li><hr /></li>
+            <li>
+              <button type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                Sign out
+              </button>
+            </li>
+          </ul>
+        </nav>
+        <div class="stack" data-gap="8">
+          <div class="cluster" data-justify="between" data-gap="4">
+            <div class="stack" data-gap="1">
+              <h1 class="shop-h1">Addresses</h1>
+              <p class="shop-lead">Saved addresses for faster checkout.</p>
+            </div>
+            <button type="button" class="btn" commandfor="a3-dialog" command="show-modal">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+              Add address
+            </button>
+          </div>
+          <div class="shop-addresses">
+            <article class="card" data-size="sm">
+              <header>
+                <h2 class="shop-addr-title">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                  Home
+                  <span class="badge" data-variant="secondary">Default</span>
+                </h2>
+              </header>
+              <section>
+                <address class="shop-address">
+                  Olivia Martin
+                  <br />
+                  1234 Market Street, Apt 5
+                  <br />
+                  San Francisco, CA 94103
+                  <br />
+                  +1 (555) 010-2048
+                </address>
+              </section>
+              <footer class="cluster" data-gap="2">
+                <button
+                  type="button"
+                  class="btn"
+                  data-variant="outline"
+                  data-size="sm"
+                  commandfor="a3-dialog"
+                  command="show-modal">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497zM15 5l4 4"/></svg>
+                  Edit
+                </button>
+              </footer>
+            </article>
+            <article class="card" data-size="sm">
+              <header>
+                <h2 class="shop-addr-title">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                  Work
+                </h2>
+              </header>
+              <section>
+                <address class="shop-address">
+                  Olivia Martin
+                  <br />
+                  500 Howard Street, Floor 3
+                  <br />
+                  San Francisco, CA 94105
+                  <br />
+                  +1 (555) 010-7731
+                </address>
+              </section>
+              <footer class="cluster" data-gap="2">
+                <button
+                  type="button"
+                  class="btn"
+                  data-variant="outline"
+                  data-size="sm"
+                  commandfor="a3-dialog"
+                  command="show-modal">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497zM15 5l4 4"/></svg>
+                  Edit
+                </button>
+                <button type="button" class="btn" data-variant="ghost" data-size="sm">
+                  Set as default
+                </button>
+                <button
+                  type="button"
+                  class="btn shop-push"
+                  data-variant="ghost"
+                  data-size="icon-sm"
+                  aria-label="Delete Work address">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                </button>
+              </footer>
+            </article>
+            <article class="card" data-size="sm">
+              <header>
+                <h2 class="shop-addr-title">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                  Parents
+                </h2>
+              </header>
+              <section>
+                <address class="shop-address">
+                  Daniel Martin
+                  <br />
+                  88 Lakeview Drive
+                  <br />
+                  Portland, OR 97201
+                  <br />
+                  +1 (555) 014-3390
+                </address>
+              </section>
+              <footer class="cluster" data-gap="2">
+                <button
+                  type="button"
+                  class="btn"
+                  data-variant="outline"
+                  data-size="sm"
+                  commandfor="a3-dialog"
+                  command="show-modal">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497zM15 5l4 4"/></svg>
+                  Edit
+                </button>
+                <button type="button" class="btn" data-variant="ghost" data-size="sm">
+                  Set as default
+                </button>
+                <button
+                  type="button"
+                  class="btn shop-push"
+                  data-variant="ghost"
+                  data-size="icon-sm"
+                  aria-label="Delete Parents address">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                </button>
+              </footer>
+            </article>
+            <button type="button" class="shop-add-card" commandfor="a3-dialog" command="show-modal">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+              Add a new address
+            </button>
+          </div>
+          <dialog id="a3-dialog" class="dialog" closedby="any" aria-labelledby="a3-dialog-title">
+            <div>
+              <header>
+                <h2 id="a3-dialog-title">Address</h2>
+                <p>Add or update a shipping address.</p>
+              </header>
+              <section>
+                <form id="a3-form" class="stack" data-gap="4" onsubmit="event.preventDefault()">
+                  <div role="group" class="field">
+                    <label for="a3-label">Label</label>
+                    <input id="a3-label" type="text" placeholder="Home, Work…" required />
+                  </div>
+                  <div class="shop-form-grid">
+                    <div role="group" class="field">
+                      <label for="a3-first">First name</label>
+                      <input id="a3-first" type="text" autocomplete="given-name" required />
+                    </div>
+                    <div role="group" class="field">
+                      <label for="a3-last">Last name</label>
+                      <input id="a3-last" type="text" autocomplete="family-name" required />
+                    </div>
+                    <div role="group" class="field" data-span="full">
+                      <label for="a3-address">Address</label>
+                      <input
+                        id="a3-address"
+                        type="text"
+                        placeholder="Street and house number"
+                        autocomplete="address-line1"
+                        required />
+                    </div>
+                    <div role="group" class="field" data-span="full">
+                      <label for="a3-address2">Apartment, suite, etc.</label>
+                      <input id="a3-address2" type="text" autocomplete="address-line2" />
+                    </div>
+                    <div role="group" class="field">
+                      <label for="a3-city">City</label>
+                      <input id="a3-city" type="text" autocomplete="address-level2" required />
+                    </div>
+                    <div role="group" class="field">
+                      <label for="a3-country">Country</label>
+                      <select class="select" id="a3-country" autocomplete="country-name">
+                        <option>United States</option>
+                        <option>Canada</option>
+                        <option>United Kingdom</option>
+                        <option>Vietnam</option>
+                      </select>
+                    </div>
+                    <div role="group" class="field">
+                      <label for="a3-zip">ZIP code</label>
+                      <input id="a3-zip" type="text" autocomplete="postal-code" required />
+                    </div>
+                    <div role="group" class="field">
+                      <label for="a3-phone">Phone</label>
+                      <input id="a3-phone" type="tel" autocomplete="tel" />
+                    </div>
+                  </div>
+                  <div role="group" class="field" data-orientation="horizontal">
+                    <input type="checkbox" id="a3-default" class="input" />
+                    <label for="a3-default">Use as my default address</label>
+                  </div>
+                </form>
+              </section>
+              <footer>
+                <button
+                  type="button"
+                  class="btn"
+                  data-variant="outline"
+                  commandfor="a3-dialog"
+                  command="close">
+                  Cancel
+                </button>
+                <button type="submit" form="a3-form" class="btn">Save address</button>
+              </footer>
+              <button type="button" aria-label="Close" commandfor="a3-dialog" command="close">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              </button>
+            </div>
+          </dialog>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

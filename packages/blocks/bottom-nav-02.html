@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bottom Navigation 02 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-count {
+        position: absolute;
+        inset-block-start: -0.25rem;
+        inset-inline-end: -0.25rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-inline-size: 1.125rem;
+        block-size: 1.125rem;
+        padding-inline: 0.25rem;
+        border-radius: 999px;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+      .shop-count:empty,
+      .shop-count[data-count="0"] {
+        display: none;
+      }
+      .shop-grid {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+      }
+      .shop-product {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .shop-product-img {
+        aspect-ratio: 1;
+        inline-size: 100%;
+        border-radius: var(--radius);
+        background: var(--muted);
+        object-fit: cover;
+      }
+      .shop-product h3 {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+      .shop-product p {
+        margin: 0;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .shop-product-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+      }
+      .shop-product-foot strong {
+        font-size: 0.875rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+      }
+      .shop-app {
+        max-inline-size: 28rem;
+        min-block-size: 100svh;
+        margin-inline: auto;
+        padding-block-end: calc(5rem + env(safe-area-inset-bottom, 0px));
+        border-inline: 1px solid var(--border);
+      }
+      .shop-app-bar {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        background: var(--background);
+        border-block-end: 1px solid var(--border);
+      }
+      .shop-app-bar h1 {
+        flex: 1;
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .shop-app-body {
+        display: grid;
+        gap: 1.25rem;
+        padding: 1rem;
+      }
+      .shop-chips {
+        display: flex;
+        gap: 0.5rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .shop-chips .badge {
+        padding: 0.25rem 0.75rem;
+      }
+      .shop-banner {
+        display: grid;
+        gap: 0.25rem;
+        padding: 1.25rem;
+        border-radius: var(--radius);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .shop-banner p {
+        margin: 0;
+        font-size: 0.875rem;
+        opacity: 0.85;
+      }
+      .shop-banner strong {
+        font-size: 1.125rem;
+      }
+      .shop-bottom-nav {
+        position: fixed;
+        inset-block-end: 0;
+        inset-inline: 0;
+        z-index: 20;
+        max-inline-size: 28rem;
+        margin-inline: auto;
+        padding-block-end: env(safe-area-inset-bottom, 0px);
+        border-block-start: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 92%, transparent);
+        backdrop-filter: blur(8px);
+      }
+      .shop-bottom-nav ul {
+        display: grid;
+        grid-auto-columns: 1fr;
+        grid-auto-flow: column;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .shop-bottom-nav a {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        padding-block: 0.625rem 0.5rem;
+        color: var(--muted-foreground);
+        font-size: 0.6875rem;
+        font-weight: 500;
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .shop-bottom-nav a svg {
+        inline-size: 1.375rem;
+        block-size: 1.375rem;
+      }
+      .shop-bottom-nav a[aria-current="page"] {
+        color: var(--foreground);
+      }
+      .shop-bottom-nav a[aria-current="page"]::before {
+        content: "";
+        position: absolute;
+        inset-block-start: 0;
+        inline-size: 2rem;
+        block-size: 2px;
+        border-radius: 0 0 2px 2px;
+        background: var(--primary);
+      }
+      .shop-bottom-nav a:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: -2px;
+      }
+      .shop-nav-icon {
+        position: relative;
+        display: inline-flex;
+      }
+      .shop-nav-icon > .shop-count {
+        inset-block-start: -0.375rem;
+        inset-inline-end: -0.625rem;
+      }
+      .shop-bottom-nav[data-variant="floating"] {
+        inset-block-end: calc(1rem + env(safe-area-inset-bottom, 0px));
+        inset-inline: 1rem;
+        max-inline-size: 26rem;
+        padding: 0.375rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.25);
+      }
+      .shop-bottom-nav[data-variant="floating"] a {
+        padding-block: 0.5rem;
+        border-radius: 999px;
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"] {
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"]::before {
+        display: none;
+      }
+      .shop-bottom-nav[data-variant="floating"] a > span:not(.shop-nav-icon) {
+        display: none;
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"] {
+        flex-direction: row;
+        justify-content: center;
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"] > span:not(.shop-nav-icon) {
+        display: inline;
+        font-size: 0.75rem;
+      }
+
+      .shop-grid.shop-grid-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+      }
+      .shop-app {
+        padding-block-end: calc(6.5rem + env(safe-area-inset-bottom, 0px));
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shop-app">
+      <header class="shop-app-bar">
+        <h1>Shop</h1>
+        <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </a>
+        <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Notifications">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>
+        </a>
+      </header>
+      <div class="shop-app-body">
+        <div class="shop-banner">
+          <p>Members only</p>
+          <strong>15% off your first order</strong>
+        </div>
+        <div class="shop-chips">
+          <span class="badge">All</span>
+          <span class="badge" data-variant="outline">Home</span>
+          <span class="badge" data-variant="outline">Apparel</span>
+          <span class="badge" data-variant="outline">Kitchen</span>
+          <span class="badge" data-variant="outline">Accessories</span>
+        </div>
+        <div class="shop-grid shop-grid-2">
+          <article class="shop-product">
+            <img class="shop-product-img" src="assets/placeholder.svg" alt />
+            <div>
+              <h3>Everyday Tote</h3>
+              <p>Canvas · Natural</p>
+            </div>
+            <div class="shop-product-foot">
+              <strong>$48.00</strong>
+              <button
+                type="button"
+                class="btn"
+                data-variant="outline"
+                data-size="icon-sm"
+                aria-label="Add Everyday Tote to cart">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+              </button>
+            </div>
+          </article>
+          <article class="shop-product">
+            <img class="shop-product-img" src="assets/placeholder.svg" alt />
+            <div>
+              <h3>Merino Crew Sweater</h3>
+              <p>6 colors</p>
+            </div>
+            <div class="shop-product-foot">
+              <strong>$89.00</strong>
+              <button
+                type="button"
+                class="btn"
+                data-variant="outline"
+                data-size="icon-sm"
+                aria-label="Add Merino Crew Sweater to cart">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+              </button>
+            </div>
+          </article>
+          <article class="shop-product">
+            <img class="shop-product-img" src="assets/placeholder.svg" alt />
+            <div>
+              <h3>Ceramic Pour-Over Set</h3>
+              <p>Matte white</p>
+            </div>
+            <div class="shop-product-foot">
+              <strong>$36.50</strong>
+              <button
+                type="button"
+                class="btn"
+                data-variant="outline"
+                data-size="icon-sm"
+                aria-label="Add Ceramic Pour-Over Set to cart">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+              </button>
+            </div>
+          </article>
+          <article class="shop-product">
+            <img class="shop-product-img" src="assets/placeholder.svg" alt />
+            <div>
+              <h3>Linen Throw Pillow</h3>
+              <p>3 colors</p>
+            </div>
+            <div class="shop-product-foot">
+              <strong>$32.00</strong>
+              <button
+                type="button"
+                class="btn"
+                data-variant="outline"
+                data-size="icon-sm"
+                aria-label="Add Linen Throw Pillow to cart">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+              </button>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+    <nav class="shop-bottom-nav" data-variant="floating" aria-label="Primary">
+      <ul>
+        <li>
+          <a href="#" aria-current="page">
+            <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+            <span>Home</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span>
+            <span>Categories</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+            <span>Wishlist</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <span class="shop-nav-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+              <span class="shop-count" data-count="3">3</span>
+            </span>
+            <span>Cart</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+            <span>Account</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <script>
+      document.querySelectorAll(".shop-bottom-nav").forEach((nav) => {
+        nav.addEventListener("click", (e) => {
+          const a = e.target.closest("a");
+          if (!a) return;
+          e.preventDefault();
+          nav.querySelectorAll("a[aria-current]").forEach((x) => x.removeAttribute("aria-current"));
+          a.setAttribute("aria-current", "page");
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -311,6 +311,18 @@
   "columns",
   "layout-column-line"
  ],
+ "gift": [
+  "gift",
+  "gift",
+  "gift",
+  "gift-line"
+ ],
+ "heart": [
+  "heart",
+  "favourite",
+  "heart",
+  "heart-line"
+ ],
  "help-circle": [
   "help-circle",
   "help-circle",
@@ -413,6 +425,12 @@
   "map-trifold",
   "map-2-line"
  ],
+ "map-pin": [
+  "map-pin",
+  "location-01",
+  "map-pin",
+  "map-pin-line"
+ ],
  "menu": [
   "menu-2",
   "menu-01",
@@ -443,6 +461,18 @@
   "moon",
   "moon-line"
  ],
+ "package": [
+  "package",
+  "package",
+  "package",
+  "box-3-line"
+ ],
+ "package-check": [
+  "package-export",
+  "package-delivered",
+  "package",
+  "checkbox-circle-line"
+ ],
  "paint-bucket": [
   "bucket-droplet",
   "paint-bucket",
@@ -454,6 +484,18 @@
   "sidebar-left",
   "sidebar-simple",
   "side-bar-line"
+ ],
+ "pencil": [
+  "pencil",
+  "pencil-edit-01",
+  "pencil-simple",
+  "pencil-line"
+ ],
+ "phone": [
+  "phone",
+  "call",
+  "phone",
+  "phone-line"
  ],
  "pie-chart": [
   "chart-pie",
@@ -520,6 +562,12 @@
   "shield-01",
   "shield-warning",
   "shield-line"
+ ],
+ "shopping-bag": [
+  "shopping-bag",
+  "shopping-bag-01",
+  "handbag",
+  "shopping-bag-line"
  ],
  "shopping-cart": [
   "shopping-cart",
@@ -629,11 +677,23 @@
   "warning",
   "error-warning-line"
  ],
+ "truck": [
+  "truck",
+  "truck-delivery",
+  "truck",
+  "truck-line"
+ ],
  "tv": [
   "device-tv",
   "tv-01",
   "television",
   "tv-2-line"
+ ],
+ "undo-2": [
+  "arrow-back-up",
+  "undo-02",
+  "arrow-u-up-left",
+  "arrow-go-back-line"
  ],
  "upload": [
   "upload",

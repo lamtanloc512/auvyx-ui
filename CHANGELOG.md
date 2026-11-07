@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Added
+
+- Ecommerce blocks (15, in the registry for HTML and React with every icon library):
+  - Cart: `cart-01` cart page (quantity steppers, remove, free-shipping progress, promo code, order summary, empty state), `cart-02` empty cart with suggestions, `cart-03` mini cart in a Sheet, `cart-04` mini cart in a Popover.
+  - Checkout: `checkout-01` one-page checkout (contact, address, delivery and payment choice cards, summary), `checkout-02` multi-step checkout with a step indicator and review, `checkout-03` order confirmation.
+  - Orders: `orders-01` order history with status filters, `orders-02` order details with a delivery tracker and tracking history.
+  - Account: `account-01` overview, `account-02` settings (details, password, email preferences), `account-03` address book with an add-address Dialog.
+  - Bottom navigation: `bottom-nav-01` tab bar with a cart badge, `bottom-nav-02` floating pill tab bar, `bottom-nav-03` mobile product page with a sticky add-to-cart bar.
+- Create: a Corner Smoothing slider for Squircle and Smooth corners (disabled without a radius). It sets `corner-shape: superellipse(k)` for browsers with native `corner-shape` and `--corner-smoothing` for the Monoco fallback (`auvyx.corners.min.js`), which now also maps any `superellipse(k)` to the matching Monoco curve.
+
 ## @auvyx/ui 0.1.3 - 2026-11-06
 
 ### Added
