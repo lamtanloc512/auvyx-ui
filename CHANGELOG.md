@@ -11,6 +11,7 @@
   - Account: `account-01` overview, `account-02` settings (details, password, email preferences), `account-03` address book with an add-address Dialog.
   - Bottom navigation: `bottom-nav-01` tab bar with a cart badge, `bottom-nav-02` floating pill tab bar, `bottom-nav-03` mobile product page with a sticky add-to-cart bar.
 - Create: a Corner Smoothing slider for Squircle and Smooth corners (disabled without a radius). It sets `corner-shape: superellipse(k)` for browsers with native `corner-shape` and `--corner-smoothing` for the Monoco fallback (`auvyx.corners.min.js`), which now also maps any `superellipse(k)` to the matching Monoco curve.
+- Create: a Font Size slider (12–20px base text). It scales every `--text-*` token the components use, so spacing and radius stay the same, and sets `body { font-size: var(--text-base) }`.
 
 ## @auvyx/ui 0.1.3 - 2026-11-06
 
