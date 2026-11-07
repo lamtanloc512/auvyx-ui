@@ -2104,7 +2104,7 @@ search_dialog = f"""<dialog id="s1-search" class="command-dialog shop-search" cl
   <div class="command">
     <header>
       {si("search")}
-      <input type="text" id="s1-input" placeholder="Search products, categories..." autocomplete="off" autocorrect="off" spellcheck="false" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="s1-menu">
+      <input type="text" id="s1-input" placeholder="Search products, categories..." autocomplete="off" spellcheck="false" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="s1-menu">
     </header>
     <div role="menu" id="s1-menu" aria-orientation="vertical" data-empty="No products found.">
       <div role="group" aria-labelledby="s1-recent">
@@ -2163,7 +2163,7 @@ filters_panel = f"""<aside class="shop-filters-panel" aria-label="Filters">
     <details open><summary>Category</summary><section>{checks("cat", [("Apparel", 24, True), ("Accessories", 12, False), ("Home", 18, False), ("Kitchen", 9, False)])}</section></details>
     <details open><summary>Price</summary><section class="stack" data-gap="2">
       <input type="range" class="input" id="s2-price" min="0" max="200" step="5" value="120" aria-label="Maximum price">
-      <div class="shop-range-out"><span>$0</span><span>Up to <output for="s2-price" id="s2-price-out">$120</output></span></div>
+      <div class="shop-range-out"><span>$0</span><output for="s2-price" id="s2-price-out">Up to $120</output></div>
     </section></details>
     <details open><summary>Color</summary><section><fieldset class="shop-colors"><legend class="sr-only">Color</legend>{"".join(f'<label style="--dot: {c}" title="{n}"><input type="checkbox" aria-label="{n}"{" checked" if n == "Charcoal" else ""}></label>' for n, c in [("Charcoal", "#3f3f46"), ("Oat", "#d6cbb5"), ("Navy", "#1e3a5f"), ("Clay", "#c2856a"), ("Sage", "#9caf88")])}</fieldset></section></details>
     <details><summary>Rating</summary><section>{checks("rating", [("4 stars and up", 38, False), ("3 stars and up", 52, False)])}</section></details>
@@ -2173,7 +2173,7 @@ filters_panel = f"""<aside class="shop-filters-panel" aria-label="Filters">
 
 RESULTS_JS = """
 const priceIn = document.getElementById('s2-price');
-priceIn?.addEventListener('input', () => { document.getElementById('s2-price-out').textContent = '$' + priceIn.value; });
+priceIn?.addEventListener('input', () => { document.getElementById('s2-price-out').textContent = 'Up to $' + priceIn.value; });
 document.querySelectorAll('[data-layout-toggle]').forEach((g) => {
   g.addEventListener('click', (e) => {
     const b = e.target.closest('button[data-layout-value]');

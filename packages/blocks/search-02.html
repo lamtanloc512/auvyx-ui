@@ -560,10 +560,7 @@
                     aria-label="Maximum price" />
                   <div class="shop-range-out">
                     <span>$0</span>
-                    <span>
-                      Up to
-                      <output for="s2-price" id="s2-price-out">$120</output>
-                    </span>
+                    <output for="s2-price" id="s2-price-out">Up to $120</output>
                   </div>
                 </section>
               </details>
@@ -967,7 +964,7 @@
     <script>
       const priceIn = document.getElementById("s2-price");
       priceIn?.addEventListener("input", () => {
-        document.getElementById("s2-price-out").textContent = "$" + priceIn.value;
+        document.getElementById("s2-price-out").textContent = "Up to $" + priceIn.value;
       });
       document.querySelectorAll("[data-layout-toggle]").forEach((g) => {
         g.addEventListener("click", (e) => {
