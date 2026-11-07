@@ -99,7 +99,11 @@
     };
     const KEYS = Object.keys(OPTS);
     const CORNER_CSS = { Round: 'round', Squircle: 'squircle', Smooth: 'superellipse(1.5)', Bevel: 'bevel', Scoop: 'scoop', Notch: 'notch' };
-    const DEFAULT = { style: 0, base: 0, theme: 0, chart: 0, heading: 0, font: 1, icons: 0, radius: 3, corners: 1, menu: 0, accent: 0 };
+    const DEFAULT = { style: 0, base: 0, theme: 0, chart: 0, heading: 0, font: 1, icons: 0, radius: 3, corners: 1, menu: 0, accent: 0, smoothing: 1 };
+    // Corner smoothing (0–1) for Squircle and Smooth corners. Native: superellipse(1 + s)
+    // for Squircle (1 is squircle, the default) and superellipse(1 + s/2) for Smooth;
+    // Monoco reads --corner-smoothing. Kept out of the preset code (like the editor).
+    const SMOOTH = { Squircle: 1, Smooth: 0.5 };
     const STORE = 'auvyx-create';
     let state = { ...DEFAULT, imported: null };
     try { const s = JSON.parse(localStorage.getItem(STORE) || 'null'); if (s) state = { ...state, ...s }; } catch (e) {}
@@ -163,6 +167,12 @@
         for (const k of Object.keys(light)) if (/^(font-|radius$|tracking-|letter-spacing$|spacing$|shadow)/.test(k)) { shared[k] = light[k]; delete light[k]; }
         for (const k of Object.keys(dark)) if (/^(font-|radius$|tracking-|letter-spacing$|spacing$)/.test(k)) delete dark[k];
         if (boxy()) shared.radius = '0';
+      }
+      const s = state.smoothing ?? 1;
+      const f = SMOOTH[pick('corners')];
+      if (f && s !== 1) {
+        shared['corner-shape'] = `superellipse(${+(1 + s * f).toFixed(3)})`;
+        shared['corner-smoothing'] = s;
       }
       return { shared, light, dark };
     }
@@ -373,7 +383,7 @@
     function panel() {
       if (view === 'edit') return editor();
       const imp = state.imported ? `<div class="d-cr-import"><span>${ICON(UPLOAD, '0.875rem')} ${esc(state.imported.name)} theme</span><button type="button" class="btn" data-variant="ghost" data-size="sm" data-cr="clear-import">Clear</button></div>` : '';
-      return `${imp}<div class="d-cr-rows">${presetRow()}${KEYS.map(row).join('')}</div>
+      return `${imp}<div class="d-cr-rows">${presetRow()}${KEYS.map(row).join('')}</div>${smoothRow()}
         <button type="button" class="btn d-cr-wide" data-variant="outline" data-cr="edit">${ICON(SLIDERS)}Customize theme</button>
         <button type="button" class="btn d-cr-wide" data-variant="outline" commandfor="cr-import" command="show-modal">${ICON(UPLOAD)}Import tweakcn theme</button>
         <div class="d-cr-preset"><code>--preset ${encode()}</code><button type="button" class="btn d-copy" data-variant="ghost" data-size="icon-sm" aria-label="Copy preset" data-text="--preset ${encode()}">${ICON(I.copy)}</button></div>
@@ -384,6 +394,12 @@
           <button type="button" class="btn" data-variant="outline" commandfor="cr-css" command="show-modal" data-cr="show-css">Copy CSS</button>
         </div>
         <button type="button" class="btn d-cr-wide" commandfor="cr-init" command="show-modal" data-cr="show-init">Initialize Project</button>`;
+    }
+    // Corner smoothing: only Squircle and Smooth corners have it, and only when there is a radius.
+    function smoothRow() {
+      const off = !SMOOTH[pick('corners')] ? 'Pick Squircle or Smooth corners' : !parseFloat(tokens().shared.radius) ? 'Set a radius first' : '';
+      const v = state.smoothing ?? 1;
+      return `<div class="d-cr-range d-cr-smooth"><label for="cr-smooth"><span>Corner Smoothing</span><output id="cr-o-smooth">${off ? '–' : Math.round(v * 100) + '%'}</output></label><input type="range" class="input" id="cr-smooth" data-smooth min="0" max="1" step="0.05" value="${v}"${off ? ` disabled title="${off}"` : ''} aria-describedby="cr-smooth-hint"><p class="d-cr-hint" id="cr-smooth-hint">${off || 'Native corner-shape in Chrome 139+; drawn with Monoco elsewhere.'}</p></div>`;
     }
     const dlg = (id, title, desc, body, foot = '') => `<dialog id="${id}" class="dialog d-cr-dialog" closedby="any" aria-labelledby="${id}-t"><div><header><h2 id="${id}-t">${title}</h2><p>${desc}</p></header><section>${body}</section><footer>${foot}<button type="button" class="btn" data-variant="outline" commandfor="${id}" command="close">Close</button></footer></div></dialog>`;
     function page() {
@@ -417,6 +433,7 @@
       setHref(headTag(document, 'd-cr-site-style', 'link'), stylePack(''));
       setHref(headTag(document, 'd-cr-site-fonts', 'link'), fontsHref());
       headTag(document, 'd-cr-site', 'style').textContent = css();
+      window.auvyxCorners?.apply();
       window.auvyxIcons?.apply(iconLib());
     }
     function syncBlock(doc) {
@@ -501,6 +518,12 @@
       document.addEventListener('input', (e) => {
         const el = e.target;
         if (!el.closest?.('#cr-panel')) return;
+        if (el.matches('[data-smooth]')) {
+          state.smoothing = +el.value;
+          $('#cr-o-smooth').textContent = Math.round(state.smoothing * 100) + '%';
+          live();
+          return;
+        }
         if (el.dataset.tok) {
           const v = hexToOklch(el.value);
           custom()[modeNow()][el.dataset.tok] = v;

@@ -1,4 +1,34 @@
 {
+  "account-01": {
+    "title": "Account 01",
+    "description": "An account overview with stats, recent orders and the default address.",
+    "category": "account"
+  },
+  "account-02": {
+    "title": "Account 02",
+    "description": "Account settings: personal details, password and email preferences.",
+    "category": "account"
+  },
+  "account-03": {
+    "title": "Account 03",
+    "description": "An address book with a default address and an add-address dialog.",
+    "category": "account"
+  },
+  "bottom-nav-01": {
+    "title": "Bottom Navigation 01",
+    "description": "A mobile app shell with a bottom tab bar and a cart badge.",
+    "category": "bottom-nav"
+  },
+  "bottom-nav-02": {
+    "title": "Bottom Navigation 02",
+    "description": "A floating pill tab bar that shows the label of the active tab.",
+    "category": "bottom-nav"
+  },
+  "bottom-nav-03": {
+    "title": "Bottom Navigation 03",
+    "description": "A mobile product page with a sticky add-to-cart bar.",
+    "category": "bottom-nav"
+  },
   "calendar-01": {
     "title": "Calendar 01",
     "description": "A simple calendar.",
@@ -159,6 +189,41 @@
     "description": "A date picker in a drawer, for mobile.",
     "category": "calendar"
   },
+  "cart-01": {
+    "title": "Cart 01",
+    "description": "A cart page with quantity steppers, a promo code and an order summary.",
+    "category": "cart"
+  },
+  "cart-02": {
+    "title": "Cart 02",
+    "description": "An empty cart with suggested products.",
+    "category": "cart"
+  },
+  "cart-03": {
+    "title": "Cart 03",
+    "description": "A mini cart in a sheet, opened from the store header.",
+    "category": "cart"
+  },
+  "cart-04": {
+    "title": "Cart 04",
+    "description": "A mini cart in a popover from the header cart button.",
+    "category": "cart"
+  },
+  "checkout-01": {
+    "title": "Checkout 01",
+    "description": "A one-page checkout: contact, shipping, delivery, payment and the order summary.",
+    "category": "checkout"
+  },
+  "checkout-02": {
+    "title": "Checkout 02",
+    "description": "A multi-step checkout with a step indicator and a review step.",
+    "category": "checkout"
+  },
+  "checkout-03": {
+    "title": "Checkout 03",
+    "description": "An order confirmation page with the order details and next steps.",
+    "category": "checkout"
+  },
   "dashboard-01": {
     "title": "Dashboard 01",
     "description": "A dashboard with sidebar, charts and data table.",
@@ -188,6 +253,16 @@
     "title": "Login 05",
     "description": "A simple email-only login page.",
     "category": "login"
+  },
+  "orders-01": {
+    "title": "Orders 01",
+    "description": "Order history with status filters, items and actions per order.",
+    "category": "orders"
+  },
+  "orders-02": {
+    "title": "Orders 02",
+    "description": "Order details with a delivery tracker, tracking history, items and payment.",
+    "category": "orders"
   },
   "otp-01": {
     "title": "OTP 01",

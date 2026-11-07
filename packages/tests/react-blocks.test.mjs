@@ -86,6 +86,10 @@ const INTERACTIONS = [
   ['calendar-22', (p) => p.click('auvyx-date-picker button, auvyx-date-picker input')],
   ['calendar-29', async (p) => { const i = p.locator('input').first(); await i.fill('next friday'); await i.press('Enter'); }],
   ['dashboard-01', (p) => p.click('[data-sidebar-toggle]')],
+  ['cart-01', (p) => p.click('[data-line] [data-qty-step="1"]')],
+  ['cart-03', (p) => p.click('.shop-cart-btn')],
+  ['checkout-02', (p) => p.click('[data-step-go="1"]')],
+  ['orders-01', (p) => p.click('[data-filter="delivered"]')],
 ];
 
 test('React blocks behave like the HTML blocks', async () => {

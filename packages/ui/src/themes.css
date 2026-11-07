@@ -87,6 +87,8 @@ html.dark [data-theme='forest'] {
  * --corner-shape:    round (default) | squircle | superellipse(k) | bevel | scoop | notch
  *                    Native CSS corner-shape (Chrome 139+). Elsewhere corners stay round,
  *                    or load auvyx.corners.min.js to draw squircles with Monoco.
+ * --corner-smoothing: 0–1 (default 1), Monoco's smoothing in auvyx.corners.min.js. Natively,
+ *                    set the matching superellipse(k) in --corner-shape (Create does both).
  */
 :root {
   --corner-shape: round;

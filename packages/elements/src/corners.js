@@ -7,6 +7,9 @@
 //   <script src=".../auvyx.corners.min.js" defer></script>
 //   :root { --corner-shape: squircle; --corner-smoothing: 0.8; }
 //
+// Only elements with a border radius get corners; --corner-smoothing (0–1,
+// default 1) sets Monoco's smoothing.
+//
 // Only surfaces are clipped (cards, popovers, dialogs, alerts, items, sheets):
 // clip-path also clips box-shadow, so focusable controls keep native round
 // corners and their focus rings. A surface's border or 1px ring is redrawn by
@@ -23,6 +26,14 @@ const DEFAULT_SELECTOR = [
 
 // corner-shape keyword -> Monoco corner type
 const TYPES = { squircle: Squircle, 'superellipse(1.5)': FigmaSquircle, bevel: Flat, notch: Inset, scoop: RoundInverse, round: Round };
+
+// superellipse(k) from a smoothing slider: k <= 1 is round, up to 1.5 the
+// Figma-style curve (Smooth), above it the squircle (2 = squircle).
+function superellipse(s) {
+  const k = parseFloat(s.match(/^superellipse\(\s*([\d.]+)/)?.[1]);
+  if (!Number.isFinite(k)) return null;
+  return k <= 1 ? Round : k > 1.5 ? Squircle : FigmaSquircle;
+}
 
 const root = document.documentElement;
 const tracked = new Set();
@@ -68,7 +79,7 @@ function shadows(value) {
 function apply() {
   clear();
   const s = shape();
-  const type = TYPES[s] || (s.startsWith('superellipse') ? FigmaSquircle : null);
+  const type = TYPES[s] || superellipse(s);
   if (!wanted() || !type || type === Round) return;
   const smoothing = parseFloat(getComputedStyle(root).getPropertyValue('--corner-smoothing')) || 1;
   const selector = root.dataset.cornersSelector || DEFAULT_SELECTOR;
