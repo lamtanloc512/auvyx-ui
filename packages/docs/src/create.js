@@ -99,11 +99,15 @@
     };
     const KEYS = Object.keys(OPTS);
     const CORNER_CSS = { Round: 'round', Squircle: 'squircle', Smooth: 'superellipse(1.5)', Bevel: 'bevel', Scoop: 'scoop', Notch: 'notch' };
-    const DEFAULT = { style: 0, base: 0, theme: 0, chart: 0, heading: 0, font: 1, icons: 0, radius: 3, corners: 1, menu: 0, accent: 0, smoothing: 1 };
+    const DEFAULT = { style: 0, base: 0, theme: 0, chart: 0, heading: 0, font: 1, icons: 0, radius: 3, corners: 1, menu: 0, accent: 0, smoothing: 1, fontSize: 16 };
     // Corner smoothing (0–1) for Squircle and Smooth corners. Native: superellipse(1 + s)
     // for Squircle (1 is squircle, the default) and superellipse(1 + s/2) for Smooth;
     // Monoco reads --corner-smoothing. Kept out of the preset code (like the editor).
     const SMOOTH = { Squircle: 1, Smooth: 0.5 };
+    // Font size: the base text size in px (16 is the default). Scales every --text-* token
+    // the components use, so spacing and radius stay as they are.
+    const TEXT = { xs: 0.75, sm: 0.875, base: 1, lg: 1.125, xl: 1.25, '2xl': 1.5, '3xl': 1.875, '4xl': 2.25 };
+    const textScale = () => (state.fontSize ?? 16) / 16;
     const STORE = 'auvyx-create';
     let state = { ...DEFAULT, imported: null };
     try { const s = JSON.parse(localStorage.getItem(STORE) || 'null'); if (s) state = { ...state, ...s }; } catch (e) {}
@@ -174,13 +178,14 @@
         shared['corner-shape'] = `superellipse(${+(1 + s * f).toFixed(3)})`;
         shared['corner-smoothing'] = s;
       }
+      if (textScale() !== 1) for (const [k, v] of Object.entries(TEXT)) shared[`text-${k}`] = `${+(v * textScale()).toFixed(4)}rem`;
       return { shared, light, dark };
     }
     function css() {
       const { shared, light, dark } = tokens();
       const block = (sel, vars) => `${sel} {\n${Object.entries(vars).map(([k, v]) => `  --${k}: ${v};`).join('\n')}\n}`;
       const out = [block(':root', { ...shared, ...light }), block('.dark', dark)];
-      out.push('body {\n  font-family: var(--font-sans);\n}');
+      out.push(`body {\n  font-family: var(--font-sans);${textScale() !== 1 ? '\n  font-size: var(--text-base);' : ''}\n}`);
       if (shared['font-heading']) out.push('h1, h2, h3, h4, h5, h6 {\n  font-family: var(--font-heading);\n}');
       if (state.menu === 1) out.push(':is([data-popover], .command-dialog > .command) {\n  background-color: color-mix(in oklab, var(--popover) 78%, transparent);\n  backdrop-filter: blur(16px) saturate(1.6);\n}');
       if (state.accent === 1) out.push(':is([data-popover], .command, [role="listbox"]) {\n  --accent: var(--primary);\n  --accent-foreground: var(--primary-foreground);\n}');
@@ -383,7 +388,7 @@
     function panel() {
       if (view === 'edit') return editor();
       const imp = state.imported ? `<div class="d-cr-import"><span>${ICON(UPLOAD, '0.875rem')} ${esc(state.imported.name)} theme</span><button type="button" class="btn" data-variant="ghost" data-size="sm" data-cr="clear-import">Clear</button></div>` : '';
-      return `${imp}<div class="d-cr-rows">${presetRow()}${KEYS.map(row).join('')}</div>${smoothRow()}
+      return `${imp}<div class="d-cr-rows">${presetRow()}${KEYS.map(row).join('')}</div>${sliderRows()}
         <button type="button" class="btn d-cr-wide" data-variant="outline" data-cr="edit">${ICON(SLIDERS)}Customize theme</button>
         <button type="button" class="btn d-cr-wide" data-variant="outline" commandfor="cr-import" command="show-modal">${ICON(UPLOAD)}Import tweakcn theme</button>
         <div class="d-cr-preset"><code>--preset ${encode()}</code><button type="button" class="btn d-copy" data-variant="ghost" data-size="icon-sm" aria-label="Copy preset" data-text="--preset ${encode()}">${ICON(I.copy)}</button></div>
@@ -396,10 +401,18 @@
         <button type="button" class="btn d-cr-wide" commandfor="cr-init" command="show-modal" data-cr="show-init">Initialize Project</button>`;
     }
     // Corner smoothing: only Squircle and Smooth corners have it, and only when there is a radius.
-    function smoothRow() {
+    // Panel sliders write straight to state (not part of the preset code).
+    const SLIDE = {
+      fontSize: { label: 'Font Size', min: 12, max: 20, step: 0.5, show: (v) => `${v}px` },
+      smoothing: { label: 'Corner Smoothing', min: 0, max: 1, step: 0.05, show: (v) => `${Math.round(v * 100)}%` },
+    };
+    function slider(k, hint, off = '') {
+      const o = SLIDE[k], v = state[k] ?? DEFAULT[k];
+      return `<div class="d-cr-range d-cr-slide"><label for="cr-s-${k}"><span>${o.label}</span><output id="cr-so-${k}">${off ? '–' : o.show(v)}</output></label><input type="range" class="input" id="cr-s-${k}" data-slide="${k}" min="${o.min}" max="${o.max}" step="${o.step}" value="${v}"${off ? ` disabled title="${off}"` : ''} aria-describedby="cr-sh-${k}"><p class="d-cr-hint" id="cr-sh-${k}">${off || hint}</p></div>`;
+    }
+    function sliderRows() {
       const off = !SMOOTH[pick('corners')] ? 'Pick Squircle or Smooth corners' : !parseFloat(tokens().shared.radius) ? 'Set a radius first' : '';
-      const v = state.smoothing ?? 1;
-      return `<div class="d-cr-range d-cr-smooth"><label for="cr-smooth"><span>Corner Smoothing</span><output id="cr-o-smooth">${off ? '–' : Math.round(v * 100) + '%'}</output></label><input type="range" class="input" id="cr-smooth" data-smooth min="0" max="1" step="0.05" value="${v}"${off ? ` disabled title="${off}"` : ''} aria-describedby="cr-smooth-hint"><p class="d-cr-hint" id="cr-smooth-hint">${off || 'Native corner-shape in Chrome 139+; drawn with Monoco elsewhere.'}</p></div>`;
+      return slider('fontSize', 'Base text size; every text size scales with it.') + slider('smoothing', 'Native corner-shape in Chrome 139+; drawn with Monoco elsewhere.', off);
     }
     const dlg = (id, title, desc, body, foot = '') => `<dialog id="${id}" class="dialog d-cr-dialog" closedby="any" aria-labelledby="${id}-t"><div><header><h2 id="${id}-t">${title}</h2><p>${desc}</p></header><section>${body}</section><footer>${foot}<button type="button" class="btn" data-variant="outline" commandfor="${id}" command="close">Close</button></footer></div></dialog>`;
     function page() {
@@ -518,9 +531,10 @@
       document.addEventListener('input', (e) => {
         const el = e.target;
         if (!el.closest?.('#cr-panel')) return;
-        if (el.matches('[data-smooth]')) {
-          state.smoothing = +el.value;
-          $('#cr-o-smooth').textContent = Math.round(state.smoothing * 100) + '%';
+        if (el.dataset.slide) {
+          const k = el.dataset.slide;
+          state[k] = +el.value;
+          $(`#cr-so-${k}`).textContent = SLIDE[k].show(state[k]);
           live();
           return;
         }
