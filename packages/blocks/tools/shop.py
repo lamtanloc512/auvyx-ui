@@ -54,6 +54,7 @@ SHOP_ICONS = {
     "shield-check": '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12l2 2l4-4"/>',
     "chevron-right": '<path d="m9 18 6-6-6-6"/>',
     "chevron-down": '<path d="m6 9 6 6 6-6"/>',
+    "copy": '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
     "share-2": '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/>',
 }
 
@@ -281,6 +282,26 @@ SHOP_CSS = """
   .shop-swatches label:has(:focus-visible) { outline: 2px solid var(--ring); outline-offset: 2px; }
   .shop-gallery { aspect-ratio: 1; inline-size: 100%; background: var(--muted); object-fit: cover; }
   .shop-payment-fields[hidden] { display: none; }
+
+  /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+  .shop-colors label { corner-shape: round; }
+  .shop-dots > span { corner-shape: round; }
+  .shop-fx-swatches > button { corner-shape: round; }
+  .shop-count { corner-shape: round; }
+  .shop-status-icon { corner-shape: round; }
+  .shop-map-pin { corner-shape: round; }
+  .shop-tracker-dot { corner-shape: round; }
+  .shop-step-num { corner-shape: round; }
+  .shop-success { corner-shape: round; }
+  .shop-stock::before { corner-shape: round; }
+  .shop-status::before { corner-shape: round; }
+  .shop-subcats img { corner-shape: round; }
+  .shop-order-no { corner-shape: round; }
+  .shop-tile-go { corner-shape: round; }
+  .shop-pills a { corner-shape: round; }
+  .shop-timeline > li::before { corner-shape: round; }
+  .shop-bottom-nav { corner-shape: round; }
+  .shop-bottom-nav a { corner-shape: round; }
 """ + LOGO_CSS
 
 
@@ -1460,7 +1481,7 @@ CATALOG_CSS = """
   .shop-wish[aria-pressed='true'] svg { fill: currentColor; }
   .shop-dots { display: flex; gap: 0.375rem; }
   .shop-dots > span { inline-size: 0.875rem; block-size: 0.875rem; border-radius: 999px; background: var(--dot); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 15%, transparent); }
-  .shop-colors { display: flex; flex-wrap: wrap; gap: 0.5rem; border: 0; margin: 0; padding: 0; }
+  .shop-colors { display: flex; flex-wrap: wrap; gap: 0.5rem; border: 0; margin: 0; padding: 0.25rem; }
   .shop-colors legend { margin-block-end: 0.5rem; font-size: 0.875rem; font-weight: 500; }
   .shop-colors legend span { color: var(--muted-foreground); font-weight: 400; }
   .shop-colors label { position: relative; display: inline-flex; inline-size: 1.75rem; block-size: 1.75rem; border-radius: 999px; background: var(--dot); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 15%, transparent); cursor: pointer; }
@@ -3194,6 +3215,410 @@ add("category-03", "Category 03", "A category listing: subcategory tree, pills, 
   </div>
 </main>
 """, CATP + "\n  .shop-toolbar { flex-wrap: nowrap; }\n  .shop-pills { min-inline-size: 0; }\n  .shop-pills a { display: inline-block; }\n  @media (width < 56rem) { .shop-tree { display: none; } }", scripts=script(MORE_JS + WISH_JS))
+
+
+
+# ================================================================== checkout success and order tracking
+SUCCESS_CSS = """
+  .shop-done { display: grid; justify-items: center; gap: 1rem; text-align: center; }
+  .shop-done h1 { margin: 0; font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 600; letter-spacing: -0.025em; text-wrap: balance; }
+  .shop-done p { margin: 0; color: var(--muted-foreground); max-inline-size: 32rem; text-wrap: pretty; }
+  .shop-check-anim { inline-size: 4.5rem; block-size: 4.5rem; color: var(--primary); }
+  .shop-check-anim circle { fill: color-mix(in oklab, var(--primary) 12%, transparent); stroke: currentColor; stroke-width: 2; }
+  .shop-check-anim path { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 30; stroke-dashoffset: 0; animation: shop-draw 500ms ease-out 150ms backwards; }
+  .shop-check-anim circle { animation: shop-pop-in 350ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards; transform-origin: center; }
+  @keyframes shop-draw { from { stroke-dashoffset: 30; } }
+  @keyframes shop-pop-in { from { transform: scale(0.6); opacity: 0; } }
+  .shop-confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+  .shop-confetti > i { position: absolute; inset-block-start: -1rem; inline-size: 0.5rem; block-size: 0.875rem; border-radius: 2px; opacity: 0; animation: shop-fall 1600ms ease-in forwards; }
+  @keyframes shop-fall { 0% { opacity: 1; transform: translateY(0) rotate(0); } 100% { opacity: 0; transform: translateY(18rem) rotate(540deg); } }
+  @media (prefers-reduced-motion: reduce) { .shop-confetti { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .shop-check-anim path { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .shop-check-anim circle { animation: none; } }
+  .shop-order-no { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.25rem 0.25rem 0.75rem; border: 1px dashed var(--border); border-radius: 999px; font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.875rem; }
+  .shop-copy svg + svg { display: none; }
+  .shop-copy[data-copied] svg { display: none; }
+  .shop-copy[data-copied] svg + svg { display: block; color: var(--primary); }
+  .shop-success-wrap { position: relative; padding-block: 3rem 2rem; }
+  .shop-thumbs { display: flex; }
+  .shop-thumbs > img { inline-size: 3rem; block-size: 3rem; border: 2px solid var(--card); border-radius: calc(var(--radius) - 2px); object-fit: cover; background: var(--muted); }
+  .shop-thumbs > img + img { margin-inline-start: -0.75rem; }
+  html.dark .shop-thumbs > img { filter: brightness(0.5) grayscale(1); }
+  .shop-split-2 { display: grid; gap: 1.5rem; }
+  @media (width >= 48rem) { .shop-split-2 { grid-template-columns: 1fr 1fr; } }
+  .shop-refer { display: grid; gap: 1rem; padding: 1.5rem; border-radius: calc(var(--radius) + 4px); background: var(--primary); color: var(--primary-foreground); }
+  .shop-refer h2 { margin: 0; font-size: 1.125rem; font-weight: 600; }
+  .shop-refer p { margin: 0; opacity: 0.85; font-size: 0.875rem; }
+  .shop-refer .input-group { background: var(--background); color: var(--foreground); border-radius: var(--radius); }
+  .shop-mini-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; list-style: none; margin: 0; padding: 0; font-size: 0.75rem; text-align: center; color: var(--muted-foreground); }
+  .shop-mini-steps > li { display: grid; gap: 0.375rem; }
+  .shop-mini-steps > li::before { content: ''; block-size: 4px; border-radius: 4px; background: var(--border); }
+  .shop-mini-steps > li[data-done]::before { background: var(--primary); }
+  .shop-mini-steps > li[data-done] { color: var(--foreground); font-weight: 500; }
+  .shop-receipt { display: grid; gap: 0.625rem; margin: 0; font-size: 0.875rem; }
+  .shop-receipt > div { display: flex; justify-content: space-between; gap: 1rem; }
+  .shop-receipt dt { color: var(--muted-foreground); }
+  .shop-receipt dd { margin: 0; font-variant-numeric: tabular-nums; text-align: end; }
+  .shop-receipt hr { margin: 0.25rem 0; border: 0; border-block-start: 1px dashed var(--border); }
+  .shop-lookup { display: grid; gap: 2rem; max-inline-size: 40rem; margin-inline: auto; }
+  .shop-lookup-form { display: grid; gap: 1rem; }
+  @media (width >= 40rem) { .shop-lookup-form { grid-template-columns: 1fr 1fr auto; align-items: end; } }
+  .shop-lookup-form .field { margin: 0; }
+  .shop-error { display: flex; align-items: center; gap: 0.5rem; margin: 0; font-size: 0.875rem; color: var(--destructive); }
+  .shop-error svg { inline-size: 1rem; block-size: 1rem; }
+  .shop-error[hidden] { display: none; }
+  .shop-result[hidden] { display: none; }
+  .shop-status-hero { display: flex; align-items: center; gap: 1rem; }
+  .shop-status-icon { display: inline-flex; align-items: center; justify-content: center; flex: none; inline-size: 3rem; block-size: 3rem; border-radius: 999px; background: color-mix(in oklab, var(--primary) 12%, transparent); color: var(--primary); }
+  .shop-status-icon svg { inline-size: 1.5rem; block-size: 1.5rem; }
+  .shop-status-hero h2 { margin: 0; font-size: 1.25rem; font-weight: 600; }
+  .shop-status-hero p { margin: 0; font-size: 0.875rem; color: var(--muted-foreground); }
+  .shop-map { position: relative; overflow: hidden; border-radius: var(--radius); background: color-mix(in oklab, var(--muted) 70%, var(--background)); aspect-ratio: 16 / 9; }
+  .shop-map svg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; }
+  .shop-map .shop-map-grid { stroke: var(--border); stroke-width: 1; }
+  .shop-map .shop-map-road { fill: none; stroke: var(--card); stroke-width: 10; stroke-linecap: round; }
+  .shop-map .shop-map-route { fill: none; stroke: var(--primary); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 2 10; }
+  .shop-map .shop-map-done { fill: none; stroke: var(--primary); stroke-width: 4; stroke-linecap: round; }
+  .shop-map-pin { position: absolute; display: inline-flex; align-items: center; justify-content: center; inline-size: 2.25rem; block-size: 2.25rem; translate: -50% -50%; border-radius: 999px; background: var(--primary); color: var(--primary-foreground); box-shadow: 0 0 0 6px color-mix(in oklab, var(--primary) 20%, transparent); }
+  .shop-map-pin svg { inline-size: 1.125rem; block-size: 1.125rem; }
+  .shop-map-pin[data-kind='home'] { background: var(--background); color: var(--foreground); box-shadow: 0 0 0 1px var(--border), 0 4px 12px -4px rgb(0 0 0 / 0.3); }
+  .shop-map-eta { position: absolute; inset-block-start: 0.75rem; inset-inline-start: 0.75rem; display: grid; padding: 0.5rem 0.75rem; border-radius: var(--radius); background: var(--background); box-shadow: 0 4px 12px -4px rgb(0 0 0 / 0.25); font-size: 0.75rem; }
+  .shop-map-eta strong { font-size: 0.9375rem; }
+  .shop-courier { display: flex; align-items: center; gap: 0.75rem; }
+  .shop-courier > div { flex: 1; min-inline-size: 0; }
+  .shop-courier p { margin: 0; font-size: 0.875rem; }
+  .shop-courier small { display: block; color: var(--muted-foreground); font-size: 0.75rem; }
+  .shop-vsteps { list-style: none; margin: 0; padding: 0; display: grid; }
+  .shop-vsteps > li { position: relative; display: grid; grid-template-columns: 1.75rem 1fr; gap: 0 0.875rem; padding-block-end: 1.5rem; }
+  .shop-vsteps > li:last-child { padding-block-end: 0; }
+  .shop-vsteps > li::before { content: ''; position: absolute; inset-inline-start: calc(0.875rem - 1px); inset-block: 1.75rem 0; inline-size: 2px; background: var(--border); }
+  .shop-vsteps > li:last-child::before { display: none; }
+  .shop-vsteps > li[data-done]::before { background: var(--primary); }
+  .shop-vsteps .shop-tracker-dot { grid-row: span 2; }
+  .shop-vsteps > li[data-done] .shop-tracker-dot { border-color: var(--primary); background: var(--primary); color: var(--primary-foreground); }
+  .shop-vsteps > li[aria-current] .shop-tracker-dot { border-color: var(--primary); color: var(--primary); }
+  .shop-vsteps p { margin: 0; font-size: 0.875rem; font-weight: 500; }
+  .shop-vsteps > li:not([data-done]):not([aria-current]) p { color: var(--muted-foreground); font-weight: 400; }
+  .shop-vsteps small { color: var(--muted-foreground); font-size: 0.75rem; }
+  .shop-pkg-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; }
+"""
+TRACK_CSS = CAT_CSS + SUCCESS_CSS
+
+
+def copy_btn(target, label):
+    return (f'<button type="button" class="btn shop-copy" data-variant="ghost" data-size="icon-xs" data-copy="{target}" aria-label="{label}" data-copied-label="Copied">'
+            f'{si("copy")}{si("check")}</button>')
+
+
+CONFETTI_COLORS = ["var(--primary)", "var(--chart-1, #f97316)", "var(--chart-2, #14b8a6)", "var(--chart-3, #6366f1)", "var(--chart-4, #eab308)", "var(--chart-5, #ec4899)"]
+confetti = "".join(
+    f'<i style="inset-inline-start: {(i * 37) % 100}%; background: {CONFETTI_COLORS[i % 6]}; animation-delay: {(i * 53) % 400}ms"></i>'
+    for i in range(24))
+CHECK_SVG = '<svg class="shop-check-anim" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-15"/></svg>'
+total = totals(PRODUCTS)[3]
+
+add("checkout-04", "Checkout 04", "A celebratory order success page: animated check, order number to copy, delivery estimate, account creation and a referral.", "checkout", f"""
+{store_header(0)}
+<main class="wrapper shop-page" data-size="md">
+  <div class="stack" data-gap="8">
+    <section class="shop-success-wrap" aria-labelledby="co4-title">
+      <div class="shop-confetti" aria-hidden="true">{confetti}</div>
+      <div class="shop-done">
+        {CHECK_SVG}
+        <h1 id="co4-title">Order confirmed!</h1>
+        <p>Thanks, Olivia. We've emailed your receipt to olivia@example.com and we'll let you know when it ships.</p>
+        <div class="shop-order-no"><span>Order</span><span id="co4-no">#A-10294</span>{copy_btn("#co4-no", "Copy order number")}</div>
+      </div>
+    </section>
+    <div class="shop-split-2">
+      <section class="card" aria-labelledby="co4-arrive">
+        <header>
+          <h2 id="co4-arrive">Arriving Thu, Nov 12</h2>
+          <p>Standard delivery to 1234 Market Street, San Francisco</p>
+        </header>
+        <section class="stack" data-gap="4">
+          <ol class="shop-mini-steps" aria-label="Order progress"><li data-done>Confirmed</li><li>Shipped</li><li>Delivered</li></ol>
+          <div class="cluster" data-justify="between" data-gap="3">
+            <div class="shop-thumbs">{"".join(f'<img src="{PH}" alt="">' for _ in PRODUCTS)}</div>
+            <p class="shop-row"><span class="shop-muted">{count(PRODUCTS)} items ·</span><strong>{money(total)}</strong></p>
+          </div>
+        </section>
+        <footer class="cluster" data-gap="2">
+          <a href="#" class="btn" data-size="sm">{si("package")}Track order</a>
+          <button type="button" class="btn" data-variant="outline" data-size="sm">{si("download")}Receipt</button>
+        </footer>
+      </section>
+      <form class="card" onsubmit="event.preventDefault()" aria-labelledby="co4-account">
+        <header>
+          <h2 id="co4-account">Save your details</h2>
+          <p>Set a password to track orders and check out faster next time.</p>
+        </header>
+        <section class="stack" data-gap="3">
+          <div role="group" class="field"><label for="co4-email">Email</label><input id="co4-email" type="email" value="olivia@example.com" readonly></div>
+          <div role="group" class="field"><label for="co4-pass">Password</label><input id="co4-pass" type="password" autocomplete="new-password" minlength="8" required></div>
+        </section>
+        <footer><button type="submit" class="btn shop-full">Create account</button></footer>
+      </form>
+    </div>
+    <section class="shop-refer" aria-labelledby="co4-refer">
+      <div class="stack" data-gap="1">
+        <h2 id="co4-refer">Give $10, get $10</h2>
+        <p>Share your link: friends get $10 off their first order and you get $10 when they buy.</p>
+      </div>
+      <div class="input-group">
+        <input type="text" id="co4-link" value="acme.store/r/olivia-m" readonly aria-label="Referral link">
+        <span data-align="end">{copy_btn("#co4-link", "Copy referral link").replace('data-copy="#co4-link"', 'data-copy-text="https://acme.store/r/olivia-m"')}</span>
+      </div>
+    </section>
+    <div class="cluster" data-justify="center" data-gap="2">
+      <a href="#" class="btn" data-variant="outline">Continue shopping</a>
+    </div>
+  </div>
+</main>
+""", TRACK_CSS)
+
+add("checkout-05", "Checkout 05", "A mobile order success screen with a receipt and next steps.", "checkout", f"""
+<div class="shop-app">
+  <header class="shop-app-bar">
+    <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Close">{si("x")}</a>
+    <h1>Order placed</h1>
+  </header>
+  <div class="shop-app-body">
+    <section class="shop-done shop-success-wrap" aria-labelledby="co5-title">
+      {CHECK_SVG}
+      <h1 id="co5-title">Payment successful</h1>
+      <p>Order #A-10294 · Nov 7, 2026, 3:47 PM</p>
+    </section>
+    <ol class="shop-mini-steps" aria-label="Order progress"><li data-done>Paid</li><li>Packed</li><li>On its way</li></ol>
+    <section class="card" aria-labelledby="co5-receipt">
+      <header><h2 id="co5-receipt">Receipt</h2></header>
+      <section>
+        <dl class="shop-receipt">
+          {"".join(f'<div><dt>{p["name"]} × {p["qty"]}</dt><dd>{money(p["price"] * p["qty"])}</dd></div>' for p in PRODUCTS)}
+          <hr>
+          <div><dt>Subtotal</dt><dd>{money(totals(PRODUCTS)[0])}</dd></div>
+          <div><dt>Shipping</dt><dd>Free</dd></div>
+          <div><dt>Tax</dt><dd>{money(totals(PRODUCTS)[2])}</dd></div>
+          <hr>
+          <div><dt><strong>Paid with Visa •••• 4242</strong></dt><dd><strong>{money(total)}</strong></dd></div>
+        </dl>
+      </section>
+    </section>
+    <ul class="shop-perks">
+      <li>{si("mail")}<span>Receipt sent to olivia@example.com</span></li>
+      <li>{si("truck")}<span>Estimated delivery Thu, Nov 12</span></li>
+    </ul>
+    <div class="stack" data-gap="2">
+      <a href="#" class="btn shop-full" data-size="lg">{si("package")}Track order</a>
+      <a href="#" class="btn shop-full" data-variant="ghost">Back to shop</a>
+    </div>
+  </div>
+</div>
+""", APP_CSS + CATALOG_CSS + SUCCESS_CSS + "\n  .shop-app { padding-block-end: 2rem; }\n  .shop-success-wrap { padding-block: 1.5rem 0.5rem; }")
+
+
+# ---------------------------------------------------------------- tracking
+def vsteps(steps):
+    out = []
+    for title, when, state, ic_ in steps:
+        attr = " data-done" if state == "done" else ' aria-current="step"' if state == "now" else ""
+        dot = si("check") if state == "done" else si(ic_)
+        out.append(f'<li{attr}><span class="shop-tracker-dot">{dot}</span><p>{title}</p><small>{when}</small></li>')
+    return '<ol class="shop-vsteps">' + "".join(out) + "</ol>"
+
+
+STEPS_A = [("Order placed", "Nov 7, 3:47 PM", "done", ""), ("Packed", "Nov 8, 9:12 AM", "done", ""), ("Shipped with UPS", "Nov 8, 4:30 PM", "done", ""), ("Out for delivery", "Today, 8:12 AM", "now", "truck"), ("Delivered", "Estimated today, 2–5 PM", "todo", "house")]
+
+LOOKUP_JS = """
+document.querySelectorAll('[data-lookup]').forEach((form) => {
+  const err = form.querySelector('[data-lookup-error]');
+  const result = document.getElementById(form.dataset.lookup);
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const no = form.elements.order.value.trim().replace(/^#/, '').toUpperCase();
+    const ok = /^A-\\d{5}$/.test(no) && form.elements.email.value.includes('@');
+    err.hidden = ok;
+    result.hidden = !ok;
+    form.elements.order.toggleAttribute('aria-invalid', !ok);
+    if (ok) {
+      result.querySelector('[data-lookup-no]').textContent = '#' + no;
+      result.querySelector('h2').focus();
+    }
+  });
+});
+"""
+add("tracking-01", "Tracking 01", "Track an order without an account: order number and email lookup, validation, then the delivery status.", "tracking", f"""
+{store_header(0)}
+<main class="wrapper shop-page">
+  <div class="shop-lookup">
+    <div class="stack" data-gap="2">
+      <h1 class="shop-h1">Track your order</h1>
+      <p class="shop-lead">Enter the order number from your confirmation email. Try <strong>A-10251</strong> with any email.</p>
+    </div>
+    <form class="card" data-lookup="t1-result" novalidate>
+      <section class="stack" data-gap="3">
+        <div class="shop-lookup-form">
+          <div role="group" class="field"><label for="t1-order">Order number</label><input id="t1-order" name="order" type="text" placeholder="A-10251" autocomplete="off" aria-describedby="t1-error"></div>
+          <div role="group" class="field"><label for="t1-email">Email</label><input id="t1-email" name="email" type="email" placeholder="you@example.com" autocomplete="email"></div>
+          <button type="submit" class="btn">{si("search")}Track</button>
+        </div>
+        <p class="shop-error" id="t1-error" data-lookup-error hidden>{si("info")}We couldn't find that order. Check the number (like A-10251) and the email.</p>
+      </section>
+    </form>
+    <section class="card shop-result" id="t1-result" aria-live="polite" hidden>
+      <header>
+        <div class="shop-status-hero">
+          <span class="shop-status-icon">{si("truck")}</span>
+          <div><h2 tabindex="-1">Out for delivery</h2><p>Order <span data-lookup-no>#A-10251</span> · arriving today, 2–5 PM</p></div>
+        </div>
+      </header>
+      <section class="stack" data-gap="6">
+        <ol class="shop-tracker" aria-label="Delivery progress">{tracker}</ol>
+        {vsteps(STEPS_A)}
+      </section>
+      <footer class="cluster" data-gap="2">
+        <a href="#" class="btn" data-variant="outline" data-size="sm">Track on UPS</a>
+        <a href="#" class="btn" data-variant="ghost" data-size="sm">{si("mail")}Contact support</a>
+      </footer>
+    </section>
+  </div>
+</main>
+""", TRACK_CSS + "\n  .shop-result h2:focus { outline: none; }", scripts=script(LOOKUP_JS))
+
+MAP = """<svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <g class="shop-map-grid">""" + "".join(f'<line x1="{x}" y1="0" x2="{x}" y2="180"/>' for x in range(0, 321, 40)) + "".join(f'<line x1="0" y1="{y}" x2="320" y2="{y}"/>' for y in range(0, 181, 40)) + """</g>
+  <path class="shop-map-road" d="M30 150 C 80 150, 90 90, 140 90 S 210 40, 290 40"/>
+  <path class="shop-map-done" d="M30 150 C 80 150, 90 90, 140 90"/>
+  <path class="shop-map-route" d="M140 90 C 175 90, 210 40, 290 40"/>
+</svg>"""
+
+DRIVER_JS = """
+document.querySelectorAll('[data-instructions]').forEach((form) => {
+  const out = document.getElementById(form.dataset.instructions);
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const v = form.elements.note.value.trim();
+    out.textContent = v || 'No instructions yet.';
+    form.closest('dialog').close();
+  });
+});
+"""
+add("tracking-02", "Tracking 02", "Live delivery tracking: route map, arrival window, courier contact, delivery instructions and history.", "tracking", account("Orders", f"""
+<div class="stack" data-gap="4">
+  <a href="#" class="btn shop-back" data-variant="ghost" data-size="sm">{si("arrow-left")}Order #A-10251</a>
+  <div class="shop-status-hero">
+    <span class="shop-status-icon">{si("truck")}</span>
+    <div><h1 class="shop-h2">Arriving today, 2:15–2:45 PM</h1><p>Out for delivery · 6 stops away</p></div>
+  </div>
+</div>
+<section class="card" aria-label="Delivery map">
+  <section class="stack" data-gap="4">
+    <div class="shop-map">
+      {MAP}
+      <span class="shop-map-pin" style="inset-inline-start: 43.75%; inset-block-start: 50%" title="Courier">{si("truck")}</span>
+      <span class="shop-map-pin" data-kind="home" style="inset-inline-start: 90.6%; inset-block-start: 22.2%" title="Your address">{si("house")}</span>
+      <div class="shop-map-eta"><span class="shop-muted">Estimated arrival</span><strong>2:15–2:45 PM</strong></div>
+    </div>
+    <div class="shop-courier">
+      <span class="avatar"><img src="{PH}" alt=""><span>DR</span></span>
+      <div><p>Daniel R. · UPS</p><small>Tracking 1Z 999 AA1 0123 4567 84</small></div>
+      <a href="#" class="btn" data-variant="outline" data-size="icon" aria-label="Call the courier">{si("phone")}</a>
+      <a href="#" class="btn" data-variant="outline" data-size="icon" aria-label="Message the courier">{si("mail")}</a>
+    </div>
+  </section>
+</section>
+<div class="shop-cols shop-cols-even">
+  <section class="card" aria-labelledby="t2-history">
+    <header><h2 id="t2-history">Tracking history</h2></header>
+    <section><ol class="shop-timeline" aria-label="Tracking history">{events}</ol></section>
+  </section>
+  <div class="stack" data-gap="6">
+    <section class="card" aria-labelledby="t2-instr">
+      <header>
+        <h2 id="t2-instr">Delivery instructions</h2>
+        <div class="card-action"><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Edit delivery instructions" commandfor="t2-dialog" command="show-modal">{si("pencil")}</button></div>
+      </header>
+      <section><p class="shop-lead" id="t2-note">Leave at the front desk if no one answers.</p></section>
+    </section>
+    <section class="card" aria-labelledby="t2-items">
+      <header><h2 id="t2-items">In this package</h2></header>
+      <section><ul class="shop-lines" data-size="sm">{order_lines_sm(PRODUCTS[:2])}</ul></section>
+    </section>
+  </div>
+</div>
+<dialog id="t2-dialog" class="dialog" closedby="any" aria-labelledby="t2-dialog-title">
+  <div>
+    <header>
+      <h2 id="t2-dialog-title">Delivery instructions</h2>
+      <p>Tell the courier where to leave your package.</p>
+    </header>
+    <section>
+      <form id="t2-form" data-instructions="t2-note" class="stack" data-gap="2">
+        <label class="label" for="t2-text">Instructions</label>
+        <input class="input" id="t2-text" name="note" type="text" value="Leave at the front desk if no one answers.">
+      </form>
+    </section>
+    <footer>
+      <button type="button" class="btn" data-variant="outline" commandfor="t2-dialog" command="close">Cancel</button>
+      <button type="submit" form="t2-form" class="btn">Save</button>
+    </footer>
+    <button type="button" aria-label="Close" commandfor="t2-dialog" command="close">{si("x")}</button>
+  </div>
+</dialog>
+"""), TRACK_CSS + """
+  @media (width >= 56rem) { .shop-cols.shop-cols-even { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); } }
+  .shop-back { align-self: flex-start; margin-inline-start: -0.5rem; }
+  .shop-profile .avatar { inline-size: 2.25rem; block-size: 2.25rem; }
+  .shop-courier .avatar { inline-size: 2.5rem; block-size: 2.5rem; }""", scripts=script(DRIVER_JS))
+
+PKGS = [
+    ("1", "UPS · 1Z 999 AA1 0123 4567 84", "Out for delivery", [PRODUCTS[0], PRODUCTS[1]], STEPS_A),
+    ("2", "USPS · 9400 1000 0000 0000 0000 00", "Preparing to ship", [PRODUCTS[2]], [("Order placed", "Nov 7, 3:47 PM", "done", ""), ("Packed", "Today, 10:05 AM", "now", "package"), ("Shipped", "Expected Nov 9", "todo", "truck"), ("Delivered", "Estimated Nov 13", "todo", "house")]),
+]
+tabs = "".join(f'<button type="button" role="tab" id="t3-tab-{n}" aria-controls="t3-panel-{n}" aria-selected="{"true" if i == 0 else "false"}" tabindex="{0 if i == 0 else -1}">Package {n} <span class="badge" data-variant="{"secondary" if i == 0 else "outline"}">{st}</span></button>' for i, (n, c, st, its, steps) in enumerate(PKGS))
+panels = "".join(f"""<div role="tabpanel" id="t3-panel-{n}" aria-labelledby="t3-tab-{n}" tabindex="-1"{" hidden" if i else ""}>
+  <div class="shop-split-2">
+    <section class="card" aria-label="Package {n} progress">
+      <header class="shop-pkg-head">
+        <div class="stack" data-gap="1"><h2>{st}</h2><p class="shop-line-meta"><span id="t3-no-{n}">{c}</span></p></div>
+        {copy_btn(f"#t3-no-{n}", f"Copy tracking number for package {n}")}
+      </header>
+      <section>{vsteps(steps)}</section>
+    </section>
+    <section class="card" aria-label="Package {n} items">
+      <header><h2>{len(its)} {"item" if len(its) == 1 else "items"}</h2></header>
+      <section><ul class="shop-lines" data-size="sm">{order_lines_sm(its)}</ul></section>
+    </section>
+  </div>
+</div>""" for i, (n, c, st, its, steps) in enumerate(PKGS))
+notify = "".join(f'''<div class="shop-switch-row"><label for="t3-n{i}"><span class="shop-switch-title">{t}</span><small>{d}</small></label><input type="checkbox" role="switch" class="input" id="t3-n{i}"{" checked" if on else ""}></div>''' for i, (t, d, on) in enumerate([
+    ("Email updates", "olivia@example.com", True),
+    ("Text messages", "+1 (555) 010-2048", False),
+    ("Delivery day reminder", "A heads-up on the morning of delivery", True),
+]))
+add("tracking-03", "Tracking 03", "An order shipped in two packages: tabs per package, carrier, copyable tracking numbers, steps and notifications.", "tracking", account("Orders", f"""
+<div class="stack" data-gap="1">
+  <div class="cluster" data-gap="3"><h1 class="shop-h1">Order #A-10294</h1>{status_badge("shipped", "Partly shipped")}</div>
+  <p class="shop-lead">Placed Nov 7, 2026 · shipping in 2 packages</p>
+</div>
+<div class="tabs" id="t3-tabs">
+  <nav role="tablist" aria-orientation="horizontal">{tabs}</nav>
+  {panels}
+</div>
+<section class="card" aria-labelledby="t3-notify">
+  <header>
+    <h2 id="t3-notify">Shipping notifications</h2>
+    <p>Choose how we tell you about these packages.</p>
+  </header>
+  <section class="stack" data-gap="4">{notify}</section>
+</section>
+"""), TRACK_CSS + """
+  .shop-profile .avatar { inline-size: 2.25rem; block-size: 2.25rem; }
+  .shop-switch-row > label { flex: 1; cursor: pointer; }
+  .shop-switch-title { font-size: 0.875rem; font-weight: 500; }
+  .shop-switch-row small { display: block; font-size: 0.8125rem; color: var(--muted-foreground); }
+  .shop-pkg-head h2 { margin: 0; font-size: 1rem; font-weight: 600; }
+  .tabs [role='tab'] .badge { margin-inline-start: 0.375rem; }""")
 
 
 if __name__ == "__main__":

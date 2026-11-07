@@ -108,6 +108,12 @@
     // the components use, so spacing and radius stay as they are.
     const TEXT = { xs: 0.75, sm: 0.875, base: 1, lg: 1.125, xl: 1.25, '2xl': 1.5, '3xl': 1.875, '4xl': 2.25 };
     const textScale = () => (state.fontSize ?? 16) / 16;
+    // Locks: a locked option keeps its value when a theme preset or an imported
+    // theme is applied, and Shuffle, Reset and Open Preset leave it alone.
+    const THEME_KEYS = ['primary', 'primary-foreground', 'ring', 'sidebar-primary', 'sidebar-primary-foreground', 'sidebar-ring'];
+    const isLocked = (k) => !!state.locks?.[k];
+    const LOCK = '<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>';
+    const UNLOCK = '<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>';
     const STORE = 'auvyx-create';
     let state = { ...DEFAULT, imported: null };
     try { const s = JSON.parse(localStorage.getItem(STORE) || 'null'); if (s) state = { ...state, ...s }; } catch (e) {}
@@ -171,6 +177,22 @@
         for (const k of Object.keys(light)) if (/^(font-|radius$|tracking-|letter-spacing$|spacing$|shadow)/.test(k)) { shared[k] = light[k]; delete light[k]; }
         for (const k of Object.keys(dark)) if (/^(font-|radius$|tracking-|letter-spacing$|spacing$)/.test(k)) delete dark[k];
         if (boxy()) shared.radius = '0';
+        // Locked options keep the user's choice over the imported theme.
+        const L = state.locks || {};
+        const keep = (vars, from, keys) => { for (const k of keys) if (from[k] !== undefined) vars[k] = from[k]; };
+        if (L.base) {
+          Object.assign(light, baseVars(false));
+          Object.assign(dark, baseVars(true));
+          if (!L.theme) { keep(light, state.imported.light || {}, THEME_KEYS); keep(dark, state.imported.dark || {}, THEME_KEYS); }
+        }
+        if (L.theme) {
+          keep(light, { ...baseVars(false), ...themeVars(false) }, THEME_KEYS);
+          keep(dark, { ...baseVars(true), ...themeVars(true) }, THEME_KEYS);
+        }
+        if (L.chart) { Object.assign(light, chartVars(false)); Object.assign(dark, chartVars(true)); }
+        if (L.font) shared['font-sans'] = fontStack(pick('font'));
+        if (L.heading) { if (state.heading) shared['font-heading'] = fontStack(pick('heading')); else delete shared['font-heading']; }
+        if (L.radius) shared.radius = boxy() ? '0' : pick('radius') + 'rem';
       }
       const s = state.smoothing ?? 1;
       const f = SMOOTH[pick('corners')];
@@ -331,13 +353,16 @@
       const items = o.items.map((it, n) => `<button type="button" role="menuitemradio" aria-checked="${n === state[k]}" data-opt="${k}" data-val="${n}" popovertarget="cr-${k}" popovertargetaction="hide">${swatch(k, it)}<span>${esc(fmt(k, it))}</span>${n === state[k] ? ICON(CHECK, '0.875rem') : ''}</button>`).join('');
       // Square styles (Lyra, Sera) draw every component with square corners: radius follows.
       const square = k === 'radius' && boxy();
-      const locked = square || (state.imported && /^(base|theme|font|heading|radius)$/.test(k) && hasImported(k));
-      return `<div class="dropdown-menu d-cr-row">
+      const locked = square || (state.imported && !isLocked(k) && /^(base|theme|font|heading|radius)$/.test(k) && hasImported(k));
+      const pin = isLocked(k);
+      const lockBtn = `<button type="button" class="d-cr-lock" data-lock="${k}" aria-pressed="${pin}" aria-label="${pin ? 'Unlock' : 'Lock'} ${esc(o.label)}" title="${pin ? 'Locked: presets, imports and Shuffle keep this' : 'Lock this option'}">${ICON(pin ? LOCK : UNLOCK, '0.875rem')}</button>`;
+      return `<div class="dropdown-menu d-cr-row"${pin ? ' data-pinned' : ''}>
         <button type="button" class="d-cr-btn" popovertarget="cr-${k}" aria-haspopup="menu"${locked ? ' data-locked' : ''}${square ? ' disabled title="Square style: corners stay square"' : ''}>
           <span class="d-cr-text"><span class="d-cr-label">${esc(o.label)}</span><span class="d-cr-val">${esc(square ? `None (${pick('style')})` : locked ? 'From theme' : fmt(k, v))}</span></span>
           <span class="d-cr-icon">${swatch(k, v) || ICON(ROW_ICON[k])}</span>
         </button>
         <div id="cr-${k}" data-popover popover data-side="bottom" data-align="start" class="d-cr-pop"><div role="menu" aria-label="${esc(o.label)}">${items}</div></div>
+        ${lockBtn}
       </div>`;
     }
     function boxy() {
@@ -495,6 +520,8 @@
       mounted = true;
       document.addEventListener('click', (e) => {
         if (!$('#cr-panel')) return;
+        const lock = e.target.closest('[data-lock]');
+        if (lock) { state.locks = { ...state.locks, [lock.dataset.lock]: !isLocked(lock.dataset.lock) }; refresh(); $(`[data-lock="${lock.dataset.lock}"]`)?.focus(); return; }
         const opt = e.target.closest('[data-opt]');
         if (opt) { state[opt.dataset.opt] = +opt.dataset.val; refresh(); return; }
         const pre = e.target.closest('[data-preset]');
@@ -502,8 +529,8 @@
         const a = e.target.closest('[data-cr]');
         if (!a) return;
         const act = a.dataset.cr;
-        if (act === 'shuffle') { for (const k of KEYS) if (k !== 'menu' && k !== 'accent') state[k] = Math.floor(Math.random() * OPTS[k].items.length); state.heading = Math.random() < 0.6 ? 0 : state.heading; refresh(); }
-        else if (act === 'reset') { state = { ...DEFAULT, imported: null }; refresh(); }
+        if (act === 'shuffle') { for (const k of KEYS) if (k !== 'menu' && k !== 'accent' && !isLocked(k)) state[k] = Math.floor(Math.random() * OPTS[k].items.length); if (!isLocked('heading')) state.heading = Math.random() < 0.6 ? 0 : state.heading; refresh(); }
+        else if (act === 'reset') { const locks = state.locks || {}; const kept = Object.fromEntries(KEYS.filter((k) => locks[k]).map((k) => [k, state[k]])); state = { ...DEFAULT, imported: null, locks, ...kept }; refresh(); }
         else if (act === 'clear-import') { state.imported = null; refresh(); }
         else if (act === 'mode') { if (a.dataset.mode !== modeNow()) $('#d-mode').click(); }
         else if (act === 'edit' || act === 'back') { view = act === 'edit' ? 'edit' : 'options'; refresh(); }
@@ -516,7 +543,7 @@
         else if (act === 'open') {
           const v = decode($('#cr-code').value);
           $('#cr-code-err').hidden = !!v;
-          if (v) { Object.assign(state, v); $('#cr-open').close(); refresh(); }
+          if (v) { for (const k of KEYS) if (!isLocked(k)) state[k] = v[k]; $('#cr-open').close(); refresh(); }
         } else if (act === 'import') {
           const err = $('#cr-theme-err');
           try { state.imported = parseTheme($('#cr-theme-src').value); err.hidden = true; $('#cr-import').close(); refresh(); }

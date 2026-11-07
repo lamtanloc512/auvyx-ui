@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Checkout 05 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-full {
+        inline-size: 100%;
+      }
+      .shop-app {
+        max-inline-size: 28rem;
+        min-block-size: 100svh;
+        margin-inline: auto;
+        padding-block-end: calc(5rem + env(safe-area-inset-bottom, 0px));
+        border-inline: 1px solid var(--border);
+      }
+      .shop-app-bar {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        background: var(--background);
+        border-block-end: 1px solid var(--border);
+      }
+      .shop-app-bar h1 {
+        flex: 1;
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .shop-app-body {
+        display: grid;
+        gap: 1.25rem;
+        padding: 1rem;
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+
+      .shop-perks {
+        display: grid;
+        gap: 0.75rem;
+        margin: 0;
+        padding: 1rem;
+        list-style: none;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        font-size: 0.875rem;
+      }
+      .shop-perks li {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+      }
+      .shop-perks svg {
+        inline-size: 1.125rem;
+        block-size: 1.125rem;
+        flex: none;
+        color: var(--muted-foreground);
+      }
+
+      .shop-done {
+        display: grid;
+        justify-items: center;
+        gap: 1rem;
+        text-align: center;
+      }
+      .shop-done h1 {
+        margin: 0;
+        font-size: clamp(1.75rem, 4vw, 2.25rem);
+        font-weight: 600;
+        letter-spacing: -0.025em;
+        text-wrap: balance;
+      }
+      .shop-done p {
+        margin: 0;
+        color: var(--muted-foreground);
+        max-inline-size: 32rem;
+        text-wrap: pretty;
+      }
+      .shop-check-anim {
+        inline-size: 4.5rem;
+        block-size: 4.5rem;
+        color: var(--primary);
+      }
+      .shop-check-anim circle {
+        fill: color-mix(in oklab, var(--primary) 12%, transparent);
+        stroke: currentColor;
+        stroke-width: 2;
+      }
+      .shop-check-anim path {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 30;
+        stroke-dashoffset: 0;
+        animation: shop-draw 500ms ease-out 150ms backwards;
+      }
+      .shop-check-anim circle {
+        animation: shop-pop-in 350ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+        transform-origin: center;
+      }
+      @keyframes shop-draw {
+        from {
+          stroke-dashoffset: 30;
+        }
+      }
+      @keyframes shop-pop-in {
+        from {
+          transform: scale(0.6);
+          opacity: 0;
+        }
+      }
+      @keyframes shop-fall {
+        0% {
+          opacity: 1;
+          transform: translateY(0) rotate(0);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(18rem) rotate(540deg);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .shop-check-anim path {
+          animation: none;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .shop-check-anim circle {
+          animation: none;
+        }
+      }
+      .shop-success-wrap {
+        position: relative;
+        padding-block: 3rem 2rem;
+      }
+      .shop-mini-steps {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font-size: 0.75rem;
+        text-align: center;
+        color: var(--muted-foreground);
+      }
+      .shop-mini-steps > li {
+        display: grid;
+        gap: 0.375rem;
+      }
+      .shop-mini-steps > li::before {
+        content: "";
+        block-size: 4px;
+        border-radius: 4px;
+        background: var(--border);
+      }
+      .shop-mini-steps > li[data-done]::before {
+        background: var(--primary);
+      }
+      .shop-mini-steps > li[data-done] {
+        color: var(--foreground);
+        font-weight: 500;
+      }
+      .shop-receipt {
+        display: grid;
+        gap: 0.625rem;
+        margin: 0;
+        font-size: 0.875rem;
+      }
+      .shop-receipt > div {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .shop-receipt dt {
+        color: var(--muted-foreground);
+      }
+      .shop-receipt dd {
+        margin: 0;
+        font-variant-numeric: tabular-nums;
+        text-align: end;
+      }
+      .shop-receipt hr {
+        margin: 0.25rem 0;
+        border: 0;
+        border-block-start: 1px dashed var(--border);
+      }
+
+      .shop-app {
+        padding-block-end: 2rem;
+      }
+      .shop-success-wrap {
+        padding-block: 1.5rem 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shop-app">
+      <header class="shop-app-bar">
+        <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </a>
+        <h1>Order placed</h1>
+      </header>
+      <div class="shop-app-body">
+        <section class="shop-done shop-success-wrap" aria-labelledby="co5-title">
+          <svg class="shop-check-anim" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-15"/></svg>
+          <h1 id="co5-title">Payment successful</h1>
+          <p>Order #A-10294 · Nov 7, 2026, 3:47 PM</p>
+        </section>
+        <ol class="shop-mini-steps" aria-label="Order progress">
+          <li data-done>Paid</li>
+          <li>Packed</li>
+          <li>On its way</li>
+        </ol>
+        <section class="card" aria-labelledby="co5-receipt">
+          <header><h2 id="co5-receipt">Receipt</h2></header>
+          <section>
+            <dl class="shop-receipt">
+              <div>
+                <dt>Everyday Tote × 1</dt>
+                <dd>$48.00</dd>
+              </div>
+              <div>
+                <dt>Merino Crew Sweater × 2</dt>
+                <dd>$178.00</dd>
+              </div>
+              <div>
+                <dt>Ceramic Pour-Over Set × 1</dt>
+                <dd>$36.50</dd>
+              </div>
+              <hr />
+              <div>
+                <dt>Subtotal</dt>
+                <dd>$262.50</dd>
+              </div>
+              <div>
+                <dt>Shipping</dt>
+                <dd>Free</dd>
+              </div>
+              <div>
+                <dt>Tax</dt>
+                <dd>$21.00</dd>
+              </div>
+              <hr />
+              <div>
+                <dt><strong>Paid with Visa •••• 4242</strong></dt>
+                <dd><strong>$283.50</strong></dd>
+              </div>
+            </dl>
+          </section>
+        </section>
+        <ul class="shop-perks">
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/></svg>
+            <span>Receipt sent to olivia@example.com</span>
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2m10 0H9m10 0h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+            <span>Estimated delivery Thu, Nov 12</span>
+          </li>
+        </ul>
+        <div class="stack" data-gap="2">
+          <a href="#" class="btn shop-full" data-size="lg">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73zm1 .27V12"/><path d="M3.29 7L12 12l8.71-5M7.5 4.27l9 5.15"/></svg>
+            Track order
+          </a>
+          <a href="#" class="btn shop-full" data-variant="ghost">Back to shop</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

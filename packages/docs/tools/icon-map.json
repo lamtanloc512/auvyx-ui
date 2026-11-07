@@ -407,6 +407,12 @@
   "lock",
   "lock-line"
  ],
+ "lock-open": [
+  "lock-open",
+  "square-unlock-02",
+  "lock-open",
+  "lock-unlock-line"
+ ],
  "log-out": [
   "logout",
   "logout-01",

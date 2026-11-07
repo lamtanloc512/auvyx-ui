@@ -114,6 +114,10 @@ def guides(sizes, js_modules, wc_modules):
 </tbody></table></div>
 <h2 class="d-h2">JavaScript lifecycle</h2><p>The JavaScript API is <code>window.auvyx</code>: <code>initAll()</code>, <code>init(name)</code>, <code>refresh()</code>, <code>start()</code> / <code>stop()</code> (the observer), <code>theme.get()</code> / <code>set()</code> / <code>toggle()</code>, and <code>chart()</code> with <code>auvyx.chart.min.js</code>. <code>window.basecoat</code> is the same object, kept for existing code.</p><p>Components initialize on page load and whenever new markup is inserted (a <code>MutationObserver</code> watches the page), so HTML swapped in by HTMX, Turbo or your own code works without extra calls. After inserting markup by hand you can also call <code>window.auvyx.initAll()</code>; it only initializes components that are not initialized yet.</p>
 <p>When a library restores previously initialized markup from a cache (HTMX history restore, Turbo snapshots), call <code>window.auvyx.initAll({{ force: true }})</code>: it destroys the existing instances and initializes them again, which also resets open menus, focus and other transient state.</p>
+<h2 class="d-h2" id="prefixed-build">Prefixed build (<code>ax-</code>)</h2><p>If the page already has CSS that uses names like <code>.btn</code>, <code>.card</code>, <code>.alert</code> or <code>.dropdown-menu</code> (Bootstrap, a WordPress theme, a legacy app), load the prefixed build. Every Auvyx class becomes <code>ax-…</code> in the CSS and in the JavaScript, so neither side styles the other.</p>
+{code(f'<link rel="stylesheet" href="{CDN}/ax/auvyx.min.css">' + chr(10) + f'<script src="{CDN}/ax/auvyx.min.js" defer></script>' + chr(10) + chr(10) + '<button class="ax-btn" data-variant="outline">Save</button>' + chr(10) + '<div class="ax-card">' + chr(10) + '  <header><h2>Title</h2></header>' + chr(10) + '</div>' + chr(10) + '<div class="ax-stack" data-gap="4">…</div>')}
+<p>Write the markup from these docs with <code>ax-</code> in front of every Auvyx class (<code>btn</code> → <code>ax-btn</code>, <code>stack</code> → <code>ax-stack</code>). Only class names change: <code>data-*</code> attributes, ARIA, element names, CSS variables (<code>--primary</code>…) and the <code>.dark</code> class stay the same. Style packs are in <code>ax/styles/</code> (<code>{CDN}/ax/styles/auvyx-maia.min.css</code>), charts in <code>ax/auvyx.chart.min.js</code>. From npm: <code>import "@auvyx/ui/ax/auvyx.min.css"</code>.</p>
+<p>The prefixed build is one bundle: the per-component modules (<code>js/</code>), the Web Components edition (<code>wc/</code>), the examples on this site and the registry blocks use the unprefixed names.</p>
 <h2 class="d-h2">Editions</h2><p>Auvyx comes in two editions that share the same CSS and the same behavior code. Pick per component; they mix on one page.</p>
 <div class="d-tablewrap"><table><thead><tr><th>Edition</th><th>Markup</th><th>Best for</th></tr></thead><tbody>
 <tr><td>HTML (default)</td><td>Classes and ARIA, plus a script from <code>js/</code></td><td>Server templates, static sites, HTMX, copy-paste blocks</td></tr>
@@ -287,12 +291,12 @@ def charts():
 BLOCK_CATS = [("dashboard", "Dashboard"), ("sidebar", "Sidebar"), ("login", "Login"), ("signup", "Signup"), ("otp", "OTP"), ("calendar", "Calendar"),
               ("cart", "Cart"), ("checkout", "Checkout"), ("orders", "Orders"), ("account", "Account"), ("bottom-nav", "Bottom Navigation"),
               ("product", "Product"), ("product-card", "Product Card"), ("wishlist", "Wishlist"), ("compare", "Compare"), ("search", "Search"),
-              ("filter", "Filter"), ("category", "Category")]
+              ("filter", "Filter"), ("category", "Category"), ("tracking", "Order Tracking")]
 FEATURED = ["dashboard-01", "sidebar-07", "sidebar-03", "login-03", "login-04", "calendar-20"]
 HEIGHTS = {"dashboard": 58, "sidebar": 50, "login": 46, "signup": 50, "otp": 40, "calendar": 34,
            "cart": 52, "checkout": 64, "orders": 64, "account": 60, "bottom-nav": 48,
            "product": 64, "product-card": 56, "wishlist": 56, "compare": 60, "search": 56,
-           "filter": 64, "category": 64}
+           "filter": 64, "category": 64, "tracking": 64}
 TALL = {"calendar-20": 36, "calendar-21": 38, "calendar-27": 38, "calendar-31": 44, "calendar-03": 34, "signup-02": 54, "signup-03": 54, "signup-01": 54}
 
 

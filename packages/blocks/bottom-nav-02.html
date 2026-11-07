@@ -236,6 +236,17 @@
         font-size: 0.75rem;
       }
 
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+      .shop-count {
+        corner-shape: round;
+      }
+      .shop-bottom-nav {
+        corner-shape: round;
+      }
+      .shop-bottom-nav a {
+        corner-shape: round;
+      }
+
       .shop-grid.shop-grid-2 {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 1rem;

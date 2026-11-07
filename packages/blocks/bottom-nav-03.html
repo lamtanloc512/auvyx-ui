@@ -211,6 +211,11 @@
         object-fit: cover;
       }
 
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+      .shop-count {
+        corner-shape: round;
+      }
+
       .shop-swatches label:has(:disabled) {
         opacity: 0.5;
         text-decoration: line-through;

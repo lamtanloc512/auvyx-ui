@@ -160,6 +160,11 @@
         color: var(--foreground);
       }
 
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+      .shop-count {
+        corner-shape: round;
+      }
+
       .block-logo {
         display: inline-flex;
         align-items: center;

@@ -23,9 +23,13 @@
 - Filter and category blocks:
   - Filter: `filter-01` filter sidebar (category with counts, price, color, size, rating, in stock) that filters the grid live, with active chips, a filter count, sort and an empty state; `filter-02` horizontal filter bar with a popover per filter; `filter-03` mobile filters in a bottom Sheet with a live “Show N products” button.
   - Category: `category-01` category landing (hero, subcategory circles, room tiles, featured products, promo, FAQ); `category-02` shop-by-category bento grid with hover zoom; `category-03` category listing with a subcategory tree, pills, sort and load more with progress.
+- Checkout success and order tracking blocks: `checkout-04` order success with an animated check, confetti, copyable order number, account creation and a referral link; `checkout-05` mobile payment success with a receipt; `tracking-01` order lookup by number and email with validation; `tracking-02` live delivery with a route map, arrival window, courier contact, editable delivery instructions and history; `tracking-03` an order in two packages with tabs, copyable tracking numbers and notification settings.
+- Create: lock any option. A locked option keeps its value when a theme preset or an imported theme is applied, and Shuffle, Reset and Open Preset leave it alone.
+- Docs and `@auvyx/ui` README: the prefixed build (`dist/ax/`, classes `ax-…`) is now documented under Installation.
 
 ### Fixed
 
+- Color swatches in the ecommerce filters were clipped by the accordion, and round swatches, dots, badges and pins turned into rounded squares with squircle corners. They now have room for their focus outline and keep `corner-shape: round`.
 - Block styles with a selector list (`a, b { … }`) were dropped when one selector's block class was not used in that block, so some ecommerce blocks lost rules such as the dark-mode image filter. The rules are now one selector each.
 
 ## @auvyx/ui 0.1.3 - 2026-11-06

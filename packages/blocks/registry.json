@@ -244,6 +244,16 @@
     "description": "An order confirmation page with the order details and next steps.",
     "category": "checkout"
   },
+  "checkout-04": {
+    "title": "Checkout 04",
+    "description": "A celebratory order success page: animated check, order number to copy, delivery estimate, account creation and a referral.",
+    "category": "checkout"
+  },
+  "checkout-05": {
+    "title": "Checkout 05",
+    "description": "A mobile order success screen with a receipt and next steps.",
+    "category": "checkout"
+  },
   "compare-01": {
     "title": "Compare 01",
     "description": "A product comparison table with sticky labels, remove and highlight differences.",
@@ -503,6 +513,21 @@
     "title": "Signup 05",
     "description": "A simple email-only signup page.",
     "category": "signup"
+  },
+  "tracking-01": {
+    "title": "Tracking 01",
+    "description": "Track an order without an account: order number and email lookup, validation, then the delivery status.",
+    "category": "tracking"
+  },
+  "tracking-02": {
+    "title": "Tracking 02",
+    "description": "Live delivery tracking: route map, arrival window, courier contact, delivery instructions and history.",
+    "category": "tracking"
+  },
+  "tracking-03": {
+    "title": "Tracking 03",
+    "description": "An order shipped in two packages: tabs per package, carrier, copyable tracking numbers, steps and notifications.",
+    "category": "tracking"
   },
   "wishlist-01": {
     "title": "Wishlist 01",
