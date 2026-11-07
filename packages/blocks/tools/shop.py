@@ -53,6 +53,10 @@ SHOP_ICONS = {
     "rotate-ccw": '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
     "shield-check": '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12l2 2l4-4"/>',
     "chevron-right": '<path d="m9 18 6-6-6-6"/>',
+    "chevron-down": '<path d="m6 9 6 6 6-6"/>',
+    "upload": '<path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>',
+    "sparkles": '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>',
+    "copy": '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
     "share-2": '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/>',
 }
 
@@ -280,6 +284,26 @@ SHOP_CSS = """
   .shop-swatches label:has(:focus-visible) { outline: 2px solid var(--ring); outline-offset: 2px; }
   .shop-gallery { aspect-ratio: 1; inline-size: 100%; background: var(--muted); object-fit: cover; }
   .shop-payment-fields[hidden] { display: none; }
+
+  /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+  .shop-colors label { corner-shape: round; }
+  .shop-dots > span { corner-shape: round; }
+  .shop-fx-swatches > button { corner-shape: round; }
+  .shop-count { corner-shape: round; }
+  .shop-status-icon { corner-shape: round; }
+  .shop-map-pin { corner-shape: round; }
+  .shop-tracker-dot { corner-shape: round; }
+  .shop-step-num { corner-shape: round; }
+  .shop-success { corner-shape: round; }
+  .shop-stock::before { corner-shape: round; }
+  .shop-status::before { corner-shape: round; }
+  .shop-subcats img { corner-shape: round; }
+  .shop-order-no { corner-shape: round; }
+  .shop-tile-go { corner-shape: round; }
+  .shop-pills a { corner-shape: round; }
+  .shop-timeline > li::before { corner-shape: round; }
+  .shop-bottom-nav { corner-shape: round; }
+  .shop-bottom-nav a { corner-shape: round; }
 """ + LOGO_CSS
 
 
@@ -1424,6 +1448,11 @@ ITEMS = [
 ]
 
 CATALOG_CSS = """
+  .shop-shot { display: block; aspect-ratio: 4 / 5; inline-size: 100%; object-fit: cover; background: var(--muted); }
+  .shop-shot[data-shot='2'] { transform: scaleX(-1); filter: hue-rotate(160deg) saturate(1.6); }
+  .shop-shot[data-shot='3'] { filter: sepia(0.6) saturate(1.4); }
+  .shop-shot[data-shot='4'] { transform: scaleX(-1); filter: grayscale(1) contrast(1.2); }
+  html.dark .shop-shot { opacity: 0.6; }
   .shop-card { position: relative; display: flex; flex-direction: column; gap: 0.75rem; }
   .shop-card-media { position: relative; overflow: hidden; border-radius: var(--radius); background: var(--muted); }
   .shop-card-media > img { display: block; aspect-ratio: 4 / 5; inline-size: 100%; object-fit: cover; transition: transform 300ms ease; }
@@ -1459,7 +1488,7 @@ CATALOG_CSS = """
   .shop-wish[aria-pressed='true'] svg { fill: currentColor; }
   .shop-dots { display: flex; gap: 0.375rem; }
   .shop-dots > span { inline-size: 0.875rem; block-size: 0.875rem; border-radius: 999px; background: var(--dot); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 15%, transparent); }
-  .shop-colors { display: flex; flex-wrap: wrap; gap: 0.5rem; border: 0; margin: 0; padding: 0; }
+  .shop-colors { display: flex; flex-wrap: wrap; gap: 0.5rem; border: 0; margin: 0; padding: 0.25rem; }
   .shop-colors legend { margin-block-end: 0.5rem; font-size: 0.875rem; font-weight: 500; }
   .shop-colors legend span { color: var(--muted-foreground); font-weight: 400; }
   .shop-colors label { position: relative; display: inline-flex; inline-size: 1.75rem; block-size: 1.75rem; border-radius: 999px; background: var(--dot); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 15%, transparent); cursor: pointer; }
@@ -1487,12 +1516,11 @@ CATALOG_CSS = """
   @media (width >= 56rem) { .shop-pdp { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 3rem; } .shop-pdp-info { position: sticky; inset-block-start: 5.5rem; } }
   .shop-pdp-gallery { display: grid; gap: 0.75rem; }
   .shop-pdp-main { display: block; aspect-ratio: 1; inline-size: 100%; border-radius: var(--radius); background: var(--muted); object-fit: cover; }
-  .shop-pdp-thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; border: 0; margin: 0; padding: 0; }
-  .shop-pdp-thumbs label { position: relative; border-radius: var(--radius); overflow: hidden; cursor: pointer; opacity: 0.7; }
-  .shop-pdp-thumbs label:has(:checked) { opacity: 1; outline: 2px solid var(--primary); outline-offset: 2px; }
-  .shop-pdp-thumbs label:has(:focus-visible) { outline: 2px solid var(--ring); outline-offset: 2px; }
-  .shop-pdp-thumbs input { position: absolute; opacity: 0; }
-  .shop-pdp-thumbs img { display: block; aspect-ratio: 1; inline-size: 100%; object-fit: cover; background: var(--muted); }
+  .shop-pdp-carousel .shop-pdp-main { aspect-ratio: 1; cursor: zoom-in; }
+  .shop-pdp-carousel > ol > li > a { display: block; overflow: hidden; border-radius: var(--radius); }
+  .shop-pdp-carousel [data-carousel] { background: var(--background); }
+  .shop-pdp-count { position: absolute; inset-block-end: 0.75rem; inset-inline-end: 0.75rem; z-index: 1; font-variant-numeric: tabular-nums; }
+  .shop-pdp-thumbs img { aspect-ratio: 1; }
   .shop-pdp-info { display: grid; gap: 1.5rem; }
   .shop-pdp-title { margin: 0; font-size: 1.875rem; font-weight: 600; letter-spacing: -0.025em; text-wrap: balance; }
   .shop-pdp-buy { display: flex; gap: 0.75rem; }
@@ -1733,11 +1761,26 @@ add("product-card-03", "Product Card 03", "Product cards with color swatches and
 
 
 # ================================================================== product details
-def gallery(prefix, n=4):
-    thumbs = "".join(f'<label><input type="radio" name="{prefix}-img" value="{i}" aria-label="Image {i + 1}"{" checked" if i == 0 else ""}><img src="{PH}" alt=""></label>' for i in range(n))
+def gallery(prefix, n=4, name="Merino Crew Sweater"):
+    # Carousel (drag, swipe, arrows), thumbnails kept in sync, and a lightbox on click (js/carousel.js).
+    slides = "".join(
+        f'<li aria-roledescription="slide" aria-label="{i + 1} of {n}"><a href="{PH}" data-lightbox="{prefix}" data-caption="{name}, photo {i + 1} of {n}">'
+        f'<img class="shop-shot shop-pdp-main" src="{PH}" alt="{name}, photo {i + 1}"{f" data-shot={chr(34)}{i + 1}{chr(34)}" if i else ""}></a></li>'
+        for i in range(n))
+    thumbs = "".join(
+        f'<li aria-roledescription="slide" aria-label="{i + 1} of {n}"><button type="button" aria-label="Show photo {i + 1}">'
+        f'<img class="shop-shot" src="{PH}" alt=""{f" data-shot={chr(34)}{i + 1}{chr(34)}" if i else ""}></button></li>'
+        for i in range(n))
+    arrow = lambda d, ic_: f'<button type="button" class="btn rounded-full" data-variant="outline" data-size="icon-sm" data-carousel="{d}" aria-label="{"Previous" if d == "prev" else "Next"} photo">{si(ic_)}</button>'
     return f"""<div class="shop-pdp-gallery">
-  <img class="shop-pdp-main" src="{PH}" alt="Merino Crew Sweater in charcoal">
-  <fieldset class="shop-pdp-thumbs"><legend class="sr-only">Images</legend>{thumbs}</fieldset>
+  <section class="carousel shop-pdp-carousel" id="{prefix}-gallery" data-loop aria-roledescription="carousel" aria-label="{name} photos">
+    <ol>{slides}</ol>
+    {arrow("prev", "chevron-left")}{arrow("next", "chevron-right")}
+    <span class="badge shop-pdp-count" data-variant="secondary" data-carousel-counter>1 / {n}</span>
+  </section>
+  <section class="carousel shop-pdp-thumbs" data-carousel-for="{prefix}-gallery" aria-label="Thumbnails" style="--per-view: {n}; --carousel-gap: 0.75rem">
+    <ol>{thumbs}</ol>
+  </section>
 </div>"""
 
 
@@ -2104,7 +2147,7 @@ search_dialog = f"""<dialog id="s1-search" class="command-dialog shop-search" cl
   <div class="command">
     <header>
       {si("search")}
-      <input type="text" id="s1-input" placeholder="Search products, categories..." autocomplete="off" autocorrect="off" spellcheck="false" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="s1-menu">
+      <input type="text" id="s1-input" placeholder="Search products, categories..." autocomplete="off" spellcheck="false" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="s1-menu">
     </header>
     <div role="menu" id="s1-menu" aria-orientation="vertical" data-empty="No products found.">
       <div role="group" aria-labelledby="s1-recent">
@@ -2163,7 +2206,7 @@ filters_panel = f"""<aside class="shop-filters-panel" aria-label="Filters">
     <details open><summary>Category</summary><section>{checks("cat", [("Apparel", 24, True), ("Accessories", 12, False), ("Home", 18, False), ("Kitchen", 9, False)])}</section></details>
     <details open><summary>Price</summary><section class="stack" data-gap="2">
       <input type="range" class="input" id="s2-price" min="0" max="200" step="5" value="120" aria-label="Maximum price">
-      <div class="shop-range-out"><span>$0</span><span>Up to <output for="s2-price" id="s2-price-out">$120</output></span></div>
+      <div class="shop-range-out"><span>$0</span><output for="s2-price" id="s2-price-out">Up to $120</output></div>
     </section></details>
     <details open><summary>Color</summary><section><fieldset class="shop-colors"><legend class="sr-only">Color</legend>{"".join(f'<label style="--dot: {c}" title="{n}"><input type="checkbox" aria-label="{n}"{" checked" if n == "Charcoal" else ""}></label>' for n, c in [("Charcoal", "#3f3f46"), ("Oat", "#d6cbb5"), ("Navy", "#1e3a5f"), ("Clay", "#c2856a"), ("Sage", "#9caf88")])}</fieldset></section></details>
     <details><summary>Rating</summary><section>{checks("rating", [("4 stars and up", 38, False), ("3 stars and up", 52, False)])}</section></details>
@@ -2173,7 +2216,7 @@ filters_panel = f"""<aside class="shop-filters-panel" aria-label="Filters">
 
 RESULTS_JS = """
 const priceIn = document.getElementById('s2-price');
-priceIn?.addEventListener('input', () => { document.getElementById('s2-price-out').textContent = '$' + priceIn.value; });
+priceIn?.addEventListener('input', () => { document.getElementById('s2-price-out').textContent = 'Up to $' + priceIn.value; });
 document.querySelectorAll('[data-layout-toggle]').forEach((g) => {
   g.addEventListener('click', (e) => {
     const b = e.target.closest('button[data-layout-value]');
@@ -2286,11 +2329,6 @@ add("cart-05", "Cart 05", "A mini cart in a bottom drawer, for mobile shops.", "
 # mirrored copies (data-shot). Real shops use their own images.
 FX_CSS = """
   .shop-fx-grid { display: grid; gap: 2rem 1.5rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
-  .shop-shot { display: block; aspect-ratio: 4 / 5; inline-size: 100%; object-fit: cover; background: var(--muted); }
-  .shop-shot[data-shot='2'] { transform: scaleX(-1); filter: hue-rotate(160deg) saturate(1.6); }
-  .shop-shot[data-shot='3'] { filter: sepia(0.6) saturate(1.4); }
-  .shop-shot[data-shot='4'] { transform: scaleX(-1); filter: grayscale(1) contrast(1.2); }
-  html.dark .shop-shot { opacity: 0.6; }
   .shop-fx { position: relative; display: flex; flex-direction: column; gap: 0.75rem; }
   .shop-fx-media { position: relative; overflow: hidden; border-radius: var(--radius); background: var(--muted); }
   .shop-fx-media > .shop-shot + .shop-shot { position: absolute; inset: 0; block-size: 100%; }
@@ -2666,6 +2704,1335 @@ add("product-card-09", "Product Card 09", "Flash sale cards with a discount badg
   </div>
 </main>
 """, FX, scripts=script(TIMER_JS))
+
+
+
+# ================================================================== filter and category data
+# Each card carries its facets as data-* attributes; FILTER_JS reads the form.
+SHOP_ITEMS = [
+    {**ITEMS[0], "sizes": ["One size"], "stock": "in"},
+    {**ITEMS[1], "sizes": ["S", "M", "L"], "stock": "in"},
+    {**ITEMS[2], "sizes": ["One size"], "stock": "in"},
+    {**ITEMS[3], "sizes": ["One size"], "stock": "out"},
+    {**ITEMS[4], "sizes": ["One size"], "stock": "in"},
+    {**ITEMS[5], "sizes": ["One size"], "stock": "in"},
+    {**ITEMS[6], "sizes": ["One size"], "stock": "in"},
+    {**ITEMS[7], "sizes": ["One size"], "stock": "in"},
+    {**ITEMS[1], "id": "tee", "name": "Organic Cotton Tee", "price": 28.00, "was": None, "rating": 4.6, "reviews": 412, "badge": "Bestseller", "colors": [("Oat", "#d6cbb5"), ("Black", "#262626"), ("Navy", "#1e3a5f")], "sizes": ["XS", "S", "M", "L", "XL"], "stock": "in"},
+    {**ITEMS[7], "id": "coat", "name": "Wool Overshirt", "price": 149.00, "was": None, "rating": 4.8, "reviews": 57, "badge": "New", "colors": [("Camel", "#c19a6b"), ("Charcoal", "#3f3f46")], "sizes": ["S", "M", "L", "XL"], "stock": "in"},
+    {**ITEMS[2], "id": "bowl", "name": "Stoneware Bowl Set", "price": 42.00, "was": 56.00, "rating": 4.5, "reviews": 73, "badge": "Sale", "colors": [("Sand", "#d8c3a5"), ("Ink", "#2b3442")], "sizes": ["One size"], "stock": "in"},
+    {**ITEMS[3], "id": "throw", "name": "Waffle Knit Throw", "price": 68.00, "was": None, "rating": 4.2, "reviews": 19, "badge": None, "colors": [("Ivory", "#f1ead8"), ("Sage", "#9caf88")], "sizes": ["One size"], "stock": "in"},
+]
+FACET_COLORS = [("Black", "#262626"), ("Charcoal", "#3f3f46"), ("Oat", "#d6cbb5"), ("Navy", "#1e3a5f"), ("Sage", "#9caf88"), ("Camel", "#c19a6b"), ("Ivory", "#f1ead8"), ("Sand", "#d8c3a5")]
+FACET_CATS = ["Apparel", "Accessories", "Bags", "Home", "Kitchen"]
+FACET_SIZES = ["XS", "S", "M", "L", "XL", "One size"]
+
+
+def faceted(p, html):
+    attrs = (f' data-product data-cat="{p["cat"]}" data-price="{p["price"]:.2f}" data-rating="{p["rating"]}"'
+             f' data-stock="{p["stock"]}" data-colors="{" ".join(n for n, _ in p["colors"])}" data-sizes="{"|".join(p["sizes"])}"')
+    return html.replace('<article class="shop-card">', f'<article class="shop-card"{attrs}>', 1)
+
+
+def fcard(p):
+    return faceted(p, card(p))
+
+
+FILTER_JS = """
+document.querySelectorAll('[data-filter-form]').forEach((form) => {
+  const grid = document.getElementById(form.dataset.filterForm);
+  const cards = [...grid.querySelectorAll('[data-product]')];
+  const fmt = (v) => '$' + v;
+  const chips = document.querySelectorAll('[data-filter-chips]');
+  const run = () => {
+    const fd = new FormData(form);
+    const cats = fd.getAll('cat'), colors = fd.getAll('color'), sizes = fd.getAll('size');
+    const min = parseFloat(fd.get('min')) || 0;
+    const maxIn = form.elements.max;
+    const max = maxIn && maxIn.value !== '' && Number(maxIn.value) < Number(maxIn.max || Infinity) ? parseFloat(maxIn.value) : Infinity;
+    const rating = parseFloat(fd.get('rating')) || 0;
+    const stock = fd.get('stock');
+    let n = 0;
+    for (const c of cards) {
+      const d = c.dataset;
+      const ok = (!cats.length || cats.includes(d.cat))
+        && (!colors.length || d.colors.split(' ').some((x) => colors.includes(x)))
+        && (!sizes.length || d.sizes.split('|').some((x) => sizes.includes(x)))
+        && Number(d.price) >= min && Number(d.price) <= max
+        && Number(d.rating) >= rating && (!stock || d.stock === 'in');
+      c.hidden = !ok;
+      if (ok) n++;
+    }
+    const active = [
+      ...cats.map((v) => ['cat', v, v]), ...colors.map((v) => ['color', v, v]), ...sizes.map((v) => ['size', v, 'Size ' + v]),
+      ...(min || max !== Infinity ? [['price', '', (min ? fmt(min) : '$0') + ' – ' + (max !== Infinity ? fmt(max) : 'any')]] : []),
+      ...(rating ? [['rating', '', rating + '★ & up']] : []), ...(stock ? [['stock', '', 'In stock']] : []),
+    ];
+    document.querySelectorAll('[data-result-count]').forEach((el) => { el.textContent = n + (n === 1 ? ' product' : ' products'); });
+    document.querySelectorAll('[data-filter-active]').forEach((el) => { el.textContent = active.length; el.hidden = !active.length; });
+    document.querySelectorAll('[data-filter-empty]').forEach((el) => { el.hidden = n > 0; });
+    const out = form.querySelector('output[data-max-out]');
+    if (out && maxIn) out.textContent = 'Up to ' + fmt(maxIn.value);
+    chips.forEach((box) => {
+      box.replaceChildren(...active.map(([name, value, label]) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'badge';
+        b.dataset.variant = 'secondary';
+        b.dataset.clear = name;
+        b.dataset.value = value;
+        b.setAttribute('aria-label', 'Remove filter ' + label);
+        b.append(label, document.querySelector('[data-chip-icon] svg').cloneNode(true));
+        return b;
+      }));
+      box.hidden = !active.length;
+    });
+  };
+  const clear = (name, value) => {
+    if (name === 'price') { if (form.elements.min) form.elements.min.value = ''; if (form.elements.max) form.elements.max.value = form.elements.max.max || ''; }
+    else form.querySelectorAll(`[name="${name}"]`).forEach((i) => { if (!value || i.value === value) { if (i.type === 'radio' || i.type === 'checkbox') i.checked = false; else i.value = ''; } });
+    run();
+  };
+  form.addEventListener('input', run);
+  form.addEventListener('reset', () => setTimeout(run));
+  document.addEventListener('click', (e) => {
+    const chip = e.target.closest('[data-clear]');
+    if (chip) clear(chip.dataset.clear, chip.dataset.value);
+  });
+  const sort = document.querySelector(`[data-sort="${form.dataset.filterForm}"]`);
+  sort?.addEventListener('change', () => {
+    const by = {
+      'price-asc': (a, b) => a.dataset.price - b.dataset.price,
+      'price-desc': (a, b) => b.dataset.price - a.dataset.price,
+      rating: (a, b) => b.dataset.rating - a.dataset.rating,
+    }[sort.value];
+    const list = by ? [...cards].sort(by) : cards;
+    grid.prepend(...list);
+  });
+});
+"""
+
+def chip_box():
+    # The chip icon is cloned from a hidden copy, so it follows the icon library.
+    return f'<span data-chip-icon hidden>{si("x")}</span><div class="shop-chip-row" data-filter-chips hidden></div>'
+
+
+def filter_checks(name, values, counts=None, p="f"):
+    return '<div class="shop-check-list">' + "".join(
+        f'<label><input type="checkbox" class="input" name="{name}" value="{v}">{v}{f"<span>{counts[i]}</span>" if counts else ""}</label>' for i, v in enumerate(values)) + "</div>"
+
+
+def color_checks(name):
+    return ('<fieldset class="shop-colors"><legend class="sr-only">Color</legend>'
+            + "".join(f'<label style="--dot: {c}" title="{n}"><input type="checkbox" name="{name}" value="{n}" aria-label="{n}"></label>' for n, c in FACET_COLORS)
+            + "</fieldset>")
+
+
+def size_checks(name):
+    return ('<fieldset class="shop-swatches shop-swatches-wrap"><legend class="sr-only">Size</legend>'
+            + "".join(f'<label><input type="checkbox" name="{name}" value="{s_}">{s_}</label>' for s_ in FACET_SIZES)
+            + "</fieldset>")
+
+
+def rating_radios(name, p):
+    return '<div class="shop-check-list" role="radiogroup" aria-label="Rating">' + "".join(
+        f'<label><input type="radio" class="input" name="{name}" value="{r}">{stars(r)}<span class="shop-rate-label">{r} &amp; up</span></label>' for r in [4.5, 4, 3.5]) + "</div>"
+
+
+def price_fields(p):
+    return f"""<div class="shop-price-fields">
+  <div class="input-group"><input type="number" name="min" id="{p}-min" min="0" step="1" placeholder="Min" aria-label="Minimum price"><span data-align="start">$</span></div>
+  <span aria-hidden="true">–</span>
+  <div class="input-group"><input type="number" name="max" id="{p}-max" min="0" step="1" placeholder="Max" aria-label="Maximum price"><span data-align="start">$</span></div>
+</div>"""
+
+
+FILTER_CSS = """
+  .shop-price-fields { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 0.5rem; color: var(--muted-foreground); }
+  .shop-swatches-wrap { flex-wrap: wrap; }
+  .shop-check-list .shop-rate-label { margin-inline-start: 0.25rem; color: var(--muted-foreground); font-size: 0.8125rem; }
+  .shop-filter-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+  .shop-filter-head h2 { display: flex; align-items: center; gap: 0.5rem; }
+  .shop-filter-head .badge[hidden] { display: none; }
+  .shop-filter-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .shop-filter-pop { inline-size: 16rem; }
+  .shop-filter-pop[data-size='lg'] { inline-size: 20rem; }
+  .shop-filter-bar .btn svg:last-child { inline-size: 0.875rem; block-size: 0.875rem; color: var(--muted-foreground); }
+  .shop-filter-sep { inline-size: 1px; block-size: 1.5rem; background: var(--border); }
+  .shop-filter-end { margin-inline-start: auto; }
+  .shop-filter-sheet section { display: grid; gap: 0.5rem; }
+  .shop-filter-sheet .accordion summary { font-size: 0.9375rem; }
+  .shop-filter-sheet footer { display: grid; grid-template-columns: auto 1fr; gap: 0.5rem; }
+  .shop-filter-btn { position: relative; }
+  .shop-filter-btn .badge { min-inline-size: 1.25rem; padding-inline: 0.25rem; justify-content: center; }
+  .shop-filter-btn .badge[hidden] { display: none; }
+  .shop-mobile-toolbar { position: sticky; inset-block-start: 3.5rem; z-index: 4; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--background); border-block-end: 1px solid var(--border); }
+  .shop-mobile-toolbar .select { inline-size: 100%; }
+"""
+FILTER_ALL = CAT_CSS + FILTER_CSS + """
+  .shop-switch-row > label { font-size: 0.875rem; }
+  .shop-pages ul { display: flex; justify-content: center; gap: 0.25rem; list-style: none; margin: 0; padding: 0; }"""
+
+FILTER_EMPTY = f"""<section class="empty" data-filter-empty hidden>
+  <header>
+    <figure>{si("search")}</figure>
+    <h3>No products match</h3>
+    <p>Try removing a filter or widening the price range.</p>
+  </header>
+  <footer><button type="reset" class="btn" data-variant="outline" form="{{form}}">Clear filters</button></footer>
+</section>"""
+
+n_all = len(SHOP_ITEMS)
+cat_counts = [sum(1 for p in SHOP_ITEMS if p["cat"] == c) for c in FACET_CATS]
+SORT = '<option value="">Featured</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option><option value="rating">Top rated</option>'
+
+# ================================================================== filter 01: sidebar
+add("filter-01", "Filter 01", "A filter sidebar that filters the grid live: category, price, color, size, rating and stock, with chips and sort.", "filter", f"""
+{store_header(3)}
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="6">
+    <div class="stack" data-gap="1">
+      <h1 class="shop-h1">All products</h1>
+      <p class="shop-lead" data-result-count>{n_all} products</p>
+    </div>
+    <div class="shop-results">
+      <form class="shop-filters-panel" id="f1-form" data-filter-form="f1-grid" aria-label="Filters" onsubmit="event.preventDefault()">
+        <div class="shop-filter-head">
+          <h2 class="shop-section-title">Filters <span class="badge" data-filter-active hidden>0</span></h2>
+          <button type="reset" class="btn" data-variant="link" data-size="sm">Clear all</button>
+        </div>
+        <div class="accordion" data-multiple>
+          <details open><summary>Category</summary><section>{filter_checks("cat", FACET_CATS, cat_counts)}</section></details>
+          <details open><summary>Price</summary><section>{price_fields("f1")}</section></details>
+          <details open><summary>Color</summary><section>{color_checks("color")}</section></details>
+          <details><summary>Size</summary><section>{size_checks("size")}</section></details>
+          <details><summary>Rating</summary><section>{rating_radios("rating", "f1")}</section></details>
+        </div>
+        <div class="shop-switch-row"><label for="f1-stock">In stock only</label><input type="checkbox" role="switch" class="input" id="f1-stock" name="stock" value="in"></div>
+      </form>
+      <div class="stack" data-gap="5">
+        <div class="shop-toolbar">
+          {chip_box()}
+          <div class="cluster shop-filter-end" data-gap="2">
+            <label class="sr-only" for="f1-sort">Sort by</label>
+            <select class="select" id="f1-sort" data-sort="f1-grid">{SORT}</select>
+          </div>
+        </div>
+        <div class="shop-cards" id="f1-grid">{"".join(fcard(p) for p in SHOP_ITEMS)}</div>
+        {FILTER_EMPTY.replace("{form}", "f1-form")}
+      </div>
+    </div>
+  </div>
+</main>
+""", FILTER_ALL + "\n  @media (width < 56rem) { .shop-filters-panel { display: none; } }", scripts=script(FILTER_JS + WISH_JS))
+
+
+# ================================================================== filter 02: horizontal bar with popovers
+def pop(id_, label, body, size=None):
+    sz = f' data-size="{size}"' if size else ""
+    return f"""<div class="popover">
+  <button type="button" class="btn" data-variant="outline" data-size="sm" popovertarget="{id_}">{label}{si("chevron-down")}</button>
+  <div id="{id_}" class="shop-filter-pop"{sz} data-popover popover data-side="bottom" data-align="start">{body}</div>
+</div>"""
+
+
+f2_bar = "".join([
+    pop("f2-cat", "Category", filter_checks("cat", FACET_CATS, cat_counts)),
+    pop("f2-price", "Price", price_fields("f2"), "lg"),
+    pop("f2-color", "Color", color_checks("color")),
+    pop("f2-size", "Size", size_checks("size"), "lg"),
+    pop("f2-rating", "Rating", rating_radios("rating", "f2")),
+])
+add("filter-02", "Filter 02", "A horizontal filter bar with a popover per filter, active chips, a result count and sort.", "filter", f"""
+{store_header(3)}
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="5">
+    <div class="stack" data-gap="1">
+      <h1 class="shop-h1">Shop all</h1>
+      <p class="shop-lead">Considered pieces for every room and every day.</p>
+    </div>
+    <form class="shop-filter-bar" id="f2-form" data-filter-form="f2-grid" aria-label="Filters" onsubmit="event.preventDefault()">
+      {f2_bar}
+      <label class="btn shop-stock-toggle" data-variant="outline" data-size="sm"><input type="checkbox" class="input" name="stock" value="in">In stock</label>
+      <span class="shop-filter-sep" aria-hidden="true"></span>
+      <button type="reset" class="btn" data-variant="ghost" data-size="sm">Reset <span class="badge" data-filter-active hidden>0</span></button>
+      <div class="cluster shop-filter-end" data-gap="2">
+        <p class="shop-lead" data-result-count>{n_all} products</p>
+        <label class="sr-only" for="f2-sort">Sort by</label>
+        <select class="select" id="f2-sort" data-sort="f2-grid">{SORT}</select>
+      </div>
+    </form>
+    {chip_box()}
+    <div class="shop-cards" id="f2-grid">{"".join(fcard(p) for p in SHOP_ITEMS)}</div>
+    {FILTER_EMPTY.replace("{form}", "f2-form")}
+  </div>
+</main>
+""", FILTER_ALL + """
+  .shop-stock-toggle { gap: 0.5rem; cursor: pointer; }
+  .shop-filter-bar .btn .badge[hidden] { display: none; }""", scripts=script(FILTER_JS + WISH_JS))
+
+
+# ================================================================== filter 03: mobile sheet
+f3_items = SHOP_ITEMS[:8]
+add("filter-03", "Filter 03", "Mobile filters in a bottom sheet: grouped filters, a live result count and a sticky show-results button.", "filter", f"""
+<div class="shop-app">
+  <header class="shop-app-bar">
+    <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Back">{si("chevron-left")}</a>
+    <h1>All products</h1>
+    <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Search">{si("search")}</a>
+  </header>
+  <div class="shop-mobile-toolbar">
+    <button type="button" class="btn shop-filter-btn" data-variant="outline" commandfor="f3-sheet" command="show-modal">{si("sliders-horizontal")}Filters <span class="badge" data-filter-active hidden>0</span></button>
+    <label class="sr-only" for="f3-sort">Sort by</label>
+    <select class="select" id="f3-sort" data-sort="f3-grid">{SORT}</select>
+  </div>
+  <div class="shop-app-body">
+    {chip_box()}
+    <p class="shop-lead" data-result-count>{len(f3_items)} products</p>
+    <div class="shop-grid shop-grid-2" id="f3-grid">{"".join(fcard(p) for p in f3_items)}</div>
+    {FILTER_EMPTY.replace("{form}", "f3-form")}
+  </div>
+  <dialog id="f3-sheet" class="sheet shop-filter-sheet" data-side="bottom" closedby="any" aria-labelledby="f3-title">
+    <header>
+      <h2 id="f3-title">Filters</h2>
+      <p>Results update as you choose.</p>
+    </header>
+    <section>
+      <form id="f3-form" data-filter-form="f3-grid" onsubmit="event.preventDefault()">
+        <div class="accordion" data-multiple>
+          <details open><summary>Category</summary><section>{filter_checks("cat", FACET_CATS)}</section></details>
+          <details open><summary>Price</summary><section class="stack" data-gap="2">
+            <input type="range" class="input" name="max" min="0" max="150" step="5" value="150" aria-label="Maximum price">
+            <div class="shop-range-out"><span>$0</span><output data-max-out>Up to $150</output></div>
+          </section></details>
+          <details><summary>Color</summary><section>{color_checks("color")}</section></details>
+          <details><summary>Rating</summary><section>{rating_radios("rating", "f3")}</section></details>
+        </div>
+        <div class="shop-switch-row"><label for="f3-stock">In stock only</label><input type="checkbox" role="switch" class="input" id="f3-stock" name="stock" value="in"></div>
+      </form>
+    </section>
+    <footer>
+      <button type="reset" form="f3-form" class="btn" data-variant="outline">Reset</button>
+      <button type="button" class="btn" commandfor="f3-sheet" command="close">Show <span data-result-count>{len(f3_items)} products</span></button>
+    </footer>
+    <button type="button" aria-label="Close" commandfor="f3-sheet" command="close">{si("x")}</button>
+  </dialog>
+</div>
+""", APP_CSS + CATALOG_CSS + FILTER_CSS + """
+  .shop-app { padding-block-end: 2rem; }
+  .shop-app-body > .shop-chip-row[hidden] { display: none; }
+  .shop-switch-row { padding-block: 1rem; }
+  .shop-switch-row > label { font-size: 0.875rem; }
+  .shop-filter-sheet { max-block-size: 85svh; }""", scripts=script(FILTER_JS + WISH_JS))
+
+
+# ================================================================== category pages
+CATEGORY_CSS = """
+  .shop-hero { position: relative; display: grid; align-items: end; min-block-size: 20rem; overflow: hidden; border-radius: calc(var(--radius) + 4px); color: #fff; }
+  .shop-hero > img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
+  .shop-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgb(0 0 0 / 0.7), rgb(0 0 0 / 0.1) 70%); }
+  .shop-hero-body { position: relative; z-index: 1; display: grid; gap: 0.75rem; max-inline-size: 36rem; padding: 2rem; }
+  .shop-hero-body h1 { margin: 0; font-size: clamp(2rem, 5vw, 3rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; }
+  .shop-hero-body p { margin: 0; opacity: 0.85; }
+  .shop-hero-body .btn { justify-self: start; }
+  .shop-subcats { display: flex; gap: 1.25rem; overflow-x: auto; padding-block-end: 0.5rem; scroll-snap-type: x mandatory; list-style: none; margin: 0; padding-inline: 0; }
+  .shop-subcats > li { scroll-snap-align: start; }
+  .shop-subcats a { display: grid; justify-items: center; gap: 0.5rem; inline-size: 6.5rem; color: inherit; text-decoration: none; font-size: 0.875rem; text-align: center; }
+  .shop-subcats img { inline-size: 6.5rem; block-size: 6.5rem; border-radius: 999px; object-fit: cover; background: var(--muted); transition: transform 200ms ease, box-shadow 200ms ease; }
+  .shop-subcats a:hover img { transform: scale(1.05); box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--primary); }
+  .shop-subcats small { color: var(--muted-foreground); font-size: 0.75rem; }
+  .shop-tiles { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+  .shop-tile { position: relative; display: block; overflow: hidden; border-radius: calc(var(--radius) + 4px); color: #fff; text-decoration: none; min-block-size: 14rem; }
+  .shop-tile > img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; transition: transform 500ms ease; }
+  .shop-tile::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgb(0 0 0 / 0.65), transparent 60%); }
+  .shop-tile:hover > img { transform: scale(1.06); }
+  .shop-tile:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .shop-tile-body { position: absolute; inset-inline: 0; inset-block-end: 0; z-index: 1; display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; padding: 1.25rem; }
+  .shop-tile-body h3 { margin: 0; font-size: 1.25rem; font-weight: 600; }
+  .shop-tile-body p { margin: 0; font-size: 0.8125rem; opacity: 0.85; }
+  .shop-tile-go { display: inline-flex; align-items: center; justify-content: center; inline-size: 2.25rem; block-size: 2.25rem; border-radius: 999px; background: #fff; color: #111; transform: translateX(-0.5rem); opacity: 0; transition: transform 200ms ease, opacity 200ms ease; }
+  .shop-tile-go svg { inline-size: 1rem; block-size: 1rem; }
+  .shop-tile:hover .shop-tile-go { transform: none; opacity: 1; }
+  .shop-tile:focus-visible .shop-tile-go { transform: none; opacity: 1; }
+  @media (hover: none) { .shop-tile-go { transform: none; opacity: 1; } }
+  .shop-bento { display: grid; gap: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 13rem; }
+  @media (width >= 48rem) { .shop-bento { grid-template-columns: repeat(4, minmax(0, 1fr)); } .shop-bento > [data-span='wide'] { grid-column: span 2; } .shop-bento > [data-span='tall'] { grid-row: span 2; } .shop-bento > [data-span='big'] { grid-column: span 2; grid-row: span 2; } }
+  .shop-bento > .shop-tile { min-block-size: 0; }
+  .shop-promo-split { display: grid; gap: 1.5rem; align-items: center; padding: 2rem; border-radius: calc(var(--radius) + 4px); background: var(--muted); }
+  @media (width >= 48rem) { .shop-promo-split { grid-template-columns: 1fr 1fr; padding: 2.5rem; } }
+  .shop-promo-split img { inline-size: 100%; aspect-ratio: 16 / 10; border-radius: var(--radius); object-fit: cover; }
+  .shop-promo-split h2 { margin: 0; font-size: 1.5rem; font-weight: 600; }
+  .shop-promo-split p { margin: 0; color: var(--muted-foreground); }
+  .shop-tree ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.125rem; }
+  .shop-tree ul ul { padding-inline-start: 0.75rem; margin-block: 0.25rem; border-inline-start: 1px solid var(--border); }
+  .shop-tree a { display: flex; justify-content: space-between; gap: 0.5rem; padding: 0.375rem 0.625rem; border-radius: calc(var(--radius) - 2px); color: var(--muted-foreground); font-size: 0.875rem; text-decoration: none; }
+  .shop-tree a:hover { background: var(--accent); color: var(--accent-foreground); }
+  .shop-tree a[aria-current] { background: var(--muted); color: var(--foreground); font-weight: 500; }
+  .shop-tree a span { font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+  .shop-tree summary { display: flex; align-items: center; gap: 0.375rem; padding: 0.375rem 0.625rem; border-radius: calc(var(--radius) - 2px); font-size: 0.875rem; font-weight: 500; cursor: pointer; list-style: none; }
+  .shop-tree summary::-webkit-details-marker { display: none; }
+  .shop-tree summary svg { inline-size: 0.875rem; block-size: 0.875rem; transition: transform 150ms ease; }
+  .shop-tree details[open] > summary svg { transform: rotate(90deg); }
+  .shop-tree summary:hover { background: var(--accent); }
+  .shop-pills { display: flex; gap: 0.5rem; overflow-x: auto; scrollbar-width: none; }
+  .shop-pills a { flex: none; padding: 0.375rem 0.875rem; border: 1px solid var(--border); border-radius: 999px; color: inherit; font-size: 0.875rem; text-decoration: none; white-space: nowrap; }
+  .shop-pills a:hover { background: var(--accent); }
+  .shop-pills a[aria-current] { border-color: var(--primary); background: var(--primary); color: var(--primary-foreground); }
+  .shop-more { display: grid; justify-items: center; gap: 0.75rem; padding-block-start: 1rem; }
+  .shop-more p { margin: 0; font-size: 0.875rem; color: var(--muted-foreground); }
+  .shop-more .progress { inline-size: 12rem; }
+  .shop-seo { max-inline-size: 48rem; }
+  html.dark .shop-tile > img { filter: brightness(0.6); }
+  html.dark .shop-hero > img { filter: brightness(0.6); }
+"""
+CATP = CAT_CSS + FX_CSS + CATEGORY_CSS
+
+SUBCATS = [("Living room", 64, 1), ("Bedroom", 48, 2), ("Kitchen", 72, 3), ("Dining", 31, 4), ("Bath", 26, 1), ("Lighting", 39, 2), ("Textiles", 57, 3), ("Decor", 88, 4)]
+subcats = "".join(f'<li><a href="#"><img src="{PH}" alt=""{f" class={chr(34)}shop-shot{chr(34)} data-shot={chr(34)}{s_}{chr(34)}" if s_ > 1 else ""}><span>{n}</span><small>{c} items</small></a></li>' for n, c, s_ in SUBCATS)
+
+
+def tile(title, sub, n=1, span=None, heading="h3"):
+    sp = f' data-span="{span}"' if span else ""
+    return f"""<a href="#" class="shop-tile"{sp}>
+  {shot(n)}
+  <div class="shop-tile-body"><div><{heading}>{title}</{heading}><p>{sub}</p></div><span class="shop-tile-go" aria-hidden="true">{si("arrow-right")}</span></div>
+</a>"""
+
+
+add("category-01", "Category 01", "A category landing page: hero, subcategory circles, rooms, featured products, a promo and an FAQ.", "category", f"""
+{store_header(3)}
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="12">
+    <div class="stack" data-gap="4">
+      <nav class="breadcrumb shop-crumbs" aria-label="Breadcrumb"><ol><li><a href="#">Home</a></li>{crumb_sep}<li><span aria-current="page">Home &amp; Living</span></li></ol></nav>
+      <section class="shop-hero" aria-labelledby="c1-title">
+        {shot(3)}
+        <div class="shop-hero-body">
+          <span class="badge" data-variant="secondary">Autumn edit</span>
+          <h1 id="c1-title">Home &amp; Living</h1>
+          <p>Natural materials, soft light and pieces made to last. 425 products across every room.</p>
+          <a href="#c1-featured" class="btn" data-variant="secondary">Shop the edit{si("arrow-right")}</a>
+        </div>
+      </section>
+    </div>
+    <section class="stack" data-gap="4" aria-labelledby="c1-subs">
+      <h2 class="shop-h2" id="c1-subs">Shop by category</h2>
+      <ul class="shop-subcats">{subcats}</ul>
+    </section>
+    <section class="stack" data-gap="4" aria-labelledby="c1-rooms">
+      <div class="cluster" data-justify="between"><h2 class="shop-h2" id="c1-rooms">Shop by room</h2><a href="#" class="btn" data-variant="link" data-size="sm">All rooms{si("arrow-right")}</a></div>
+      <div class="shop-tiles">{tile("Living room", "Sofas, throws and lamps", 2)}{tile("Bedroom", "Linen, pillows and calm", 4)}{tile("Kitchen", "Stoneware and tools", 3)}</div>
+    </section>
+    <section class="stack" data-gap="4" id="c1-featured" aria-labelledby="c1-feat">
+      <div class="cluster" data-justify="between"><h2 class="shop-h2" id="c1-feat">Featured</h2><a href="#" class="btn" data-variant="link" data-size="sm">View all 425{si("arrow-right")}</a></div>
+      <div class="shop-cards">{"".join(card(p) for p in [ITEMS[6], ITEMS[3], ITEMS[2], ITEMS[5]])}</div>
+    </section>
+    <section class="shop-promo-split" aria-labelledby="c1-promo">
+      <div class="stack" data-gap="3" data-align="start">
+        <span class="badge">Members</span>
+        <h2 id="c1-promo">15% off textiles this week</h2>
+        <p>Throws, pillows and table linen in seasonal colors. Join free to unlock the price.</p>
+        <a href="#" class="btn">Join and save</a>
+      </div>
+      {shot(2)}
+    </section>
+    <section class="stack shop-seo" data-gap="4" aria-labelledby="c1-faq">
+      <h2 class="shop-h2" id="c1-faq">About Home &amp; Living</h2>
+      <div class="accordion">
+        <details><summary>How do I care for linen?</summary><section><p class="shop-lead">Wash at 40°C, line dry and iron while slightly damp. Linen softens with every wash.</p></section></details>
+        <details><summary>Do you deliver furniture?</summary><section><p class="shop-lead">Large items ship with a two-person crew to the room of your choice, free over $500.</p></section></details>
+        <details><summary>Can I return home items?</summary><section><p class="shop-lead">Yes, unused items within 30 days. Textiles must be in their original packaging.</p></section></details>
+      </div>
+    </section>
+  </div>
+</main>
+""", CATP, scripts=script(WISH_JS))
+
+add("category-02", "Category 02", "Shop by category: a bento grid of image tiles with hover zoom and an arrow that slides in.", "category", f"""
+{store_header(3)}
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="6">
+    <div class="cluster" data-justify="between" data-align="end" data-gap="4">
+      <div class="stack" data-gap="1">
+        <h1 class="shop-h1">Shop by category</h1>
+        <p class="shop-lead">Eight departments, one considered collection.</p>
+      </div>
+      <a href="#" class="btn" data-variant="outline">All products</a>
+    </div>
+    <div class="shop-bento">
+      {tile("New in", "128 products", 1, "big")}
+      {tile("Apparel", "212 products", 2, "tall")}
+      {tile("Bags", "46 products", 3)}
+      {tile("Kitchen", "93 products", 4)}
+      {tile("Home", "155 products", 3, "wide")}
+      {tile("Accessories", "71 products", 2)}
+      {tile("Sale", "Up to 40% off", 4)}
+    </div>
+  </div>
+</main>
+""", CATP)
+
+TREE = [
+    ("Apparel", True, [("Sweaters", 18, True), ("T-shirts", 24, False), ("Outerwear", 12, False), ("Scarves", 7, False)]),
+    ("Home", False, [("Pillows", 21, False), ("Throws", 14, False), ("Lighting", 39, False)]),
+    ("Kitchen", False, [("Mugs", 16, False), ("Bowls", 11, False), ("Coffee", 9, False)]),
+]
+tree = "".join(f"""<li><details{" open" if open_ else ""}><summary>{si("chevron-right")}{name}</summary><ul>{"".join(f'<li><a href="#"{" aria-current=\"page\"" if cur else ""}>{n}<span>{c}</span></a></li>' for n, c, cur in kids)}</ul></details></li>""" for name, open_, kids in TREE)
+c3_items = SHOP_ITEMS * 2
+c3_cards = "".join(card(p).replace('<article class="shop-card">', '<article class="shop-card" data-more hidden>' if i >= 8 else '<article class="shop-card">', 1) for i, p in enumerate(c3_items))
+MORE_JS = """
+document.querySelectorAll('[data-load-more]').forEach((btn) => {
+  const grid = document.getElementById(btn.dataset.loadMore);
+  const total = grid.children.length;
+  const sync = () => {
+    const shown = grid.querySelectorAll(':scope > :not([hidden])').length;
+    btn.closest('.shop-more').querySelector('[data-shown]').textContent = `Showing ${shown} of ${total}`;
+    const bar = btn.closest('.shop-more').querySelector('.progress');
+    bar.setAttribute('aria-valuenow', Math.round(shown / total * 100));
+    bar.querySelector('span').style.width = (shown / total * 100) + '%';
+    btn.hidden = shown >= total;
+  };
+  btn.addEventListener('click', () => {
+    const next = [...grid.querySelectorAll(':scope > [hidden]')].slice(0, 4);
+    next.forEach((c) => { c.hidden = false; });
+    next[0]?.querySelector('a')?.focus({ preventScroll: true });
+    sync();
+  });
+});
+"""
+pills = "".join(f'<a href="#"{" aria-current=\"page\"" if i == 0 else ""}>{t}</a>' for i, t in enumerate(["Sweaters", "Cardigans", "Crew neck", "V-neck", "Merino", "Cashmere", "Cotton"]))
+add("category-03", "Category 03", "A category listing: subcategory tree, pills, sort and a load-more button with progress.", "category", f"""
+{store_header(3)}
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="6">
+    <nav class="breadcrumb shop-crumbs" aria-label="Breadcrumb"><ol><li><a href="#">Home</a></li>{crumb_sep}<li><a href="#">Apparel</a></li>{crumb_sep}<li><span aria-current="page">Sweaters</span></li></ol></nav>
+    <div class="stack" data-gap="2">
+      <h1 class="shop-h1">Sweaters</h1>
+      <p class="shop-lead">Merino, cashmere and cotton knits for cool days. {len(c3_items)} products.</p>
+    </div>
+    <div class="shop-results">
+      <nav class="shop-tree shop-filters-panel" aria-label="Categories"><ul>{tree}</ul></nav>
+      <div class="stack" data-gap="5">
+        <div class="shop-toolbar">
+          <nav class="shop-pills" aria-label="Sweater types">{pills}</nav>
+          <div class="cluster" data-gap="2">
+            <label class="sr-only" for="c3-sort">Sort by</label>
+            <select class="select" id="c3-sort">{SORT}</select>
+          </div>
+        </div>
+        <div class="shop-cards" id="c3-grid">{c3_cards}</div>
+        <div class="shop-more">
+          <p data-shown>Showing 8 of {len(c3_items)}</p>
+          <div class="progress" role="progressbar" aria-label="Products shown" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{round(8 / len(c3_items) * 100)}"><span style="width: {8 / len(c3_items) * 100:.4f}%"></span></div>
+          <button type="button" class="btn" data-variant="outline" data-load-more="c3-grid">Load more</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+""", CATP + "\n  .shop-toolbar { flex-wrap: nowrap; }\n  .shop-pills { min-inline-size: 0; }\n  .shop-pills a { display: inline-block; }\n  @media (width < 56rem) { .shop-tree { display: none; } }", scripts=script(MORE_JS + WISH_JS))
+
+
+
+# ================================================================== checkout success and order tracking
+SUCCESS_CSS = """
+  .shop-done { display: grid; justify-items: center; gap: 1rem; text-align: center; }
+  .shop-done h1 { margin: 0; font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: 600; letter-spacing: -0.025em; text-wrap: balance; }
+  .shop-done p { margin: 0; color: var(--muted-foreground); max-inline-size: 32rem; text-wrap: pretty; }
+  .shop-check-anim { inline-size: 4.5rem; block-size: 4.5rem; color: var(--primary); }
+  .shop-check-anim circle { fill: color-mix(in oklab, var(--primary) 12%, transparent); stroke: currentColor; stroke-width: 2; }
+  .shop-check-anim path { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 30; stroke-dashoffset: 0; animation: shop-draw 500ms ease-out 150ms backwards; }
+  .shop-check-anim circle { animation: shop-pop-in 350ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards; transform-origin: center; }
+  @keyframes shop-draw { from { stroke-dashoffset: 30; } }
+  @keyframes shop-pop-in { from { transform: scale(0.6); opacity: 0; } }
+  .shop-confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+  .shop-confetti > i { position: absolute; inset-block-start: -1rem; inline-size: 0.5rem; block-size: 0.875rem; border-radius: 2px; opacity: 0; animation: shop-fall 1600ms ease-in forwards; }
+  @keyframes shop-fall { 0% { opacity: 1; transform: translateY(0) rotate(0); } 100% { opacity: 0; transform: translateY(18rem) rotate(540deg); } }
+  @media (prefers-reduced-motion: reduce) { .shop-confetti { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .shop-check-anim path { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .shop-check-anim circle { animation: none; } }
+  .shop-order-no { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.25rem 0.25rem 0.75rem; border: 1px dashed var(--border); border-radius: 999px; font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.875rem; }
+  .shop-copy svg + svg { display: none; }
+  .shop-copy[data-copied] svg { display: none; }
+  .shop-copy[data-copied] svg + svg { display: block; color: var(--primary); }
+  .shop-success-wrap { position: relative; padding-block: 3rem 2rem; }
+  .shop-thumbs { display: flex; }
+  .shop-thumbs > img { inline-size: 3rem; block-size: 3rem; border: 2px solid var(--card); border-radius: calc(var(--radius) - 2px); object-fit: cover; background: var(--muted); }
+  .shop-thumbs > img + img { margin-inline-start: -0.75rem; }
+  html.dark .shop-thumbs > img { filter: brightness(0.5) grayscale(1); }
+  .shop-split-2 { display: grid; gap: 1.5rem; }
+  @media (width >= 48rem) { .shop-split-2 { grid-template-columns: 1fr 1fr; } }
+  .shop-refer { display: grid; gap: 1rem; padding: 1.5rem; border-radius: calc(var(--radius) + 4px); background: var(--primary); color: var(--primary-foreground); }
+  .shop-refer h2 { margin: 0; font-size: 1.125rem; font-weight: 600; }
+  .shop-refer p { margin: 0; opacity: 0.85; font-size: 0.875rem; }
+  .shop-refer .input-group { background: var(--background); color: var(--foreground); border-radius: var(--radius); }
+  .shop-mini-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; list-style: none; margin: 0; padding: 0; font-size: 0.75rem; text-align: center; color: var(--muted-foreground); }
+  .shop-mini-steps > li { display: grid; gap: 0.375rem; }
+  .shop-mini-steps > li::before { content: ''; block-size: 4px; border-radius: 4px; background: var(--border); }
+  .shop-mini-steps > li[data-done]::before { background: var(--primary); }
+  .shop-mini-steps > li[data-done] { color: var(--foreground); font-weight: 500; }
+  .shop-receipt { display: grid; gap: 0.625rem; margin: 0; font-size: 0.875rem; }
+  .shop-receipt > div { display: flex; justify-content: space-between; gap: 1rem; }
+  .shop-receipt dt { color: var(--muted-foreground); }
+  .shop-receipt dd { margin: 0; font-variant-numeric: tabular-nums; text-align: end; }
+  .shop-receipt hr { margin: 0.25rem 0; border: 0; border-block-start: 1px dashed var(--border); }
+  .shop-lookup { display: grid; gap: 2rem; max-inline-size: 40rem; margin-inline: auto; }
+  .shop-lookup-form { display: grid; gap: 1rem; }
+  @media (width >= 40rem) { .shop-lookup-form { grid-template-columns: 1fr 1fr auto; align-items: end; } }
+  .shop-lookup-form .field { margin: 0; }
+  .shop-error { display: flex; align-items: center; gap: 0.5rem; margin: 0; font-size: 0.875rem; color: var(--destructive); }
+  .shop-error svg { inline-size: 1rem; block-size: 1rem; }
+  .shop-error[hidden] { display: none; }
+  .shop-result[hidden] { display: none; }
+  .shop-status-hero { display: flex; align-items: center; gap: 1rem; }
+  .shop-status-icon { display: inline-flex; align-items: center; justify-content: center; flex: none; inline-size: 3rem; block-size: 3rem; border-radius: 999px; background: color-mix(in oklab, var(--primary) 12%, transparent); color: var(--primary); }
+  .shop-status-icon svg { inline-size: 1.5rem; block-size: 1.5rem; }
+  .shop-status-hero h2 { margin: 0; font-size: 1.25rem; font-weight: 600; }
+  .shop-status-hero p { margin: 0; font-size: 0.875rem; color: var(--muted-foreground); }
+  .shop-map { position: relative; overflow: hidden; border-radius: var(--radius); background: color-mix(in oklab, var(--muted) 70%, var(--background)); aspect-ratio: 16 / 9; }
+  .shop-map > svg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; }
+  .shop-map .shop-map-grid { stroke: var(--border); stroke-width: 1; }
+  .shop-map .shop-map-road { fill: none; stroke: var(--card); stroke-width: 10; stroke-linecap: round; }
+  .shop-map .shop-map-route { fill: none; stroke: var(--primary); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 2 10; }
+  .shop-map .shop-map-done { fill: none; stroke: var(--primary); stroke-width: 4; stroke-linecap: round; }
+  .shop-map-pin { position: absolute; display: inline-flex; align-items: center; justify-content: center; inline-size: 2.25rem; block-size: 2.25rem; translate: -50% -50%; border-radius: 999px; background: var(--primary); color: var(--primary-foreground); box-shadow: 0 0 0 6px color-mix(in oklab, var(--primary) 20%, transparent); }
+  .shop-map-pin svg { inline-size: 1.125rem; block-size: 1.125rem; }
+  .shop-map-pin[data-kind='home'] { background: var(--background); color: var(--foreground); box-shadow: 0 0 0 1px var(--border), 0 4px 12px -4px rgb(0 0 0 / 0.3); }
+  .shop-map-eta { position: absolute; inset-block-start: 0.75rem; inset-inline-start: 0.75rem; display: grid; padding: 0.5rem 0.75rem; border-radius: var(--radius); background: var(--background); box-shadow: 0 4px 12px -4px rgb(0 0 0 / 0.25); font-size: 0.75rem; }
+  .shop-map-eta strong { font-size: 0.9375rem; }
+  .shop-courier { display: flex; align-items: center; gap: 0.75rem; }
+  .shop-courier > div { flex: 1; min-inline-size: 0; }
+  .shop-courier p { margin: 0; font-size: 0.875rem; }
+  .shop-courier small { display: block; color: var(--muted-foreground); font-size: 0.75rem; }
+  .shop-vsteps { list-style: none; margin: 0; padding: 0; display: grid; }
+  .shop-vsteps > li { position: relative; display: grid; grid-template-columns: 1.75rem 1fr; gap: 0 0.875rem; padding-block-end: 1.5rem; }
+  .shop-vsteps > li:last-child { padding-block-end: 0; }
+  .shop-vsteps > li::before { content: ''; position: absolute; inset-inline-start: calc(0.875rem - 1px); inset-block: 1.75rem 0; inline-size: 2px; background: var(--border); }
+  .shop-vsteps > li:last-child::before { display: none; }
+  .shop-vsteps > li[data-done]::before { background: var(--primary); }
+  .shop-vsteps .shop-tracker-dot { grid-row: span 2; }
+  .shop-vsteps > li[data-done] .shop-tracker-dot { border-color: var(--primary); background: var(--primary); color: var(--primary-foreground); }
+  .shop-vsteps > li[aria-current] .shop-tracker-dot { border-color: var(--primary); color: var(--primary); }
+  .shop-vsteps p { margin: 0; font-size: 0.875rem; font-weight: 500; }
+  .shop-vsteps > li:not([data-done]):not([aria-current]) p { color: var(--muted-foreground); font-weight: 400; }
+  .shop-vsteps small { color: var(--muted-foreground); font-size: 0.75rem; }
+  .shop-pkg-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; }
+"""
+TRACK_CSS = CAT_CSS + SUCCESS_CSS
+
+
+def copy_btn(target, label):
+    return (f'<button type="button" class="btn shop-copy" data-variant="ghost" data-size="icon-xs" data-copy="{target}" aria-label="{label}" data-copied-label="Copied">'
+            f'{si("copy")}{si("check")}</button>')
+
+
+CONFETTI_COLORS = ["var(--primary)", "var(--chart-1, #f97316)", "var(--chart-2, #14b8a6)", "var(--chart-3, #6366f1)", "var(--chart-4, #eab308)", "var(--chart-5, #ec4899)"]
+confetti = "".join(
+    f'<i style="inset-inline-start: {(i * 37) % 100}%; background: {CONFETTI_COLORS[i % 6]}; animation-delay: {(i * 53) % 400}ms"></i>'
+    for i in range(24))
+CHECK_SVG = '<svg class="shop-check-anim" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-15"/></svg>'
+total = totals(PRODUCTS)[3]
+
+add("checkout-04", "Checkout 04", "A celebratory order success page: animated check, order number to copy, delivery estimate, account creation and a referral.", "checkout", f"""
+{store_header(0)}
+<main class="wrapper shop-page" data-size="md">
+  <div class="stack" data-gap="8">
+    <section class="shop-success-wrap" aria-labelledby="co4-title">
+      <div class="shop-confetti" aria-hidden="true">{confetti}</div>
+      <div class="shop-done">
+        {CHECK_SVG}
+        <h1 id="co4-title">Order confirmed!</h1>
+        <p>Thanks, Olivia. We've emailed your receipt to olivia@example.com and we'll let you know when it ships.</p>
+        <div class="shop-order-no"><span>Order</span><span id="co4-no">#A-10294</span>{copy_btn("#co4-no", "Copy order number")}</div>
+      </div>
+    </section>
+    <div class="shop-split-2">
+      <section class="card" aria-labelledby="co4-arrive">
+        <header>
+          <h2 id="co4-arrive">Arriving Thu, Nov 12</h2>
+          <p>Standard delivery to 1234 Market Street, San Francisco</p>
+        </header>
+        <section class="stack" data-gap="4">
+          <ol class="shop-mini-steps" aria-label="Order progress"><li data-done>Confirmed</li><li>Shipped</li><li>Delivered</li></ol>
+          <div class="cluster" data-justify="between" data-gap="3">
+            <div class="shop-thumbs">{"".join(f'<img src="{PH}" alt="">' for _ in PRODUCTS)}</div>
+            <p class="shop-row"><span class="shop-muted">{count(PRODUCTS)} items ·</span><strong>{money(total)}</strong></p>
+          </div>
+        </section>
+        <footer class="cluster" data-gap="2">
+          <a href="#" class="btn" data-size="sm">{si("package")}Track order</a>
+          <button type="button" class="btn" data-variant="outline" data-size="sm">{si("download")}Receipt</button>
+        </footer>
+      </section>
+      <form class="card" onsubmit="event.preventDefault()" aria-labelledby="co4-account">
+        <header>
+          <h2 id="co4-account">Save your details</h2>
+          <p>Set a password to track orders and check out faster next time.</p>
+        </header>
+        <section class="stack" data-gap="3">
+          <div role="group" class="field"><label for="co4-email">Email</label><input id="co4-email" type="email" value="olivia@example.com" readonly></div>
+          <div role="group" class="field"><label for="co4-pass">Password</label><input id="co4-pass" type="password" autocomplete="new-password" minlength="8" required></div>
+        </section>
+        <footer><button type="submit" class="btn shop-full">Create account</button></footer>
+      </form>
+    </div>
+    <section class="shop-refer" aria-labelledby="co4-refer">
+      <div class="stack" data-gap="1">
+        <h2 id="co4-refer">Give $10, get $10</h2>
+        <p>Share your link: friends get $10 off their first order and you get $10 when they buy.</p>
+      </div>
+      <div class="input-group">
+        <input type="text" id="co4-link" value="acme.store/r/olivia-m" readonly aria-label="Referral link">
+        <span data-align="end">{copy_btn("#co4-link", "Copy referral link").replace('data-copy="#co4-link"', 'data-copy-text="https://acme.store/r/olivia-m"')}</span>
+      </div>
+    </section>
+    <div class="cluster" data-justify="center" data-gap="2">
+      <a href="#" class="btn" data-variant="outline">Continue shopping</a>
+    </div>
+  </div>
+</main>
+""", TRACK_CSS)
+
+add("checkout-05", "Checkout 05", "A mobile order success screen with a receipt and next steps.", "checkout", f"""
+<div class="shop-app">
+  <header class="shop-app-bar">
+    <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Close">{si("x")}</a>
+    <h1>Order placed</h1>
+  </header>
+  <div class="shop-app-body">
+    <section class="shop-done shop-success-wrap" aria-labelledby="co5-title">
+      {CHECK_SVG}
+      <h1 id="co5-title">Payment successful</h1>
+      <p>Order #A-10294 · Nov 7, 2026, 3:47 PM</p>
+    </section>
+    <ol class="shop-mini-steps" aria-label="Order progress"><li data-done>Paid</li><li>Packed</li><li>On its way</li></ol>
+    <section class="card" aria-labelledby="co5-receipt">
+      <header><h2 id="co5-receipt">Receipt</h2></header>
+      <section>
+        <dl class="shop-receipt">
+          {"".join(f'<div><dt>{p["name"]} × {p["qty"]}</dt><dd>{money(p["price"] * p["qty"])}</dd></div>' for p in PRODUCTS)}
+          <hr>
+          <div><dt>Subtotal</dt><dd>{money(totals(PRODUCTS)[0])}</dd></div>
+          <div><dt>Shipping</dt><dd>Free</dd></div>
+          <div><dt>Tax</dt><dd>{money(totals(PRODUCTS)[2])}</dd></div>
+          <hr>
+          <div><dt><strong>Paid with Visa •••• 4242</strong></dt><dd><strong>{money(total)}</strong></dd></div>
+        </dl>
+      </section>
+    </section>
+    <ul class="shop-perks">
+      <li>{si("mail")}<span>Receipt sent to olivia@example.com</span></li>
+      <li>{si("truck")}<span>Estimated delivery Thu, Nov 12</span></li>
+    </ul>
+    <div class="stack" data-gap="2">
+      <a href="#" class="btn shop-full" data-size="lg">{si("package")}Track order</a>
+      <a href="#" class="btn shop-full" data-variant="ghost">Back to shop</a>
+    </div>
+  </div>
+</div>
+""", APP_CSS + CATALOG_CSS + SUCCESS_CSS + "\n  .shop-app { padding-block-end: 2rem; }\n  .shop-success-wrap { padding-block: 1.5rem 0.5rem; }")
+
+
+# ---------------------------------------------------------------- tracking
+def vsteps(steps):
+    out = []
+    for title, when, state, ic_ in steps:
+        attr = " data-done" if state == "done" else ' aria-current="step"' if state == "now" else ""
+        dot = si("check") if state == "done" else si(ic_)
+        out.append(f'<li{attr}><span class="shop-tracker-dot">{dot}</span><p>{title}</p><small>{when}</small></li>')
+    return '<ol class="shop-vsteps">' + "".join(out) + "</ol>"
+
+
+STEPS_A = [("Order placed", "Nov 7, 3:47 PM", "done", ""), ("Packed", "Nov 8, 9:12 AM", "done", ""), ("Shipped with UPS", "Nov 8, 4:30 PM", "done", ""), ("Out for delivery", "Today, 8:12 AM", "now", "truck"), ("Delivered", "Estimated today, 2–5 PM", "todo", "house")]
+
+LOOKUP_JS = """
+document.querySelectorAll('[data-lookup]').forEach((form) => {
+  const err = form.querySelector('[data-lookup-error]');
+  const result = document.getElementById(form.dataset.lookup);
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const no = form.elements.order.value.trim().replace(/^#/, '').toUpperCase();
+    const ok = /^A-\\d{5}$/.test(no) && form.elements.email.value.includes('@');
+    err.hidden = ok;
+    result.hidden = !ok;
+    form.elements.order.toggleAttribute('aria-invalid', !ok);
+    if (ok) {
+      result.querySelector('[data-lookup-no]').textContent = '#' + no;
+      result.querySelector('h2').focus();
+    }
+  });
+});
+"""
+add("tracking-01", "Tracking 01", "Track an order without an account: order number and email lookup, validation, then the delivery status.", "tracking", f"""
+{store_header(0)}
+<main class="wrapper shop-page">
+  <div class="shop-lookup">
+    <div class="stack" data-gap="2">
+      <h1 class="shop-h1">Track your order</h1>
+      <p class="shop-lead">Enter the order number from your confirmation email. Try <strong>A-10251</strong> with any email.</p>
+    </div>
+    <form class="card" data-lookup="t1-result" novalidate>
+      <section class="stack" data-gap="3">
+        <div class="shop-lookup-form">
+          <div role="group" class="field"><label for="t1-order">Order number</label><input id="t1-order" name="order" type="text" placeholder="A-10251" autocomplete="off" aria-describedby="t1-error"></div>
+          <div role="group" class="field"><label for="t1-email">Email</label><input id="t1-email" name="email" type="email" placeholder="you@example.com" autocomplete="email"></div>
+          <button type="submit" class="btn">{si("search")}Track</button>
+        </div>
+        <p class="shop-error" id="t1-error" data-lookup-error hidden>{si("info")}We couldn't find that order. Check the number (like A-10251) and the email.</p>
+      </section>
+    </form>
+    <section class="card shop-result" id="t1-result" aria-live="polite" hidden>
+      <header>
+        <div class="shop-status-hero">
+          <span class="shop-status-icon">{si("truck")}</span>
+          <div><h2 tabindex="-1">Out for delivery</h2><p>Order <span data-lookup-no>#A-10251</span> · arriving today, 2–5 PM</p></div>
+        </div>
+      </header>
+      <section class="stack" data-gap="6">
+        <ol class="shop-tracker" aria-label="Delivery progress">{tracker}</ol>
+        {vsteps(STEPS_A)}
+      </section>
+      <footer class="cluster" data-gap="2">
+        <a href="#" class="btn" data-variant="outline" data-size="sm">Track on UPS</a>
+        <a href="#" class="btn" data-variant="ghost" data-size="sm">{si("mail")}Contact support</a>
+      </footer>
+    </section>
+  </div>
+</main>
+""", TRACK_CSS + "\n  .shop-result h2:focus { outline: none; }", scripts=script(LOOKUP_JS))
+
+MAP = """<svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <g class="shop-map-grid">""" + "".join(f'<line x1="{x}" y1="0" x2="{x}" y2="180"/>' for x in range(0, 321, 40)) + "".join(f'<line x1="0" y1="{y}" x2="320" y2="{y}"/>' for y in range(0, 181, 40)) + """</g>
+  <path class="shop-map-road" d="M30 150 C 80 150, 90 90, 140 90 S 210 40, 290 40"/>
+  <path class="shop-map-done" d="M30 150 C 80 150, 90 90, 140 90"/>
+  <path class="shop-map-route" d="M140 90 C 175 90, 210 40, 290 40"/>
+</svg>"""
+
+DRIVER_JS = """
+document.querySelectorAll('[data-instructions]').forEach((form) => {
+  const out = document.getElementById(form.dataset.instructions);
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const v = form.elements.note.value.trim();
+    out.textContent = v || 'No instructions yet.';
+    form.closest('dialog').close();
+  });
+});
+"""
+add("tracking-02", "Tracking 02", "Live delivery tracking: route map, arrival window, courier contact, delivery instructions and history.", "tracking", account("Orders", f"""
+<div class="stack" data-gap="4">
+  <a href="#" class="btn shop-back" data-variant="ghost" data-size="sm">{si("arrow-left")}Order #A-10251</a>
+  <div class="shop-status-hero">
+    <span class="shop-status-icon">{si("truck")}</span>
+    <div><h1 class="shop-h2">Arriving today, 2:15–2:45 PM</h1><p>Out for delivery · 6 stops away</p></div>
+  </div>
+</div>
+<section class="card" aria-label="Delivery map">
+  <section class="stack" data-gap="4">
+    <div class="shop-map">
+      {MAP}
+      <span class="shop-map-pin" style="inset-inline-start: 43.75%; inset-block-start: 50%" title="Courier">{si("truck")}</span>
+      <span class="shop-map-pin" data-kind="home" style="inset-inline-start: 90.6%; inset-block-start: 22.2%" title="Your address">{si("house")}</span>
+      <div class="shop-map-eta"><span class="shop-muted">Estimated arrival</span><strong>2:15–2:45 PM</strong></div>
+    </div>
+    <div class="shop-courier">
+      <span class="avatar"><img src="{PH}" alt=""><span>DR</span></span>
+      <div><p>Daniel R. · UPS</p><small>Tracking 1Z 999 AA1 0123 4567 84</small></div>
+      <a href="#" class="btn" data-variant="outline" data-size="icon" aria-label="Call the courier">{si("phone")}</a>
+      <a href="#" class="btn" data-variant="outline" data-size="icon" aria-label="Message the courier">{si("mail")}</a>
+    </div>
+  </section>
+</section>
+<div class="shop-cols shop-cols-even">
+  <section class="card" aria-labelledby="t2-history">
+    <header><h2 id="t2-history">Tracking history</h2></header>
+    <section><ol class="shop-timeline" aria-label="Tracking history">{events}</ol></section>
+  </section>
+  <div class="stack" data-gap="6">
+    <section class="card" aria-labelledby="t2-instr">
+      <header>
+        <h2 id="t2-instr">Delivery instructions</h2>
+        <div class="card-action"><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Edit delivery instructions" commandfor="t2-dialog" command="show-modal">{si("pencil")}</button></div>
+      </header>
+      <section><p class="shop-lead" id="t2-note">Leave at the front desk if no one answers.</p></section>
+    </section>
+    <section class="card" aria-labelledby="t2-items">
+      <header><h2 id="t2-items">In this package</h2></header>
+      <section><ul class="shop-lines" data-size="sm">{order_lines_sm(PRODUCTS[:2])}</ul></section>
+    </section>
+  </div>
+</div>
+<dialog id="t2-dialog" class="dialog" closedby="any" aria-labelledby="t2-dialog-title">
+  <div>
+    <header>
+      <h2 id="t2-dialog-title">Delivery instructions</h2>
+      <p>Tell the courier where to leave your package.</p>
+    </header>
+    <section>
+      <form id="t2-form" data-instructions="t2-note" class="stack" data-gap="2">
+        <label class="label" for="t2-text">Instructions</label>
+        <input class="input" id="t2-text" name="note" type="text" value="Leave at the front desk if no one answers.">
+      </form>
+    </section>
+    <footer>
+      <button type="button" class="btn" data-variant="outline" commandfor="t2-dialog" command="close">Cancel</button>
+      <button type="submit" form="t2-form" class="btn">Save</button>
+    </footer>
+    <button type="button" aria-label="Close" commandfor="t2-dialog" command="close">{si("x")}</button>
+  </div>
+</dialog>
+"""), TRACK_CSS + """
+  @media (width >= 56rem) { .shop-cols.shop-cols-even { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); } }
+  .shop-back { align-self: flex-start; margin-inline-start: -0.5rem; }
+  .shop-profile .avatar { inline-size: 2.25rem; block-size: 2.25rem; }
+  .shop-courier .avatar { inline-size: 2.5rem; block-size: 2.5rem; }""", scripts=script(DRIVER_JS))
+
+PKGS = [
+    ("1", "UPS · 1Z 999 AA1 0123 4567 84", "Out for delivery", [PRODUCTS[0], PRODUCTS[1]], STEPS_A),
+    ("2", "USPS · 9400 1000 0000 0000 0000 00", "Preparing to ship", [PRODUCTS[2]], [("Order placed", "Nov 7, 3:47 PM", "done", ""), ("Packed", "Today, 10:05 AM", "now", "package"), ("Shipped", "Expected Nov 9", "todo", "truck"), ("Delivered", "Estimated Nov 13", "todo", "house")]),
+]
+tabs = "".join(f'<button type="button" role="tab" id="t3-tab-{n}" aria-controls="t3-panel-{n}" aria-selected="{"true" if i == 0 else "false"}" tabindex="{0 if i == 0 else -1}">Package {n} <span class="badge" data-variant="{"secondary" if i == 0 else "outline"}">{st}</span></button>' for i, (n, c, st, its, steps) in enumerate(PKGS))
+panels = "".join(f"""<div role="tabpanel" id="t3-panel-{n}" aria-labelledby="t3-tab-{n}" tabindex="-1"{" hidden" if i else ""}>
+  <div class="shop-split-2">
+    <section class="card" aria-label="Package {n} progress">
+      <header class="shop-pkg-head">
+        <div class="stack" data-gap="1"><h2>{st}</h2><p class="shop-line-meta"><span id="t3-no-{n}">{c}</span></p></div>
+        {copy_btn(f"#t3-no-{n}", f"Copy tracking number for package {n}")}
+      </header>
+      <section>{vsteps(steps)}</section>
+    </section>
+    <section class="card" aria-label="Package {n} items">
+      <header><h2>{len(its)} {"item" if len(its) == 1 else "items"}</h2></header>
+      <section><ul class="shop-lines" data-size="sm">{order_lines_sm(its)}</ul></section>
+    </section>
+  </div>
+</div>""" for i, (n, c, st, its, steps) in enumerate(PKGS))
+notify = "".join(f'''<div class="shop-switch-row"><label for="t3-n{i}"><span class="shop-switch-title">{t}</span><small>{d}</small></label><input type="checkbox" role="switch" class="input" id="t3-n{i}"{" checked" if on else ""}></div>''' for i, (t, d, on) in enumerate([
+    ("Email updates", "olivia@example.com", True),
+    ("Text messages", "+1 (555) 010-2048", False),
+    ("Delivery day reminder", "A heads-up on the morning of delivery", True),
+]))
+add("tracking-03", "Tracking 03", "An order shipped in two packages: tabs per package, carrier, copyable tracking numbers, steps and notifications.", "tracking", account("Orders", f"""
+<div class="stack" data-gap="1">
+  <div class="cluster" data-gap="3"><h1 class="shop-h1">Order #A-10294</h1>{status_badge("shipped", "Partly shipped")}</div>
+  <p class="shop-lead">Placed Nov 7, 2026 · shipping in 2 packages</p>
+</div>
+<div class="tabs" id="t3-tabs">
+  <nav role="tablist" aria-orientation="horizontal">{tabs}</nav>
+  {panels}
+</div>
+<section class="card" aria-labelledby="t3-notify">
+  <header>
+    <h2 id="t3-notify">Shipping notifications</h2>
+    <p>Choose how we tell you about these packages.</p>
+  </header>
+  <section class="stack" data-gap="4">{notify}</section>
+</section>
+"""), TRACK_CSS + """
+  .shop-profile .avatar { inline-size: 2.25rem; block-size: 2.25rem; }
+  .shop-switch-row > label { flex: 1; cursor: pointer; }
+  .shop-switch-title { font-size: 0.875rem; font-weight: 500; }
+  .shop-switch-row small { display: block; font-size: 0.8125rem; color: var(--muted-foreground); }
+  .shop-pkg-head h2 { margin: 0; font-size: 1rem; font-weight: 600; }
+  .tabs [role='tab'] .badge { margin-inline-start: 0.375rem; }""")
+
+
+
+# ================================================================== reviews
+REVIEW_CSS = """
+  .shop-rv { display: grid; gap: 2rem; align-items: start; }
+  @media (width >= 56rem) { .shop-rv { grid-template-columns: 18rem minmax(0, 1fr); gap: 3rem; } .shop-rv-aside { position: sticky; inset-block-start: 5.5rem; } }
+  .shop-rv-score { display: flex; align-items: center; gap: 1rem; }
+  .shop-rv-score strong { font-size: 3rem; font-weight: 600; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .shop-rv-bars { display: grid; gap: 0.25rem; margin: 0; padding: 0; list-style: none; }
+  .shop-rv-bars button { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr) 2.25rem; align-items: center; gap: 0.5rem; inline-size: 100%; padding: 0.25rem 0.375rem; border: 0; border-radius: calc(var(--radius) - 4px); background: none; color: inherit; font: inherit; font-size: 0.8125rem; text-align: start; cursor: pointer; }
+  .shop-rv-bars button:hover { background: var(--accent); }
+  .shop-rv-bars button[aria-pressed='true'] { background: var(--muted); font-weight: 600; }
+  .shop-rv-bars button:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
+  .shop-rv-bars button > span:first-child { display: inline-flex; align-items: center; gap: 0.25rem; }
+  .shop-rv-bars button > span:last-child { text-align: end; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+  .shop-rv-bars .progress { block-size: 0.5rem; }
+  .shop-rv-attrs { display: grid; gap: 0.875rem; margin: 0; }
+  .shop-rv-attrs > div { display: grid; gap: 0.375rem; font-size: 0.8125rem; }
+  .shop-rv-attrs dt { display: flex; justify-content: space-between; color: var(--muted-foreground); }
+  .shop-rv-attrs dd { margin: 0; }
+  .shop-rv-scale { position: relative; block-size: 0.375rem; border-radius: 999px; background: var(--muted); }
+  .shop-rv-scale > span { position: absolute; inset-block-start: 50%; inline-size: 0.875rem; block-size: 0.875rem; translate: -50% -50%; border-radius: 999px; background: var(--primary); box-shadow: 0 0 0 2px var(--background); corner-shape: round; }
+  .shop-rv-scale-labels { display: flex; justify-content: space-between; font-size: 0.6875rem; color: var(--muted-foreground); }
+  .shop-rv-list { display: grid; margin: 0; padding: 0; list-style: none; }
+  .shop-rv-list > li { display: grid; gap: 0.75rem; padding-block: 1.5rem; border-block-end: 1px solid var(--border); }
+  .shop-rv-list > li:first-child { padding-block-start: 0; }
+  .shop-rv-head { display: flex; align-items: flex-start; gap: 0.75rem; }
+  .shop-rv-head > div { flex: 1; min-inline-size: 0; display: grid; gap: 0.125rem; }
+  .shop-rv-head p { margin: 0; font-size: 0.875rem; font-weight: 500; }
+  .shop-rv-head small { color: var(--muted-foreground); font-size: 0.75rem; }
+  .shop-rv-verified { display: inline-flex; align-items: center; gap: 0.25rem; color: var(--primary); font-size: 0.75rem; }
+  .shop-rv-verified svg { inline-size: 0.875rem; block-size: 0.875rem; }
+  .shop-rv-list h3 { margin: 0; font-size: 0.9375rem; font-weight: 600; }
+  .shop-rv-list p { margin: 0; font-size: 0.875rem; line-height: 1.6; }
+  .shop-rv-meta { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; font-size: 0.75rem; color: var(--muted-foreground); }
+  .shop-rv-meta strong { color: var(--foreground); font-weight: 500; }
+  .shop-rv-photos { display: flex; gap: 0.5rem; }
+  .shop-rv-photos img { inline-size: 4rem; block-size: 4rem; border-radius: calc(var(--radius) - 2px); object-fit: cover; background: var(--muted); }
+  .shop-rv-reply { padding: 0.75rem 1rem; border-inline-start: 2px solid var(--primary); border-radius: 0 var(--radius) var(--radius) 0; background: var(--muted); }
+  .shop-rv-reply p { font-size: 0.8125rem; }
+  .shop-rv-reply strong { display: block; margin-block-end: 0.25rem; font-size: 0.75rem; }
+  .shop-rv-help { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; color: var(--muted-foreground); }
+  .shop-rv-help .btn[aria-pressed='true'] { background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
+  .shop-rv-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; padding-block-end: 1rem; border-block-end: 1px solid var(--border); }
+  .shop-rv-toolbar .select { inline-size: auto; }
+  .shop-rv-toggle { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; }
+  .shop-rv-active { display: inline-flex; align-items: center; gap: 0.25rem; }
+  .shop-rv-active[hidden] { display: none; }
+  .shop-star-input { display: flex; gap: 0.25rem; border: 0; margin: 0; padding: 0; }
+  .shop-star-input legend { margin-block-end: 0.5rem; font-size: 0.875rem; font-weight: 500; }
+  .shop-star-input label { position: relative; display: inline-flex; padding: 0.125rem; border-radius: calc(var(--radius) - 4px); color: var(--muted-foreground); cursor: pointer; }
+  .shop-star-input label svg { inline-size: 2rem; block-size: 2rem; transition: transform 120ms ease, color 120ms ease; }
+  .shop-star-input label:hover svg { transform: scale(1.12); }
+  .shop-star-input label[data-on] { color: oklch(0.8 0.16 80); }
+  .shop-star-input label[data-on] svg { fill: currentColor; }
+  .shop-star-input input { position: absolute; opacity: 0; inline-size: 1px; block-size: 1px; }
+  .shop-star-input label:has(:focus-visible) { outline: 2px solid var(--ring); outline-offset: 1px; }
+  .shop-star-text { margin-block-end: 0.625rem; margin-inline-start: 0.5rem; font-size: 0.875rem; font-weight: 500; }
+  .shop-seg { display: grid; grid-template-columns: repeat(3, 1fr); padding: 0.25rem; border-radius: var(--radius); background: var(--muted); }
+  .shop-seg label { position: relative; padding: 0.5rem; border-radius: calc(var(--radius) - 4px); font-size: 0.8125rem; text-align: center; cursor: pointer; color: var(--muted-foreground); }
+  .shop-seg label:has(:checked) { background: var(--background); color: var(--foreground); font-weight: 500; box-shadow: 0 1px 3px rgb(0 0 0 / 0.1); }
+  .shop-seg label:has(:focus-visible) { outline: 2px solid var(--ring); outline-offset: 1px; }
+  .shop-seg input { position: absolute; opacity: 0; }
+  .shop-seg-wrap { display: grid; gap: 0.5rem; }
+  .shop-drop { display: grid; justify-items: center; gap: 0.375rem; padding: 1.5rem; border: 1px dashed var(--border); border-radius: var(--radius); color: var(--muted-foreground); font-size: 0.875rem; text-align: center; cursor: pointer; }
+  .shop-drop:hover { border-color: var(--ring); background: var(--accent); }
+  .shop-drop[data-over] { border-color: var(--primary); background: color-mix(in oklab, var(--primary) 6%, transparent); }
+  .shop-drop:has(:focus-visible) { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .shop-drop svg { inline-size: 1.25rem; block-size: 1.25rem; }
+  .shop-drop strong { color: var(--foreground); font-weight: 500; }
+  .shop-previews { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+  .shop-previews li { position: relative; }
+  .shop-previews img { inline-size: 4.5rem; block-size: 4.5rem; border-radius: calc(var(--radius) - 2px); object-fit: cover; }
+  .shop-previews button { position: absolute; inset-block-start: -0.375rem; inset-inline-end: -0.375rem; display: inline-flex; align-items: center; justify-content: center; inline-size: 1.25rem; block-size: 1.25rem; padding: 0; border: 0; border-radius: 999px; background: var(--foreground); color: var(--background); cursor: pointer; corner-shape: round; }
+  .shop-previews button svg { inline-size: 0.75rem; block-size: 0.75rem; }
+  .shop-count-line { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted-foreground); }
+  .shop-count-line[data-warn] span:last-child { color: var(--destructive); }
+  .shop-rv-done[hidden] { display: none; }
+  .shop-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .shop-tags button { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.375rem 0.75rem; border: 1px solid var(--border); border-radius: 999px; background: none; color: inherit; font: inherit; font-size: 0.8125rem; cursor: pointer; corner-shape: round; }
+  .shop-tags button span { color: var(--muted-foreground); font-size: 0.75rem; }
+  .shop-tags button[data-tone='con'] { border-style: dashed; }
+  .shop-tags button[aria-pressed='true'] { border-color: var(--primary); background: var(--primary); color: var(--primary-foreground); }
+  .shop-tags button[aria-pressed='true'] span { color: inherit; opacity: 0.8; }
+  .shop-tags button:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .shop-summary-ai { display: grid; gap: 0.75rem; padding: 1.25rem; border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px); background: color-mix(in oklab, var(--muted) 50%, transparent); }
+  .shop-summary-ai p { margin: 0; font-size: 0.875rem; line-height: 1.6; }
+  .shop-summary-ai h2 { display: flex; align-items: center; gap: 0.5rem; margin: 0; font-size: 1rem; font-weight: 600; }
+  .shop-summary-ai h2 svg { inline-size: 1rem; block-size: 1rem; }
+  .shop-reel-wrap { display: grid; gap: 1rem; }
+  .shop-reel { display: grid; grid-auto-flow: column; grid-auto-columns: min(20rem, 85%); gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 1px 1px 0.25rem; }
+  .shop-reel > .card { scroll-snap-align: start; }
+  .shop-reel > .card[hidden] { display: none; }
+  .shop-reel .card p { margin: 0; font-size: 0.875rem; line-height: 1.6; }
+  .shop-reel .card mark { background: color-mix(in oklab, var(--primary) 15%, transparent); color: inherit; border-radius: 2px; padding-inline: 0.125rem; }
+"""
+RV_CSS = CAT_CSS + REVIEW_CSS
+
+RVS = [
+    {"name": "Hannah K.", "r": 5, "d": "Oct 30, 2026", "t": "My new everyday sweater", "b": "Soft and warm without being bulky. I wore it all week and it still looks new. True to size, I'm usually a medium.", "size": "M", "fit": "True to size", "help": 24, "photos": 2, "reply": None},
+    {"name": "Marcus L.", "r": 5, "d": "Oct 21, 2026", "t": "Second one I've bought", "b": "Still looks new after a winter of wear. The charcoal goes with everything.", "size": "L", "fit": "True to size", "help": 17, "photos": 0, "reply": None},
+    {"name": "Priya S.", "r": 4, "d": "Oct 4, 2026", "t": "Lovely color, long sleeves", "b": "The oat color is beautiful in daylight. Slightly longer in the sleeves than I expected, so I fold them once.", "size": "S", "fit": "Runs large", "help": 9, "photos": 1, "reply": "Thanks Priya! Our sleeves run about 2 cm long by design. If you'd like a shorter fit, the Organic Cotton Tee pairs nicely underneath."},
+    {"name": "Tom W.", "r": 3, "d": "Sep 18, 2026", "t": "Good, but it pilled a little", "b": "Comfortable and warm. After a month there's some pilling under the arms, which a comb took care of.", "size": "XL", "fit": "True to size", "help": 6, "photos": 0, "reply": "Sorry about that, Tom. Light pilling is normal for fine merino in the first weeks; it settles after a few washes. Reach out if it doesn't."},
+    {"name": "Ana R.", "r": 2, "d": "Aug 27, 2026", "t": "Too small for me", "b": "Nice quality, but it fit a size small across the shoulders. The exchange was quick and easy.", "size": "M", "fit": "Runs small", "help": 4, "photos": 0, "reply": None},
+]
+DIST = [(5, 82, 176), (4, 12, 26), (3, 4, 8), (2, 1, 2), (1, 1, 2)]
+
+
+def rv_item(v, i):
+    photos = f'<div class="shop-rv-photos">{"".join(shot(k + 1) .replace("shop-shot", "shop-shot shop-rv-photo") for k in range(v["photos"]))}</div>' if v["photos"] else ""
+    reply = f'<div class="shop-rv-reply"><strong>Response from Acme Store</strong><p>{v["reply"]}</p></div>' if v["reply"] else ""
+    return f"""<li data-review data-rating="{v["r"]}" data-helpful="{v["help"]}" data-date="{len(RVS) - i}" data-photos="{v["photos"]}">
+  <div class="shop-rv-head">
+    <span class="avatar"><span>{"".join(w[0] for w in v["name"].split())}</span></span>
+    <div><p>{v["name"]}</p><small class="shop-rv-verified">{si("circle-check")}Verified purchase</small></div>
+    <time class="shop-line-meta">{v["d"]}</time>
+  </div>
+  <div class="stack" data-gap="2">{stars(v["r"])}<h3>{v["t"]}</h3><p>{v["b"]}</p></div>
+  {photos}
+  <div class="shop-rv-meta"><span>Size bought: <strong>{v["size"]}</strong></span><span>Fit: <strong>{v["fit"]}</strong></span></div>
+  {reply}
+  <div class="shop-rv-help"><span>Helpful?</span><button type="button" class="btn" data-variant="outline" data-size="xs" aria-pressed="false" data-helpful-btn>Yes · <span data-helpful-count>{v["help"]}</span></button><button type="button" class="btn" data-variant="ghost" data-size="xs">Report</button></div>
+</li>"""
+
+
+REVIEWS_JS = """
+document.querySelectorAll('[data-reviews]').forEach((root) => {
+  const list = root.querySelector('.shop-rv-list');
+  const items = [...list.querySelectorAll('[data-review]')];
+  const bars = root.querySelectorAll('[data-star-filter]');
+  const photos = root.querySelector('[data-photos-only]');
+  const sort = root.querySelector('[data-review-sort]');
+  const active = root.querySelector('.shop-rv-active');
+  let star = 0;
+  const run = () => {
+    let n = 0;
+    items.forEach((it) => {
+      const ok = (!star || Number(it.dataset.rating) === star) && (!photos.checked || Number(it.dataset.photos) > 0);
+      it.hidden = !ok;
+      if (ok) n++;
+    });
+    bars.forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.starFilter) === star)));
+    active.hidden = !star;
+    active.querySelector('[data-star-label]').textContent = star + ' stars';
+    root.querySelector('[data-review-count]').textContent = n + (n === 1 ? ' review' : ' reviews');
+    root.querySelector('[data-review-empty]').hidden = n > 0;
+  };
+  bars.forEach((b) => b.addEventListener('click', () => { const v = Number(b.dataset.starFilter); star = star === v ? 0 : v; run(); }));
+  active.querySelector('button').addEventListener('click', () => { star = 0; run(); });
+  photos.addEventListener('change', run);
+  sort.addEventListener('change', () => {
+    const key = { helpful: (a, b) => b.dataset.helpful - a.dataset.helpful, newest: (a, b) => b.dataset.date - a.dataset.date, high: (a, b) => b.dataset.rating - a.dataset.rating, low: (a, b) => a.dataset.rating - b.dataset.rating }[sort.value];
+    list.prepend(...[...items].sort(key));
+  });
+  list.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-helpful-btn]');
+    if (!b) return;
+    const on = b.getAttribute('aria-pressed') !== 'true';
+    b.setAttribute('aria-pressed', String(on));
+    const c = b.querySelector('[data-helpful-count]');
+    c.textContent = Number(c.textContent) + (on ? 1 : -1);
+  });
+});
+"""
+
+ATTRS = [("Fit", "Runs small", "Runs large", 52), ("Softness", "Rough", "Very soft", 88), ("Warmth", "Light", "Very warm", 70)]
+bars_html = "".join(f'<li><button type="button" data-star-filter="{n}" aria-pressed="false" aria-label="Show {n}-star reviews ({c})"><span>{n} {si("star")}</span><span class="progress" role="presentation"><span style="width: {pct}%"></span></span><span>{c}</span></button></li>' for n, pct, c in DIST)
+attrs_html = "".join(f'<div><dt><span>{a}</span></dt><dd><div class="shop-rv-scale" role="img" aria-label="{a}: {v}% toward {hi}"><span style="inset-inline-start: {v}%"></span></div><div class="shop-rv-scale-labels"><span>{lo}</span><span>{hi}</span></div></dd></div>' for a, lo, hi, v in ATTRS)
+
+add("reviews-01", "Reviews 01", "Product reviews: rating summary with clickable star bars, fit and feel scales, photo filter, sort, helpful votes and store replies.", "reviews", f"""
+<main class="wrapper shop-page">
+  <section class="shop-rv" data-reviews aria-labelledby="rv1-title">
+    <aside class="shop-rv-aside stack" data-gap="6">
+      <div class="stack" data-gap="2">
+        <h2 class="shop-h2" id="rv1-title">Customer reviews</h2>
+        <div class="shop-rv-score"><strong>4.8</strong><div class="stack" data-gap="1">{stars(4.8)}<span class="shop-line-meta">Based on 214 reviews</span></div></div>
+      </div>
+      <ul class="shop-rv-bars" aria-label="Filter by rating">{bars_html}</ul>
+      <dl class="shop-rv-attrs">{attrs_html}</dl>
+      <div class="stack" data-gap="2">
+        <p class="shop-line-meta">Share your thoughts with other customers.</p>
+        <a href="#" class="btn" data-variant="outline">{si("pencil")}Write a review</a>
+      </div>
+    </aside>
+    <div class="stack" data-gap="4">
+      <div class="shop-rv-toolbar">
+        <div class="cluster" data-gap="3">
+          <p class="shop-lead" data-review-count>{len(RVS)} reviews</p>
+          <span class="badge shop-rv-active" data-variant="secondary" hidden><span data-star-label>5 stars</span><button type="button" class="btn" data-variant="ghost" data-size="icon-xs" aria-label="Clear rating filter">{si("x")}</button></span>
+        </div>
+        <div class="cluster" data-gap="3">
+          <label class="shop-rv-toggle" for="rv1-photos"><input type="checkbox" role="switch" class="input" id="rv1-photos" data-photos-only>With photos</label>
+          <label class="sr-only" for="rv1-sort">Sort reviews</label>
+          <select class="select" id="rv1-sort" data-review-sort><option value="helpful">Most helpful</option><option value="newest">Newest</option><option value="high">Highest rating</option><option value="low">Lowest rating</option></select>
+        </div>
+      </div>
+      <ul class="shop-rv-list">
+        {"".join(rv_item(v, i) for i, v in enumerate(RVS))}
+      </ul>
+      <section class="empty" data-review-empty hidden>
+        <header><figure>{si("star")}</figure><h3>No reviews match</h3><p>Try another rating or turn off “With photos”.</p></header>
+      </section>
+      <button type="button" class="btn" data-variant="outline">Show more reviews</button>
+    </div>
+  </section>
+</main>
+""", RV_CSS + """
+  .shop-rv-bars button svg { inline-size: 0.75rem; block-size: 0.75rem; fill: currentColor; vertical-align: -1px; }
+  .shop-rv-list .avatar { inline-size: 2.25rem; block-size: 2.25rem; font-size: 0.75rem; }
+  .shop-rv-photo { inline-size: 4rem; block-size: 4rem; aspect-ratio: 1; border-radius: calc(var(--radius) - 2px); }""", scripts=script(REVIEWS_JS))
+
+STAR_WORDS = ["Terrible", "Poor", "Okay", "Good", "Excellent"]
+star_input = "".join(f'<label title="{w}"><input type="radio" name="rating" value="{i + 1}" required aria-label="{i + 1} star{"s" if i else ""}, {w}">{si("star")}</label>' for i, w in enumerate(STAR_WORDS))
+WRITE_JS = """
+document.querySelectorAll('[data-review-form]').forEach((form) => {
+  const words = %s;
+  const stars = form.querySelector('.shop-star-input');
+  const labels = [...stars.querySelectorAll('label')];
+  const text = form.querySelector('[data-star-text]');
+  const paint = (n) => labels.forEach((l, i) => l.toggleAttribute('data-on', i < n));
+  const chosen = () => Number(stars.querySelector('input:checked')?.value || 0);
+  const show = (n) => { paint(n); text.textContent = n ? words[n - 1] : 'Select a rating'; };
+  labels.forEach((l, i) => l.addEventListener('pointerenter', () => show(i + 1)));
+  stars.addEventListener('pointerleave', () => show(chosen()));
+  stars.addEventListener('change', () => { show(chosen()); form.querySelector('[data-rating-error]').hidden = true; });
+  const body = form.elements.body;
+  const line = form.querySelector('.shop-count-line');
+  const counter = form.querySelector('[data-chars]');
+  body.addEventListener('input', () => {
+    counter.textContent = body.value.length + ' / ' + body.maxLength;
+    line.toggleAttribute('data-warn', body.value.length > 0 && body.value.length < 20);
+  });
+  const file = form.querySelector('input[type=file]');
+  const drop = form.querySelector('.shop-drop');
+  const list = form.querySelector('.shop-previews');
+  const tpl = form.querySelector('[data-remove-icon] svg');
+  let files = [];
+  const draw = () => {
+    list.replaceChildren(...files.map((f, i) => {
+      const li = document.createElement('li');
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(f);
+      img.alt = f.name;
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('aria-label', 'Remove ' + f.name);
+      b.append(tpl.cloneNode(true));
+      b.addEventListener('click', () => { files.splice(i, 1); draw(); });
+      li.append(img, b);
+      return li;
+    }));
+  };
+  const addFiles = (fl) => { files = [...files, ...[...fl].filter((f) => f.type.startsWith('image/'))].slice(0, 4); draw(); };
+  file.addEventListener('change', () => { addFiles(file.files); file.value = ''; });
+  ['dragenter', 'dragover'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.setAttribute('data-over', ''); }));
+  ['dragleave', 'drop'].forEach((t) => drop.addEventListener(t, () => drop.removeAttribute('data-over')));
+  drop.addEventListener('drop', (e) => { e.preventDefault(); addFiles(e.dataTransfer.files); });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const err = form.querySelector('[data-rating-error]');
+    err.hidden = !!chosen();
+    if (!chosen()) { stars.querySelector('input').focus(); return; }
+    form.hidden = true;
+    const done = document.getElementById(form.dataset.reviewForm);
+    done.hidden = false;
+    done.querySelector('h2').focus();
+  });
+});
+""".replace("%s", "[" + ", ".join(f"'{w}'" for w in STAR_WORDS) + "]")
+
+
+add("reviews-02", "Reviews 02", "Write a review: star rating with hover preview, fit feedback, a character counter, photo upload with previews and a thank-you state.", "reviews", f"""
+<main class="wrapper shop-page" data-size="sm">
+  <div class="stack" data-gap="6">
+    <div class="cluster" data-gap="4">
+      <img class="shop-thumb" src="{PH}" alt="">
+      <div class="stack" data-gap="1">
+        <p class="shop-line-meta">Write a review</p>
+        <h1 class="shop-h2">Merino Crew Sweater</h1>
+        <p class="shop-line-meta">Charcoal · Size M · Delivered Nov 10</p>
+      </div>
+    </div>
+    <form class="card" data-review-form="rv2-done" novalidate>
+      <section class="stack" data-gap="6">
+        <div class="stack" data-gap="1">
+          <div class="cluster" data-gap="1" data-align="end">
+            <fieldset class="shop-star-input"><legend>Overall rating</legend>{star_input}</fieldset>
+            <span class="shop-star-text" data-star-text aria-live="polite">Select a rating</span>
+          </div>
+          <p class="shop-error" data-rating-error hidden>{si("info")}Choose a star rating.</p>
+        </div>
+        <div class="shop-seg-wrap">
+          <span class="label" id="rv2-fit">How does it fit?</span>
+          <div class="shop-seg" role="radiogroup" aria-labelledby="rv2-fit">{"".join(f'<label><input type="radio" name="fit" value="{v}"{" checked" if v == "True to size" else ""}>{v}</label>' for v in ["Runs small", "True to size", "Runs large"])}</div>
+        </div>
+        <div role="group" class="field"><label for="rv2-title">Title</label><input id="rv2-title" name="title" type="text" placeholder="Sum it up in a few words" maxlength="80"></div>
+        <div role="group" class="field">
+          <label for="rv2-body">Your review</label>
+          <textarea class="textarea" id="rv2-body" name="body" rows="5" maxlength="500" placeholder="What did you like? How do you wear it?"></textarea>
+          <div class="shop-count-line"><span>At least 20 characters</span><span data-chars>0 / 500</span></div>
+        </div>
+        <div class="stack" data-gap="2">
+          <span class="label">Photos <span class="shop-muted">(optional, up to 4)</span></span>
+          <label class="shop-drop">{si("upload")}<span><strong>Click to upload</strong> or drag photos here</span><span>PNG or JPG</span><input type="file" class="sr-only" accept="image/*" multiple></label>
+          <ul class="shop-previews" aria-label="Selected photos"></ul>
+          <span data-remove-icon hidden>{si("x")}</span>
+        </div>
+        <div class="shop-switch-row"><label for="rv2-rec"><span class="shop-switch-title">I'd recommend this product</span></label><input type="checkbox" role="switch" class="input" id="rv2-rec" checked></div>
+        <div role="group" class="field"><label for="rv2-name">Display name</label><input id="rv2-name" type="text" value="Olivia M." autocomplete="nickname"></div>
+      </section>
+      <footer class="cluster" data-justify="end" data-gap="2">
+        <button type="button" class="btn" data-variant="outline">Cancel</button>
+        <button type="submit" class="btn">Submit review</button>
+      </footer>
+    </form>
+    <section class="card shop-rv-done" id="rv2-done" hidden aria-live="polite">
+      <section class="shop-done">
+        <span class="shop-success">{si("circle-check")}</span>
+        <h2 tabindex="-1" class="shop-h2">Thanks for your review!</h2>
+        <p>It will appear on the product page once it has been checked, usually within a day.</p>
+        <a href="#" class="btn" data-variant="outline">Back to your orders</a>
+      </section>
+    </section>
+  </div>
+</main>
+""", RV_CSS + SUCCESS_CSS + """
+  .shop-done h2:focus { outline: none; }
+  .shop-switch-row > label { flex: 1; cursor: pointer; }
+  .shop-switch-title { font-size: 0.875rem; font-weight: 500; }
+  .shop-success { display: inline-flex; align-items: center; justify-content: center; inline-size: 3rem; block-size: 3rem; border-radius: 999px; background: color-mix(in oklab, var(--primary) 12%, transparent); color: var(--primary); }
+  .shop-success svg { inline-size: 1.5rem; block-size: 1.5rem; }""", scripts=script(WRITE_JS))
+
+TAGS = [("Soft", 86, "pro"), ("Warm", 64, "pro"), ("True to size", 51, "pro"), ("Holds color", 27, "pro"), ("Long sleeves", 18, "con"), ("Some pilling", 9, "con")]
+REEL = [
+    ("Hannah K.", 5, "Soft and warm without being bulky. True to size, I'm usually a medium.", ["Soft", "Warm", "True to size"]),
+    ("Marcus L.", 5, "Still looks new after a winter of wear. The color holds after many washes.", ["Holds color"]),
+    ("Priya S.", 4, "Lovely color. Slightly longer in the sleeves than I expected.", ["Long sleeves"]),
+    ("Jo P.", 5, "So soft I bought a second color. Fits exactly as described.", ["Soft", "True to size"]),
+    ("Tom W.", 3, "Warm and comfortable, some pilling under the arms after a month.", ["Warm", "Some pilling"]),
+    ("Lena F.", 5, "Warm enough for autumn walks without a coat.", ["Warm"]),
+]
+reel = "".join(f'''<article class="card" data-tags="{"|".join(tg)}">
+  <header><div class="cluster" data-justify="between">{stars(r)}<span class="shop-line-meta">{n}</span></div></header>
+  <section><p>{t}</p></section>
+  <footer class="shop-tags-mini">{"".join(f'<span class="badge" data-variant="outline">{x}</span>' for x in tg)}</footer>
+</article>''' for n, r, t, tg in REEL)
+TAGS_JS = """
+document.querySelectorAll('[data-review-tags]').forEach((root) => {
+  const reel = root.querySelector('.shop-reel');
+  const cards = [...reel.children];
+  const count = root.querySelector('[data-reel-count]');
+  root.querySelector('.shop-tags').addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-tag]');
+    if (!b) return;
+    const on = b.getAttribute('aria-pressed') !== 'true';
+    root.querySelectorAll('button[data-tag]').forEach((x) => x.setAttribute('aria-pressed', String(x === b && on)));
+    let n = 0;
+    cards.forEach((c) => { c.hidden = on && !c.dataset.tags.split('|').includes(b.dataset.tag); if (!c.hidden) n++; });
+    count.textContent = on ? n + ' reviews mention “' + b.dataset.tag + '”' : 'Recent reviews';
+    reel.scrollTo({ left: 0 });
+  });
+  const page = (d) => reel.scrollBy({ left: d * reel.clientWidth * 0.9, behavior: 'smooth' });
+  root.querySelector('[data-reel=prev]').addEventListener('click', () => page(-1));
+  root.querySelector('[data-reel=next]').addEventListener('click', () => page(1));
+});
+"""
+add("reviews-03", "Reviews 03", "Review highlights: a summary, pro and con tags that filter a scrolling row of reviews, with previous and next buttons.", "reviews", f"""
+<main class="wrapper shop-page">
+  <section class="stack" data-gap="6" data-review-tags aria-labelledby="rv3-title">
+    <div class="cluster" data-justify="between" data-align="end" data-gap="4">
+      <div class="stack" data-gap="2">
+        <h2 class="shop-h1" id="rv3-title">What customers say</h2>
+        <div class="cluster" data-gap="2">{stars(4.8)}<span class="shop-line-meta">4.8 out of 5 · 214 reviews · 96% recommend</span></div>
+      </div>
+      <a href="#" class="btn" data-variant="outline">See all reviews</a>
+    </div>
+    <div class="shop-summary-ai">
+      <h2>{si("sparkles")}Review summary</h2>
+      <p>Customers love how <strong>soft</strong> and <strong>warm</strong> this sweater is and say it fits <strong>true to size</strong> and keeps its color. A few mention <strong>long sleeves</strong> and <strong>light pilling</strong> in the first weeks.</p>
+      <div class="shop-tags" role="group" aria-label="Filter reviews by topic">{"".join(f'<button type="button" data-tag="{t}" data-tone="{tone}" aria-pressed="false">{si("check") if tone == "pro" else si("info")}{t}<span>{c}</span></button>' for t, c, tone in TAGS)}</div>
+    </div>
+    <div class="shop-reel-wrap">
+      <div class="cluster" data-justify="between">
+        <p class="shop-lead" data-reel-count aria-live="polite">Recent reviews</p>
+        <div class="cluster" data-gap="2">
+          <button type="button" class="btn" data-variant="outline" data-size="icon-sm" aria-label="Previous reviews" data-reel="prev">{si("chevron-left")}</button>
+          <button type="button" class="btn" data-variant="outline" data-size="icon-sm" aria-label="Next reviews" data-reel="next">{si("chevron-right")}</button>
+        </div>
+      </div>
+      <div class="shop-reel" tabindex="0" aria-label="Reviews">{reel}</div>
+    </div>
+  </section>
+</main>
+""", RV_CSS + """
+  .shop-tags button svg { inline-size: 0.875rem; block-size: 0.875rem; }
+  .shop-tags-mini { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+  .shop-reel:focus-visible { outline: 2px solid var(--ring); outline-offset: 4px; }""", scripts=script(TAGS_JS))
 
 
 if __name__ == "__main__":

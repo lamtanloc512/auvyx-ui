@@ -110,7 +110,7 @@
   }
 
   .sheet > :is(button, form[method='dialog']):last-child {
-    @apply top-4 end-4 inline-flex size-7 items-center justify-center rounded-(--auvyx-r-control) opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-ring/50 focus-visible:ring-[3px] outline-none [&_svg]:size-4;
+    @apply top-4 end-4 inline-flex size-8 items-center justify-center rounded-(--auvyx-r-control) transition-colors hover:bg-muted hover:text-foreground dark:hover:bg-muted/50 focus-visible:ring-ring/50 focus-visible:ring-[3px] outline-none [&_svg]:size-4;
   }
 
   /* Hover Card */
@@ -135,6 +135,55 @@
   }
 
   /* Carousel */
+  .carousel [data-carousel-dots] > button {
+    @apply bg-foreground/20 hover:bg-foreground/40;
+  }
+
+  .carousel [data-carousel-dots] > button[aria-current='true'] {
+    @apply bg-primary;
+  }
+
+  .carousel [data-carousel-dots] > button:focus-visible {
+    @apply ring-ring/50 ring-[3px] outline-none;
+  }
+
+  .carousel[data-carousel-for] > :is(ol, ul) > li > :is(button, a) {
+    @apply overflow-hidden rounded-md border-0 bg-transparent opacity-60 ring-offset-2 ring-offset-background transition-opacity;
+  }
+
+  .carousel[data-carousel-for] > :is(ol, ul) > li > :is(button, a):hover {
+    @apply opacity-100;
+  }
+
+  .carousel[data-carousel-for] > :is(ol, ul) > li[data-active] > :is(button, a) {
+    @apply ring-primary opacity-100 ring-2;
+  }
+
+  .carousel[data-carousel-for] > :is(ol, ul) > li > :is(button, a):focus-visible {
+    @apply ring-ring/50 opacity-100 ring-[3px] outline-none;
+  }
+
+  dialog.lightbox {
+    background: rgb(0 0 0 / 0.95);
+  }
+
+  dialog.lightbox :is([data-carousel='prev'], [data-carousel='next'], [data-lightbox-close]) {
+    @apply inline-flex size-10 cursor-pointer items-center justify-center rounded-full border-0 bg-white/10 text-white transition-colors hover:bg-white/20 disabled:opacity-40;
+  }
+
+  dialog.lightbox :is([data-carousel='prev'], [data-carousel='next'], [data-lightbox-close]):focus-visible {
+    @apply ring-[3px] ring-white/60 outline-none;
+  }
+
+  dialog.lightbox :is([data-carousel='prev'], [data-carousel='next'], [data-lightbox-close]) > svg {
+    @apply size-5;
+  }
+
+  dialog.lightbox figcaption,
+  dialog.lightbox [data-carousel-counter] {
+    @apply text-white/80;
+  }
+
   .carousel > :is(ol, ul)::scroll-button(*) {
     @apply bg-background text-foreground border-input size-8 rounded-full border shadow-xs transition-[opacity,background-color];
     background-image: var(--carousel-arrow-icon);

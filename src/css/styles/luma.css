@@ -557,6 +557,11 @@
     @apply top-4 end-4;
   }
 
+  /* Close button: a ghost icon-sm button, as upstream (cn-dialog-close). */
+  .dialog > * > :is(button, form[method='dialog'] > button) {
+    @apply size-8 rounded-4xl bg-secondary focus-visible:ring-ring/30 focus-visible:ring-[3px] hover:bg-muted hover:text-foreground dark:hover:bg-muted/50;
+  }
+
   .dialog > * > :is(button, form[method='dialog'] > button) {
     @apply bg-secondary;
   }

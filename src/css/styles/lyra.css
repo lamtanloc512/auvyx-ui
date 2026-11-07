@@ -533,6 +533,11 @@
     @apply top-2 end-2;
   }
 
+  /* Close button: a ghost icon-sm button, as upstream (cn-dialog-close). */
+  .dialog > * > :is(button, form[method='dialog'] > button) {
+    @apply size-7 rounded-none focus-visible:ring-ring/50 focus-visible:ring-[1px] hover:bg-muted hover:text-foreground dark:hover:bg-muted/50;
+  }
+
   .dialog > * > header {
     @apply gap-1 text-start;
   }

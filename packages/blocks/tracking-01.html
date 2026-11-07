@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tracking 01 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-page {
+        padding-block: 2rem 4rem;
+      }
+      .shop-h1 {
+        margin: 0;
+        font-size: 1.875rem;
+        font-weight: 600;
+        letter-spacing: -0.025em;
+      }
+      .shop-lead {
+        margin: 0;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
+      .shop-header {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 10;
+        border-block-end: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 90%, transparent);
+        backdrop-filter: blur(8px);
+      }
+      .shop-header-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        block-size: 4rem;
+      }
+      .shop-nav {
+        display: flex;
+        gap: 1.25rem;
+        font-size: 0.875rem;
+      }
+      .shop-nav a {
+        color: var(--muted-foreground);
+        text-decoration: none;
+      }
+      .shop-nav a:hover,
+      .shop-nav a[aria-current] {
+        color: var(--foreground);
+      }
+      .shop-header-search {
+        flex: 1;
+        max-inline-size: 20rem;
+        margin-inline-start: auto;
+      }
+      .shop-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .shop-cart-btn {
+        position: relative;
+      }
+      .shop-count {
+        position: absolute;
+        inset-block-start: -0.25rem;
+        inset-inline-end: -0.25rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-inline-size: 1.125rem;
+        block-size: 1.125rem;
+        padding-inline: 0.25rem;
+        border-radius: 999px;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+      .shop-count:empty,
+      .shop-count[data-count="0"] {
+        display: none;
+      }
+      @media (width < 48rem) {
+        .shop-nav,
+        .shop-header-search {
+          display: none;
+        }
+        .shop-header-actions {
+          margin-inline-start: auto;
+        }
+      }
+      .shop-tracker {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font-size: 0.8125rem;
+      }
+      .shop-tracker > li {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        text-align: center;
+        color: var(--muted-foreground);
+      }
+      .shop-tracker > li::before {
+        content: "";
+        position: absolute;
+        inset-block-start: 0.875rem;
+        inset-inline: -50% 50%;
+        block-size: 2px;
+        background: var(--border);
+      }
+      .shop-tracker > li:first-child::before {
+        display: none;
+      }
+      .shop-tracker > li[data-done]::before,
+      .shop-tracker > li[aria-current]::before {
+        background: var(--primary);
+      }
+      .shop-tracker-dot {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.75rem;
+        block-size: 1.75rem;
+        border-radius: 999px;
+        border: 2px solid var(--border);
+        background: var(--background);
+      }
+      .shop-tracker-dot svg {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+      }
+      .shop-tracker > li[data-done],
+      .shop-tracker > li[aria-current] {
+        color: var(--foreground);
+      }
+      .shop-tracker > li[data-done] .shop-tracker-dot {
+        border-color: var(--primary);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .shop-tracker > li[aria-current] .shop-tracker-dot {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+      .shop-tracker small {
+        display: block;
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+      .shop-count {
+        corner-shape: round;
+      }
+      .shop-status-icon {
+        corner-shape: round;
+      }
+      .shop-tracker-dot {
+        corner-shape: round;
+      }
+
+      .block-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: inherit;
+        text-decoration: none;
+      }
+      .block-logo-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .block-logo-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+
+      @keyframes shop-draw {
+        from {
+          stroke-dashoffset: 30;
+        }
+      }
+      @keyframes shop-pop-in {
+        from {
+          transform: scale(0.6);
+          opacity: 0;
+        }
+      }
+      @keyframes shop-fall {
+        0% {
+          opacity: 1;
+          transform: translateY(0) rotate(0);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(18rem) rotate(540deg);
+        }
+      }
+      .shop-lookup {
+        display: grid;
+        gap: 2rem;
+        max-inline-size: 40rem;
+        margin-inline: auto;
+      }
+      .shop-lookup-form {
+        display: grid;
+        gap: 1rem;
+      }
+      @media (width >= 40rem) {
+        .shop-lookup-form {
+          grid-template-columns: 1fr 1fr auto;
+          align-items: end;
+        }
+      }
+      .shop-lookup-form .field {
+        margin: 0;
+      }
+      .shop-error {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0;
+        font-size: 0.875rem;
+        color: var(--destructive);
+      }
+      .shop-error svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .shop-error[hidden] {
+        display: none;
+      }
+      .shop-result[hidden] {
+        display: none;
+      }
+      .shop-status-hero {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .shop-status-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+        inline-size: 3rem;
+        block-size: 3rem;
+        border-radius: 999px;
+        background: color-mix(in oklab, var(--primary) 12%, transparent);
+        color: var(--primary);
+      }
+      .shop-status-icon svg {
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+      }
+      .shop-status-hero h2 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+      .shop-status-hero p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: var(--muted-foreground);
+      }
+      .shop-vsteps {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+      }
+      .shop-vsteps > li {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1.75rem 1fr;
+        gap: 0 0.875rem;
+        padding-block-end: 1.5rem;
+      }
+      .shop-vsteps > li:last-child {
+        padding-block-end: 0;
+      }
+      .shop-vsteps > li::before {
+        content: "";
+        position: absolute;
+        inset-inline-start: calc(0.875rem - 1px);
+        inset-block: 1.75rem 0;
+        inline-size: 2px;
+        background: var(--border);
+      }
+      .shop-vsteps > li:last-child::before {
+        display: none;
+      }
+      .shop-vsteps > li[data-done]::before {
+        background: var(--primary);
+      }
+      .shop-vsteps .shop-tracker-dot {
+        grid-row: span 2;
+      }
+      .shop-vsteps > li[data-done] .shop-tracker-dot {
+        border-color: var(--primary);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .shop-vsteps > li[aria-current] .shop-tracker-dot {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+      .shop-vsteps p {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+      .shop-vsteps > li:not([data-done]):not([aria-current]) p {
+        color: var(--muted-foreground);
+        font-weight: 400;
+      }
+      .shop-vsteps small {
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+      }
+
+      .shop-result h2:focus {
+        outline: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="shop-header">
+      <div class="wrapper shop-header-row">
+        <a href="#" class="block-logo">
+          <span class="block-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+          Acme Store
+        </a>
+        <nav class="shop-nav" aria-label="Main">
+          <a href="#" aria-current="page">Shop</a>
+          <a href="#">New in</a>
+          <a href="#">Collections</a>
+          <a href="#">Journal</a>
+        </nav>
+        <div class="input-group shop-header-search">
+          <input type="search" placeholder="Search products..." aria-label="Search products" />
+          <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        </div>
+        <div class="shop-header-actions">
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Wishlist">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </a>
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Account">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </a>
+          <a
+            href="#"
+            class="btn shop-cart-btn"
+            data-variant="ghost"
+            data-size="icon"
+            aria-label="Cart, 0 items">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+            <span class="shop-count" data-cart-count>0</span>
+          </a>
+        </div>
+      </div>
+    </header>
+    <main class="wrapper shop-page">
+      <div class="shop-lookup">
+        <div class="stack" data-gap="2">
+          <h1 class="shop-h1">Track your order</h1>
+          <p class="shop-lead">
+            Enter the order number from your confirmation email. Try
+            <strong>A-10251</strong>
+            with any email.
+          </p>
+        </div>
+        <form class="card" data-lookup="t1-result" novalidate>
+          <section class="stack" data-gap="3">
+            <div class="shop-lookup-form">
+              <div role="group" class="field">
+                <label for="t1-order">Order number</label>
+                <input
+                  id="t1-order"
+                  name="order"
+                  type="text"
+                  placeholder="A-10251"
+                  autocomplete="off"
+                  aria-describedby="t1-error" />
+              </div>
+              <div role="group" class="field">
+                <label for="t1-email">Email</label>
+                <input
+                  id="t1-email"
+                  name="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  autocomplete="email" />
+              </div>
+              <button type="submit" class="btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                Track
+              </button>
+            </div>
+            <p class="shop-error" id="t1-error" data-lookup-error hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              We couldn't find that order. Check the number (like A-10251) and the email.
+            </p>
+          </section>
+        </form>
+        <section class="card shop-result" id="t1-result" aria-live="polite" hidden>
+          <header>
+            <div class="shop-status-hero">
+              <span class="shop-status-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2m10 0H9m10 0h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></span>
+              <div>
+                <h2 tabindex="-1">Out for delivery</h2>
+                <p>
+                  Order
+                  <span data-lookup-no>#A-10251</span>
+                  · arriving today, 2–5 PM
+                </p>
+              </div>
+            </div>
+          </header>
+          <section class="stack" data-gap="6">
+            <ol class="shop-tracker" aria-label="Delivery progress">
+              <li data-done>
+                <span class="shop-tracker-dot"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+                <span>
+                  Ordered
+                  <small>Nov 7</small>
+                </span>
+              </li>
+              <li data-done>
+                <span class="shop-tracker-dot"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+                <span>
+                  Shipped
+                  <small>Nov 8</small>
+                </span>
+              </li>
+              <li aria-current="step">
+                <span class="shop-tracker-dot"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2m10 0H9m10 0h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></span>
+                <span>
+                  Out for delivery
+                  <small>Nov 10</small>
+                </span>
+              </li>
+              <li>
+                <span class="shop-tracker-dot"></span>
+                <span>
+                  Delivered
+                  <small>Est. Nov 10</small>
+                </span>
+              </li>
+            </ol>
+            <ol class="shop-vsteps">
+              <li data-done>
+                <span class="shop-tracker-dot"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+                <p>Order placed</p>
+                <small>Nov 7, 3:47 PM</small>
+              </li>
+              <li data-done>
+                <span class="shop-tracker-dot"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+                <p>Packed</p>
+                <small>Nov 8, 9:12 AM</small>
+              </li>
+              <li data-done>
+                <span class="shop-tracker-dot"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+                <p>Shipped with UPS</p>
+                <small>Nov 8, 4:30 PM</small>
+              </li>
+              <li aria-current="step">
+                <span class="shop-tracker-dot"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2m10 0H9m10 0h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></span>
+                <p>Out for delivery</p>
+                <small>Today, 8:12 AM</small>
+              </li>
+              <li>
+                <span class="shop-tracker-dot"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+                <p>Delivered</p>
+                <small>Estimated today, 2–5 PM</small>
+              </li>
+            </ol>
+          </section>
+          <footer class="cluster" data-gap="2">
+            <a href="#" class="btn" data-variant="outline" data-size="sm">Track on UPS</a>
+            <a href="#" class="btn" data-variant="ghost" data-size="sm">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/></svg>
+              Contact support
+            </a>
+          </footer>
+        </section>
+      </div>
+    </main>
+    <script>
+      document.querySelectorAll("[data-lookup]").forEach((form) => {
+        const err = form.querySelector("[data-lookup-error]");
+        const result = document.getElementById(form.dataset.lookup);
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const no = form.elements.order.value.trim().replace(/^#/, "").toUpperCase();
+          const ok = /^A-\d{5}$/.test(no) && form.elements.email.value.includes("@");
+          err.hidden = ok;
+          result.hidden = !ok;
+          form.elements.order.toggleAttribute("aria-invalid", !ok);
+          if (ok) {
+            result.querySelector("[data-lookup-no]").textContent = "#" + no;
+            result.querySelector("h2").focus();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

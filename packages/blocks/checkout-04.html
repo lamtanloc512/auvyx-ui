@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Checkout 04 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-muted {
+        color: var(--muted-foreground);
+      }
+      .shop-page {
+        padding-block: 2rem 4rem;
+      }
+      .shop-header {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 10;
+        border-block-end: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 90%, transparent);
+        backdrop-filter: blur(8px);
+      }
+      .shop-header-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        block-size: 4rem;
+      }
+      .shop-nav {
+        display: flex;
+        gap: 1.25rem;
+        font-size: 0.875rem;
+      }
+      .shop-nav a {
+        color: var(--muted-foreground);
+        text-decoration: none;
+      }
+      .shop-nav a:hover,
+      .shop-nav a[aria-current] {
+        color: var(--foreground);
+      }
+      .shop-header-search {
+        flex: 1;
+        max-inline-size: 20rem;
+        margin-inline-start: auto;
+      }
+      .shop-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .shop-cart-btn {
+        position: relative;
+      }
+      .shop-count {
+        position: absolute;
+        inset-block-start: -0.25rem;
+        inset-inline-end: -0.25rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-inline-size: 1.125rem;
+        block-size: 1.125rem;
+        padding-inline: 0.25rem;
+        border-radius: 999px;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+      .shop-count:empty,
+      .shop-count[data-count="0"] {
+        display: none;
+      }
+      @media (width < 48rem) {
+        .shop-nav,
+        .shop-header-search {
+          display: none;
+        }
+        .shop-header-actions {
+          margin-inline-start: auto;
+        }
+      }
+      .shop-full {
+        inline-size: 100%;
+      }
+      .shop-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 1rem;
+        font-size: 0.875rem;
+      }
+      .shop-row strong {
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+      .shop-count {
+        corner-shape: round;
+      }
+      .shop-order-no {
+        corner-shape: round;
+      }
+
+      .block-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: inherit;
+        text-decoration: none;
+      }
+      .block-logo-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .block-logo-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+
+      .shop-done {
+        display: grid;
+        justify-items: center;
+        gap: 1rem;
+        text-align: center;
+      }
+      .shop-done h1 {
+        margin: 0;
+        font-size: clamp(1.75rem, 4vw, 2.25rem);
+        font-weight: 600;
+        letter-spacing: -0.025em;
+        text-wrap: balance;
+      }
+      .shop-done p {
+        margin: 0;
+        color: var(--muted-foreground);
+        max-inline-size: 32rem;
+        text-wrap: pretty;
+      }
+      .shop-check-anim {
+        inline-size: 4.5rem;
+        block-size: 4.5rem;
+        color: var(--primary);
+      }
+      .shop-check-anim circle {
+        fill: color-mix(in oklab, var(--primary) 12%, transparent);
+        stroke: currentColor;
+        stroke-width: 2;
+      }
+      .shop-check-anim path {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 30;
+        stroke-dashoffset: 0;
+        animation: shop-draw 500ms ease-out 150ms backwards;
+      }
+      .shop-check-anim circle {
+        animation: shop-pop-in 350ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+        transform-origin: center;
+      }
+      @keyframes shop-draw {
+        from {
+          stroke-dashoffset: 30;
+        }
+      }
+      @keyframes shop-pop-in {
+        from {
+          transform: scale(0.6);
+          opacity: 0;
+        }
+      }
+      .shop-confetti {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+      }
+      .shop-confetti > i {
+        position: absolute;
+        inset-block-start: -1rem;
+        inline-size: 0.5rem;
+        block-size: 0.875rem;
+        border-radius: 2px;
+        opacity: 0;
+        animation: shop-fall 1600ms ease-in forwards;
+      }
+      @keyframes shop-fall {
+        0% {
+          opacity: 1;
+          transform: translateY(0) rotate(0);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(18rem) rotate(540deg);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .shop-confetti {
+          display: none;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .shop-check-anim path {
+          animation: none;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .shop-check-anim circle {
+          animation: none;
+        }
+      }
+      .shop-order-no {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.25rem 0.25rem 0.25rem 0.75rem;
+        border: 1px dashed var(--border);
+        border-radius: 999px;
+        font-family: var(--font-mono, ui-monospace, monospace);
+        font-size: 0.875rem;
+      }
+      .shop-copy svg + svg {
+        display: none;
+      }
+      .shop-copy[data-copied] svg {
+        display: none;
+      }
+      .shop-copy[data-copied] svg + svg {
+        display: block;
+        color: var(--primary);
+      }
+      .shop-success-wrap {
+        position: relative;
+        padding-block: 3rem 2rem;
+      }
+      .shop-thumbs {
+        display: flex;
+      }
+      .shop-thumbs > img {
+        inline-size: 3rem;
+        block-size: 3rem;
+        border: 2px solid var(--card);
+        border-radius: calc(var(--radius) - 2px);
+        object-fit: cover;
+        background: var(--muted);
+      }
+      .shop-thumbs > img + img {
+        margin-inline-start: -0.75rem;
+      }
+      html.dark .shop-thumbs > img {
+        filter: brightness(0.5) grayscale(1);
+      }
+      .shop-split-2 {
+        display: grid;
+        gap: 1.5rem;
+      }
+      @media (width >= 48rem) {
+        .shop-split-2 {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      .shop-refer {
+        display: grid;
+        gap: 1rem;
+        padding: 1.5rem;
+        border-radius: calc(var(--radius) + 4px);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .shop-refer h2 {
+        margin: 0;
+        font-size: 1.125rem;
+        font-weight: 600;
+      }
+      .shop-refer p {
+        margin: 0;
+        opacity: 0.85;
+        font-size: 0.875rem;
+      }
+      .shop-refer .input-group {
+        background: var(--background);
+        color: var(--foreground);
+        border-radius: var(--radius);
+      }
+      .shop-mini-steps {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font-size: 0.75rem;
+        text-align: center;
+        color: var(--muted-foreground);
+      }
+      .shop-mini-steps > li {
+        display: grid;
+        gap: 0.375rem;
+      }
+      .shop-mini-steps > li::before {
+        content: "";
+        block-size: 4px;
+        border-radius: 4px;
+        background: var(--border);
+      }
+      .shop-mini-steps > li[data-done]::before {
+        background: var(--primary);
+      }
+      .shop-mini-steps > li[data-done] {
+        color: var(--foreground);
+        font-weight: 500;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="shop-header">
+      <div class="wrapper shop-header-row">
+        <a href="#" class="block-logo">
+          <span class="block-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+          Acme Store
+        </a>
+        <nav class="shop-nav" aria-label="Main">
+          <a href="#" aria-current="page">Shop</a>
+          <a href="#">New in</a>
+          <a href="#">Collections</a>
+          <a href="#">Journal</a>
+        </nav>
+        <div class="input-group shop-header-search">
+          <input type="search" placeholder="Search products..." aria-label="Search products" />
+          <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        </div>
+        <div class="shop-header-actions">
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Wishlist">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </a>
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Account">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </a>
+          <a
+            href="#"
+            class="btn shop-cart-btn"
+            data-variant="ghost"
+            data-size="icon"
+            aria-label="Cart, 0 items">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+            <span class="shop-count" data-cart-count>0</span>
+          </a>
+        </div>
+      </div>
+    </header>
+    <main class="wrapper shop-page" data-size="md">
+      <div class="stack" data-gap="8">
+        <section class="shop-success-wrap" aria-labelledby="co4-title">
+          <div class="shop-confetti" aria-hidden="true">
+            <i style="inset-inline-start: 0%; background: var(--primary); animation-delay: 0ms"></i>
+            <i
+              style="
+                inset-inline-start: 37%;
+                background: var(--chart-1, #f97316);
+                animation-delay: 53ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 74%;
+                background: var(--chart-2, #14b8a6);
+                animation-delay: 106ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 11%;
+                background: var(--chart-3, #6366f1);
+                animation-delay: 159ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 48%;
+                background: var(--chart-4, #eab308);
+                animation-delay: 212ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 85%;
+                background: var(--chart-5, #ec4899);
+                animation-delay: 265ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 22%;
+                background: var(--primary);
+                animation-delay: 318ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 59%;
+                background: var(--chart-1, #f97316);
+                animation-delay: 371ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 96%;
+                background: var(--chart-2, #14b8a6);
+                animation-delay: 24ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 33%;
+                background: var(--chart-3, #6366f1);
+                animation-delay: 77ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 70%;
+                background: var(--chart-4, #eab308);
+                animation-delay: 130ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 7%;
+                background: var(--chart-5, #ec4899);
+                animation-delay: 183ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 44%;
+                background: var(--primary);
+                animation-delay: 236ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 81%;
+                background: var(--chart-1, #f97316);
+                animation-delay: 289ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 18%;
+                background: var(--chart-2, #14b8a6);
+                animation-delay: 342ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 55%;
+                background: var(--chart-3, #6366f1);
+                animation-delay: 395ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 92%;
+                background: var(--chart-4, #eab308);
+                animation-delay: 48ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 29%;
+                background: var(--chart-5, #ec4899);
+                animation-delay: 101ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 66%;
+                background: var(--primary);
+                animation-delay: 154ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 3%;
+                background: var(--chart-1, #f97316);
+                animation-delay: 207ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 40%;
+                background: var(--chart-2, #14b8a6);
+                animation-delay: 260ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 77%;
+                background: var(--chart-3, #6366f1);
+                animation-delay: 313ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 14%;
+                background: var(--chart-4, #eab308);
+                animation-delay: 366ms;
+              "></i>
+            <i
+              style="
+                inset-inline-start: 51%;
+                background: var(--chart-5, #ec4899);
+                animation-delay: 19ms;
+              "></i>
+          </div>
+          <div class="shop-done">
+            <svg class="shop-check-anim" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-15"/></svg>
+            <h1 id="co4-title">Order confirmed!</h1>
+            <p>
+              Thanks, Olivia. We've emailed your receipt to olivia@example.com and we'll let you
+              know when it ships.
+            </p>
+            <div class="shop-order-no">
+              <span>Order</span>
+              <span id="co4-no">#A-10294</span>
+              <button
+                type="button"
+                class="btn shop-copy"
+                data-variant="ghost"
+                data-size="icon-xs"
+                data-copy="#co4-no"
+                aria-label="Copy order number"
+                data-copied-label="Copied">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+              </button>
+            </div>
+          </div>
+        </section>
+        <div class="shop-split-2">
+          <section class="card" aria-labelledby="co4-arrive">
+            <header>
+              <h2 id="co4-arrive">Arriving Thu, Nov 12</h2>
+              <p>Standard delivery to 1234 Market Street, San Francisco</p>
+            </header>
+            <section class="stack" data-gap="4">
+              <ol class="shop-mini-steps" aria-label="Order progress">
+                <li data-done>Confirmed</li>
+                <li>Shipped</li>
+                <li>Delivered</li>
+              </ol>
+              <div class="cluster" data-justify="between" data-gap="3">
+                <div class="shop-thumbs">
+                  <img src="assets/placeholder.svg" alt />
+                  <img src="assets/placeholder.svg" alt />
+                  <img src="assets/placeholder.svg" alt />
+                </div>
+                <p class="shop-row">
+                  <span class="shop-muted">4 items ·</span>
+                  <strong>$283.50</strong>
+                </p>
+              </div>
+            </section>
+            <footer class="cluster" data-gap="2">
+              <a href="#" class="btn" data-size="sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73zm1 .27V12"/><path d="M3.29 7L12 12l8.71-5M7.5 4.27l9 5.15"/></svg>
+                Track order
+              </a>
+              <button type="button" class="btn" data-variant="outline" data-size="sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3m9 12v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10l5 5l5-5"/></svg>
+                Receipt
+              </button>
+            </footer>
+          </section>
+          <form class="card" onsubmit="event.preventDefault()" aria-labelledby="co4-account">
+            <header>
+              <h2 id="co4-account">Save your details</h2>
+              <p>Set a password to track orders and check out faster next time.</p>
+            </header>
+            <section class="stack" data-gap="3">
+              <div role="group" class="field">
+                <label for="co4-email">Email</label>
+                <input id="co4-email" type="email" value="olivia@example.com" readonly />
+              </div>
+              <div role="group" class="field">
+                <label for="co4-pass">Password</label>
+                <input
+                  id="co4-pass"
+                  type="password"
+                  autocomplete="new-password"
+                  minlength="8"
+                  required />
+              </div>
+            </section>
+            <footer><button type="submit" class="btn shop-full">Create account</button></footer>
+          </form>
+        </div>
+        <section class="shop-refer" aria-labelledby="co4-refer">
+          <div class="stack" data-gap="1">
+            <h2 id="co4-refer">Give $10, get $10</h2>
+            <p>
+              Share your link: friends get $10 off their first order and you get $10 when they buy.
+            </p>
+          </div>
+          <div class="input-group">
+            <input
+              type="text"
+              id="co4-link"
+              value="acme.store/r/olivia-m"
+              readonly
+              aria-label="Referral link" />
+            <span data-align="end">
+              <button
+                type="button"
+                class="btn shop-copy"
+                data-variant="ghost"
+                data-size="icon-xs"
+                data-copy-text="https://acme.store/r/olivia-m"
+                aria-label="Copy referral link"
+                data-copied-label="Copied">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+              </button>
+            </span>
+          </div>
+        </section>
+        <div class="cluster" data-justify="center" data-gap="2">
+          <a href="#" class="btn" data-variant="outline">Continue shopping</a>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

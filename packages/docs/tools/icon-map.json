@@ -407,6 +407,12 @@
   "lock",
   "lock-line"
  ],
+ "lock-open": [
+  "lock-open",
+  "square-unlock-02",
+  "lock-open",
+  "lock-unlock-line"
+ ],
  "log-out": [
   "logout",
   "logout-01",
@@ -491,6 +497,12 @@
   "sidebar-simple",
   "side-bar-line"
  ],
+ "pause": [
+  "player-pause",
+  "pause",
+  "pause",
+  "pause-line"
+ ],
  "pencil": [
   "pencil",
   "pencil-edit-01",
@@ -508,6 +520,12 @@
   "pie-chart",
   "chart-pie",
   "pie-chart-line"
+ ],
+ "play": [
+  "player-play",
+  "play",
+  "play",
+  "play-line"
  ],
  "plus": [
   "plus",

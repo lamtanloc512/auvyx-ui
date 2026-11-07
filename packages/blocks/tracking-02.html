@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tracking 02 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-muted {
+        color: var(--muted-foreground);
+      }
+      .shop-page {
+        padding-block: 2rem 4rem;
+      }
+      .shop-h2 {
+        margin: 0;
+        font-size: 1.125rem;
+        font-weight: 600;
+      }
+      .shop-lead {
+        margin: 0;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
+      .shop-header {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 10;
+        border-block-end: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 90%, transparent);
+        backdrop-filter: blur(8px);
+      }
+      .shop-header-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        block-size: 4rem;
+      }
+      .shop-nav {
+        display: flex;
+        gap: 1.25rem;
+        font-size: 0.875rem;
+      }
+      .shop-nav a {
+        color: var(--muted-foreground);
+        text-decoration: none;
+      }
+      .shop-nav a:hover,
+      .shop-nav a[aria-current] {
+        color: var(--foreground);
+      }
+      .shop-header-search {
+        flex: 1;
+        max-inline-size: 20rem;
+        margin-inline-start: auto;
+      }
+      .shop-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .shop-cart-btn {
+        position: relative;
+      }
+      .shop-count {
+        position: absolute;
+        inset-block-start: -0.25rem;
+        inset-inline-end: -0.25rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-inline-size: 1.125rem;
+        block-size: 1.125rem;
+        padding-inline: 0.25rem;
+        border-radius: 999px;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+      .shop-count:empty,
+      .shop-count[data-count="0"] {
+        display: none;
+      }
+      @media (width < 48rem) {
+        .shop-nav,
+        .shop-header-search {
+          display: none;
+        }
+        .shop-header-actions {
+          margin-inline-start: auto;
+        }
+      }
+      .shop-thumb {
+        flex: none;
+        inline-size: 5rem;
+        block-size: 5rem;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        background: var(--muted);
+        object-fit: cover;
+      }
+      .shop-thumb[data-size="sm"] {
+        inline-size: 3.5rem;
+        block-size: 3.5rem;
+      }
+      .shop-thumb[data-size="xs"] {
+        inline-size: 2.5rem;
+        block-size: 2.5rem;
+        border-radius: calc(var(--radius) - 2px);
+      }
+      html.dark .shop-thumb {
+        filter: brightness(0.5) grayscale(1);
+      }
+      .shop-lines {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .shop-lines > li {
+        display: flex;
+        gap: 1rem;
+        padding-block: 1.25rem;
+        border-block-end: 1px solid var(--border);
+      }
+      .shop-lines > li:first-child {
+        padding-block-start: 0;
+      }
+      .shop-lines[data-size="sm"] > li {
+        gap: 0.75rem;
+        padding-block: 0.875rem;
+      }
+      .shop-lines[data-size="sm"] > li:last-child {
+        border-block-end: 0;
+      }
+      .shop-line-body {
+        flex: 1;
+        min-inline-size: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+      .shop-line-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .shop-line-name {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+      .shop-line-meta {
+        margin: 0;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .shop-line-price {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+      .shop-cols {
+        display: grid;
+        gap: 2rem;
+        align-items: start;
+      }
+      @media (width >= 56rem) {
+        .shop-cols {
+          grid-template-columns: minmax(0, 1fr) 22rem;
+          gap: 3rem;
+        }
+      }
+      .shop-timeline {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 1.25rem;
+        font-size: 0.875rem;
+      }
+      .shop-timeline > li {
+        position: relative;
+        padding-inline-start: 1.5rem;
+      }
+      .shop-timeline > li::before {
+        content: "";
+        position: absolute;
+        inset-inline-start: 0.25rem;
+        inset-block-start: 0.375rem;
+        inline-size: 0.5rem;
+        block-size: 0.5rem;
+        border-radius: 999px;
+        background: var(--border);
+      }
+      .shop-timeline > li:first-child::before {
+        background: var(--primary);
+        box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary) 20%, transparent);
+      }
+      .shop-timeline > li:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        inset-inline-start: calc(0.5rem - 0.5px);
+        inset-block: 1.125rem -1rem;
+        inline-size: 1px;
+        background: var(--border);
+      }
+      .shop-timeline p {
+        margin: 0;
+      }
+      .shop-timeline time {
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+      }
+      .shop-account {
+        display: grid;
+        gap: 2rem;
+        align-items: start;
+      }
+      @media (width >= 48rem) {
+        .shop-account {
+          grid-template-columns: 14rem minmax(0, 1fr);
+        }
+      }
+      .shop-account-nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 0.125rem;
+      }
+      .shop-account-nav a,
+      .shop-account-nav button {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        inline-size: 100%;
+        padding: 0.5rem 0.75rem;
+        border: 0;
+        border-radius: var(--radius);
+        background: none;
+        color: var(--muted-foreground);
+        font: inherit;
+        font-size: 0.875rem;
+        text-align: start;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .shop-account-nav a:hover,
+      .shop-account-nav button:hover {
+        background: var(--accent);
+        color: var(--accent-foreground);
+      }
+      .shop-account-nav a[aria-current] {
+        background: var(--muted);
+        color: var(--foreground);
+        font-weight: 500;
+      }
+      .shop-account-nav svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+        flex: none;
+      }
+      .shop-account-nav hr {
+        margin: 0.5rem 0;
+        border: 0;
+        border-block-start: 1px solid var(--border);
+      }
+      .shop-profile {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-block-end: 1rem;
+        padding-inline: 0.75rem;
+      }
+      .shop-profile p {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+      .shop-profile small {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+        font-weight: 400;
+      }
+      @media (width < 48rem) {
+        .shop-account-nav ul {
+          display: flex;
+          overflow-x: auto;
+        }
+        .shop-account-nav a,
+        .shop-account-nav button {
+          white-space: nowrap;
+        }
+        .shop-account-nav hr,
+        .shop-profile {
+          display: none;
+        }
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+      .shop-count {
+        corner-shape: round;
+      }
+      .shop-status-icon {
+        corner-shape: round;
+      }
+      .shop-map-pin {
+        corner-shape: round;
+      }
+      .shop-timeline > li::before {
+        corner-shape: round;
+      }
+
+      .block-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: inherit;
+        text-decoration: none;
+      }
+      .block-logo-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .block-logo-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+
+      @keyframes shop-draw {
+        from {
+          stroke-dashoffset: 30;
+        }
+      }
+      @keyframes shop-pop-in {
+        from {
+          transform: scale(0.6);
+          opacity: 0;
+        }
+      }
+      @keyframes shop-fall {
+        0% {
+          opacity: 1;
+          transform: translateY(0) rotate(0);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(18rem) rotate(540deg);
+        }
+      }
+      .shop-status-hero {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .shop-status-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+        inline-size: 3rem;
+        block-size: 3rem;
+        border-radius: 999px;
+        background: color-mix(in oklab, var(--primary) 12%, transparent);
+        color: var(--primary);
+      }
+      .shop-status-icon svg {
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+      }
+      .shop-status-hero h2 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+      .shop-status-hero p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: var(--muted-foreground);
+      }
+      .shop-map {
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--radius);
+        background: color-mix(in oklab, var(--muted) 70%, var(--background));
+        aspect-ratio: 16 / 9;
+      }
+      .shop-map > svg {
+        position: absolute;
+        inset: 0;
+        inline-size: 100%;
+        block-size: 100%;
+      }
+      .shop-map .shop-map-grid {
+        stroke: var(--border);
+        stroke-width: 1;
+      }
+      .shop-map .shop-map-road {
+        fill: none;
+        stroke: var(--card);
+        stroke-width: 10;
+        stroke-linecap: round;
+      }
+      .shop-map .shop-map-route {
+        fill: none;
+        stroke: var(--primary);
+        stroke-width: 4;
+        stroke-linecap: round;
+        stroke-dasharray: 2 10;
+      }
+      .shop-map .shop-map-done {
+        fill: none;
+        stroke: var(--primary);
+        stroke-width: 4;
+        stroke-linecap: round;
+      }
+      .shop-map-pin {
+        position: absolute;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 2.25rem;
+        block-size: 2.25rem;
+        translate: -50% -50%;
+        border-radius: 999px;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        box-shadow: 0 0 0 6px color-mix(in oklab, var(--primary) 20%, transparent);
+      }
+      .shop-map-pin svg {
+        inline-size: 1.125rem;
+        block-size: 1.125rem;
+      }
+      .shop-map-pin[data-kind="home"] {
+        background: var(--background);
+        color: var(--foreground);
+        box-shadow:
+          0 0 0 1px var(--border),
+          0 4px 12px -4px rgb(0 0 0 / 0.3);
+      }
+      .shop-map-eta {
+        position: absolute;
+        inset-block-start: 0.75rem;
+        inset-inline-start: 0.75rem;
+        display: grid;
+        padding: 0.5rem 0.75rem;
+        border-radius: var(--radius);
+        background: var(--background);
+        box-shadow: 0 4px 12px -4px rgb(0 0 0 / 0.25);
+        font-size: 0.75rem;
+      }
+      .shop-map-eta strong {
+        font-size: 0.9375rem;
+      }
+      .shop-courier {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .shop-courier > div {
+        flex: 1;
+        min-inline-size: 0;
+      }
+      .shop-courier p {
+        margin: 0;
+        font-size: 0.875rem;
+      }
+      .shop-courier small {
+        display: block;
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+      }
+
+      @media (width >= 56rem) {
+        .shop-cols.shop-cols-even {
+          grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+        }
+      }
+      .shop-back {
+        align-self: flex-start;
+        margin-inline-start: -0.5rem;
+      }
+      .shop-profile .avatar {
+        inline-size: 2.25rem;
+        block-size: 2.25rem;
+      }
+      .shop-courier .avatar {
+        inline-size: 2.5rem;
+        block-size: 2.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="shop-header">
+      <div class="wrapper shop-header-row">
+        <a href="#" class="block-logo">
+          <span class="block-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+          Acme Store
+        </a>
+        <nav class="shop-nav" aria-label="Main">
+          <a href="#" aria-current="page">Shop</a>
+          <a href="#">New in</a>
+          <a href="#">Collections</a>
+          <a href="#">Journal</a>
+        </nav>
+        <div class="input-group shop-header-search">
+          <input type="search" placeholder="Search products..." aria-label="Search products" />
+          <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        </div>
+        <div class="shop-header-actions">
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Wishlist">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </a>
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Account">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </a>
+          <a
+            href="#"
+            class="btn shop-cart-btn"
+            data-variant="ghost"
+            data-size="icon"
+            aria-label="Cart, 3 items">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+            <span class="shop-count" data-cart-count>3</span>
+          </a>
+        </div>
+      </div>
+    </header>
+    <main class="wrapper shop-page">
+      <div class="shop-account">
+        <nav class="shop-account-nav" aria-label="Account">
+          <div class="shop-profile">
+            <img class="avatar" src="assets/placeholder.svg" alt />
+            <p>
+              Olivia Martin
+              <small>olivia@example.com</small>
+            </p>
+          </div>
+          <ul>
+            <li>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                Overview
+              </a>
+            </li>
+            <li>
+              <a href="#" aria-current="page">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73zm1 .27V12"/><path d="M3.29 7L12 12l8.71-5M7.5 4.27l9 5.15"/></svg>
+                Orders
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+                Wishlist
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                Addresses
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                Payment methods
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                Account settings
+              </a>
+            </li>
+            <li><hr /></li>
+            <li>
+              <button type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                Sign out
+              </button>
+            </li>
+          </ul>
+        </nav>
+        <div class="stack" data-gap="8">
+          <div class="stack" data-gap="4">
+            <a href="#" class="btn shop-back" data-variant="ghost" data-size="sm">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+              Order #A-10251
+            </a>
+            <div class="shop-status-hero">
+              <span class="shop-status-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2m10 0H9m10 0h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></span>
+              <div>
+                <h1 class="shop-h2">Arriving today, 2:15–2:45 PM</h1>
+                <p>Out for delivery · 6 stops away</p>
+              </div>
+            </div>
+          </div>
+          <section class="card" aria-label="Delivery map">
+            <section class="stack" data-gap="4">
+              <div class="shop-map">
+                <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g class="shop-map-grid"><line x1="0" y1="0" x2="0" y2="180"/><line x1="40" y1="0" x2="40" y2="180"/><line x1="80" y1="0" x2="80" y2="180"/><line x1="120" y1="0" x2="120" y2="180"/><line x1="160" y1="0" x2="160" y2="180"/><line x1="200" y1="0" x2="200" y2="180"/><line x1="240" y1="0" x2="240" y2="180"/><line x1="280" y1="0" x2="280" y2="180"/><line x1="320" y1="0" x2="320" y2="180"/><line x1="0" y1="0" x2="320" y2="0"/><line x1="0" y1="40" x2="320" y2="40"/><line x1="0" y1="80" x2="320" y2="80"/><line x1="0" y1="120" x2="320" y2="120"/><line x1="0" y1="160" x2="320" y2="160"/></g><path class="shop-map-road" d="M30 150 C 80 150, 90 90, 140 90 S 210 40, 290 40"/><path class="shop-map-done" d="M30 150 C 80 150, 90 90, 140 90"/><path class="shop-map-route" d="M140 90 C 175 90, 210 40, 290 40"/></svg>
+                <span
+                  class="shop-map-pin"
+                  style="inset-inline-start: 43.75%; inset-block-start: 50%"
+                  title="Courier">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2m10 0H9m10 0h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+                </span>
+                <span
+                  class="shop-map-pin"
+                  data-kind="home"
+                  style="inset-inline-start: 90.6%; inset-block-start: 22.2%"
+                  title="Your address">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                </span>
+                <div class="shop-map-eta">
+                  <span class="shop-muted">Estimated arrival</span>
+                  <strong>2:15–2:45 PM</strong>
+                </div>
+              </div>
+              <div class="shop-courier">
+                <span class="avatar">
+                  <img src="assets/placeholder.svg" alt />
+                  <span>DR</span>
+                </span>
+                <div>
+                  <p>Daniel R. · UPS</p>
+                  <small>Tracking 1Z 999 AA1 0123 4567 84</small>
+                </div>
+                <a
+                  href="#"
+                  class="btn"
+                  data-variant="outline"
+                  data-size="icon"
+                  aria-label="Call the courier">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233a14 14 0 0 0 6.392 6.384"/></svg>
+                </a>
+                <a
+                  href="#"
+                  class="btn"
+                  data-variant="outline"
+                  data-size="icon"
+                  aria-label="Message the courier">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/></svg>
+                </a>
+              </div>
+            </section>
+          </section>
+          <div class="shop-cols shop-cols-even">
+            <section class="card" aria-labelledby="t2-history">
+              <header><h2 id="t2-history">Tracking history</h2></header>
+              <section>
+                <ol class="shop-timeline" aria-label="Tracking history">
+                  <li>
+                    <p><strong>Out for delivery</strong></p>
+                    <p class="shop-muted">San Francisco, CA</p>
+                    <time>Nov 10, 8:12 AM</time>
+                  </li>
+                  <li>
+                    <p><strong>Arrived at local facility</strong></p>
+                    <p class="shop-muted">Oakland, CA</p>
+                    <time>Nov 9, 9:40 PM</time>
+                  </li>
+                  <li>
+                    <p><strong>In transit</strong></p>
+                    <p class="shop-muted">Reno, NV</p>
+                    <time>Nov 8, 6:05 PM</time>
+                  </li>
+                  <li>
+                    <p><strong>Shipped</strong></p>
+                    <p class="shop-muted">Salt Lake City, UT</p>
+                    <time>Nov 8, 10:21 AM</time>
+                  </li>
+                  <li>
+                    <p><strong>Order confirmed</strong></p>
+                    <p class="shop-muted">Online</p>
+                    <time>Nov 7, 3:47 PM</time>
+                  </li>
+                </ol>
+              </section>
+            </section>
+            <div class="stack" data-gap="6">
+              <section class="card" aria-labelledby="t2-instr">
+                <header>
+                  <h2 id="t2-instr">Delivery instructions</h2>
+                  <div class="card-action">
+                    <button
+                      type="button"
+                      class="btn"
+                      data-variant="ghost"
+                      data-size="icon-sm"
+                      aria-label="Edit delivery instructions"
+                      commandfor="t2-dialog"
+                      command="show-modal">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497zM15 5l4 4"/></svg>
+                    </button>
+                  </div>
+                </header>
+                <section>
+                  <p class="shop-lead" id="t2-note">Leave at the front desk if no one answers.</p>
+                </section>
+              </section>
+              <section class="card" aria-labelledby="t2-items">
+                <header><h2 id="t2-items">In this package</h2></header>
+                <section>
+                  <ul class="shop-lines" data-size="sm">
+                    <li>
+                      <img class="shop-thumb" data-size="sm" src="assets/placeholder.svg" alt />
+                      <div class="shop-line-body">
+                        <div class="shop-line-top">
+                          <div>
+                            <p class="shop-line-name">Everyday Tote</p>
+                            <p class="shop-line-meta">Canvas · Natural · Qty 1</p>
+                          </div>
+                          <p class="shop-line-price">$48.00</p>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <img class="shop-thumb" data-size="sm" src="assets/placeholder.svg" alt />
+                      <div class="shop-line-body">
+                        <div class="shop-line-top">
+                          <div>
+                            <p class="shop-line-name">Merino Crew Sweater</p>
+                            <p class="shop-line-meta">Size M · Charcoal · Qty 2</p>
+                          </div>
+                          <p class="shop-line-price">$178.00</p>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </section>
+              </section>
+            </div>
+          </div>
+          <dialog id="t2-dialog" class="dialog" closedby="any" aria-labelledby="t2-dialog-title">
+            <div>
+              <header>
+                <h2 id="t2-dialog-title">Delivery instructions</h2>
+                <p>Tell the courier where to leave your package.</p>
+              </header>
+              <section>
+                <form id="t2-form" data-instructions="t2-note" class="stack" data-gap="2">
+                  <label class="label" for="t2-text">Instructions</label>
+                  <input
+                    class="input"
+                    id="t2-text"
+                    name="note"
+                    type="text"
+                    value="Leave at the front desk if no one answers." />
+                </form>
+              </section>
+              <footer>
+                <button
+                  type="button"
+                  class="btn"
+                  data-variant="outline"
+                  commandfor="t2-dialog"
+                  command="close">
+                  Cancel
+                </button>
+                <button type="submit" form="t2-form" class="btn">Save</button>
+              </footer>
+              <button type="button" aria-label="Close" commandfor="t2-dialog" command="close">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              </button>
+            </div>
+          </dialog>
+        </div>
+      </div>
+    </main>
+    <script>
+      document.querySelectorAll("[data-instructions]").forEach((form) => {
+        const out = document.getElementById(form.dataset.instructions);
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const v = form.elements.note.value.trim();
+          out.textContent = v || "No instructions yet.";
+          form.closest("dialog").close();
+        });
+      });
+    </script>
+  </body>
+</html>

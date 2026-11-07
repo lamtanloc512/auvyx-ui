@@ -115,6 +115,7 @@ export function markupToJsx(html) {
   let out = '';
   const selects = [];
   tokens.forEach((t, i) => {
+    if (ctx.skipTo !== undefined && i <= ctx.skipTo) return;
     if (t.kind === 'comment') { out += `{/*${t.text.replace(/\*\//g, '* /')}*/}`; return; }
     if (t.kind === 'close') {
       if (t.tag === 'select') {
@@ -126,7 +127,20 @@ export function markupToJsx(html) {
       return;
     }
     if (t.kind === 'open') {
-      if (t.tag === 'script' || t.tag === 'textarea' || t.tag === 'pre') throw new Error(`<${t.tag}> in block markup`);
+      if (t.tag === 'script' || t.tag === 'pre') throw new Error(`<${t.tag}> in block markup`);
+      // <textarea>: its text is the initial value, so it becomes defaultValue on a self-closing element.
+      if (t.tag === 'textarea') {
+        const close = tokens.findIndex((x, j) => j > i && x.kind === 'close' && x.tag === 'textarea');
+        if (close < 0) throw new Error('unclosed <textarea>');
+        const inner = tokens.slice(i + 1, close);
+        if (inner.some((x) => x.kind !== 'text')) throw new Error('markup inside <textarea>');
+        const value = inner.map((x) => x.text).join('').replace(/^\n/, '');
+        const attrs = convertAttrs(t, ctx);
+        if (value) attrs.push(`defaultValue=${str(value)}`);
+        out += `<textarea${attrs.length ? ' ' + attrs.join(' ') : ''} />`;
+        ctx.skipTo = close;
+        return;
+      }
       const attrs = convertAttrs(t, ctx);
       out += `<${t.tag}`;
       if (t.tag === 'select') selects.push(out.length);

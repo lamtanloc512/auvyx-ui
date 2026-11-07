@@ -141,6 +141,17 @@
         color: var(--foreground);
       }
 
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+      .shop-colors label {
+        corner-shape: round;
+      }
+      .shop-dots > span {
+        corner-shape: round;
+      }
+      .shop-count {
+        corner-shape: round;
+      }
+
       .block-logo {
         display: inline-flex;
         align-items: center;
@@ -314,7 +325,7 @@
         gap: 0.5rem;
         border: 0;
         margin: 0;
-        padding: 0;
+        padding: 0.25rem;
       }
       .shop-colors legend {
         margin-block-end: 0.5rem;
@@ -560,10 +571,7 @@
                     aria-label="Maximum price" />
                   <div class="shop-range-out">
                     <span>$0</span>
-                    <span>
-                      Up to
-                      <output for="s2-price" id="s2-price-out">$120</output>
-                    </span>
+                    <output for="s2-price" id="s2-price-out">Up to $120</output>
                   </div>
                 </section>
               </details>
@@ -967,7 +975,7 @@
     <script>
       const priceIn = document.getElementById("s2-price");
       priceIn?.addEventListener("input", () => {
-        document.getElementById("s2-price-out").textContent = "$" + priceIn.value;
+        document.getElementById("s2-price-out").textContent = "Up to $" + priceIn.value;
       });
       document.querySelectorAll("[data-layout-toggle]").forEach((g) => {
         g.addEventListener("click", (e) => {

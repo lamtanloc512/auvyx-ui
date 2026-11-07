@@ -1,0 +1,25 @@
+<h3 class="d-h3">HTML structure</h3>
+<dl>
+  <dt><code>&lt;section class="carousel"&gt;</code></dt>
+  <dd>The root. Give it <code>aria-roledescription="carousel"</code> and an <code>aria-label</code>. <code>data-items="2|3|4"</code> or <code>--per-view</code> sets the slides per view, <code>--carousel-gap</code> the gap, <code>data-orientation="vertical"</code> scrolls vertically.</dd>
+  <dt><code>&lt;ol&gt;</code> / <code>&lt;ul&gt;</code> with <code>&lt;li&gt;</code> slides</dt>
+  <dd>The scroller. Each slide gets <code>aria-roledescription="slide"</code> and a label such as <code>"2 of 5"</code>. Without JavaScript it scrolls, snaps and swipes; supporting browsers add native arrows (<code>::scroll-button</code>) and, with <code>data-markers</code>, dots.</dd>
+  <dt><code>[data-carousel="prev"]</code>, <code>[data-carousel="next"]</code>, <code>[data-carousel="play"]</code></dt>
+  <dd>Buttons you provide (any button style). Prev and next sit over the slides; move them with <code>--carousel-controls-inset</code> and <code>--carousel-controls-top</code>. The play button holds two icons: the first shows while paused, the second while playing.</dd>
+  <dt><code>[data-carousel-dots]</code>, <code>[data-carousel-counter]</code></dt>
+  <dd>An empty element filled with one dot per page, and an element that shows <code>"2 / 5"</code>.</dd>
+  <dt><code>a[data-lightbox="group"]</code></dt>
+  <dd>A link to the full image. With JavaScript it opens a full-screen viewer with every link of the same group (swipe, drag, arrow keys, click to zoom); <code>data-caption</code> or <code>title</code> sets the caption. Without it, the link opens the image.</dd>
+</dl>
+
+<h3 class="d-h3">JavaScript API</h3>
+<p><code>js/carousel.min.js</code> (also in <code>auvyx.min.js</code>) is optional. Once it runs, the native arrows and markers make way for your controls.</p>
+<dl>
+  <dt><code>data-loop</code></dt><dd>Wrap from the last page to the first and back.</dd>
+  <dt><code>data-autoplay="5000"</code></dt><dd>Advance every <em>n</em> ms (implies loop). Pauses while hovered or focused, while the tab is hidden, and starts paused for <code>prefers-reduced-motion</code>.</dd>
+  <dt><code>data-no-drag</code></dt><dd>Turn off mouse dragging (touch always swipes).</dd>
+  <dt><code>data-carousel-for="id"</code></dt><dd>Makes this carousel the thumbnail strip of carousel <code>id</code>: clicking a thumbnail shows that slide, and the active thumbnail follows the main carousel.</dd>
+  <dt><code>goTo(page)</code>, <code>goToSlide(index)</code>, <code>next()</code>, <code>prev()</code>, <code>play()</code>, <code>pause()</code></dt><dd>Methods on the root element.</dd>
+  <dt><code>carousel:change</code></dt><dd>Fired on the root when the page changes; <code>detail</code> is <code>{ page, slide, pages }</code>.</dd>
+</dl>
+<p>The active slide gets <code>data-active</code>. Keyboard: focus the slides and use the arrow keys, Home and End.</p>

@@ -204,7 +204,15 @@
   .d-create { display: grid; grid-template-columns: 17rem minmax(0, 1fr); gap: 1.25rem; padding-block: 1.25rem; }
   .d-cr-panel { position: sticky; top: calc(var(--header-h) + 1.25rem); align-self: start; display: grid; gap: 0.5rem; padding: 0.5rem; max-block-size: calc(100svh - var(--header-h) - 2.5rem); overflow-y: auto; scrollbar-width: thin; border-radius: var(--radius); background: var(--background); color: var(--foreground); }
   .d-cr-rows { display: grid; gap: 0.5rem; }
-  .d-cr-row { display: block; }
+  .d-cr-row { display: block; position: relative; }
+  .d-cr-row .d-cr-text { padding-inline-end: 1.75rem; }
+  .d-cr-lock { position: absolute; inset-block-start: 50%; inset-inline-end: 2.5rem; z-index: 1; display: inline-grid; place-items: center; inline-size: 1.75rem; block-size: 1.75rem; translate: 0 -50%; padding: 0; border: 0; border-radius: calc(var(--radius) - 4px); background: transparent; color: var(--muted-foreground); cursor: pointer; opacity: 0; transition: opacity 150ms ease; }
+  .d-cr-lock:hover { background: var(--accent); color: var(--foreground); }
+  .d-cr-lock:focus-visible { opacity: 1; outline: 2px solid var(--ring); outline-offset: 1px; }
+  .d-cr-row:hover .d-cr-lock { opacity: 1; }
+  .d-cr-lock[aria-pressed='true'] { opacity: 1; color: var(--foreground); }
+  .d-cr-row[data-pinned] .d-cr-btn { border-color: color-mix(in oklch, var(--foreground) 35%, var(--border)); }
+  @media (hover: none) { .d-cr-lock { opacity: 1; } }
   .d-cr-btn { appearance: none; box-sizing: border-box; display: flex; inline-size: 100%; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: calc(var(--radius) - 2px); background: color-mix(in oklch, var(--muted) 40%, transparent); color: inherit; font: inherit; text-align: start; cursor: pointer; }
   .d-cr-btn:hover { background: var(--accent); }
   .d-cr-btn:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }

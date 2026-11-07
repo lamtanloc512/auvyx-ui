@@ -37,6 +37,7 @@
     "label"
   ],
   "carousel": [
+    "button",
     "card"
   ],
   "checkbox": [
