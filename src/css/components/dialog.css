@@ -59,7 +59,7 @@
     }
 
     > * > :is(button, form[method='dialog'] > button) {
-      @apply inline-flex items-center justify-center opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0;
+      @apply inline-flex items-center justify-center transition-colors focus-visible:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0;
     }
 
     > * > :is(button, form[method='dialog'] > button) > svg:not([class*='size-']) {

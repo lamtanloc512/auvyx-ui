@@ -19,7 +19,7 @@ const cssTargets = ['chrome111', 'safari16.4', 'firefox128'];
 // JS is behavior-only and opt-in. accordion/popover are kept for upstream
 // markup; they skip the native variants (src/css/native/), which need no JS.
 // chart ships separately (auvyx.chart.min.js) because it needs Chart.js.
-const jsComponents = ['basecoat', 'accordion', 'combobox', 'command', 'copy', 'drawer', 'dropdown-menu', 'popover', 'range', 'select', 'sidebar', 'tabs', 'toast'];
+const jsComponents = ['basecoat', 'accordion', 'carousel', 'combobox', 'command', 'copy', 'drawer', 'dropdown-menu', 'popover', 'range', 'select', 'sidebar', 'tabs', 'toast'];
 
 // Size budgets (gzip bytes). CI fails when a change blows past them.
 // CSS budget sized for the full shadcn component set (~61 components); tighten once complete.
@@ -131,6 +131,7 @@ async function radiusRoles(style) {
 // `kind: "enhance"` modules are optional: the markup works without them.
 const JS_MODULES = {
   accordion: { src: 'src/js/accordion.js', core: true, detect: '[data-accordion-initialized]', note: 'Only for the upstream markup; <details name> accordions need no JS.' },
+  carousel: { src: 'src/js/carousel.js', core: true, kind: 'enhance', detect: '[data-carousel-initialized], [data-lightbox]', note: 'Adds controls, mouse dragging, loop, autoplay, thumbnails and the lightbox; carousels scroll, snap and swipe without it.' },
   combobox: { src: 'src/js/combobox.js', core: true, detect: '[data-combobox-initialized]' },
   command: { src: 'src/js/command.js', core: true, detect: '[data-command-initialized]' },
   drawer: { src: 'src/js/drawer.js', core: true, detect: '[data-drawer-initialized]' },

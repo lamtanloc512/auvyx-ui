@@ -106,6 +106,7 @@ const INTERACTIONS = [
   ['reviews-01', (p) => p.click('[data-star-filter="5"]')],
   ['reviews-02', (p) => p.click('.shop-star-input label:nth-of-type(4)')],
   ['reviews-03', (p) => p.click('button[data-tag="Warm"]')],
+  ['product-01', (p) => p.click('#p1-gallery [data-carousel="next"]')],
 ];
 
 test('React blocks behave like the HTML blocks', async () => {

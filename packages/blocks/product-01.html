@@ -249,6 +249,27 @@
         inline-size: 1rem;
         block-size: 1rem;
       }
+      .shop-shot {
+        display: block;
+        aspect-ratio: 4 / 5;
+        inline-size: 100%;
+        object-fit: cover;
+        background: var(--muted);
+      }
+      .shop-shot[data-shot="2"] {
+        transform: scaleX(-1);
+        filter: hue-rotate(160deg) saturate(1.6);
+      }
+      .shop-shot[data-shot="3"] {
+        filter: sepia(0.6) saturate(1.4);
+      }
+      .shop-shot[data-shot="4"] {
+        transform: scaleX(-1);
+        filter: grayscale(1) contrast(1.2);
+      }
+      html.dark .shop-shot {
+        opacity: 0.6;
+      }
       .shop-card {
         position: relative;
         display: flex;
@@ -505,40 +526,27 @@
         background: var(--muted);
         object-fit: cover;
       }
-      .shop-pdp-thumbs {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.75rem;
-        border: 0;
-        margin: 0;
-        padding: 0;
+      .shop-pdp-carousel .shop-pdp-main {
+        aspect-ratio: 1;
+        cursor: zoom-in;
       }
-      .shop-pdp-thumbs label {
-        position: relative;
-        border-radius: var(--radius);
+      .shop-pdp-carousel > ol > li > a {
+        display: block;
         overflow: hidden;
-        cursor: pointer;
-        opacity: 0.7;
+        border-radius: var(--radius);
       }
-      .shop-pdp-thumbs label:has(:checked) {
-        opacity: 1;
-        outline: 2px solid var(--primary);
-        outline-offset: 2px;
+      .shop-pdp-carousel [data-carousel] {
+        background: var(--background);
       }
-      .shop-pdp-thumbs label:has(:focus-visible) {
-        outline: 2px solid var(--ring);
-        outline-offset: 2px;
-      }
-      .shop-pdp-thumbs input {
+      .shop-pdp-count {
         position: absolute;
-        opacity: 0;
+        inset-block-end: 0.75rem;
+        inset-inline-end: 0.75rem;
+        z-index: 1;
+        font-variant-numeric: tabular-nums;
       }
       .shop-pdp-thumbs img {
-        display: block;
         aspect-ratio: 1;
-        inline-size: 100%;
-        object-fit: cover;
-        background: var(--muted);
       }
       .shop-pdp-info {
         display: grid;
@@ -701,29 +709,111 @@
         </nav>
         <div class="shop-pdp">
           <div class="shop-pdp-gallery">
-            <img
-              class="shop-pdp-main"
-              src="assets/placeholder.svg"
-              alt="Merino Crew Sweater in charcoal" />
-            <fieldset class="shop-pdp-thumbs">
-              <legend class="sr-only">Images</legend>
-              <label>
-                <input type="radio" name="p1-img" value="0" aria-label="Image 1" checked />
-                <img src="assets/placeholder.svg" alt />
-              </label>
-              <label>
-                <input type="radio" name="p1-img" value="1" aria-label="Image 2" />
-                <img src="assets/placeholder.svg" alt />
-              </label>
-              <label>
-                <input type="radio" name="p1-img" value="2" aria-label="Image 3" />
-                <img src="assets/placeholder.svg" alt />
-              </label>
-              <label>
-                <input type="radio" name="p1-img" value="3" aria-label="Image 4" />
-                <img src="assets/placeholder.svg" alt />
-              </label>
-            </fieldset>
+            <section
+              class="carousel shop-pdp-carousel"
+              id="p1-gallery"
+              data-loop
+              aria-roledescription="carousel"
+              aria-label="Merino Crew Sweater photos">
+              <ol>
+                <li aria-roledescription="slide" aria-label="1 of 4">
+                  <a
+                    href="assets/placeholder.svg"
+                    data-lightbox="p1"
+                    data-caption="Merino Crew Sweater, photo 1 of 4">
+                    <img
+                      class="shop-shot shop-pdp-main"
+                      src="assets/placeholder.svg"
+                      alt="Merino Crew Sweater, photo 1" />
+                  </a>
+                </li>
+                <li aria-roledescription="slide" aria-label="2 of 4">
+                  <a
+                    href="assets/placeholder.svg"
+                    data-lightbox="p1"
+                    data-caption="Merino Crew Sweater, photo 2 of 4">
+                    <img
+                      class="shop-shot shop-pdp-main"
+                      src="assets/placeholder.svg"
+                      alt="Merino Crew Sweater, photo 2"
+                      data-shot="2" />
+                  </a>
+                </li>
+                <li aria-roledescription="slide" aria-label="3 of 4">
+                  <a
+                    href="assets/placeholder.svg"
+                    data-lightbox="p1"
+                    data-caption="Merino Crew Sweater, photo 3 of 4">
+                    <img
+                      class="shop-shot shop-pdp-main"
+                      src="assets/placeholder.svg"
+                      alt="Merino Crew Sweater, photo 3"
+                      data-shot="3" />
+                  </a>
+                </li>
+                <li aria-roledescription="slide" aria-label="4 of 4">
+                  <a
+                    href="assets/placeholder.svg"
+                    data-lightbox="p1"
+                    data-caption="Merino Crew Sweater, photo 4 of 4">
+                    <img
+                      class="shop-shot shop-pdp-main"
+                      src="assets/placeholder.svg"
+                      alt="Merino Crew Sweater, photo 4"
+                      data-shot="4" />
+                  </a>
+                </li>
+              </ol>
+              <button
+                type="button"
+                class="btn rounded-full"
+                data-variant="outline"
+                data-size="icon-sm"
+                data-carousel="prev"
+                aria-label="Previous photo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+              <button
+                type="button"
+                class="btn rounded-full"
+                data-variant="outline"
+                data-size="icon-sm"
+                data-carousel="next"
+                aria-label="Next photo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+              <span class="badge shop-pdp-count" data-variant="secondary" data-carousel-counter>
+                1 / 4
+              </span>
+            </section>
+            <section
+              class="carousel shop-pdp-thumbs"
+              data-carousel-for="p1-gallery"
+              aria-label="Thumbnails"
+              style="--per-view: 4; --carousel-gap: 0.75rem">
+              <ol>
+                <li aria-roledescription="slide" aria-label="1 of 4">
+                  <button type="button" aria-label="Show photo 1">
+                    <img class="shop-shot" src="assets/placeholder.svg" alt />
+                  </button>
+                </li>
+                <li aria-roledescription="slide" aria-label="2 of 4">
+                  <button type="button" aria-label="Show photo 2">
+                    <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="2" />
+                  </button>
+                </li>
+                <li aria-roledescription="slide" aria-label="3 of 4">
+                  <button type="button" aria-label="Show photo 3">
+                    <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="3" />
+                  </button>
+                </li>
+                <li aria-roledescription="slide" aria-label="4 of 4">
+                  <button type="button" aria-label="Show photo 4">
+                    <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="4" />
+                  </button>
+                </li>
+              </ol>
+            </section>
           </div>
           <div class="shop-pdp-info">
             <div class="stack" data-gap="3">

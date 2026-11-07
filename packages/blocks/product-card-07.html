@@ -187,6 +187,27 @@
         inline-size: 1rem;
         block-size: 1rem;
       }
+      .shop-shot {
+        display: block;
+        aspect-ratio: 4 / 5;
+        inline-size: 100%;
+        object-fit: cover;
+        background: var(--muted);
+      }
+      .shop-shot[data-shot="2"] {
+        transform: scaleX(-1);
+        filter: hue-rotate(160deg) saturate(1.6);
+      }
+      .shop-shot[data-shot="3"] {
+        filter: sepia(0.6) saturate(1.4);
+      }
+      .shop-shot[data-shot="4"] {
+        transform: scaleX(-1);
+        filter: grayscale(1) contrast(1.2);
+      }
+      html.dark .shop-shot {
+        opacity: 0.6;
+      }
       .shop-card {
         position: relative;
         display: flex;
@@ -265,27 +286,6 @@
         display: grid;
         gap: 2rem 1.5rem;
         grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
-      }
-      .shop-shot {
-        display: block;
-        aspect-ratio: 4 / 5;
-        inline-size: 100%;
-        object-fit: cover;
-        background: var(--muted);
-      }
-      .shop-shot[data-shot="2"] {
-        transform: scaleX(-1);
-        filter: hue-rotate(160deg) saturate(1.6);
-      }
-      .shop-shot[data-shot="3"] {
-        filter: sepia(0.6) saturate(1.4);
-      }
-      .shop-shot[data-shot="4"] {
-        transform: scaleX(-1);
-        filter: grayscale(1) contrast(1.2);
-      }
-      html.dark .shop-shot {
-        opacity: 0.6;
       }
       .shop-fx {
         position: relative;

@@ -1448,6 +1448,11 @@ ITEMS = [
 ]
 
 CATALOG_CSS = """
+  .shop-shot { display: block; aspect-ratio: 4 / 5; inline-size: 100%; object-fit: cover; background: var(--muted); }
+  .shop-shot[data-shot='2'] { transform: scaleX(-1); filter: hue-rotate(160deg) saturate(1.6); }
+  .shop-shot[data-shot='3'] { filter: sepia(0.6) saturate(1.4); }
+  .shop-shot[data-shot='4'] { transform: scaleX(-1); filter: grayscale(1) contrast(1.2); }
+  html.dark .shop-shot { opacity: 0.6; }
   .shop-card { position: relative; display: flex; flex-direction: column; gap: 0.75rem; }
   .shop-card-media { position: relative; overflow: hidden; border-radius: var(--radius); background: var(--muted); }
   .shop-card-media > img { display: block; aspect-ratio: 4 / 5; inline-size: 100%; object-fit: cover; transition: transform 300ms ease; }
@@ -1511,12 +1516,11 @@ CATALOG_CSS = """
   @media (width >= 56rem) { .shop-pdp { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 3rem; } .shop-pdp-info { position: sticky; inset-block-start: 5.5rem; } }
   .shop-pdp-gallery { display: grid; gap: 0.75rem; }
   .shop-pdp-main { display: block; aspect-ratio: 1; inline-size: 100%; border-radius: var(--radius); background: var(--muted); object-fit: cover; }
-  .shop-pdp-thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; border: 0; margin: 0; padding: 0; }
-  .shop-pdp-thumbs label { position: relative; border-radius: var(--radius); overflow: hidden; cursor: pointer; opacity: 0.7; }
-  .shop-pdp-thumbs label:has(:checked) { opacity: 1; outline: 2px solid var(--primary); outline-offset: 2px; }
-  .shop-pdp-thumbs label:has(:focus-visible) { outline: 2px solid var(--ring); outline-offset: 2px; }
-  .shop-pdp-thumbs input { position: absolute; opacity: 0; }
-  .shop-pdp-thumbs img { display: block; aspect-ratio: 1; inline-size: 100%; object-fit: cover; background: var(--muted); }
+  .shop-pdp-carousel .shop-pdp-main { aspect-ratio: 1; cursor: zoom-in; }
+  .shop-pdp-carousel > ol > li > a { display: block; overflow: hidden; border-radius: var(--radius); }
+  .shop-pdp-carousel [data-carousel] { background: var(--background); }
+  .shop-pdp-count { position: absolute; inset-block-end: 0.75rem; inset-inline-end: 0.75rem; z-index: 1; font-variant-numeric: tabular-nums; }
+  .shop-pdp-thumbs img { aspect-ratio: 1; }
   .shop-pdp-info { display: grid; gap: 1.5rem; }
   .shop-pdp-title { margin: 0; font-size: 1.875rem; font-weight: 600; letter-spacing: -0.025em; text-wrap: balance; }
   .shop-pdp-buy { display: flex; gap: 0.75rem; }
@@ -1757,11 +1761,26 @@ add("product-card-03", "Product Card 03", "Product cards with color swatches and
 
 
 # ================================================================== product details
-def gallery(prefix, n=4):
-    thumbs = "".join(f'<label><input type="radio" name="{prefix}-img" value="{i}" aria-label="Image {i + 1}"{" checked" if i == 0 else ""}><img src="{PH}" alt=""></label>' for i in range(n))
+def gallery(prefix, n=4, name="Merino Crew Sweater"):
+    # Carousel (drag, swipe, arrows), thumbnails kept in sync, and a lightbox on click (js/carousel.js).
+    slides = "".join(
+        f'<li aria-roledescription="slide" aria-label="{i + 1} of {n}"><a href="{PH}" data-lightbox="{prefix}" data-caption="{name}, photo {i + 1} of {n}">'
+        f'<img class="shop-shot shop-pdp-main" src="{PH}" alt="{name}, photo {i + 1}"{f" data-shot={chr(34)}{i + 1}{chr(34)}" if i else ""}></a></li>'
+        for i in range(n))
+    thumbs = "".join(
+        f'<li aria-roledescription="slide" aria-label="{i + 1} of {n}"><button type="button" aria-label="Show photo {i + 1}">'
+        f'<img class="shop-shot" src="{PH}" alt=""{f" data-shot={chr(34)}{i + 1}{chr(34)}" if i else ""}></button></li>'
+        for i in range(n))
+    arrow = lambda d, ic_: f'<button type="button" class="btn rounded-full" data-variant="outline" data-size="icon-sm" data-carousel="{d}" aria-label="{"Previous" if d == "prev" else "Next"} photo">{si(ic_)}</button>'
     return f"""<div class="shop-pdp-gallery">
-  <img class="shop-pdp-main" src="{PH}" alt="Merino Crew Sweater in charcoal">
-  <fieldset class="shop-pdp-thumbs"><legend class="sr-only">Images</legend>{thumbs}</fieldset>
+  <section class="carousel shop-pdp-carousel" id="{prefix}-gallery" data-loop aria-roledescription="carousel" aria-label="{name} photos">
+    <ol>{slides}</ol>
+    {arrow("prev", "chevron-left")}{arrow("next", "chevron-right")}
+    <span class="badge shop-pdp-count" data-variant="secondary" data-carousel-counter>1 / {n}</span>
+  </section>
+  <section class="carousel shop-pdp-thumbs" data-carousel-for="{prefix}-gallery" aria-label="Thumbnails" style="--per-view: {n}; --carousel-gap: 0.75rem">
+    <ol>{thumbs}</ol>
+  </section>
 </div>"""
 
 
@@ -2310,11 +2329,6 @@ add("cart-05", "Cart 05", "A mini cart in a bottom drawer, for mobile shops.", "
 # mirrored copies (data-shot). Real shops use their own images.
 FX_CSS = """
   .shop-fx-grid { display: grid; gap: 2rem 1.5rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
-  .shop-shot { display: block; aspect-ratio: 4 / 5; inline-size: 100%; object-fit: cover; background: var(--muted); }
-  .shop-shot[data-shot='2'] { transform: scaleX(-1); filter: hue-rotate(160deg) saturate(1.6); }
-  .shop-shot[data-shot='3'] { filter: sepia(0.6) saturate(1.4); }
-  .shop-shot[data-shot='4'] { transform: scaleX(-1); filter: grayscale(1) contrast(1.2); }
-  html.dark .shop-shot { opacity: 0.6; }
   .shop-fx { position: relative; display: flex; flex-direction: column; gap: 0.75rem; }
   .shop-fx-media { position: relative; overflow: hidden; border-radius: var(--radius); background: var(--muted); }
   .shop-fx-media > .shop-shot + .shop-shot { position: absolute; inset: 0; block-size: 100%; }

@@ -13,6 +13,12 @@
  * data-items: 1 (default) | 2 | 3 | 4 slides per view, or style="--per-view: 1.5".
  * data-orientation="vertical" scrolls vertically (set a height with --carousel-height).
  * data-markers adds dot navigation.
+ *
+ * With js/carousel.js (optional): buttons the page provides
+ * ([data-carousel="prev|next|play"]), dots ([data-carousel-dots]), a counter
+ * ([data-carousel-counter]), mouse dragging, data-loop, data-autoplay,
+ * thumbnails (data-carousel-for="<id>") and the lightbox (a[data-lightbox]).
+ * Once it runs, the native scroll buttons and markers make way for those.
  */
 @layer components {
   .carousel {
@@ -117,6 +123,174 @@
         content: '' / attr(aria-label);
         @apply cursor-pointer;
       }
+    }
+  }
+
+  /* Enhanced by js/carousel.js. The native scroll buttons and markers stay
+     until the page provides its own controls or dots. */
+  .carousel[data-carousel-initialized]:is(:has(> [data-carousel='prev'], > [data-carousel='next']), [data-carousel-for]) {
+    padding: 0;
+
+    > :is(ol, ul)::scroll-button(*) {
+      display: none;
+    }
+  }
+
+  .carousel[data-carousel-initialized]:is(:has([data-carousel-dots]), [data-carousel-for]) > :is(ol, ul) {
+    scroll-marker-group: none;
+  }
+
+  .carousel[data-carousel-initialized] {
+    > :is(ol, ul) {
+      &:focus-visible {
+        @apply outline-ring/50 outline-[3px] outline-offset-2;
+      }
+
+      img {
+        -webkit-user-drag: none;
+        user-select: none;
+      }
+    }
+  }
+
+  @media (pointer: fine) {
+    .carousel[data-carousel-initialized]:not([data-no-drag]) > :is(ol, ul) {
+      cursor: grab;
+    }
+  }
+
+  .carousel[data-dragging] > :is(ol, ul) {
+    @apply cursor-grabbing select-none;
+  }
+
+  .carousel > [data-carousel='prev'],
+  .carousel > [data-carousel='next'] {
+    @apply absolute z-10;
+  }
+
+  .carousel:not([data-orientation='vertical']) > [data-carousel='prev'],
+  .carousel:not([data-orientation='vertical']) > [data-carousel='next'] {
+    top: var(--carousel-controls-top, 50%);
+    translate: 0 -50%;
+  }
+
+  .carousel:not([data-orientation='vertical']) > [data-carousel='prev'] {
+    inset-inline-start: var(--carousel-controls-inset, 0.75rem);
+  }
+
+  .carousel:not([data-orientation='vertical']) > [data-carousel='next'] {
+    inset-inline-end: var(--carousel-controls-inset, 0.75rem);
+  }
+
+  .carousel[data-orientation='vertical'] > [data-carousel='prev'],
+  .carousel[data-orientation='vertical'] > [data-carousel='next'] {
+    left: 50%;
+    translate: -50% 0;
+  }
+
+  .carousel[data-orientation='vertical'] > [data-carousel='prev'] {
+    top: var(--carousel-controls-inset, 0.75rem);
+  }
+
+  .carousel[data-orientation='vertical'] > [data-carousel='next'] {
+    bottom: var(--carousel-controls-inset, 0.75rem);
+  }
+
+  /* Prev and next arrows point the other way in RTL. */
+  .carousel:dir(rtl):not([data-orientation='vertical']) > :is([data-carousel='prev'], [data-carousel='next']) > svg {
+    scale: -1 1;
+  }
+
+  /* Play/pause: a button with two icons; the first shows while paused. */
+  .carousel [data-carousel='play'][aria-pressed='true'] > svg:first-of-type,
+  .carousel [data-carousel='play']:not([aria-pressed='true']) > svg:last-of-type {
+    @apply hidden;
+  }
+
+  .carousel [data-carousel-dots] {
+    @apply mt-3 flex flex-wrap items-center justify-center gap-1.5;
+
+    > button {
+      @apply size-2 cursor-pointer rounded-full p-0 transition-all;
+    }
+
+    > button[aria-current='true'] {
+      @apply w-5;
+    }
+  }
+
+  .carousel [data-carousel-counter] {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Thumbnail strip: room for the active ring. */
+  .carousel[data-carousel-for] > :is(ol, ul) {
+    padding: 0.25rem;
+    scroll-padding: 0.25rem;
+  }
+
+  .carousel[data-carousel-for] > :is(ol, ul) > li {
+    > :is(button, a) {
+      @apply block w-full cursor-pointer p-0;
+    }
+  }
+
+  /* Lightbox: the viewer js/carousel.js opens for a[data-lightbox] */
+  dialog.lightbox {
+    @apply fixed inset-0 m-0 size-full max-h-none max-w-none border-0 p-0 text-white;
+
+    &::backdrop {
+      @apply bg-transparent;
+    }
+
+    > .carousel {
+      @apply size-full;
+
+      > ol {
+        @apply h-full;
+
+        > li {
+          @apply flex items-center justify-center overflow-hidden px-4 pt-14 pb-16;
+        }
+      }
+    }
+
+    figure {
+      @apply m-0 grid size-full max-h-full content-center justify-items-center gap-3;
+    }
+
+    img {
+      @apply w-full cursor-zoom-in object-contain;
+      height: calc(100svh - 9rem);
+      transition: transform 250ms ease;
+    }
+
+    figure[data-zoomed] img {
+      @apply cursor-zoom-out;
+      transform: scale(2.2);
+    }
+
+    figcaption {
+      @apply text-sm text-center;
+    }
+
+    [data-carousel-counter] {
+      @apply absolute top-4 left-1/2 -translate-x-1/2 text-sm;
+    }
+
+    [data-lightbox-close] {
+      @apply absolute top-3 z-10;
+      inset-inline-end: 0.75rem;
+    }
+
+    .carousel[data-single] > :is([data-carousel='prev'], [data-carousel='next'], [data-carousel-counter]) {
+      @apply hidden;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    dialog.lightbox img {
+      transition: none;
     }
   }
 }
