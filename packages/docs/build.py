@@ -71,6 +71,7 @@ TILE = '<div style="padding:.75rem 1rem;border:1px solid var(--border);border-ra
 
 
 # Same element ids as Create.syncBlock(), so the docs iframe sync updates them in place.
+# #d-cr-style is the block's own bundle link: a style pack replaces it.
 BLOCK_PRESET = """<script>
       (function () {
         var d = document, r = d.documentElement, p = null, m = null;
@@ -78,7 +79,8 @@ BLOCK_PRESET = """<script>
         if (m && !/[?&]theme=/.test(location.search)) r.classList.toggle("dark", m === "dark");
         if (!p) return;
         function add(tag, id, attrs) { var el = d.createElement(tag); el.id = id; for (var k in attrs) el[k] = attrs[k]; d.head.appendChild(el); }
-        if (p.style) add("link", "d-cr-style", { rel: "stylesheet", href: "../dist/styles/" + p.style });
+        var base = d.getElementById("d-cr-style");
+        if (p.style && base) base.href = "../dist/styles/" + p.style;
         if (p.fonts) add("link", "d-cr-fonts", { rel: "stylesheet", href: p.fonts });
         add("style", "d-cr-theme", { textContent: p.css });
       })();
@@ -345,7 +347,10 @@ def main():
     scan = DOCS / "src/data/.scan.json"
     scan.write_text(data_json)
     entry = DOCS / "src/docs.css"
-    entry.write_text('@import "tailwindcss" source(none);\n@import "../../ui/src/auvyx.source.css";\n@source "./data/.scan.json";\n@source "./index.html";\n@source "./create.js";\n@source "./create-preview.html";\n')
+    # The components come from a separate, swappable <link> (dist/auvyx.min.css or a style pack), so
+    # choosing a style on Create replaces Vega instead of layering on it; docs.css only needs their theme.
+    # No preflight either: the component stylesheet has Auvyx's own (border colors and so on).
+    entry.write_text('@layer theme, base, components, utilities;\n@import "tailwindcss/theme.css" layer(theme);\n@import "tailwindcss/utilities.css" layer(utilities) source(none);\n@import "../../ui/src/auvyx.source.css" reference;\n@source "./data/.scan.json";\n@source "./index.html";\n@source "./create.js";\n@source "./create-preview.html";\n')
     # Minify with esbuild, not Tailwind's --minify (Lightning CSS can drop rules, see packages/ui/build.mjs).
     run(str(ROOT / "node_modules/.bin/tailwindcss"), "-i", str(entry), "-o", str(OUT / "docs.css"))
     run(str(ROOT / "node_modules/.bin/esbuild"), str(OUT / "docs.css"), "--minify", "--target=chrome111,safari16.4,firefox128", f"--outfile={OUT / 'docs.css'}", "--allow-overwrite", "--log-level=warning")
@@ -357,6 +362,11 @@ def main():
     shutil.copytree(BLOCKS / "assets", OUT / "blocks" / "assets")
     for f in BLOCKS.glob("*.html"):
         html = f.read_text().replace("../ui/dist/", "../dist/")
+        # The bundle link gets an id: a style from Create replaces it (never layers on top of Vega).
+        base = '<link rel="stylesheet" href="../dist/auvyx.min.css" />'
+        if base not in html:
+            raise SystemExit(f"{f.name}: no {base}")
+        html = html.replace(base, '<link id="d-cr-style" rel="stylesheet" href="../dist/auvyx.min.css" />', 1)
         # Opened directly from the docs, a block follows the docs preset and dark mode.
         # Before </head>: after the block's own theme script, so the docs dark mode wins.
         html = html.replace("  </head>", "    " + BLOCK_PRESET + "\n  </head>", 1)

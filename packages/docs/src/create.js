@@ -470,8 +470,9 @@
       return el;
     }
     function setHref(el, href) { if (href) { if (el.getAttribute('href') !== href) el.setAttribute('href', href); } else el.removeAttribute('href'); }
-    // docs.css and auvyx.min.css are the Vega bundle; other styles load their own bundle on top.
-    const stylePack = (prefix) => (state.style ? `${prefix}dist/styles/${styleFile()}` : '');
+    // The component stylesheet of the site and of block pages: the Vega bundle, or the chosen
+    // style's own bundle in its place (each style stands alone; never layered on Vega).
+    const stylePack = (prefix) => (state.style ? `${prefix}dist/styles/${styleFile()}` : `${prefix}dist/auvyx.min.css`);
     // Standalone block pages (opened in a new tab) read this to apply the same preset.
     function publish() {
       try { localStorage.setItem('auvyx-preset', JSON.stringify({ css: css(), style: state.style ? styleFile() : '', fonts: fontsHref(), icons: iconLib() })); } catch (e) {}
