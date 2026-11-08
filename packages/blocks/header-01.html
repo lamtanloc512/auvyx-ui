@@ -481,6 +481,12 @@
         flex: 1;
         max-inline-size: 36rem;
       }
+      .hf-search.input-group {
+        block-size: 2.5rem;
+      }
+      .hf-kbd .kbd {
+        font-size: 0.75rem;
+      }
       .hf-msearch {
         padding-block-end: 0.75rem;
       }
@@ -498,35 +504,6 @@
         background-color: transparent;
         box-shadow: none;
         font-size: 0.8125rem;
-      }
-      .hf-search-combo {
-        display: flex;
-        align-items: center;
-        border: 1px solid var(--input);
-        border-radius: var(--radius);
-        overflow: hidden;
-      }
-      .hf-search-combo:focus-within {
-        border-color: var(--ring);
-        box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 40%, transparent);
-      }
-      .hf-search-combo input {
-        flex: 1;
-        min-inline-size: 0;
-        block-size: 2.5rem;
-        padding-inline: 0.75rem;
-        border: 0;
-        background: transparent;
-        color: inherit;
-        font: inherit;
-        font-size: 0.875rem;
-      }
-      .hf-search-combo input:focus {
-        outline: none;
-      }
-      .hf-search-combo .btn {
-        border-radius: 0;
-        block-size: 2.5rem;
       }
       .hf-account {
         display: flex;
@@ -763,20 +740,18 @@
           <span class="block-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
           Acme Store
         </a>
-        <form class="hf-search hf-hide-sm" role="search" onsubmit="event.preventDefault()">
-          <div class="hf-search-combo">
-            <label class="sr-only" for="h1-cat">Category</label>
-            <select class="select" id="h1-cat">
-              <option>All</option>
-              <option>Women</option>
-              <option>Men</option>
-              <option>Home</option>
-            </select>
-            <input type="search" placeholder="Search products, brands..." aria-label="Search" />
-            <button type="submit" class="btn" aria-label="Search">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            </button>
-          </div>
+        <form
+          class="input-group hf-search hf-hide-sm"
+          role="search"
+          onsubmit="event.preventDefault()">
+          <input
+            type="search"
+            placeholder="Search products, brands..."
+            aria-label="Search products"
+            aria-keyshortcuts="Meta+K Control+K"
+            data-hotkey-search />
+          <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+          <span data-align="end" class="hf-kbd"><kbd class="kbd">⌘K</kbd></span>
         </form>
         <div class="hf-actions">
           <a href="#" class="hf-account hf-hide-sm">
@@ -1090,6 +1065,19 @@
           a.setAttribute("aria-current", "page");
         }),
       );
+      // Cmd/Ctrl+K: focus the header search, or open it.
+      document.addEventListener("keydown", (e) => {
+        if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== "k") return;
+        const input = [...document.querySelectorAll("[data-hotkey-search]")].find(
+          (x) => x.offsetParent,
+        );
+        const toggle = document.querySelector("[data-search-toggle]");
+        if (!input && !toggle) return;
+        e.preventDefault();
+        if (input) input.focus();
+        else if (toggle.getAttribute("aria-expanded") !== "true") toggle.click();
+        else toggle.closest(".hf-head").querySelector(".hf-searchbox input").focus();
+      });
       // Back to top.
       document.querySelectorAll("[data-to-top]").forEach((b) => {
         const sync = () => b.toggleAttribute("data-show", window.scrollY > 300);

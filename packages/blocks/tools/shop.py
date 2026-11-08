@@ -5337,6 +5337,9 @@ HF_CSS = """
   .hf-catmenu a small { margin-inline-start: auto; color: var(--muted-foreground); font-size: 0.75rem; }
   .hf-search { flex: 1; max-inline-size: 36rem; }
   .hf-pill { border-radius: 999px; corner-shape: round; }
+  .hf-search.input-group { block-size: 2.5rem; }
+  .hf-kbd .kbd { font-size: 0.75rem; }
+  .hf-pill .hf-kbd { padding-inline-end: 0.375rem; }
   .hf-msearch { padding-block-end: 0.75rem; }
   @media (width >= 64rem) { .hf-msearch { display: none; } }
   .hf-search select { flex: none; inline-size: auto; border: 0; border-inline-end: 1px solid var(--border); border-radius: 0; background-color: transparent; box-shadow: none; font-size: 0.8125rem; }
@@ -5567,6 +5570,17 @@ document.querySelectorAll('.hf-bnav').forEach((nav) => nav.addEventListener('cli
   nav.querySelectorAll('a[aria-current]').forEach((x) => x.removeAttribute('aria-current'));
   a.setAttribute('aria-current', 'page');
 }));
+// Cmd/Ctrl+K: focus the header search, or open it.
+document.addEventListener('keydown', (e) => {
+  if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== 'k') return;
+  const input = [...document.querySelectorAll('[data-hotkey-search]')].find((x) => x.offsetParent);
+  const toggle = document.querySelector('[data-search-toggle]');
+  if (!input && !toggle) return;
+  e.preventDefault();
+  if (input) input.focus();
+  else if (toggle.getAttribute('aria-expanded') !== 'true') toggle.click();
+  else toggle.closest('.hf-head').querySelector('.hf-searchbox input').focus();
+});
 // Back to top.
 document.querySelectorAll('[data-to-top]').forEach((b) => {
   const sync = () => b.toggleAttribute('data-show', window.scrollY > 300);
@@ -5679,7 +5693,7 @@ add("header-01", "Header 01", "An ecommerce header: rotating announcements, util
   <div class="wrapper hf-row" data-size="xl" data-row="main">
     {burger("h1-menu")}
     {logo("Acme Store")}
-    <form class="hf-search hf-hide-sm" role="search" onsubmit="event.preventDefault()"><div class="hf-search-combo"><label class="sr-only" for="h1-cat">Category</label><select class="select" id="h1-cat"><option>All</option><option>Women</option><option>Men</option><option>Home</option></select><input type="search" placeholder="Search products, brands..." aria-label="Search"><button type="submit" class="btn" aria-label="Search">{si("search")}</button></div></form>
+    <form class="input-group hf-search hf-hide-sm" role="search" onsubmit="event.preventDefault()"><input type="search" placeholder="Search products, brands..." aria-label="Search products" aria-keyshortcuts="Meta+K Control+K" data-hotkey-search><span data-align="start" aria-hidden="true">{si("search")}</span><span data-align="end" class="hf-kbd"><kbd class="kbd">⌘K</kbd></span></form>
     <div class="hf-actions">
       <a href="#" class="hf-account hf-hide-sm">{si("user")}<span>Hello, sign in<strong>Account</strong></span></a>
       {ICON_BTN("heart", "Wishlist")}
@@ -5703,7 +5717,7 @@ add("header-02", "Header 02", "A header for an online course platform: categorie
     {burger("h2-menu")}
     {biz_logo("Acme Learn", "graduation-cap")}
     <nav class="hf-nav" aria-label="Main"><div class="popover"><button type="button" popovertarget="h2-cats">Categories{si("chevron-down")}</button><div id="h2-cats" class="hf-catmenu" data-popover popover data-side="bottom" data-align="start">{cat_menu}</div></div></nav>
-    <form class="input-group hf-search hf-pill hf-hide-sm" role="search" onsubmit="event.preventDefault()"><input type="search" placeholder="What do you want to learn?" aria-label="Search courses"><span data-align="start" aria-hidden="true">{si("search")}</span></form>
+    <form class="input-group hf-search hf-pill hf-hide-sm" role="search" onsubmit="event.preventDefault()"><input type="search" placeholder="What do you want to learn?" aria-label="Search courses" aria-keyshortcuts="Meta+K Control+K" data-hotkey-search><span data-align="start" aria-hidden="true">{si("search")}</span><span data-align="end" class="hf-kbd"><kbd class="kbd">⌘K</kbd></span></form>
     <div class="hf-actions">
       <nav class="hf-nav" aria-label="Secondary"><a href="#">Plus</a><a href="#">Teach on Acme</a></nav>
       {ICON_BTN("shopping-bag", "Cart")}
@@ -5726,7 +5740,7 @@ add("header-03", "Header 03", "A blog or magazine header: centered masthead with
     {burger("h3-menu")}
     <div class="cluster hf-hide-sm" data-gap="1">{ICON_BTN("rss", "RSS feed")}<span class="shop-line-meta">Sunday, November 8, 2026</span></div>
     <div class="hf-actions">
-      <button type="button" class="btn" data-variant="ghost" data-size="icon" aria-label="Search" aria-expanded="false" data-search-toggle>{si("search")}</button>
+      <button type="button" class="btn" data-variant="ghost" data-size="icon" aria-label="Search" aria-keyshortcuts="Meta+K Control+K" aria-expanded="false" data-search-toggle>{si("search")}</button>
       <button type="button" class="btn" data-variant="ghost" data-size="icon" aria-label="Toggle dark mode" data-theme-toggle>{si("moon")}</button>
       <a href="#" class="btn" data-size="sm">Subscribe</a>
     </div>
@@ -5783,7 +5797,7 @@ add("header-05", "Header 05", "A beauty and cosmetics header: soft announcement 
   {bar(["Free samples with every order", "Join Glow Club: 10% off your first order"], close=True)}
   <header class="hf-head">
     <div class="wrapper hf-row hf-beauty-row" data-size="xl">
-      <div class="cluster" data-gap="1">{burger("h5-menu")}<button type="button" class="btn" data-variant="ghost" data-size="icon" aria-label="Search" aria-expanded="false" data-search-toggle>{si("search")}</button></div>
+      <div class="cluster" data-gap="1">{burger("h5-menu")}<button type="button" class="btn" data-variant="ghost" data-size="icon" aria-label="Search" aria-keyshortcuts="Meta+K Control+K" aria-expanded="false" data-search-toggle>{si("search")}</button></div>
       <a href="#" class="hf-beauty-logo">lumière</a>
       <div class="hf-actions">{ICON_BTN("user", "Account")}{ICON_BTN("heart", "Wishlist")}{cart_btn(2)}</div>
     </div>
@@ -5814,7 +5828,7 @@ add("header-06", "Header 06", "A playful kids and toys header: free shipping bar
     <div class="wrapper hf-row" data-size="xl" style="block-size: 4.5rem">
       {burger("h6-menu")}
       <a href="#" class="hf-kids-logo"><span>t</span><span>o</span><span>y</span><span>b</span><span>o</span><span>x</span></a>
-      <form class="input-group hf-search hf-pill hf-hide-sm" role="search" onsubmit="event.preventDefault()"><input type="search" placeholder="Search toys, books, age..." aria-label="Search toys"><span data-align="start" aria-hidden="true">{si("search")}</span></form>
+      <form class="input-group hf-search hf-pill hf-hide-sm" role="search" onsubmit="event.preventDefault()"><input type="search" placeholder="Search toys, books, age..." aria-label="Search toys" aria-keyshortcuts="Meta+K Control+K" data-hotkey-search><span data-align="start" aria-hidden="true">{si("search")}</span><span data-align="end" class="hf-kbd"><kbd class="kbd">⌘K</kbd></span></form>
       <div class="hf-actions">{ICON_BTN("heart", "Wishlist")}{ICON_BTN("user", "Account")}{cart_btn(4)}</div>
     </div>
   <form class="wrapper hf-msearch" role="search" onsubmit="event.preventDefault()"><div class="input-group hf-pill"><input type="search" placeholder="Search toys, books, age..." aria-label="Search" id="h6-msearch"><span data-align="start" aria-hidden="true">{si("search")}</span></div></form>

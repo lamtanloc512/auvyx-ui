@@ -515,6 +515,19 @@
           a.setAttribute("aria-current", "page");
         }),
       );
+      // Cmd/Ctrl+K: focus the header search, or open it.
+      document.addEventListener("keydown", (e) => {
+        if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== "k") return;
+        const input = [...document.querySelectorAll("[data-hotkey-search]")].find(
+          (x) => x.offsetParent,
+        );
+        const toggle = document.querySelector("[data-search-toggle]");
+        if (!input && !toggle) return;
+        e.preventDefault();
+        if (input) input.focus();
+        else if (toggle.getAttribute("aria-expanded") !== "true") toggle.click();
+        else toggle.closest(".hf-head").querySelector(".hf-searchbox input").focus();
+      });
       // Back to top.
       document.querySelectorAll("[data-to-top]").forEach((b) => {
         const sync = () => b.toggleAttribute("data-show", window.scrollY > 300);
