@@ -303,6 +303,15 @@
         border-radius: 999px;
         corner-shape: round;
       }
+      .hf-search.input-group {
+        block-size: 2.5rem;
+      }
+      .hf-kbd .kbd {
+        font-size: 0.75rem;
+      }
+      .hf-pill .hf-kbd {
+        padding-inline-end: 0.375rem;
+      }
       .hf-msearch {
         padding-block-end: 0.75rem;
       }
@@ -497,8 +506,11 @@
           <input
             type="search"
             placeholder="What do you want to learn?"
-            aria-label="Search courses" />
+            aria-label="Search courses"
+            aria-keyshortcuts="Meta+K Control+K"
+            data-hotkey-search />
           <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+          <span data-align="end" class="hf-kbd"><kbd class="kbd">⌘K</kbd></span>
         </form>
         <div class="hf-actions">
           <nav class="hf-nav" aria-label="Secondary">
@@ -658,6 +670,19 @@
           a.setAttribute("aria-current", "page");
         }),
       );
+      // Cmd/Ctrl+K: focus the header search, or open it.
+      document.addEventListener("keydown", (e) => {
+        if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== "k") return;
+        const input = [...document.querySelectorAll("[data-hotkey-search]")].find(
+          (x) => x.offsetParent,
+        );
+        const toggle = document.querySelector("[data-search-toggle]");
+        if (!input && !toggle) return;
+        e.preventDefault();
+        if (input) input.focus();
+        else if (toggle.getAttribute("aria-expanded") !== "true") toggle.click();
+        else toggle.closest(".hf-head").querySelector(".hf-searchbox input").focus();
+      });
       // Back to top.
       document.querySelectorAll("[data-to-top]").forEach((b) => {
         const sync = () => b.toggleAttribute("data-show", window.scrollY > 300);

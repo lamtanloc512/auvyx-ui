@@ -17,7 +17,8 @@
   - New icons mapped for every library: cloud-upload, copy-plus, flag, grip-vertical, heading-2, link, list-checks, list-ordered, paperclip, quote, refresh-cw, reply, tag, ticket-percent, video.
 - React blocks: `contenteditable` elements get `suppressContentEditableWarning`, so an editable area converts without a warning.
 - Header and footer blocks for six kinds of business, in new Header and Footer categories. On phones every header switches to a bottom tab bar, the usual mobile pattern; its menu tab opens the header's sheet.
-  - `header-01` ecommerce: rotating announcement bar, utility bar with currency and language, search by category, account, wishlist and cart, mega menus.
+  - `header-01` ecommerce: rotating announcement bar, utility bar with currency and language, search, account, wishlist and cart, mega menus.
+  - Header search fields show a ⌘K hint; Cmd/Ctrl+K focuses the search, or opens it where it sits under the header.
   - `header-02` online courses: categories menu, rounded search, Plus / Teach links, log in and sign up.
   - `header-03` blog or magazine: masthead with the date, section row, search that opens under the header, dark mode toggle, subscribe.
   - `header-04` spa or wellness: contact and hours bar over a hero; the header turns solid on scroll and has a Book now button.
