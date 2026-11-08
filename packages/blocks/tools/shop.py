@@ -283,7 +283,7 @@ SHOP_CSS = """
   .shop-bottom-nav a[aria-current='page']::before { content: ''; position: absolute; inset-block-start: 0; inline-size: 2rem; block-size: 2px; border-radius: 0 0 2px 2px; background: var(--primary); }
   .shop-bottom-nav a:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; }
   .shop-nav-icon { position: relative; display: inline-flex; }
-  .shop-nav-icon > .shop-count { inset-block-start: -0.375rem; inset-inline-end: -0.625rem; }
+  .shop-nav-icon > .shop-count { inset-block-start: -0.25rem; inset-inline-end: -0.625rem; }
   .shop-bottom-nav[data-variant='floating'] { inset-block-end: calc(1rem + env(safe-area-inset-bottom, 0px)); inset-inline: 1rem; max-inline-size: 26rem; padding: 0.375rem; border: 1px solid var(--border); border-radius: 999px; box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.25); }
   .shop-bottom-nav[data-variant='floating'] a { padding-block: 0.5rem; border-radius: 999px; }
   .shop-bottom-nav[data-variant='floating'] a[aria-current='page'] { background: var(--primary); color: var(--primary-foreground); }
@@ -4250,7 +4250,11 @@ COURSE_CSS = """
   .crs-play[aria-pressed='true'] svg { display: none; }
   .crs-play[aria-pressed='true'] svg + svg { display: block; }
   .crs-learnpage { display: grid; min-block-size: calc(100svh - 3.5rem); }
+  .crs-learnpage[data-side-hidden] > .crs-learn-side { display: none; }
+  .crs-stage { position: relative; }
+  .crs-side-open { position: absolute; inset-block-start: 0.75rem; inset-inline-end: 0.75rem; z-index: 2; background: var(--background); }
   @media (width >= 64rem) { .crs-learnpage { grid-template-columns: minmax(0, 1fr) 24rem; } }
+  @media (width >= 64rem) { .crs-learnpage[data-side-hidden] { grid-template-columns: minmax(0, 1fr); } }
   .crs-learn-main { display: grid; align-content: start; gap: 1.5rem; padding: 1.5rem; min-inline-size: 0; }
   .crs-learn-side { border-inline-start: 1px solid var(--border); background: var(--background); }
   @media (width >= 64rem) { .crs-learn-side { position: sticky; inset-block-start: 3.5rem; block-size: calc(100svh - 3.5rem); overflow-y: auto; } }
@@ -4258,7 +4262,13 @@ COURSE_CSS = """
   .crs-learn-side-head h2 { margin: 0; font-size: 1rem; }
   .crs-learn-side-head p { margin: 0; font-size: 0.8125rem; color: var(--muted-foreground); }
   .crs-learn-side details { border-block-end: 1px solid var(--border); }
-  .crs-learn-side summary { display: grid; gap: 0.125rem; padding: 0.875rem 1rem; background: var(--muted); cursor: pointer; list-style: none; }
+  .crs-learn-side summary { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.125rem 0.75rem; padding: 0.875rem 1rem; background: var(--muted); cursor: pointer; list-style: none; }
+  .crs-learn-side summary > svg { grid-column: 2; grid-row: 1 / span 2; align-self: center; inline-size: 1rem; block-size: 1rem; color: var(--muted-foreground); transition: transform 150ms ease; }
+  .crs-learn-side details[open] > summary > svg { transform: rotate(180deg); }
+  .crs-learn-side summary > strong { grid-row: 1; grid-column: 1; }
+  .crs-learn-side summary > small { grid-row: 2; grid-column: 1; }
+  .crs-learn-side summary:hover { background: color-mix(in oklab, var(--muted) 70%, var(--accent)); }
+  .crs-learn-side summary:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; }
   .crs-learn-side summary::-webkit-details-marker { display: none; }
   .crs-learn-side summary strong { font-size: 0.875rem; }
   .crs-learn-side summary small { font-size: 0.75rem; color: var(--muted-foreground); }
@@ -4832,7 +4842,7 @@ for si_, (sec, ls) in enumerate(LESSONS):
         cur = k == 4
         items.append(f'<li data-lesson="{k}"{" aria-current=\"true\"" if cur else ""}><input type="checkbox" class="input" aria-label="Mark “{t}” complete"{" checked" if done else ""} data-done><button type="button" data-goto="{k}"><span>{k + 1}. {t}</span><small>{si("circle-play")}{d}</small></button></li>')
         k += 1
-    side.append(f'<details{" open" if si_ < 2 else ""}><summary><strong>Section {si_ + 1}: {sec}</strong><small data-sec-count>{sum(1 for *_, d in ls if d)} / {len(ls)} · {sum(int(d.split()[0]) for _, d, _ in ls)} min</small></summary><ol>{"".join(items)}</ol></details>')
+    side.append(f'<details{" open" if si_ < 2 else ""}><summary>{si("chevron-down")}<strong>Section {si_ + 1}: {sec}</strong><small data-sec-count>{sum(1 for *_, d in ls if d)} / {len(ls)} · {sum(int(d.split()[0]) for _, d, _ in ls)} min</small></summary><ol>{"".join(items)}</ol></details>')
 circ = 2 * 3.14159 * 13
 PLAYER_JS = """
 (() => {
@@ -4863,6 +4873,29 @@ PLAYER_JS = """
   };
   const current = () => items.findIndex((x) => x.hasAttribute('aria-current'));
   root.addEventListener('change', (e) => { if (e.target.matches('[data-done]')) sync(); });
+  // Sections: one button opens or closes them all; it follows the sections' own state.
+  const sections = [...root.querySelectorAll('.crs-learn-side details')];
+  const all = root.querySelector('[data-sections-toggle]');
+  const syncAll = () => {
+    const open = sections.every((d) => d.open);
+    all.textContent = open ? 'Collapse all' : 'Expand all';
+    all.setAttribute('aria-expanded', String(open));
+  };
+  all.addEventListener('click', () => {
+    const open = !sections.every((d) => d.open);
+    sections.forEach((d) => { d.open = open; });
+    syncAll();
+  });
+  sections.forEach((d) => d.addEventListener('toggle', syncAll));
+  // Hide the whole sidebar for a wider video, and bring it back.
+  const page = root.querySelector('.crs-learnpage');
+  root.querySelectorAll('[data-side-toggle]').forEach((b) => b.addEventListener('click', () => {
+    const hide = !page.hasAttribute('data-side-hidden');
+    page.toggleAttribute('data-side-hidden', hide);
+    root.querySelector('.crs-side-open').hidden = !hide;
+    root.querySelectorAll('[data-side-toggle]').forEach((x) => x.setAttribute('aria-expanded', String(!hide)));
+    (hide ? root.querySelector('.crs-side-open') : root.querySelector('.crs-learn-side [data-side-toggle]')).focus();
+  }));
   root.addEventListener('click', (e) => {
     const g = e.target.closest('[data-goto]');
     if (g) go(Number(g.dataset.goto));
@@ -4902,7 +4935,10 @@ add("course-05", "Course 05", "A course player: video, progress ring, curriculum
   </header>
   <div class="crs-learnpage">
     <div class="crs-learn-main">
-      {video(B, "the lesson", 35, "3:28", "9:45")}
+      <div class="crs-stage">
+        {video(B, "the lesson", 35, "3:28", "9:45")}
+        <button type="button" class="btn crs-side-open" data-variant="outline" data-size="sm" aria-controls="crs5-side" aria-expanded="true" data-side-toggle hidden>{si("list")}Course content</button>
+      </div>
       <div class="cluster" data-justify="between" data-gap="3">
         <div class="stack" data-gap="1"><p class="shop-line-meta">Section 2 · Lecture 5</p><h2 class="shop-h2" data-lesson-title>Mood boards that guide decisions</h2></div>
         <div class="cluster" data-gap="2"><button type="button" class="btn" data-variant="outline" data-step-lesson="-1">{si("chevron-left")}Previous</button><button type="button" class="btn" data-step-lesson="1">Complete and continue{si("chevron-right")}</button></div>
@@ -4937,8 +4973,11 @@ add("course-05", "Course 05", "A course player: video, progress ring, curriculum
         </div>
       </div>
     </div>
-    <aside class="crs-learn-side" aria-label="Course content">
-      <div class="crs-learn-side-head"><h2>Course content</h2><p>{len(LESSONS)} sections · {total_l} lectures</p></div>
+    <aside class="crs-learn-side" id="crs5-side" aria-label="Course content">
+      <div class="crs-learn-side-head">
+        <div class="cluster" data-justify="between"><h2>Course content</h2><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Hide course content" aria-controls="crs5-side" aria-expanded="true" data-side-toggle>{si("x")}</button></div>
+        <div class="cluster" data-justify="between"><p>{len(LESSONS)} sections · {total_l} lectures</p><button type="button" class="btn" data-variant="link" data-size="sm" data-sections-toggle aria-expanded="false">Expand all</button></div>
+      </div>
       {"".join(side)}
     </aside>
   </div>
@@ -5117,7 +5156,7 @@ add("course-09", "Course 09", "A certificate of completion with a verification I
       </div>
     </div>
     <article class="crs-cert" aria-labelledby="crs9-name">
-      <div class="crs-cert-top">{logo("Acme Learn")}<div class="crs-cert-meta"><span>Certificate no. <span id="crs9-id">UC-8F3A-29D1</span> {copy_btn("#crs9-id", "Copy certificate number")}</span><span>acme.learn/cert/UC-8F3A-29D1</span></div></div>
+      <div class="crs-cert-top">{logo("Acme Learn")}<div class="crs-cert-meta"><span class="crs-cert-id"><span>Certificate no. <span id="crs9-id">UC-8F3A-29D1</span></span>{copy_btn("#crs9-id", "Copy certificate number")}</span><span>acme.learn/cert/UC-8F3A-29D1</span></div></div>
       <h2>Certificate of completion</h2>
       <p class="crs-cert-name" id="crs9-name">Olivia Martin</p>
       <div class="stack" data-gap="1"><p class="shop-lead">has successfully completed</p><p class="crs-cert-course">{B["title"]}</p><p class="shop-line-meta">14 lectures · 7.5 total hours · Final project approved</p></div>
@@ -5131,7 +5170,7 @@ add("course-09", "Course 09", "A certificate of completion with a verification I
   </div>
 </main>
 """, CRS + SUCCESS_CSS + """
-  .crs-cert-meta .shop-copy { vertical-align: middle; }
+  .crs-cert-id { display: flex; align-items: center; gap: 0.25rem; }
   @media print { .crs-header { display: none; } .crs-cert { box-shadow: none; } }""", scripts=script(CERT_JS))
 
 
@@ -5223,6 +5262,2061 @@ add("course-10", "Course 10", "A course cart and checkout: remove courses, apply
   .crs-cart-line > img { border-radius: var(--radius); }
   .crs-cart-line .crs-price { flex-direction: column; align-items: flex-end; gap: 0; }
   @media (width < 40rem) { .crs-cart-line { grid-template-columns: 6rem minmax(0, 1fr); } .crs-cart-line > .crs-price { grid-column: 2; flex-direction: row; align-items: baseline; gap: 0.5rem; } }""", scripts=script(COURSE_CART_JS))
+
+
+# ================================================================== headers and footers by business
+HF_ICONS = {
+    "facebook": '<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>',
+    "instagram": '<rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8A4 4 0 0 1 16 11.37m1.5-4.87h.01"/>',
+    "youtube": '<path d="M2.5 17a24.1 24.1 0 0 1 0-10a2 2 0 0 1 1.4-1.4a49.6 49.6 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.1 24.1 0 0 1 0 10a2 2 0 0 1-1.4 1.4a49.6 49.6 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15l5-3l-5-3z"/>',
+    "twitter": '<path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6c2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4c-.9-4.2 4-6.6 7-3.8c1.1 0 3-1.2 3-1.2"/>',
+    "linkedin": '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2a2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6M2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/>',
+    "menu": '<path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/>',
+    "arrow-up": '<path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>',
+    "leaf": '<path d="M11 20a10 10 0 0 0 10-10a25.9 25.9 0 0 0-1.04-7.281a1 1 0 0 0-1.755-.325C15.833 5.5 13 5.5 9.8 6.1A7 7 0 0 0 11 20"/><path d="M2 21a5 5 0 0 1 2.911-4.544C7.613 15.212 8.351 15.24 11 13"/>',
+    "baby": '<path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5m1-4h.01"/><path d="M19.38 6.813A9 9 0 0 1 20.8 10.2a2 2 0 0 1 0 3.6a9 9 0 0 1-17.6 0a2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1m-3 5h.01"/>',
+    "headphones": '<path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/>',
+    "flower-2": '<path d="M12 5a3 3 0 1 1 3 3m-3-3a3 3 0 1 0-3 3m3-3v1M9 8a3 3 0 1 0 3 3M9 8h1m5 0a3 3 0 1 1-3 3m3-3h-1m-2 3v-1"/><circle cx="12" cy="8" r="2"/><path d="M12 10v12m0 0c4.2 0 7-1.667 7-5c-4.2 0-7 1.667-7 5m0 0c-4.2 0-7-1.667-7-5c4.2 0 7 1.667 7 5"/>',
+    "rabbit": '<path d="M13 16a3 3 0 0 1 2.24 5M18 12h.01"/><path d="M18 21h-8a4 4 0 0 1-4-4a7 7 0 0 1 7-7h.2L9.6 6.4a1 1 0 1 1 2.8-2.8L15.8 7h.2c3.3 0 6 2.7 6 6v1a2 2 0 0 1-2 2h-1a3 3 0 0 0-3 3"/><path d="M20 8.54V4a2 2 0 1 0-4 0v3m-8.388 5.524a3 3 0 1 0-1.6 4.3"/>',
+    "recycle": '<path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881a1.79 1.79 0 0 1-.004-1.784L7.196 9.5M11 19h8.203a1.83 1.83 0 0 0 1.556-.89a1.78 1.78 0 0 0 0-1.775l-1.226-2.12"/><path d="m14 16l-3 3l3 3m-5.707-8.404L7.196 9.5L3.1 10.598m6.244-4.787l1.093-1.892A1.83 1.83 0 0 1 11.985 3a1.78 1.78 0 0 1 1.546.888l3.943 6.843"/><path d="m13.378 9.633l4.096 1.098l1.097-4.096"/>',
+    "puzzle": '<path d="M15.39 4.39a1 1 0 0 0 1.68-.474a2.5 2.5 0 1 1 3.014 3.015a1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474a2.5 2.5 0 1 0-3.014 3.015a1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474a2.5 2.5 0 1 1-3.014-3.015a1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474a2.5 2.5 0 1 0 3.014-3.015a1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z"/>',
+    "rss": '<path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/>',
+    "store": '<path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63a.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63a.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63a.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63a.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/>',
+    "sun": '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
+    "moon": '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+}
+SHOP_ICONS.update(HF_ICONS)
+
+HF_CSS = """
+  .hf-demo { min-block-size: 24rem; padding: 3rem 1rem; display: grid; place-items: center; color: var(--muted-foreground); font-size: 0.875rem; background: repeating-linear-gradient(-45deg, var(--muted), var(--muted) 10px, transparent 10px, transparent 20px); }
+  .hf-demo p { margin: 0; padding: 0.5rem 1rem; border-radius: var(--radius); background: var(--background); }
+  .hf-bar { display: flex; align-items: center; justify-content: center; gap: 0.75rem; min-block-size: 2.25rem; padding: 0.375rem 2.75rem; position: relative; background: var(--biz, var(--primary)); color: var(--biz-fg, var(--primary-foreground)); font-size: 0.8125rem; text-align: center; }
+  .hf-bar[hidden] { display: none; }
+  .hf-bar a { color: inherit; font-weight: 600; text-underline-offset: 3px; }
+  .hf-bar .btn { color: inherit; }
+  .hf-bar .btn:hover { background: color-mix(in oklab, currentColor 15%, transparent); color: inherit; }
+  .hf-bar-close { position: absolute; inset-inline-end: 0.5rem; }
+  .hf-bar-msgs { display: grid; }
+  .hf-bar-msgs > span { grid-area: 1 / 1; transition: opacity 250ms ease; }
+  .hf-bar-msgs > span:not([data-on]) { opacity: 0; visibility: hidden; }
+  .hf-util { border-block-end: 1px solid var(--border); font-size: 0.75rem; color: var(--muted-foreground); }
+  .hf-util-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-block-size: 2.25rem; }
+  .hf-util a { color: inherit; text-decoration: none; }
+  .hf-util a:hover { color: var(--foreground); }
+  .hf-util-links { display: flex; align-items: center; gap: 1rem; }
+  .hf-util-links span { display: inline-flex; align-items: center; gap: 0.375rem; }
+  .hf-util svg { inline-size: 0.875rem; block-size: 0.875rem; }
+  .hf-util select { block-size: 1.75rem; padding-block: 0; border: 0; background-color: transparent; font-size: 0.75rem; box-shadow: none; }
+  .hf-head { position: sticky; inset-block-start: 0; z-index: 20; border-block-end: 1px solid var(--border); background: color-mix(in oklab, var(--background) 94%, transparent); backdrop-filter: blur(10px); }
+  .hf-row { display: flex; align-items: center; gap: 1rem; block-size: 4rem; }
+  .hf-row[data-size='lg'] { block-size: 5rem; }
+  .hf-nav { display: flex; align-items: center; gap: 0.125rem; }
+  .hf-nav > a, .hf-nav > .popover > button { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.5rem 0.75rem; border: 0; border-radius: var(--radius); background: none; color: var(--muted-foreground); font: inherit; font-size: 0.875rem; font-weight: 500; text-decoration: none; cursor: pointer; }
+  .hf-nav > a:hover, .hf-nav > .popover > button:hover, .hf-nav > .popover > button[aria-expanded='true'] { color: var(--foreground); background: var(--accent); }
+  .hf-nav > a[aria-current] { color: var(--foreground); }
+  .hf-nav > .popover > button svg { inline-size: 0.875rem; block-size: 0.875rem; transition: transform 150ms ease; }
+  .hf-nav > a:focus-visible, .hf-nav > .popover > button:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .hf-actions { display: flex; align-items: center; gap: 0.25rem; margin-inline-start: auto; }
+  .hf-burger { display: none; }
+  .hf-mega { inline-size: min(52rem, calc(100vw - 2rem)); padding: 1.25rem; }
+  .hf-mega-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(3, minmax(0, 1fr)) 14rem; }
+  .hf-mega h3 { margin: 0 0 0.5rem; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted-foreground); }
+  .hf-mega ul { display: grid; gap: 0.125rem; margin: 0; padding: 0; list-style: none; }
+  .hf-mega li a { display: block; padding: 0.375rem 0.5rem; margin-inline: -0.5rem; border-radius: calc(var(--radius) - 2px); color: inherit; font-size: 0.875rem; text-decoration: none; }
+  .hf-mega li a:hover { background: var(--accent); }
+  .hf-mega-promo { position: relative; display: grid; align-content: end; gap: 0.25rem; min-block-size: 12rem; padding: 1rem; overflow: hidden; border-radius: var(--radius); color: #fff; text-decoration: none; }
+  .hf-mega-promo img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
+  .hf-mega-promo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent 30%, rgb(0 0 0 / 0.65)); }
+  .hf-mega-promo > :not(img) { position: relative; z-index: 1; }
+  .hf-mega-promo strong { font-size: 1rem; }
+  .hf-mega-promo span { font-size: 0.8125rem; opacity: 0.9; }
+  .hf-catmenu { inline-size: 18rem; padding: 0.375rem; }
+  .hf-catmenu a { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.625rem; border-radius: calc(var(--radius) - 2px); color: inherit; font-size: 0.875rem; text-decoration: none; }
+  .hf-catmenu a:hover { background: var(--accent); }
+  .hf-catmenu a svg { inline-size: 1rem; block-size: 1rem; color: var(--muted-foreground); }
+  .hf-catmenu a small { margin-inline-start: auto; color: var(--muted-foreground); font-size: 0.75rem; }
+  .hf-search { flex: 1; max-inline-size: 36rem; }
+  .hf-pill { border-radius: 999px; corner-shape: round; }
+  .hf-msearch { padding-block-end: 0.75rem; }
+  @media (width >= 64rem) { .hf-msearch { display: none; } }
+  .hf-search select { flex: none; inline-size: auto; border: 0; border-inline-end: 1px solid var(--border); border-radius: 0; background-color: transparent; box-shadow: none; font-size: 0.8125rem; }
+  .hf-search-combo { display: flex; align-items: center; border: 1px solid var(--input); border-radius: var(--radius); overflow: hidden; }
+  .hf-search-combo:focus-within { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 40%, transparent); }
+  .hf-search-combo input { flex: 1; min-inline-size: 0; block-size: 2.5rem; padding-inline: 0.75rem; border: 0; background: transparent; color: inherit; font: inherit; font-size: 0.875rem; }
+  .hf-search-combo input:focus { outline: none; }
+  .hf-search-combo .btn { border-radius: 0; block-size: 2.5rem; }
+  .hf-account { display: flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0.5rem; border-radius: var(--radius); color: inherit; font-size: 0.75rem; line-height: 1.2; text-decoration: none; }
+  .hf-account:hover { background: var(--accent); }
+  .hf-account svg { inline-size: 1.25rem; block-size: 1.25rem; }
+  .hf-account strong { display: block; font-size: 0.8125rem; }
+  .hf-sheet nav { display: grid; gap: 0.125rem; }
+  .hf-sheet nav > a { padding: 0.625rem 0.75rem; border-radius: var(--radius); color: inherit; font-weight: 500; text-decoration: none; }
+  .hf-sheet nav > a:hover { background: var(--accent); }
+  .hf-sheet .accordion summary { padding-inline: 0.75rem; font-weight: 500; }
+  .hf-sheet .accordion ul { display: grid; gap: 0.125rem; margin: 0; padding: 0 0 0.5rem 0.75rem; list-style: none; }
+  .hf-sheet .accordion li a { display: block; padding: 0.5rem 0.75rem; border-radius: var(--radius); color: var(--muted-foreground); font-size: 0.875rem; text-decoration: none; }
+  .hf-sheet .accordion li a:hover { background: var(--accent); color: var(--foreground); }
+  .hf-sheet > section { display: grid; gap: 1rem; align-content: start; }
+  .hf-mast { display: grid; justify-items: center; gap: 0.25rem; padding-block: 1.5rem 1rem; text-align: center; }
+  .hf-mast a { color: inherit; text-decoration: none; }
+  .hf-mast strong { font-family: var(--font-serif, Georgia, serif); font-size: clamp(2rem, 5vw, 3.25rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+  .hf-mast small { font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted-foreground); }
+  .hf-catrow { display: flex; justify-content: center; gap: 0.25rem; padding-block: 0.25rem; border-block: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+  .hf-catrow a { flex: none; padding: 0.625rem 0.875rem; color: var(--muted-foreground); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.06em; text-decoration: none; text-transform: uppercase; }
+  .hf-catrow a:hover, .hf-catrow a[aria-current] { color: var(--foreground); box-shadow: inset 0 -2px 0 currentColor; }
+  .hf-searchbox { display: none; padding-block: 0.75rem; border-block-start: 1px solid var(--border); }
+  .hf-head[data-search] .hf-searchbox { display: block; }
+  .hf-overlay { position: fixed; inset-inline: 0; inset-block-start: 0; z-index: 30; color: #fff; transition: background-color 250ms ease, color 250ms ease, box-shadow 250ms ease; }
+  .hf-overlay[data-scrolled] { background: var(--background); color: var(--foreground); box-shadow: 0 1px 0 var(--border); }
+  .hf-overlay .hf-nav > a, .hf-overlay .hf-nav > .popover > button { color: inherit; opacity: 0.85; }
+  .hf-overlay .hf-nav > a:hover { opacity: 1; background: color-mix(in oklab, currentColor 12%, transparent); }
+  .hf-overlay .btn[data-variant='ghost'] { color: inherit; }
+  .hf-overlay .btn[data-variant='ghost']:hover { background: color-mix(in oklab, currentColor 12%, transparent); color: inherit; }
+  .hf-overlay .block-logo { color: inherit; }
+  .hf-overlay .hf-util { border-color: rgb(255 255 255 / 0.2); color: inherit; opacity: 0.85; }
+  .hf-overlay[data-scrolled] .hf-util { display: none; }
+  .hf-hero { position: relative; display: grid; align-items: end; min-block-size: 36rem; padding: 8rem 1rem 3rem; color: #fff; }
+  .hf-hero > img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
+  .hf-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(rgb(0 0 0 / 0.45), rgb(0 0 0 / 0.15) 40%, rgb(0 0 0 / 0.55)); }
+  .hf-hero > div { position: relative; z-index: 1; display: grid; gap: 1rem; max-inline-size: 36rem; }
+  .hf-hero h1 { margin: 0; font-family: var(--font-serif, Georgia, serif); font-size: clamp(2.25rem, 6vw, 3.75rem); font-weight: 500; line-height: 1.05; }
+  .hf-hero p { margin: 0; opacity: 0.9; }
+  .hf-chips { display: flex; justify-content: center; gap: 0.5rem; padding-block: 0.75rem; overflow-x: auto; scrollbar-width: none; }
+  .hf-chips a { flex: none; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 999px; background: var(--chip, var(--muted)); color: var(--chip-fg, var(--foreground)); font-size: 0.875rem; font-weight: 600; text-decoration: none; transition: transform 150ms ease; corner-shape: round; }
+  .hf-chips a:hover { transform: translateY(-2px) rotate(-1deg); }
+  .hf-chips a svg { inline-size: 1rem; block-size: 1rem; }
+  .hf-chips a:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .hf-foot { background: var(--foot-bg, var(--muted)); color: var(--foot-fg, var(--foreground)); }
+  .hf-foot a:not(.btn, .badge) { color: inherit; text-decoration: none; }
+  .hf-foot-cols { display: grid; gap: 2rem; padding-block: 3rem 2rem; }
+  @media (width >= 48rem) { .hf-foot-cols { grid-template-columns: minmax(0, 1.4fr) repeat(var(--cols, 4), minmax(0, 1fr)); } }
+  .hf-foot-brand { display: grid; gap: 1rem; align-content: start; max-inline-size: 22rem; }
+  .hf-foot-brand p { margin: 0; font-size: 0.875rem; color: var(--foot-muted, var(--muted-foreground)); line-height: 1.6; }
+  .hf-foot details { border-block-end: 1px solid var(--foot-line, var(--border)); }
+  .hf-foot summary { display: flex; align-items: center; justify-content: space-between; padding-block: 0.875rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; list-style: none; }
+  .hf-foot summary::-webkit-details-marker { display: none; }
+  .hf-foot summary svg { inline-size: 1rem; block-size: 1rem; transition: transform 150ms ease; }
+  .hf-foot details[open] > summary svg { transform: rotate(180deg); }
+  .hf-foot details ul { display: grid; gap: 0.625rem; margin: 0; padding: 0 0 1rem; list-style: none; font-size: 0.875rem; color: var(--foot-muted, var(--muted-foreground)); }
+  .hf-foot details li a:hover { color: var(--foot-fg, var(--foreground)); text-decoration: underline; text-underline-offset: 3px; }
+  @media (width >= 48rem) { .hf-foot details { border: 0; } .hf-foot summary { pointer-events: none; padding-block: 0 1rem; } .hf-foot summary svg { display: none; } }
+  .hf-social { display: flex; gap: 0.5rem; }
+  .hf-social a { display: grid; place-items: center; inline-size: 2.25rem; block-size: 2.25rem; border: 1px solid var(--foot-line, var(--border)); border-radius: 999px; transition: background-color 150ms ease, transform 150ms ease; corner-shape: round; }
+  .hf-social a:hover { background: var(--foot-fg, var(--foreground)); color: var(--foot-bg, var(--background)); transform: translateY(-2px); }
+  .hf-social a:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .hf-social svg { inline-size: 1rem; block-size: 1rem; }
+  .hf-bottom { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 1.25rem; border-block-start: 1px solid var(--foot-line, var(--border)); font-size: 0.8125rem; color: var(--foot-muted, var(--muted-foreground)); }
+  .hf-bottom nav { display: flex; flex-wrap: wrap; gap: 1rem; }
+  .hf-bottom a:hover { color: var(--foot-fg, var(--foreground)); }
+  .hf-pay { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+  .hf-pay span { padding: 0.125rem 0.5rem; border: 1px solid var(--foot-line, var(--border)); border-radius: calc(var(--radius) - 4px); background: var(--background); color: var(--foreground); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.02em; }
+  .hf-locale { display: flex; gap: 0.5rem; }
+  .hf-locale .select { block-size: 2rem; font-size: 0.8125rem; background-color: transparent; }
+  .hf-news { display: grid; gap: 1.25rem; align-items: center; padding-block: 2.5rem; border-block-end: 1px solid var(--foot-line, var(--border)); }
+  @media (width >= 48rem) { .hf-news { grid-template-columns: minmax(0, 1fr) minmax(0, 26rem); } }
+  .hf-news h2 { margin: 0; font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; }
+  .hf-news p { margin: 0; color: var(--foot-muted, var(--muted-foreground)); font-size: 0.9375rem; }
+  .hf-news form { display: grid; gap: 0.5rem; }
+  .hf-news-row { display: flex; gap: 0.5rem; }
+  .hf-news-row input { flex: 1; min-inline-size: 0; }
+  .hf-news-msg { display: flex; align-items: center; gap: 0.5rem; margin: 0; font-size: 0.8125rem; }
+  .hf-news-msg[hidden] { display: none; }
+  .hf-news-msg svg { inline-size: 1rem; block-size: 1rem; }
+  .hf-news-msg[data-tone='error'] { color: var(--destructive); }
+  .hf-news-small { font-size: 0.75rem; color: var(--foot-muted, var(--muted-foreground)); }
+  .hf-top { position: fixed; inset-block-end: 1.25rem; inset-inline-end: 1.25rem; z-index: 30; opacity: 0; pointer-events: none; transform: translateY(0.5rem); transition: opacity 200ms ease, transform 200ms ease; }
+  .hf-top[data-show] { opacity: 1; pointer-events: auto; transform: none; }
+  .hf-values { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); padding-block: 2rem; border-block-end: 1px solid var(--foot-line, var(--border)); }
+  .hf-values div { display: flex; gap: 0.75rem; align-items: center; font-size: 0.875rem; }
+  .hf-values svg { flex: none; inline-size: 1.5rem; block-size: 1.5rem; color: var(--biz, var(--primary)); }
+  .hf-values strong { display: block; }
+  .hf-values span { color: var(--foot-muted, var(--muted-foreground)); font-size: 0.8125rem; }
+  .hf-hours { display: grid; gap: 0.375rem; margin: 0; font-size: 0.875rem; }
+  .hf-hours div { display: flex; justify-content: space-between; gap: 1rem; }
+  .hf-hours dt { color: var(--foot-muted, var(--muted-foreground)); }
+  .hf-hours dd { margin: 0; font-variant-numeric: tabular-nums; }
+  .hf-hours [data-today] { font-weight: 600; color: var(--foot-fg, var(--foreground)); }
+  .hf-hours [data-today] dt { color: inherit; }
+  .hf-contact { display: grid; gap: 0.625rem; margin: 0; padding: 0; list-style: none; font-size: 0.875rem; }
+  .hf-contact li { display: flex; gap: 0.625rem; align-items: flex-start; }
+  .hf-contact svg { flex: none; inline-size: 1rem; block-size: 1rem; margin-block-start: 0.125rem; color: var(--biz, var(--primary)); }
+  .hf-map { position: relative; overflow: hidden; min-block-size: 12rem; border-radius: var(--radius); background: color-mix(in oklab, var(--biz, var(--primary)) 10%, var(--background)); }
+  .hf-map svg.hf-map-bg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; color: color-mix(in oklab, var(--biz, var(--primary)) 25%, transparent); }
+  .hf-map-pin { position: absolute; inset-block-start: 45%; inset-inline-start: 50%; display: grid; place-items: center; inline-size: 2.5rem; block-size: 2.5rem; translate: -50% -50%; border-radius: 999px; background: var(--biz, var(--primary)); color: #fff; box-shadow: 0 0 0 8px color-mix(in oklab, var(--biz, var(--primary)) 25%, transparent); corner-shape: round; }
+  .hf-map-pin svg { inline-size: 1.25rem; block-size: 1.25rem; }
+  .hf-map .btn { position: absolute; inset-inline-end: 0.75rem; inset-block-end: 0.75rem; background: var(--background); }
+  .hf-wave { display: block; inline-size: 100%; block-size: 3rem; color: var(--foot-bg); }
+  .hf-apps { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .hf-apps a { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.375rem 0.875rem; border: 1px solid var(--foot-line, var(--border)); border-radius: var(--radius); font-size: 0.6875rem; line-height: 1.2; }
+  .hf-apps a strong { display: block; font-size: 0.875rem; }
+  .hf-apps a svg { inline-size: 1.25rem; block-size: 1.25rem; }
+  .hf-tags { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+  .hf-posts { display: grid; gap: 0.875rem; margin: 0; padding: 0; list-style: none; }
+  .hf-posts a { display: grid; grid-template-columns: 4rem minmax(0, 1fr); gap: 0.75rem; align-items: center; }
+  .hf-posts img { inline-size: 4rem; block-size: 3rem; border-radius: calc(var(--radius) - 2px); object-fit: cover; background: var(--muted); }
+  .hf-posts strong { display: block; font-size: 0.875rem; font-weight: 500; line-height: 1.35; }
+  .hf-posts small { color: var(--foot-muted, var(--muted-foreground)); font-size: 0.75rem; }
+  .hf-posts a:hover strong { text-decoration: underline; text-underline-offset: 3px; }
+  html.dark .hf-mega-promo img { filter: brightness(0.6); }
+  html.dark .hf-hero > img { filter: brightness(0.7); }
+  @media (prefers-reduced-motion: reduce) { .hf-bar-msgs > span { transition: none; } }
+  .hf-head .block-logo, .hf-overlay .block-logo { flex: none; white-space: nowrap; }
+  .hf-foot-dark .btn:not([data-variant]) { background: var(--foot-fg); color: var(--foot-bg); }
+  .hf-foot-dark .btn:not([data-variant]):hover { background: color-mix(in oklab, var(--foot-fg) 85%, var(--foot-bg)); }
+  @media (width < 48rem) { .hf-foot-cols:has(> details) { gap: 0; } .hf-foot-cols:has(> details) > .hf-foot-brand { margin-block-end: 1.5rem; } }
+  @media (width < 64rem) { .hf-nav, .hf-hide-sm { display: none; } .hf-burger { display: inline-flex; } }
+  .hf-bnav button { position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; inline-size: 100%; padding-block: 0.625rem 0.5rem; border: 0; background: none; color: var(--muted-foreground); font: inherit; font-size: 0.6875rem; font-weight: 500; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .hf-bnav button svg { inline-size: 1.375rem; block-size: 1.375rem; }
+  .hf-bnav button:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; }
+  .hf-bnav { max-inline-size: none; }
+  .hf-bnav a { padding-block-start: 0.875rem; }
+  .hf-bnav button { padding-block-start: 0.875rem; }
+  .hf-actions .shop-count { inset-block-start: -0.125rem; inset-inline-end: -0.125rem; }
+  @media (width >= 48rem) { .hf-bnav { display: none; } }
+  @media (width < 48rem) { .hf-burger.hf-burger { display: none; } body:has(.hf-bnav) { padding-block-end: calc(4rem + env(safe-area-inset-bottom, 0px)); } }
+"""
+
+
+def split_lists(css):
+    """One selector per rule, so prune_css can drop each one on its own."""
+    def top_split(sel):
+        parts, depth, cur = [], 0, ""
+        for ch in sel:
+            depth += ch == "("
+            depth -= ch == ")"
+            if ch == "," and depth == 0:
+                parts.append(cur.strip())
+                cur = ""
+            else:
+                cur += ch
+        return parts + [cur.strip()]
+
+    def rule(r):
+        sel, body = r.split("{", 1)
+        return " ".join(f"{x} {{{body}" for x in top_split(sel))
+
+    out = []
+    for line in css.split("\n"):
+        t = line.strip()
+        if t.startswith("@media") and t.endswith("}") and t.count("{") >= 2:
+            head, inner = t.split("{", 1)
+            rules = [r.strip() + " }" for r in inner.rstrip("}").strip().split("}") if r.strip()]
+            out.append(f"  {head.strip()} {{ {' '.join(rule(r) for r in rules)} }}")
+        elif "{" in t and t.endswith("}") and not t.startswith("@"):
+            out.append("\n".join("  " + x.strip() + " }" for x in rule(t).split(" }") if x.strip()))
+        else:
+            out.append(line)
+    return "\n".join(out)
+
+
+HF_CSS = split_lists(HF_CSS)
+HF = CAT_CSS + FX_CSS + HF_CSS
+
+# Behavior shared by the header and footer blocks.
+HF_JS = """
+// Announcement bar: previous/next messages, dismiss.
+document.querySelectorAll('[data-bar]').forEach((bar) => {
+  const msgs = [...bar.querySelectorAll('.hf-bar-msgs > span')];
+  let i = 0;
+  const show = (n) => { i = (n + msgs.length) % msgs.length; msgs.forEach((m, k) => m.toggleAttribute('data-on', k === i)); };
+  bar.querySelector('[data-bar-prev]')?.addEventListener('click', () => show(i - 1));
+  bar.querySelector('[data-bar-next]')?.addEventListener('click', () => show(i + 1));
+  bar.querySelector('[data-bar-close]')?.addEventListener('click', () => { bar.hidden = true; });
+});
+// Search that opens under the header.
+document.querySelectorAll('[data-search-toggle]').forEach((b) => b.addEventListener('click', () => {
+  const head = b.closest('.hf-head');
+  const open = !head.hasAttribute('data-search');
+  head.toggleAttribute('data-search', open);
+  b.setAttribute('aria-expanded', String(open));
+  if (open) head.querySelector('.hf-searchbox input').focus();
+}));
+// Header over a hero: solid once the page scrolls.
+document.querySelectorAll('[data-overlay]').forEach((h) => {
+  const sync = () => h.toggleAttribute('data-scrolled', window.scrollY > 40);
+  window.addEventListener('scroll', sync, { passive: true });
+  sync();
+});
+// Newsletter forms: validate the email, then thank.
+document.querySelectorAll('[data-newsletter]').forEach((form) => {
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const input = form.querySelector('input[type=email]');
+    const ok = /^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(input.value.trim());
+    input.toggleAttribute('aria-invalid', !ok);
+    form.querySelector('[data-news-error]').hidden = ok;
+    if (!ok) { input.focus(); return; }
+    form.querySelector('[data-news-fields]').hidden = true;
+    form.querySelector('[data-news-done]').hidden = false;
+  });
+});
+// Footer link columns: open on wide screens, collapsible on small ones.
+(() => {
+  const groups = document.querySelectorAll('[data-foot-group]');
+  if (!groups.length) return;
+  const mq = window.matchMedia('(width >= 48rem)');
+  const apply = () => groups.forEach((d) => { d.open = mq.matches; });
+  mq.addEventListener('change', apply);
+  apply();
+})();
+// Bottom tab bar: the tapped tab becomes current.
+document.querySelectorAll('.hf-bnav').forEach((nav) => nav.addEventListener('click', (e) => {
+  const a = e.target.closest('a');
+  if (!a) return;
+  e.preventDefault();
+  nav.querySelectorAll('a[aria-current]').forEach((x) => x.removeAttribute('aria-current'));
+  a.setAttribute('aria-current', 'page');
+}));
+// Back to top.
+document.querySelectorAll('[data-to-top]').forEach((b) => {
+  const sync = () => b.toggleAttribute('data-show', window.scrollY > 300);
+  window.addEventListener('scroll', sync, { passive: true });
+  sync();
+  b.addEventListener('click', () => window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' }));
+});
+"""
+
+
+def demo(text="Page content"):
+    return f'<div class="hf-demo"><p>{text}</p></div>'
+
+
+def bar(msgs, close=True, arrows=True):
+    spans = "".join(f'<span{" data-on" if i == 0 else ""}>{m}</span>' for i, m in enumerate(msgs))
+    nav = (f'<button type="button" class="btn" data-variant="ghost" data-size="icon-xs" aria-label="Previous message" data-bar-prev>{si("chevron-left")}</button>'
+           f'<div class="hf-bar-msgs" aria-live="polite">{spans}</div>'
+           f'<button type="button" class="btn" data-variant="ghost" data-size="icon-xs" aria-label="Next message" data-bar-next>{si("chevron-right")}</button>') if arrows and len(msgs) > 1 else f'<div class="hf-bar-msgs">{spans}</div>'
+    x = f'<button type="button" class="btn hf-bar-close" data-variant="ghost" data-size="icon-xs" aria-label="Dismiss" data-bar-close>{si("x")}</button>' if close else ""
+    return f'<div class="hf-bar" role="region" aria-label="Announcement" data-bar>{nav}{x}</div>'
+
+
+def social(items=("facebook", "instagram", "youtube", "twitter")):
+    names = {"facebook": "Facebook", "instagram": "Instagram", "youtube": "YouTube", "twitter": "X", "linkedin": "LinkedIn"}
+    return '<div class="hf-social">' + "".join(f'<a href="#" aria-label="{names[s]}">{si(s)}</a>' for s in items) + "</div>"
+
+
+def foot_cols(cols):
+    return "".join(f'<details data-foot-group open><summary>{t}{si("chevron-down")}</summary><ul>{"".join(f"<li><a href=\"#\">{l}</a></li>" for l in links)}</ul></details>' for t, links in cols)
+
+
+def newsletter(pid, title, text, cta="Subscribe", note="No spam. Unsubscribe anytime.", done="Thanks! Check your inbox to confirm."):
+    return f"""<div class="hf-news">
+  <div class="stack" data-gap="2"><h2>{title}</h2><p>{text}</p></div>
+  <form data-newsletter novalidate>
+    <div data-news-fields class="stack" data-gap="2">
+      <div class="hf-news-row"><label class="sr-only" for="{pid}-email">Email</label><input class="input" id="{pid}-email" type="email" placeholder="you@example.com" autocomplete="email" aria-describedby="{pid}-err"><button type="submit" class="btn">{cta}</button></div>
+      <p class="hf-news-msg" data-tone="error" id="{pid}-err" data-news-error hidden>{si("info")}Enter a valid email address.</p>
+      <span class="hf-news-small">{note}</span>
+    </div>
+    <p class="hf-news-msg" data-news-done hidden role="status">{si("circle-check")}{done}</p>
+  </form>
+</div>"""
+
+
+def sheet(pid, title, groups, links, extra=""):
+    acc = "".join(f'<details><summary>{t}</summary><ul>{"".join(f"<li><a href=\"#\">{l}</a></li>" for l in ls)}</ul></details>' for t, ls in groups)
+    plain = "".join(f'<a href="#">{l}</a>' for l in links)
+    return f"""<dialog id="{pid}" class="sheet hf-sheet" data-side="left" closedby="any" aria-labelledby="{pid}-t">
+  <header><h2 id="{pid}-t">{title}</h2></header>
+  <section>
+    <nav aria-label="Mobile"><div class="accordion">{acc}</div>{plain}</nav>
+    {extra}
+  </section>
+  <button type="button" aria-label="Close menu" commandfor="{pid}" command="close">{si("x")}</button>
+</dialog>"""
+
+
+def burger(pid):
+    return f'<button type="button" class="btn hf-burger" data-variant="ghost" data-size="icon" aria-label="Open menu" commandfor="{pid}" command="show-modal">{si("menu")}</button>'
+
+
+def mega(pid, label, cols, promo_title, promo_text, shot_n=3):
+    body = "".join(f'<div><h3>{t}</h3><ul>{"".join(f"<li><a href=\"#\">{l}</a></li>" for l in ls)}</ul></div>' for t, ls in cols)
+    return f"""<div class="popover">
+  <button type="button" popovertarget="{pid}">{label}{si("chevron-down")}</button>
+  <div id="{pid}" class="hf-mega" data-popover popover data-side="bottom" data-align="start">
+    <div class="hf-mega-grid">{body}<a href="#" class="hf-mega-promo">{shot(shot_n)}<strong>{promo_title}</strong><span>{promo_text}</span></a></div>
+  </div>
+</div>"""
+
+
+def biz_logo(name, ic_):
+    return f'<a href="#" class="block-logo"><span class="block-logo-mark">{si(ic_)}</span>{name}</a>'
+
+
+def hf_bnav(items, current, menu_id, badges=None):
+    """Mobile bottom tab bar. The tab named like the sheet opens the sheet."""
+    badges = badges or {}
+    out = []
+    for label, ic_, *menu in items:
+        b = badges.get(label)
+        badge = f'<span class="shop-count" data-count="{b}">{b}</span>' if b else ""
+        inner = f'<span class="shop-nav-icon">{si(ic_)}{badge}</span><span>{label}</span>'
+        if menu:
+            out.append(f'<li><button type="button" commandfor="{menu_id}" command="show-modal">{inner}</button></li>')
+        else:
+            cur = ' aria-current="page"' if label == current else ""
+            out.append(f'<li><a href="#"{cur}>{inner}</a></li>')
+    return f'<nav class="shop-bottom-nav hf-bnav" aria-label="Primary">' + "<ul>" + "".join(out) + "</ul></nav>"
+
+
+ICON_BTN = lambda ic_, label, extra="": f'<a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="{label}"{extra}>{si(ic_)}</a>'
+
+
+def cart_btn(n, ic_="shopping-bag"):
+    return f'<a href="#" class="btn shop-cart-btn" data-variant="ghost" data-size="icon" aria-label="Cart, {n} items">{si(ic_)}<span class="shop-count" data-count="{n}">{n}</span></a>'
+
+
+# ---------------------------------------------------------------- header-01: ecommerce
+E_MEGA = [("Women", ["New arrivals", "Dresses", "Knitwear", "Coats and jackets", "Shoes", "Sale"]), ("Men", ["New arrivals", "Shirts", "Knitwear", "Trousers", "Shoes", "Sale"]), ("Home", ["Bedding", "Kitchen", "Lighting", "Decor", "Gifts"])]
+add("header-01", "Header 01", "An ecommerce header: rotating announcements, utility bar with locale, search by category, account, wishlist and cart, a mega menu and a mobile menu.", "header", f"""
+{bar(["Free shipping on orders over $150", "New season: up to 30% off knitwear · <a href=\"#\">Shop now</a>", "Free returns within 30 days"])}
+<div class="hf-util hf-hide-sm"><div class="wrapper hf-util-row" data-size="xl">
+  <div class="hf-util-links"><span>{si("truck")}<a href="#">Track order</a></span><span>{si("headphones")}<a href="#">Help</a></span><span>{si("store")}<a href="#">Find a store</a></span></div>
+  <div class="hf-util-links"><label class="sr-only" for="h1-cur">Currency</label><select class="select" id="h1-cur"><option>USD $</option><option>EUR €</option><option>VND ₫</option></select><label class="sr-only" for="h1-lang">Language</label><select class="select" id="h1-lang"><option>English</option><option>Tiếng Việt</option></select></div>
+</div></div>
+<header class="hf-head">
+  <div class="wrapper hf-row" data-size="xl" data-row="main">
+    {burger("h1-menu")}
+    {logo("Acme Store")}
+    <form class="hf-search hf-hide-sm" role="search" onsubmit="event.preventDefault()"><div class="hf-search-combo"><label class="sr-only" for="h1-cat">Category</label><select class="select" id="h1-cat"><option>All</option><option>Women</option><option>Men</option><option>Home</option></select><input type="search" placeholder="Search products, brands..." aria-label="Search"><button type="submit" class="btn" aria-label="Search">{si("search")}</button></div></form>
+    <div class="hf-actions">
+      <a href="#" class="hf-account hf-hide-sm">{si("user")}<span>Hello, sign in<strong>Account</strong></span></a>
+      {ICON_BTN("heart", "Wishlist")}
+      {cart_btn(3)}
+    </div>
+  </div>
+  <form class="wrapper hf-msearch" role="search" onsubmit="event.preventDefault()"><div class="input-group"><input type="search" placeholder="Search products, brands..." aria-label="Search" id="h1-msearch"><span data-align="start" aria-hidden="true">{si("search")}</span></div></form>
+  <div class="wrapper" data-size="xl"><nav class="hf-nav" aria-label="Main">{mega("h1-women", "Women", E_MEGA, "The knit edit", "Soft layers for cool days")}{mega("h1-men", "Men", E_MEGA[::-1][:3], "Weekend shirts", "Linen and cotton, new colors", 2)}<a href="#">Home</a><a href="#">Beauty</a><a href="#">Gifts</a><a href="#" style="color: var(--destructive)">Sale</a></nav></div>
+</header>
+{sheet("h1-menu", "Menu", E_MEGA, ["Beauty", "Gifts", "Sale", "Track order", "Help"], f'<div class="stack" data-gap="2"><a href="#" class="btn">Sign in</a><a href="#" class="btn" data-variant="outline">Create account</a></div>')}
+{hf_bnav([("Home", "house"), ("Categories", "layout-grid", 1), ("Wishlist", "heart"), ("Cart", "shopping-bag"), ("Account", "user")], "Home", "h1-menu", {"Cart": 3})}
+{demo()}
+""", HF + "\n  .hf-head > .wrapper:last-child { border-block-start: 1px solid var(--border); padding-block: 0.25rem; }\n  @media (width < 64rem) { .hf-head > .wrapper:last-child { display: none; } }", scripts=script(HF_JS))
+
+# ---------------------------------------------------------------- header-02: online courses
+CATS2 = [("Design", "layout-grid", 214), ("Development", "monitor", 382), ("Illustration", "pencil", 96), ("Photography", "eye", 121), ("Business", "chart-column", 175), ("Marketing", "trending-up", 88)]
+cat_menu = "".join(f'<a href="#">{si(i)}<span>{n}</span><small>{c}</small></a>' for n, i, c in CATS2)
+add("header-02", "Header 02", "A header for an online course platform: categories menu, rounded search, Plus and Teach links, and sign in buttons.", "header", f"""
+<header class="hf-head">
+  <div class="wrapper hf-row" data-size="xl">
+    {burger("h2-menu")}
+    {biz_logo("Acme Learn", "graduation-cap")}
+    <nav class="hf-nav" aria-label="Main"><div class="popover"><button type="button" popovertarget="h2-cats">Categories{si("chevron-down")}</button><div id="h2-cats" class="hf-catmenu" data-popover popover data-side="bottom" data-align="start">{cat_menu}</div></div></nav>
+    <form class="input-group hf-search hf-pill hf-hide-sm" role="search" onsubmit="event.preventDefault()"><input type="search" placeholder="What do you want to learn?" aria-label="Search courses"><span data-align="start" aria-hidden="true">{si("search")}</span></form>
+    <div class="hf-actions">
+      <nav class="hf-nav" aria-label="Secondary"><a href="#">Plus</a><a href="#">Teach on Acme</a></nav>
+      {ICON_BTN("shopping-bag", "Cart")}
+      <a href="#" class="btn hf-hide-sm" data-variant="outline" data-size="sm">Log in</a>
+      <a href="#" class="btn" data-size="sm">Sign up</a>
+    </div>
+  </div>
+  <form class="wrapper hf-msearch" role="search" onsubmit="event.preventDefault()"><div class="input-group hf-pill"><input type="search" placeholder="What do you want to learn?" aria-label="Search" id="h2-msearch"><span data-align="start" aria-hidden="true">{si("search")}</span></div></form>
+</header>
+{sheet("h2-menu", "Menu", [("Categories", [n for n, _, _ in CATS2])], ["Plus", "Teach on Acme", "Log in"])}
+{hf_bnav([("Home", "house"), ("Explore", "layout-grid", 1), ("My learning", "circle-play"), ("Wishlist", "heart"), ("Account", "user")], "Home", "h2-menu")}
+{demo()}
+""", HF, scripts=script(HF_JS))
+
+# ---------------------------------------------------------------- header-03: blog / magazine
+BLOG_CATS = ["Latest", "Design", "Technology", "Culture", "Travel", "Food", "Opinion", "Podcasts"]
+add("header-03", "Header 03", "A blog or magazine header: centered masthead with the date, category row, search that opens under the header, theme toggle and subscribe.", "header", f"""
+<header class="hf-head" style="position: relative">
+  <div class="wrapper hf-row" data-size="lg">
+    {burger("h3-menu")}
+    <div class="cluster hf-hide-sm" data-gap="1">{ICON_BTN("rss", "RSS feed")}<span class="shop-line-meta">Sunday, November 8, 2026</span></div>
+    <div class="hf-actions">
+      <button type="button" class="btn" data-variant="ghost" data-size="icon" aria-label="Search" aria-expanded="false" data-search-toggle>{si("search")}</button>
+      <button type="button" class="btn" data-variant="ghost" data-size="icon" aria-label="Toggle dark mode" data-theme-toggle>{si("moon")}</button>
+      <a href="#" class="btn" data-size="sm">Subscribe</a>
+    </div>
+  </div>
+  <div class="hf-mast"><a href="#"><strong>The Margin</strong></a><small>Ideas, design and the people behind them</small></div>
+  <nav class="hf-catrow" aria-label="Sections">{"".join(f'<a href="#"{" aria-current=\"page\"" if c == "Latest" else ""}>{c}</a>' for c in BLOG_CATS)}</nav>
+  <div class="hf-searchbox"><form class="wrapper" data-size="md" role="search" onsubmit="event.preventDefault()"><div class="input-group"><input type="search" placeholder="Search articles, authors, topics..." aria-label="Search articles"><span data-align="start" aria-hidden="true">{si("search")}</span></div></form></div>
+</header>
+{sheet("h3-menu", "Sections", [], BLOG_CATS + ["About", "Newsletter"])}
+{hf_bnav([("Home", "house"), ("Sections", "layout-grid", 1), ("Search", "search"), ("Saved", "heart"), ("Account", "user")], "Home", "h3-menu")}
+{demo("Article list")}
+""", HF + "\n  .hf-head .hf-row { position: relative; }\n  .hf-head .hf-actions { position: absolute; inset-inline-end: 0; }\n  @media (width < 64rem) { .hf-head .hf-actions { position: static; } .hf-catrow { justify-content: flex-start; } }",
+    scripts=script(HF_JS + """
+document.querySelectorAll('[data-theme-toggle]').forEach((b) => b.addEventListener('click', () => {
+  const dark = !document.documentElement.classList.contains('dark');
+  document.documentElement.classList.toggle('dark', dark);
+  b.setAttribute('aria-pressed', String(dark));
+}));
+"""))
+
+# ---------------------------------------------------------------- header-04: spa / wellness
+SPA = "--biz: oklch(0.52 0.06 150); --biz-fg: #fff;"
+add("header-04", "Header 04", "A spa or wellness header over a hero: contact and hours bar, transparent nav that turns solid on scroll, and a Book now button.", "header", f"""
+<div style="{SPA}">
+  <header class="hf-overlay" data-overlay>
+    <div class="hf-util hf-hide-sm"><div class="wrapper hf-util-row" data-size="xl"><div class="hf-util-links"><span>{si("phone")}<a href="#">(555) 014-2290</a></span><span>{si("clock")}Open today 9:00–20:00</span></div><div class="hf-util-links"><span>{si("map-pin")}12 Garden Lane, Portland</span></div></div></div>
+    <div class="wrapper hf-row" data-size="xl" data-size-row="lg">
+      {burger("h4-menu")}
+      {biz_logo("Still Water Spa", "leaf")}
+      <nav class="hf-nav" aria-label="Main" style="margin-inline: auto"><a href="#">Treatments</a><a href="#">Packages</a><a href="#">Memberships</a><a href="#">Gift cards</a><a href="#">About</a></nav>
+      <div class="hf-actions" style="margin-inline-start: 0"><a href="#" class="btn hf-book" data-size="sm">{si("calendar")}Book now</a></div>
+    </div>
+  </header>
+  <section class="hf-hero">
+    {shot(2)}
+    <div class="wrapper" data-size="xl" style="max-inline-size: 72rem"><div style="max-inline-size: 36rem" class="stack" data-gap="4"><p class="shop-card-cat" style="color: inherit; opacity: 0.85">Day spa · Portland</p><h1>Slow down. Breathe. Be still.</h1><p>Massage, facials and hot stone rituals in a quiet garden house.</p><div class="cluster" data-gap="2"><a href="#" class="btn hf-book" data-size="lg">Book a treatment</a><a href="#" class="btn" data-variant="outline" data-size="lg" style="background: transparent; color: #fff; border-color: rgb(255 255 255 / 0.6)">View packages</a></div></div></div>
+  </section>
+  {sheet("h4-menu", "Still Water Spa", [("Treatments", ["Massage", "Facials", "Body rituals", "Hot stone"])], ["Packages", "Memberships", "Gift cards", "About"], '<a href="#" class="btn">Book now</a>')}
+{hf_bnav([("Home", "house"), ("Treatments", "leaf", 1), ("Book", "calendar"), ("Gift cards", "gift"), ("Account", "user")], "Home", "h4-menu")}
+  {demo("Treatments")}
+  {demo("Scroll to see the header turn solid")}
+</div>
+""", HF + """
+  .hf-book { background: var(--biz); color: var(--biz-fg); }
+  .hf-book:hover { background: color-mix(in oklab, var(--biz) 85%, black); color: var(--biz-fg); }
+  .hf-overlay .hf-row { block-size: 4.5rem; }
+  .hf-overlay .block-logo-mark { background: var(--biz); }""", scripts=script(HF_JS))
+
+# ---------------------------------------------------------------- header-05: cosmetics / beauty
+BEAUTY = "--biz: oklch(0.62 0.12 10); --biz-fg: #fff;"
+B_MEGA = [("Skincare", ["Cleansers", "Serums", "Moisturizers", "Sunscreen", "Masks"]), ("Makeup", ["Foundation", "Concealer", "Lips", "Eyes", "Brushes"]), ("Hair and body", ["Shampoo", "Treatments", "Body care", "Fragrance", "Travel sizes"])]
+add("header-05", "Header 05", "A beauty and cosmetics header: soft announcement bar, centered logo, mega menu with a featured product, search, account and bag.", "header", f"""
+<div style="{BEAUTY}">
+  {bar(["Free samples with every order", "Join Glow Club: 10% off your first order"], close=True)}
+  <header class="hf-head">
+    <div class="wrapper hf-row hf-beauty-row" data-size="xl">
+      <div class="cluster" data-gap="1">{burger("h5-menu")}<button type="button" class="btn" data-variant="ghost" data-size="icon" aria-label="Search" aria-expanded="false" data-search-toggle>{si("search")}</button></div>
+      <a href="#" class="hf-beauty-logo">lumière</a>
+      <div class="hf-actions">{ICON_BTN("user", "Account")}{ICON_BTN("heart", "Wishlist")}{cart_btn(2)}</div>
+    </div>
+    <nav class="hf-nav hf-beauty-nav" aria-label="Main">{mega("h5-shop", "Shop", B_MEGA, "Dew Drops serum", "Our bestseller, now in 50 ml", 2)}<a href="#">Bestsellers</a><a href="#">New</a><a href="#">Sets and gifts</a><a href="#">Skin quiz</a><a href="#">Glow Club</a></nav>
+    <div class="hf-searchbox"><form class="wrapper" data-size="md" role="search" onsubmit="event.preventDefault()"><div class="input-group"><input type="search" placeholder="Search serums, lipstick, sunscreen..." aria-label="Search products"><span data-align="start" aria-hidden="true">{si("search")}</span></div></form></div>
+  </header>
+  {sheet("h5-menu", "lumière", B_MEGA, ["Bestsellers", "New", "Sets and gifts", "Skin quiz", "Glow Club"])}
+{hf_bnav([("Home", "house"), ("Shop", "layout-grid", 1), ("Skin quiz", "sparkles"), ("Bag", "shopping-bag"), ("Account", "user")], "Home", "h5-menu", {"Bag": 2})}
+  {demo()}
+</div>
+""", HF + """
+  .hf-beauty-row { display: grid; grid-template-columns: 1fr auto 1fr; }
+  .hf-beauty-row .hf-actions { justify-self: end; }
+  @media (width >= 48rem) { .hf-beauty-row .hf-burger { display: inline-flex; } }
+  @media (width >= 64rem) { .hf-beauty-row .hf-burger { display: none; } }
+  .hf-beauty-logo { color: inherit; font-family: var(--font-serif, Georgia, serif); font-size: 1.75rem; font-style: italic; letter-spacing: 0.02em; text-decoration: none; }
+  .hf-beauty-nav { justify-content: center; padding-block-end: 0.5rem; }
+  .hf-beauty-nav .hf-mega { --primary: var(--biz); }
+  .hf-bar { background: color-mix(in oklab, var(--biz) 14%, var(--background)); color: var(--foreground); }""", scripts=script(HF_JS))
+
+# ---------------------------------------------------------------- header-06: kids / toys
+KID_CHIPS = [("0–2 years", "baby", "oklch(0.93 0.06 85)", "oklch(0.35 0.08 70)"), ("3–5 years", "puzzle", "oklch(0.92 0.06 160)", "oklch(0.35 0.08 160)"), ("6–8 years", "sparkles", "oklch(0.92 0.05 250)", "oklch(0.38 0.1 255)"), ("Outdoor play", "sun", "oklch(0.93 0.06 40)", "oklch(0.42 0.12 40)"), ("Books", "book-open", "oklch(0.92 0.05 320)", "oklch(0.4 0.1 320)"), ("Gifts", "gift", "oklch(0.92 0.06 20)", "oklch(0.45 0.14 20)")]
+chips = "".join(f'<a href="#" style="--chip: {bg}; --chip-fg: {fg}">{si(i)}{t}</a>' for t, i, bg, fg in KID_CHIPS)
+add("header-06", "Header 06", "A playful kids and toys header: free shipping bar, big rounded search, colorful age and category chips, and a mobile menu.", "header", f"""
+<div style="--biz: oklch(0.7 0.15 45); --biz-fg: #fff">
+  {bar(["🎈 Free shipping over $50 · Free gift wrap", "New: wooden toys that last for years"], close=False)}
+  <header class="hf-head hf-kids">
+    <div class="wrapper hf-row" data-size="xl" style="block-size: 4.5rem">
+      {burger("h6-menu")}
+      <a href="#" class="hf-kids-logo"><span>t</span><span>o</span><span>y</span><span>b</span><span>o</span><span>x</span></a>
+      <form class="input-group hf-search hf-pill hf-hide-sm" role="search" onsubmit="event.preventDefault()"><input type="search" placeholder="Search toys, books, age..." aria-label="Search toys"><span data-align="start" aria-hidden="true">{si("search")}</span></form>
+      <div class="hf-actions">{ICON_BTN("heart", "Wishlist")}{ICON_BTN("user", "Account")}{cart_btn(4)}</div>
+    </div>
+  <form class="wrapper hf-msearch" role="search" onsubmit="event.preventDefault()"><div class="input-group hf-pill"><input type="search" placeholder="Search toys, books, age..." aria-label="Search" id="h6-msearch"><span data-align="start" aria-hidden="true">{si("search")}</span></div></form>
+    <nav class="hf-chips" aria-label="Shop by age and category">{chips}</nav>
+  </header>
+  {sheet("h6-menu", "toybox", [("Shop by age", ["0–2 years", "3–5 years", "6–8 years", "9+ years"])], ["Outdoor play", "Books", "Gifts", "Sale"])}
+{hf_bnav([("Home", "house"), ("Shop", "puzzle", 1), ("Gifts", "gift"), ("Cart", "shopping-bag"), ("Account", "user")], "Home", "h6-menu", {"Cart": 4})}
+  {demo()}
+</div>
+""", HF + """
+  .hf-kids .hf-search { block-size: 2.75rem; border-width: 2px; }
+  .hf-kids-logo { display: inline-flex; font-size: 1.75rem; font-weight: 800; letter-spacing: -0.04em; text-decoration: none; }
+  .hf-kids-logo span:nth-child(1) { color: oklch(0.65 0.18 30); }
+  .hf-kids-logo span:nth-child(2) { color: oklch(0.72 0.15 80); }
+  .hf-kids-logo span:nth-child(3) { color: oklch(0.62 0.14 160); }
+  .hf-kids-logo span:nth-child(4) { color: oklch(0.58 0.16 255); }
+  .hf-kids-logo span:nth-child(5) { color: oklch(0.6 0.17 320); }
+  .hf-kids-logo span:nth-child(6) { color: oklch(0.65 0.18 30); }
+  .hf-kids .shop-count { background: oklch(0.65 0.18 30); }
+  .hf-bar { background: var(--biz); color: var(--biz-fg); font-weight: 600; }
+  @media (width < 64rem) { .hf-chips { justify-content: flex-start; padding-inline: 1rem; } }""", scripts=script(HF_JS))
+
+
+# ================================================================== footers
+PAY = ["VISA", "Mastercard", "AMEX", "PayPal", "Apple Pay", "MoMo"]
+pay = '<div class="hf-pay" aria-label="Payment methods">' + "".join(f"<span>{p}</span>" for p in PAY) + "</div>"
+to_top = f'<button type="button" class="btn hf-top" data-variant="outline" data-size="icon" aria-label="Back to top" data-to-top>{si("arrow-up")}</button>'
+
+add("footer-01", "Footer 01", "An ecommerce footer: newsletter with validation, link columns that collapse on mobile, social links, locale, payment methods and back to top.", "footer", f"""
+{demo()}
+<footer class="hf-foot">
+  <div class="wrapper" data-size="xl">
+    {newsletter("f1", "Get 10% off your first order", "New arrivals, restocks and members-only offers, twice a month.")}
+    <div class="hf-foot-cols" style="--cols: 4">
+      <div class="hf-foot-brand">{logo("Acme Store")}<p>Considered pieces for every room and every day. Designed in Portland, made to last.</p>{social()}</div>
+      {foot_cols([("Shop", ["New arrivals", "Women", "Men", "Home", "Gift cards", "Sale"]), ("Help", ["Order status", "Shipping", "Returns", "Size guide", "Contact us"]), ("Company", ["About", "Stores", "Careers", "Sustainability", "Press"]), ("Account", ["Sign in", "Create account", "Wishlist", "Rewards"])])}
+    </div>
+    <div class="hf-bottom"><span>© 2026 Acme Store, Inc.</span><nav aria-label="Legal"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a><a href="#">Accessibility</a></nav>{pay}<div class="hf-locale"><label class="sr-only" for="f1-lang">Language</label><select class="select" id="f1-lang"><option>English</option><option>Tiếng Việt</option></select><label class="sr-only" for="f1-cur">Currency</label><select class="select" id="f1-cur"><option>USD $</option><option>VND ₫</option></select></div></div>
+  </div>
+</footer>
+{to_top}
+""", HF, scripts=script(HF_JS))
+
+add("footer-02", "Footer 02", "A footer for an online course platform: teach-on-us call to action, link columns, app download buttons, language and social links.", "footer", f"""
+{demo()}
+<footer class="hf-foot hf-foot-dark" style="--foot-bg: oklch(0.18 0.02 270); --foot-fg: #fff; --foot-muted: rgb(255 255 255 / 0.65); --foot-line: rgb(255 255 255 / 0.15); --primary: oklch(0.98 0 0); --primary-foreground: oklch(0.18 0.02 270)">
+  <div class="wrapper" data-size="xl">
+    <div class="hf-news"><div class="stack" data-gap="2"><h2>Teach the world what you know</h2><p>Join 380 teachers earning from their courses on Acme Learn. We help with filming, pricing and promotion.</p></div><div class="cluster" data-gap="2"><a href="#" class="btn" data-size="lg">Become a teacher</a><a href="#" class="btn" data-variant="outline" data-size="lg" style="background: transparent; color: inherit">How it works</a></div></div>
+    <div class="hf-foot-cols" style="--cols: 4">
+      <div class="hf-foot-brand">{biz_logo("Acme Learn", "graduation-cap")}<p>Creative and professional courses taught by people who do the work every day.</p><div class="hf-apps"><a href="#">{si("smartphone")}<span>Download on the<strong>App Store</strong></span></a><a href="#">{si("play")}<span>Get it on<strong>Google Play</strong></span></a></div></div>
+      {foot_cols([("Explore", ["Design", "Development", "Illustration", "Photography", "Business"]), ("Learn", ["Plus subscription", "Gift a course", "Certificates", "For teams"]), ("Teach", ["Become a teacher", "Teacher handbook", "Affiliate program"]), ("Support", ["Help center", "Contact", "Accessibility", "Status"])])}
+    </div>
+    <div class="hf-bottom"><span>© 2026 Acme Learn</span><nav aria-label="Legal"><a href="#">Terms</a><a href="#">Privacy</a><a href="#">Cookie settings</a></nav><div class="cluster" data-gap="3"><div class="hf-locale"><label class="sr-only" for="f2-lang">Language</label><select class="select" id="f2-lang" style="color: inherit; border-color: var(--foot-line)"><option>English</option><option>Español</option><option>Tiếng Việt</option></select></div>{social(("facebook", "instagram", "youtube", "linkedin"))}</div></div>
+  </div>
+</footer>
+""", HF + "\n  .hf-foot .hf-apps a { color: inherit; }", scripts=script(HF_JS))
+
+POSTS = [("Why slow design is winning again", "Nov 6 · 6 min read", 2), ("Inside the studio: a week with Lena Ortiz", "Nov 3 · 9 min read", 3), ("The best tools for writers in 2026", "Oct 29 · 4 min read", 4)]
+posts = "".join(f'<li><a href="#">{shot(n)}<span><strong>{t}</strong><small>{m}</small></span></a></li>' for t, m, n in POSTS)
+add("footer-03", "Footer 03", "A blog footer: newsletter signup, about, recent posts, topic tags, social links and RSS.", "footer", f"""
+{demo("Article")}
+<footer class="hf-foot" style="--foot-bg: var(--background)">
+  <div class="wrapper" data-size="lg">
+    {newsletter("f3", "The Sunday Margin", "One thoughtful email a week: our best essays, links worth your time and nothing else. 48,000 readers.", "Subscribe", "Free. One email a week.", "You're in. Look for it on Sunday.")}
+    <div class="hf-foot-cols" style="--cols: 2; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr))">
+      <div class="hf-foot-brand"><a href="#" style="font-family: var(--font-serif, Georgia, serif); font-size: 1.75rem; font-weight: 700">The Margin</a><p>An independent magazine about design, technology and the people who make things. Reader-supported since 2019.</p>{social(("twitter", "instagram", "linkedin"))}</div>
+      <div class="stack" data-gap="3"><h3 class="shop-section-title">Recent posts</h3><ul class="hf-posts">{posts}</ul></div>
+      <div class="stack" data-gap="3"><h3 class="shop-section-title">Topics</h3><div class="hf-tags">{"".join(f'<a href="#" class="badge" data-variant="outline">{t}</a>' for t in ["Design", "Technology", "Culture", "Travel", "Food", "Interviews", "Essays", "Podcasts"])}</div></div>
+    </div>
+    <div class="hf-bottom"><span>© 2026 The Margin</span><nav aria-label="More"><a href="#">About</a><a href="#">Write for us</a><a href="#">Advertise</a><a href="#">Privacy</a><a href="#" class="cluster" data-gap="1">{si("rss")}RSS</a></nav></div>
+  </div>
+</footer>
+""", HF + "\n  .hf-foot { border-block-start: 1px solid var(--border); }\n  .hf-bottom nav a svg { inline-size: 0.875rem; block-size: 0.875rem; }", scripts=script(HF_JS))
+
+HOURS = [("Monday", "Closed"), ("Tue – Fri", "9:00 – 20:00"), ("Saturday", "9:00 – 18:00"), ("Sunday", "10:00 – 16:00")]
+hours_html = "".join(f'<div{" data-today" if d == "Tue – Fri" else ""}><dt>{d}</dt><dd>{h}</dd></div>' for d, h in HOURS)
+add("footer-04", "Footer 04", "A spa or local business footer: contact details, opening hours with today highlighted, a map with directions, booking and gift cards.", "footer", f"""
+{demo()}
+<footer class="hf-foot" style="{SPA} --foot-bg: oklch(0.97 0.012 150)">
+  <div class="wrapper" data-size="xl">
+    <div class="hf-foot-cols" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr))">
+      <div class="hf-foot-brand">{biz_logo("Still Water Spa", "leaf")}<p>A quiet garden house for massage, facials and rituals. Come as you are; leave a little lighter.</p><div class="cluster" data-gap="2"><a href="#" class="btn hf-book">{si("calendar")}Book a treatment</a><a href="#" class="btn" data-variant="outline">{si("gift")}Gift cards</a></div></div>
+      <div class="stack" data-gap="3"><h3 class="shop-section-title">Visit</h3><ul class="hf-contact"><li>{si("map-pin")}<span>12 Garden Lane<br>Portland, OR 97201</span></li><li>{si("phone")}<a href="#">(555) 014-2290</a></li><li>{si("mail")}<a href="#">hello@stillwater.spa</a></li></ul>{social(("instagram", "facebook"))}</div>
+      <div class="stack" data-gap="3"><h3 class="shop-section-title">Opening hours</h3><dl class="hf-hours">{hours_html}</dl><p class="shop-line-meta">Holiday hours may vary.</p></div>
+      <div class="hf-map" role="img" aria-label="Map showing 12 Garden Lane"><svg class="hf-map-bg" viewBox="0 0 200 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M0 40h200M0 95h200M60 0v140M140 0v140" stroke="currentColor" stroke-width="6" fill="none"/><path d="M0 120 C60 100 120 130 200 90" stroke="currentColor" stroke-width="10" fill="none" opacity=".6"/></svg><span class="hf-map-pin">{si("leaf")}</span><a href="#" class="btn" data-variant="outline" data-size="sm">{si("map-pin")}Directions</a></div>
+    </div>
+    <div class="hf-bottom"><span>© 2026 Still Water Spa</span><nav aria-label="Legal"><a href="#">Cancellation policy</a><a href="#">Privacy</a><a href="#">Careers</a></nav></div>
+  </div>
+</footer>
+""", HF + """
+  .hf-foot .hf-book { background: var(--biz); color: var(--biz-fg); }
+  .hf-foot .hf-book:hover { background: color-mix(in oklab, var(--biz) 85%, black); color: var(--biz-fg); }
+  .hf-foot .block-logo-mark { background: var(--biz); }
+  html.dark .hf-foot { --foot-bg: oklch(0.2 0.015 150); }""", scripts=script(HF_JS))
+
+VALUES = [("rabbit", "Cruelty-free", "Never tested on animals"), ("leaf", "Clean formulas", "No parabens or sulfates"), ("recycle", "Recyclable", "Glass and refills"), ("truck", "Free shipping", "On orders over $40")]
+add("footer-05", "Footer 05", "A beauty footer: brand values strip, newsletter with a welcome discount, link columns, social links and payment methods.", "footer", f"""
+{demo()}
+<footer class="hf-foot" style="{BEAUTY} --foot-bg: oklch(0.97 0.015 10)">
+  <div class="wrapper" data-size="xl">
+    <div class="hf-values">{"".join(f'<div>{si(i)}<p class="shop-line-name"><strong>{t}</strong><span>{d}</span></p></div>' for i, t, d in VALUES)}</div>
+    {newsletter("f5", "Join Glow Club, get 10% off", "Skin tips, early access to launches and a welcome code for your first order.", "Join", "By joining you agree to our privacy policy.", "Welcome to Glow Club! Your code is on its way.")}
+    <div class="hf-foot-cols" style="--cols: 3">
+      <div class="hf-foot-brand"><a href="#" class="hf-beauty-logo">lumière</a><p>Effective skincare with honest ingredients, made in small batches in France.</p>{social(("instagram", "youtube", "facebook"))}</div>
+      {foot_cols([("Shop", ["Skincare", "Makeup", "Hair and body", "Sets and gifts", "Bestsellers"]), ("Help", ["Shipping", "Returns", "Skin quiz", "FAQ", "Contact"]), ("About", ["Our story", "Ingredients", "Sustainability", "Stockists"])])}
+    </div>
+    <div class="hf-bottom"><span>© 2026 lumière</span><nav aria-label="Legal"><a href="#">Privacy</a><a href="#">Terms</a></nav>{pay}</div>
+  </div>
+</footer>
+""", HF + """
+  .hf-beauty-logo { font-family: var(--font-serif, Georgia, serif); font-size: 1.75rem; font-style: italic; }
+  .hf-news .btn[type=submit] { background: var(--biz); color: var(--biz-fg); }
+  html.dark .hf-foot { --foot-bg: oklch(0.2 0.02 10); }""", scripts=script(HF_JS))
+
+add("footer-06", "Footer 06", "A playful kids footer: wave edge, club newsletter, colorful columns, safety badges and social links.", "footer", f"""
+{demo()}
+<footer class="hf-foot hf-kids-foot" style="--foot-bg: oklch(0.32 0.09 265); --foot-fg: #fff; --foot-muted: rgb(255 255 255 / 0.7); --foot-line: rgb(255 255 255 / 0.18); --biz: oklch(0.82 0.15 85)">
+  <svg class="hf-wave" viewBox="0 0 1200 48" preserveAspectRatio="none" aria-hidden="true"><path d="M0 48V24C100 0 200 0 300 24s200 24 300 0 200-24 300 0 200 24 300 0v24z" fill="currentColor"/></svg>
+  <div class="wrapper" data-size="xl">
+    {newsletter("f6", "Join the toybox club 🎉", "Birthday surprises, play ideas and first dibs on new toys.", "Join the club", "For grown-ups only: we never email children.", "Yay! Welcome to the club.")}
+    <div class="hf-foot-cols" style="--cols: 3">
+      <div class="hf-foot-brand"><a href="#" class="hf-kids-logo"><span>t</span><span>o</span><span>y</span><span>b</span><span>o</span><span>x</span></a><p>Wooden toys, books and outdoor fun, chosen by parents and tested by kids.</p><div class="cluster" data-gap="2"><span class="badge" data-variant="secondary">{si("shield-check")}Safety tested</span><span class="badge" data-variant="secondary">{si("leaf")}FSC wood</span></div></div>
+      {foot_cols([("Shop", ["By age", "Outdoor play", "Books", "Gifts", "Sale"]), ("Help", ["Shipping", "Returns", "Gift wrap", "Contact"]), ("About", ["Our story", "Toy safety", "Stores", "Careers"])])}
+    </div>
+    <div class="hf-bottom"><span>© 2026 toybox</span>{social(("instagram", "facebook", "youtube"))}</div>
+  </div>
+</footer>
+{to_top}
+""", HF + """
+  .hf-kids-foot { background: transparent; }
+  .hf-kids-foot > .wrapper { background: var(--foot-bg); max-inline-size: none; padding-inline: max(1rem, calc((100% - 90rem) / 2 + 1rem)); }
+  .hf-wave { color: var(--foot-bg); margin-block-end: -1px; }
+  .hf-kids-logo { display: inline-flex; font-size: 1.75rem; font-weight: 800; letter-spacing: -0.04em; }
+  .hf-kids-logo span:nth-child(1) { color: oklch(0.75 0.17 30); }
+  .hf-kids-logo span:nth-child(2) { color: oklch(0.85 0.15 85); }
+  .hf-kids-logo span:nth-child(3) { color: oklch(0.78 0.14 160); }
+  .hf-kids-logo span:nth-child(4) { color: oklch(0.75 0.14 230); }
+  .hf-kids-logo span:nth-child(5) { color: oklch(0.75 0.15 320); }
+  .hf-kids-logo span:nth-child(6) { color: oklch(0.75 0.17 30); }
+  .hf-kids-foot .hf-news .btn[type=submit] { background: var(--biz); color: oklch(0.25 0.06 85); }
+  .hf-kids-foot .badge svg { inline-size: 0.75rem; block-size: 0.75rem; }""", scripts=script(HF_JS))
+
+
+# ================================================================== LMS admin (instructor dashboard)
+ADM_ICONS = {
+    "grip-vertical": '<circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/>',
+    "ellipsis": '<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',
+    "image": '<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>',
+    "video": '<path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect width="14" height="12" x="2" y="6" rx="2"/>',
+    "bold": '<path d="M6 12h9a4 4 0 0 1 0 8H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h7a4 4 0 0 1 0 8"/>',
+    "italic": '<line x1="19" x2="10" y1="4" y2="4"/><line x1="14" x2="5" y1="20" y2="20"/><line x1="15" x2="9" y1="4" y2="20"/>',
+    "link": '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+    "list-ordered": '<path d="M11 5h10m-10 7h10m-10 7h10M4 4h1v5M4 9h2m.5 11H3.4c0-1 2.6-1.925 2.6-3.5a1.5 1.5 0 0 0-2.6-1.02"/>',
+    "heading-2": '<path d="M4 12h8m-8 6V6m8 12V6m9 12h-4c0-4 4-3 4-6c0-1.5-2-2.5-4-1"/>',
+    "flag": '<path d="M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528"/>',
+    "tag": '<path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>',
+    "ticket-percent": '<path d="M2 9a3 3 0 1 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 1 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M9 9h.01"/><path d="m15 9-6 6"/><path d="M15 15h.01"/>',
+    "file": '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/>',
+    "eye-off": '<path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/>',
+    "cloud-upload": '<path d="M12 13v8m-8-6.101A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="m8 17 4-4 4 4"/>',
+    "quote": '<path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2zM5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/>',
+    "code": '<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
+    "circle-x": '<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6m0-6 6 6"/>',
+    "copy-plus": '<path d="M15 12v6m-3-3h6"/><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+    "refresh-cw": '<path d="M3 12a9 9 0 0 1 9-9a9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5m5 4a9 9 0 0 1-9 9a9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>',
+    "list-checks": '<path d="M13 5h8m-8 7h8m-8 7h8M3 17l2 2 4-4M3 7l2 2 4-4"/>',
+    "paperclip": '<path d="m16 6-8.414 8.586a2 2 0 0 0 2.829 2.829l8.414-8.586a4 4 0 1 0-5.657-5.657l-8.379 8.551a6 6 0 1 0 8.485 8.485l8.379-8.551"/>',
+    "dollar-sign": '<path d="M12 3v18m5-16H9.5a1 1 0 0 0 0 7h5a1 1 0 0 1 0 7H6"/>',
+    "reply": '<path d="M20 18v-2a4 4 0 0 0-4-4H4"/><path d="m9 17-5-5 5-5"/>',
+    "send": '<path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/>',
+    "circle-alert": '<circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>',
+}
+SHOP_ICONS.update(ADM_ICONS)
+
+ADM_CSS = """
+  body { min-block-size: 100svh; }
+  .adm-mark { display: inline-flex; flex: none; align-items: center; justify-content: center; inline-size: 2rem; block-size: 2rem; border-radius: calc(var(--radius) + 2px); background: var(--sidebar-primary); color: var(--sidebar-primary-foreground); }
+  .adm-mark svg { inline-size: 1rem; block-size: 1rem; }
+  .adm-main { container-type: inline-size; min-inline-size: 0; }
+  .adm-header { position: sticky; inset-block-start: 0; z-index: 10; display: flex; align-items: center; gap: 0.5rem; block-size: 3.5rem; padding-inline: 1rem; border-block-end: 1px solid var(--border); background: var(--background); }
+  .adm-header > hr { align-self: center; block-size: 1rem; margin-inline-end: 0.25rem; }
+  .adm-header .breadcrumb { min-inline-size: 0; }
+  .adm-header-end { display: flex; align-items: center; gap: 0.5rem; margin-inline-start: auto; }
+  .adm-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; padding: 1rem; }
+  .adm-split > * { min-inline-size: 0; }
+  .adm-body > * { min-inline-size: 0; }
+  .adm-main .card { min-inline-size: 0; }
+  .adm-main .card > section { min-inline-size: 0; }
+  .adm-dash > * { min-inline-size: 0; }
+  .adm-main .stack > * { min-inline-size: 0; }
+  .adm-main .card > section > * { min-inline-size: 0; }
+  .adm-top > section { position: relative; overflow-x: auto; }
+  @container (width >= 48rem) { .adm-body { padding: 1.5rem; } }
+  .adm-title { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; }
+  .adm-title h1 { margin: 0; font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; }
+  .adm-title p { margin: 0.25rem 0 0; color: var(--muted-foreground); font-size: 0.875rem; }
+  .adm-title > div:last-child { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .adm-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .adm-toolbar .input-group { inline-size: min(100%, 18rem); }
+  .adm-toolbar .select { inline-size: auto; }
+  .adm-grow { flex: 1; }
+  .adm-tabs { display: flex; gap: 0.25rem; overflow-x: auto; border-block-end: 1px solid var(--border); scrollbar-width: none; }
+  .adm-tabs button { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.5rem 0.75rem; border: 0; border-block-end: 2px solid transparent; margin-block-end: -1px; background: none; color: var(--muted-foreground); font: inherit; font-size: 0.875rem; font-weight: 500; white-space: nowrap; cursor: pointer; }
+  .adm-tabs button:hover { color: var(--foreground); }
+  .adm-tabs button[aria-pressed='true'] { border-color: var(--foreground); color: var(--foreground); }
+  .adm-tabs button:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; border-radius: calc(var(--radius) - 2px); }
+  .adm-tabs .badge { min-inline-size: 1.25rem; justify-content: center; padding-inline: 0.375rem; font-variant-numeric: tabular-nums; }
+  .adm-table-wrap { position: relative; overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+  .adm-table-wrap .table { min-inline-size: 48rem; }
+  .adm-table-wrap .table th:first-child, .adm-table-wrap .table td:first-child { inline-size: 2.5rem; padding-inline-start: 1rem; }
+  .adm-num { text-align: end; font-variant-numeric: tabular-nums; }
+  .adm-course { display: flex; align-items: center; gap: 0.75rem; min-inline-size: 16rem; }
+  .adm-course img { flex: none; inline-size: 4rem; block-size: 2.5rem; border-radius: calc(var(--radius) - 2px); object-fit: cover; background: var(--muted); }
+  .adm-course strong { display: block; font-weight: 500; }
+  .adm-course small { color: var(--muted-foreground); font-size: 0.75rem; }
+  .adm-course a { color: inherit; text-decoration: none; }
+  .adm-course a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .adm-status { gap: 0.375rem; }
+  .adm-status::before { content: ''; inline-size: 0.375rem; block-size: 0.375rem; border-radius: 999px; background: var(--muted-foreground); }
+  .adm-status[data-status='published']::before { background: oklch(0.65 0.17 150); }
+  .adm-status[data-status='review']::before { background: oklch(0.75 0.15 75); }
+  .adm-status[data-status='invited']::before { background: oklch(0.6 0.15 255); }
+  .adm-rating { display: inline-flex; align-items: center; gap: 0.25rem; }
+  .adm-rating svg { inline-size: 0.875rem; block-size: 0.875rem; fill: oklch(0.8 0.16 80); color: oklch(0.8 0.16 80); }
+  .adm-bulk { position: sticky; inset-block-end: 1rem; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; justify-self: center; padding: 0.5rem 0.5rem 0.5rem 1rem; border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px); background: var(--popover); color: var(--popover-foreground); box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.3); font-size: 0.875rem; }
+  .adm-bulk[hidden] { display: none; }
+  .adm-bulk strong { margin-inline-end: 0.5rem; font-variant-numeric: tabular-nums; }
+  .adm-empty-row td { padding-block: 3rem; text-align: center; color: var(--muted-foreground); }
+  .adm-row-menu [role='menu'] { min-inline-size: 10rem; }
+  .adm-split { display: grid; gap: 1.5rem; align-items: start; }
+  @container (width >= 64rem) { .adm-split { grid-template-columns: minmax(0, 1fr) 20rem; } .adm-split > aside { position: sticky; inset-block-start: 5rem; } }
+  .adm-split > aside { display: grid; gap: 1rem; }
+  .adm-kpis { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); }
+  .adm-kpi { gap: 0.25rem; padding: 1rem 1.25rem; }
+  .adm-kpi > p { margin: 0; font-size: 0.8125rem; color: var(--muted-foreground); }
+  .adm-kpi > strong { font-size: 1.625rem; font-weight: 600; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+  .adm-trend { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; font-weight: 500; color: oklch(0.55 0.15 150); }
+  .adm-trend[data-down] { color: var(--destructive); }
+  .adm-trend svg { inline-size: 0.875rem; block-size: 0.875rem; }
+  .adm-trend[data-down] svg { transform: scaleY(-1); }
+  .adm-trend span { color: var(--muted-foreground); font-weight: 400; }
+  .adm-bar { display: block; block-size: 0.375rem; min-inline-size: 5rem; border-radius: 999px; background: var(--muted); overflow: hidden; }
+  .adm-bar > span { display: block; block-size: 100%; border-radius: inherit; background: var(--primary); }
+  .adm-progress { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-variant-numeric: tabular-nums; color: var(--muted-foreground); }
+  .adm-progress .adm-bar { flex: 1; }
+  .adm-person { display: flex; align-items: center; gap: 0.75rem; min-inline-size: 13rem; }
+  .adm-person .avatar { flex: none; }
+  .adm-person strong { display: block; font-weight: 500; }
+  .adm-person small { color: var(--muted-foreground); font-size: 0.75rem; }
+  .adm-section-title { margin: 0; font-size: 1rem; font-weight: 600; }
+  .adm-muted { color: var(--muted-foreground); }
+  .adm-coursenav { display: flex; gap: 0.25rem; overflow-x: auto; border-block-end: 1px solid var(--border); scrollbar-width: none; }
+  .adm-coursenav a { padding: 0.5rem 0.75rem; border-block-end: 2px solid transparent; margin-block-end: -1px; color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500; text-decoration: none; white-space: nowrap; }
+  .adm-coursenav a:hover { color: var(--foreground); }
+  .adm-coursenav a[aria-current] { border-color: var(--foreground); color: var(--foreground); }
+  .adm-saved { display: inline-flex; align-items: center; gap: 0.375rem; font-size: 0.8125rem; color: var(--muted-foreground); }
+  .adm-saved::before { content: ''; inline-size: 0.5rem; block-size: 0.5rem; border-radius: 999px; background: oklch(0.65 0.17 150); }
+  .adm-saved[data-dirty]::before { background: oklch(0.75 0.15 75); }
+  html.dark .adm-course img { filter: brightness(0.8); }
+"""
+
+ADM_JS = """
+// Dropdown row menus close after a choice.
+document.querySelectorAll('[data-popover] [role=menuitem]').forEach((m) => m.addEventListener('click', () => m.closest('[popover]')?.hidePopover?.()));
+// Tables: status tabs, search, row selection with a bulk bar.
+document.querySelectorAll('[data-adm-table]').forEach((root) => {
+  const tbody = root.querySelector('tbody');
+  const rows = () => [...tbody.querySelectorAll('tr[data-row]')];
+  const tabs = [...root.querySelectorAll('[data-tab]')];
+  const search = root.querySelector('[data-search]');
+  const select = root.querySelector('[data-filter-select]');
+  const all = root.querySelector('[data-select-all]');
+  const bulk = root.querySelector('[data-bulk]');
+  const empty = root.querySelector('[data-empty]');
+  let tab = 'all';
+  const counts = () => tabs.forEach((t) => {
+    const k = t.dataset.tab;
+    t.querySelector('.badge').textContent = rows().filter((r) => k === 'all' || r.dataset.status === k).length;
+  });
+  const apply = () => {
+    const q = (search?.value || '').trim().toLowerCase();
+    const f = select?.value || 'all';
+    let shown = 0;
+    rows().forEach((r) => {
+      const ok = (tab === 'all' || r.dataset.status === tab) && (!q || r.textContent.toLowerCase().includes(q)) && (f === 'all' || r.dataset.filter === f);
+      r.hidden = !ok;
+      if (!ok) r.querySelector('[data-select]').checked = false;
+      shown += ok;
+    });
+    if (empty) empty.hidden = shown > 0;
+    sync();
+  };
+  const sync = () => {
+    const vis = rows().filter((r) => !r.hidden);
+    const sel = vis.filter((r) => r.querySelector('[data-select]').checked);
+    vis.forEach((r) => r.toggleAttribute('data-selected', r.querySelector('[data-select]').checked));
+    if (all) { all.checked = vis.length > 0 && sel.length === vis.length; all.indeterminate = sel.length > 0 && sel.length < vis.length; }
+    if (bulk) { bulk.hidden = !sel.length; bulk.querySelector('[data-bulk-count]').textContent = `${sel.length} selected`; }
+  };
+  tabs.forEach((t) => t.addEventListener('click', () => {
+    tab = t.dataset.tab;
+    tabs.forEach((x) => x.setAttribute('aria-pressed', String(x === t)));
+    apply();
+  }));
+  search?.addEventListener('input', apply);
+  select?.addEventListener('change', apply);
+  all?.addEventListener('change', () => { rows().filter((r) => !r.hidden).forEach((r) => { r.querySelector('[data-select]').checked = all.checked; }); sync(); });
+  tbody.addEventListener('change', (e) => { if (e.target.matches('[data-select]')) sync(); });
+  const selected = () => rows().filter((r) => !r.hidden && r.querySelector('[data-select]').checked);
+  root.querySelectorAll('[data-bulk-status]').forEach((b) => b.addEventListener('click', () => {
+    selected().forEach((r) => {
+      r.dataset.status = b.dataset.bulkStatus;
+      const s = r.querySelector('.adm-status');
+      s.dataset.status = b.dataset.bulkStatus;
+      s.textContent = b.dataset.label;
+      r.querySelector('[data-select]').checked = false;
+    });
+    counts(); apply();
+  }));
+  root.querySelector('[data-bulk-delete]')?.addEventListener('click', () => { selected().forEach((r) => r.remove()); counts(); apply(); });
+  root.querySelector('[data-bulk-clear]')?.addEventListener('click', () => { rows().forEach((r) => { r.querySelector('[data-select]').checked = false; }); sync(); });
+  root.addEventListener('click', (e) => {
+    const del = e.target.closest('[data-row-delete]');
+    if (del) { del.closest('tr').remove(); counts(); apply(); }
+  });
+  root.admRefresh = () => { counts(); apply(); };
+  counts(); apply();
+});
+"""
+
+
+def adm_nav_item(label, ic_, active=False, badge=None):
+    cur = ' aria-current="page"' if active else ""
+    b = f'<span data-badge>{badge}</span>' if badge else ""
+    return f'<li><a href="#"{cur} data-tooltip="{label}" data-side="right">{si(ic_)}<span>{label}</span>{b}</a></li>'
+
+
+ADM_NAV = [
+    ("Overview", [("Dashboard", "chart-column"), ("Courses", "book-open"), ("Media library", "image")]),
+    ("Students", [("Students", "users"), ("Reviews", "star", 4), ("Q&A", "message-square", 12)]),
+    ("Business", [("Pricing", "tag"), ("Coupons", "ticket-percent"), ("Settings", "settings")]),
+]
+
+
+def adm_shell(active, crumbs, body, end=""):
+    groups = ""
+    for i, (title, items) in enumerate(ADM_NAV):
+        lis = "".join(adm_nav_item(l, ic_, l == active, *b) for l, ic_, *b in items)
+        groups += f'<div role="group" aria-labelledby="adm-g{i}"><h3 id="adm-g{i}">{title}</h3><ul>{lis}</ul></div>'
+    side = f"""<aside id="adm-sidebar" class="sidebar" data-collapsible="icon"><nav aria-label="Instructor">
+  <header><ul><li><a href="#" data-size="lg"><span class="adm-mark">{si("graduation-cap")}</span><span><strong>Acme Learn</strong><small>Instructor</small></span></a></li></ul></header>
+  <section>{groups}</section>
+  <footer><ul><li><a href="#" data-size="lg"><span class="avatar" data-size="sm"><span>LO</span></span><span><strong>Lena Ortiz</strong><small>lena@acme.learn</small></span></a></li></ul></footer>
+</nav></aside>"""
+    *parents, cur = crumbs
+    crumb = "".join(f'<li><a href="#">{p}</a></li><li aria-hidden="true">{si("chevron-right")}</li>' for p in parents)
+    head = (f'<header class="adm-header"><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" data-sidebar-toggle="adm-sidebar" aria-controls="adm-sidebar" aria-label="Toggle sidebar">{si("menu")}</button>'
+            f'<hr role="separator" aria-orientation="vertical"><nav class="breadcrumb" aria-label="Breadcrumb"><ol>{crumb}<li><span aria-current="page">{cur}</span></li></ol></nav>'
+            f'<div class="adm-header-end">{end}</div></header>')
+    return f'{side}<main class="adm-main">{head}<div class="adm-body">{body}</div></main>'
+
+
+def usd(v):
+    return f"${v:,}"
+
+
+def adm_status(key, label):
+    return f'<span class="badge adm-status" data-variant="outline" data-status="{key}">{label}</span>'
+
+
+def row_menu(pid, items):
+    btns = "".join(f'<button type="button" role="menuitem"{f" data-variant={chr(34)}destructive{chr(34)}" if danger else ""}{f" {attr}" if attr else ""}>{si(ic_)}<span>{label}</span></button>' for label, ic_, danger, attr in items)
+    return (f'<div class="dropdown-menu adm-row-menu"><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" popovertarget="{pid}" aria-haspopup="menu" aria-label="Actions">{si("ellipsis")}</button>'
+            f'<div id="{pid}" data-popover popover data-side="bottom" data-align="end"><div role="menu" aria-label="Actions">{btns}</div></div></div>')
+
+
+def tabs_filter(items):
+    return '<div class="adm-tabs" role="group" aria-label="Filter by status">' + "".join(
+        f'<button type="button" data-tab="{k}" aria-pressed="{str(i == 0).lower()}">{l}<span class="badge" data-variant="secondary">0</span></button>' for i, (k, l) in enumerate(items)) + "</div>"
+
+
+def search_box(ph, label):
+    return f'<div class="input-group"><input type="search" placeholder="{ph}" aria-label="{label}" data-search><span data-align="start" aria-hidden="true">{si("search")}</span></div>'
+
+
+ADM_CSS = split_lists(ADM_CSS)
+ADM = SHOP_CSS + ADM_CSS
+ADM_SCRIPT = script(ADM_JS)
+
+# ---------------------------------------------------------------- admin-01: courses
+A_COURSES = [
+    ("Brand Identity Design from Scratch", "Design", "published", "Published", 64, 28940, 412300, 4.8, "2 days ago", 2),
+    ("Watercolor Botanicals for Beginners", "Illustration", "published", "Published", 38, 12480, 186200, 4.9, "1 week ago", 3),
+    ("Modern Web Typography", "Design", "review", "In review", 22, 0, 0, None, "3 hours ago", 4),
+    ("Product Photography at Home", "Photography", "published", "Published", 41, 8930, 97400, 4.7, "3 weeks ago", 1),
+    ("Figma for Teams: Design Systems", "Design", "draft", "Draft", 12, 0, 0, None, "Yesterday", 2),
+    ("Hand Lettering Masterclass", "Illustration", "published", "Published", 55, 15210, 228150, 4.8, "1 month ago", 3),
+    ("Pricing Your Creative Work", "Business", "draft", "Draft", 6, 0, 0, None, "4 days ago", 4),
+    ("Motion Design Basics in After Effects", "Animation", "published", "Published", 48, 6120, 73440, 4.6, "2 months ago", 1),
+]
+a1_rows = "\n".join(f"""<tr data-row data-status="{k}" data-filter="{cat}">
+  <td><input type="checkbox" class="input" data-select aria-label="Select {t}"></td>
+  <td><div class="adm-course">{shot(n)}<span><a href="#"><strong>{t}</strong></a><small>{cat} · {les} lessons</small></span></div></td>
+  <td>{adm_status(k, lab)}</td>
+  <td class="adm-num">{f"{st:,}" if st else "—"}</td>
+  <td class="adm-num">{usd(rev) if rev else "—"}</td>
+  <td>{f'<span class="adm-rating">{si("star")}{r}</span>' if r else '<span class="adm-muted">—</span>'}</td>
+  <td class="adm-muted">{upd}</td>
+  <td>{row_menu(f"a1-m{i}", [("Edit", "pencil", False, ""), ("Preview", "eye", False, ""), ("Duplicate", "copy-plus", False, ""), ("Delete", "trash-2", True, "data-row-delete")])}</td>
+</tr>""" for i, (t, cat, k, lab, les, st, rev, r, upd, n) in enumerate(A_COURSES))
+
+add("admin-01", "Admin 01", "Instructor course list: status tabs with counts, search, row selection with bulk publish and delete, row menus and a new course dialog.", "admin", adm_shell("Courses", ["Instructor", "Courses"], f"""
+<div class="adm-title"><div><h1>Courses</h1><p>Create, publish and manage your courses.</p></div>
+  <div><button type="button" class="btn" data-variant="outline">{si("upload")}Import</button><button type="button" class="btn" commandfor="a1-new" command="show-modal">{si("plus")}New course</button></div></div>
+<div class="stack" data-gap="4" data-adm-table id="a1-table">
+  {tabs_filter([("all", "All"), ("published", "Published"), ("draft", "Drafts"), ("review", "In review")])}
+  <div class="adm-toolbar">{search_box("Search courses...", "Search courses")}<span class="adm-grow"></span><label class="sr-only" for="a1-cat">Category</label><select class="select" id="a1-cat" data-filter-select><option value="all">All categories</option><option>Design</option><option>Illustration</option><option>Photography</option><option>Business</option><option>Animation</option></select></div>
+  <div class="adm-table-wrap"><table class="table">
+    <thead><tr><th><input type="checkbox" class="input" data-select-all aria-label="Select all courses"></th><th>Course</th><th>Status</th><th class="adm-num">Students</th><th class="adm-num">Revenue</th><th>Rating</th><th>Updated</th><th><span class="sr-only">Actions</span></th></tr></thead>
+    <tbody>
+{a1_rows}
+      <tr class="adm-empty-row" data-empty hidden><td colspan="8">No courses match your filters.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="adm-bulk" data-bulk hidden role="region" aria-label="Bulk actions"><strong data-bulk-count>0 selected</strong>
+    <button type="button" class="btn" data-variant="outline" data-size="sm" data-bulk-status="published" data-label="Published">{si("upload")}Publish</button>
+    <button type="button" class="btn" data-variant="outline" data-size="sm" data-bulk-status="draft" data-label="Draft">{si("eye-off")}Unpublish</button>
+    <button type="button" class="btn" data-variant="destructive" data-size="sm" data-bulk-delete>{si("trash-2")}Delete</button>
+    <button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Clear selection" data-bulk-clear>{si("x")}</button>
+  </div>
+</div>
+<dialog id="a1-new" class="dialog" closedby="any" aria-labelledby="a1-new-t">
+  <div>
+    <header><h2 id="a1-new-t">New course</h2><p>Give it a working title. You can change everything later.</p></header>
+    <section><form id="a1-form" class="stack" data-gap="4">
+      <div role="group" class="field"><label for="a1-title">Title</label><input id="a1-title" class="input" required maxlength="80" placeholder="e.g. Logo Design Fundamentals"></div>
+      <div role="group" class="field"><label for="a1-newcat">Category</label><select class="select" id="a1-newcat"><option>Design</option><option>Illustration</option><option>Photography</option><option>Business</option><option>Animation</option></select></div>
+    </form></section>
+    <footer><button type="button" class="btn" data-variant="outline" commandfor="a1-new" command="close">Cancel</button><button type="submit" form="a1-form" class="btn">Create course</button></footer>
+  </div>
+  <button type="button" aria-label="Close dialog" commandfor="a1-new" command="close">{si("x")}</button>
+</dialog>
+"""), ADM, scripts=script(ADM_JS + """
+document.getElementById('a1-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const t = document.getElementById('a1-title');
+  const cat = document.getElementById('a1-newcat').value;
+  const root = document.getElementById('a1-table');
+  const tr = document.createElement('tr');
+  tr.dataset.row = '';
+  tr.dataset.status = 'draft';
+  tr.innerHTML = '<td><input type="checkbox" class="input" data-select></td><td><div class="adm-course"><img class="shop-shot" src="assets/placeholder.svg" alt=""><span><a href="#"><strong></strong></a><small></small></span></div></td><td><span class="badge adm-status" data-variant="outline" data-status="draft">Draft</span></td><td class="adm-num">—</td><td class="adm-num">—</td><td><span class="adm-muted">—</span></td><td class="adm-muted">Just now</td><td></td>';
+  tr.querySelector('strong').textContent = t.value.trim();
+  tr.querySelector('small').textContent = `${cat} · 0 lessons`;
+  tr.querySelector('[data-select]').setAttribute('aria-label', `Select ${t.value.trim()}`);
+  tr.dataset.filter = cat;
+  root.querySelector('tbody').prepend(tr);
+  root.admRefresh();
+  t.value = '';
+  document.getElementById('a1-new').close();
+});
+"""))
+
+# ---------------------------------------------------------------- admin-02: curriculum builder
+LESSON_TYPES = {"video": ("Video", "circle-play"), "article": ("Article", "file-text"), "quiz": ("Quiz", "list-checks"), "assignment": ("Assignment", "notebook-pen")}
+A_CURR = [
+    ("Introduction", [("video", "Welcome to the course", "2:14", True), ("video", "What you'll need", "4:05", True), ("article", "How to get the most out of it", "3 min", False)]),
+    ("Research and the creative brief", [("video", "Interviewing the client", "11:20", False), ("video", "Mood boards that guide decisions", "9:48", False), ("assignment", "Write your first brief", "", False), ("quiz", "Check your understanding", "5 questions", False)]),
+    ("Designing the logo", [("video", "From words to sketches", "14:02", False), ("video", "Refining in Illustrator", "22:31", False)]),
+]
+
+
+def lesson_li(kind, title, meta, free):
+    label, ic_ = LESSON_TYPES[kind]
+    fr = '<span class="badge" data-variant="secondary">Free preview</span>' if free else ""
+    return f"""<li class="adm-lesson" draggable="true" data-lesson data-kind="{kind}">
+  <button type="button" class="adm-grip" aria-label="Move {title}. Use arrow keys">{si("grip-vertical")}</button>
+  <span class="adm-lesson-ic" title="{label}">{si(ic_)}</span>
+  <span class="adm-lesson-name"><strong>{title}</strong><small>{label}{f" · {meta}" if meta else ""}</small></span>
+  {fr}
+  <span class="adm-lesson-tools"><a href="#" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Edit {title}">{si("pencil")}</a><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Delete {title}" data-del-lesson>{si("trash-2")}</button></span>
+</li>"""
+
+
+def add_lesson_menu(pid):
+    items = "".join(f'<button type="button" role="menuitem" data-add-kind="{k}">{si(ic_)}<span>{l}</span></button>' for k, (l, ic_) in LESSON_TYPES.items())
+    return (f'<div class="dropdown-menu"><button type="button" class="btn" data-variant="ghost" data-size="sm" popovertarget="{pid}" aria-haspopup="menu">{si("plus")}Add lesson</button>'
+            f'<div id="{pid}" data-popover popover data-side="bottom" data-align="start"><div role="menu" aria-label="Lesson type">{items}</div></div></div>')
+
+
+def section_card(i, title, lessons):
+    lis = "".join(lesson_li(*l) for l in lessons)
+    return f"""<section class="card adm-sec" data-section>
+  <header class="adm-sec-head">
+    <span class="adm-sec-num">Section <span data-sec-n>{i + 1}</span></span>
+    <label class="sr-only" for="a2-s{i}">Section title</label><input class="input adm-sec-title" id="a2-s{i}" value="{title}">
+    <span class="adm-muted adm-sec-count" data-sec-count></span>
+    <button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Collapse section" aria-expanded="true" data-sec-toggle>{si("chevron-down")}</button>
+  </header>
+  <ol class="adm-lessons" data-lessons>{lis}</ol>
+  <footer class="adm-sec-foot">{add_lesson_menu(f"a2-add{i}")}</footer>
+</section>"""
+
+
+add("admin-02", "Admin 02", "Curriculum builder: sections and lessons you can drag (or move with the keyboard) to reorder, add by type, rename, collapse and delete, with live totals.", "admin", adm_shell("Courses", ["Courses", "Brand Identity Design", "Curriculum"], f"""
+<div class="adm-title"><div><h1>Brand Identity Design from Scratch</h1><p>{adm_status("published", "Published")} <span data-curr-summary></span></p></div>
+  <div><a href="#" class="btn" data-variant="outline">{si("eye")}Preview</a><button type="button" class="btn">Save changes</button></div></div>
+<nav class="adm-coursenav" aria-label="Course settings"><a href="#">Details</a><a href="#" aria-current="page">Curriculum</a><a href="#">Pricing</a><a href="#">Students</a><a href="#">Settings</a></nav>
+<div class="stack" data-gap="4" data-curriculum>
+  {"".join(section_card(i, t, ls) for i, (t, ls) in enumerate(A_CURR))}
+  <button type="button" class="adm-add-section" data-add-section>{si("plus")}Add section</button>
+  <p class="sr-only" aria-live="polite" data-curr-live></p>
+</div>
+"""), ADM + """
+  .adm-title p { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .adm-sec { gap: 0; padding: 0; overflow: hidden; }
+  .adm-sec-head { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0.75rem 0.75rem 1rem; background: var(--muted); }
+  .adm-sec-num { flex: none; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted-foreground); }
+  .adm-sec-title { flex: 1; min-inline-size: 0; block-size: 2.25rem; border-color: transparent; background: transparent; box-shadow: none; font-weight: 600; }
+  .adm-sec-title:hover { border-color: var(--input); }
+  .adm-sec-title:focus { background: var(--background); }
+  .adm-sec-count { flex: none; font-size: 0.75rem; }
+  .adm-sec [data-sec-toggle] svg { transition: transform 150ms ease; }
+  .adm-sec[data-collapsed] [data-sec-toggle] svg { transform: rotate(-90deg); }
+  .adm-sec[data-collapsed] > :is(ol, footer) { display: none; }
+  .adm-lessons { display: grid; margin: 0; padding: 0.5rem; list-style: none; min-block-size: 3rem; }
+  .adm-lesson { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem; border-radius: var(--radius); background: var(--card); }
+  .adm-lesson:hover { background: var(--accent); }
+  .adm-lesson[data-dragging] { opacity: 0.4; }
+  .adm-lessons[data-over] { background: color-mix(in oklab, var(--primary) 6%, transparent); outline: 2px dashed color-mix(in oklab, var(--primary) 40%, transparent); outline-offset: -4px; border-radius: var(--radius); }
+  .adm-grip { display: grid; place-items: center; flex: none; inline-size: 1.5rem; block-size: 2rem; padding: 0; border: 0; border-radius: calc(var(--radius) - 2px); background: none; color: var(--muted-foreground); cursor: grab; }
+  .adm-grip:focus-visible { outline: 2px solid var(--ring); }
+  .adm-grip svg { inline-size: 1rem; block-size: 1rem; }
+  .adm-lesson-ic { display: grid; place-items: center; flex: none; inline-size: 2rem; block-size: 2rem; border-radius: calc(var(--radius) - 2px); background: var(--muted); color: var(--muted-foreground); }
+  .adm-lesson-ic svg { inline-size: 1rem; block-size: 1rem; }
+  .adm-lesson-name { flex: 1; min-inline-size: 0; display: grid; }
+  .adm-lesson-name strong { overflow: hidden; font-size: 0.875rem; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+  .adm-lesson-name small { font-size: 0.75rem; color: var(--muted-foreground); }
+  .adm-lesson-name input { block-size: 2rem; }
+  .adm-lesson-tools { display: flex; opacity: 0; transition: opacity 150ms ease; }
+  .adm-lesson:is(:hover, :focus-within) .adm-lesson-tools { opacity: 1; }
+  @media (hover: none) { .adm-lesson-tools { opacity: 1; } }
+  .adm-sec-foot { padding: 0 0.5rem 0.5rem; }
+  .adm-add-section { display: flex; align-items: center; justify-content: center; gap: 0.5rem; block-size: 3.5rem; border: 2px dashed var(--border); border-radius: var(--radius); background: none; color: var(--muted-foreground); font: inherit; font-size: 0.875rem; font-weight: 500; cursor: pointer; }
+  .adm-add-section:hover { border-color: var(--ring); color: var(--foreground); }
+  .adm-add-section:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .adm-add-section svg { inline-size: 1rem; block-size: 1rem; }""", scripts=script(ADM_JS + """
+(() => {
+  const root = document.querySelector('[data-curriculum]');
+  const live = root.querySelector('[data-curr-live]');
+  const KINDS = { video: ['Video', 'circle-play'], article: ['Article', 'file-text'], quiz: ['Quiz', 'list-checks'], assignment: ['Assignment', 'notebook-pen'] };
+  const icon = (k) => root.querySelector(`[data-add-kind="${k}"] svg`).outerHTML;
+  const sync = () => {
+    const secs = [...root.querySelectorAll('[data-section]')];
+    let total = 0;
+    secs.forEach((s, i) => {
+      const n = s.querySelectorAll('[data-lesson]').length;
+      total += n;
+      s.querySelector('[data-sec-n]').textContent = i + 1;
+      s.querySelector('[data-sec-count]').textContent = `${n} ${n === 1 ? 'lesson' : 'lessons'}`;
+    });
+    document.querySelector('[data-curr-summary]').textContent = `${secs.length} sections · ${total} lessons`;
+  };
+  // Drag and drop between and within sections.
+  let dragged = null;
+  root.addEventListener('dragstart', (e) => {
+    dragged = e.target.closest('[data-lesson]');
+    if (!dragged) return;
+    dragged.setAttribute('data-dragging', '');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', '');
+  });
+  root.addEventListener('dragend', () => {
+    dragged?.removeAttribute('data-dragging');
+    root.querySelectorAll('[data-over]').forEach((x) => x.removeAttribute('data-over'));
+    dragged = null;
+    sync();
+  });
+  root.addEventListener('dragover', (e) => {
+    const list = e.target.closest('[data-lessons]');
+    if (!dragged || !list) return;
+    e.preventDefault();
+    root.querySelectorAll('[data-over]').forEach((x) => x !== list && x.removeAttribute('data-over'));
+    list.setAttribute('data-over', '');
+    const after = [...list.querySelectorAll('[data-lesson]:not([data-dragging])')].find((li) => e.clientY < li.getBoundingClientRect().top + li.offsetHeight / 2);
+    list.insertBefore(dragged, after || null);
+  });
+  root.addEventListener('drop', (e) => e.preventDefault());
+  // Keyboard: arrow keys on the handle move the lesson, across sections too.
+  root.addEventListener('keydown', (e) => {
+    const grip = e.target.closest('.adm-grip');
+    if (!grip || !['ArrowUp', 'ArrowDown'].includes(e.key)) return;
+    e.preventDefault();
+    const li = grip.closest('[data-lesson]');
+    const lists = [...root.querySelectorAll('[data-lessons]')];
+    const list = li.parentElement;
+    if (e.key === 'ArrowUp') {
+      if (li.previousElementSibling) list.insertBefore(li, li.previousElementSibling);
+      else if (lists.indexOf(list) > 0) lists[lists.indexOf(list) - 1].append(li);
+    } else if (li.nextElementSibling) list.insertBefore(li.nextElementSibling, li);
+    else if (lists.indexOf(list) < lists.length - 1) lists[lists.indexOf(list) + 1].prepend(li);
+    grip.focus();
+    sync();
+    const sec = li.closest('[data-section]');
+    live.textContent = `${li.querySelector('strong').textContent}: section ${sec.querySelector('[data-sec-n]').textContent}, position ${[...li.parentElement.children].indexOf(li) + 1}`;
+  });
+  root.addEventListener('click', (e) => {
+    const del = e.target.closest('[data-del-lesson]');
+    if (del) { const li = del.closest('[data-lesson]'); live.textContent = `${li.querySelector('strong').textContent} deleted`; li.remove(); sync(); return; }
+    const tog = e.target.closest('[data-sec-toggle]');
+    if (tog) {
+      const sec = tog.closest('[data-section]');
+      const collapsed = sec.toggleAttribute('data-collapsed');
+      tog.setAttribute('aria-expanded', String(!collapsed));
+      tog.setAttribute('aria-label', collapsed ? 'Expand section' : 'Collapse section');
+      return;
+    }
+    const kind = e.target.closest('[data-add-kind]')?.dataset.addKind;
+    if (kind) {
+      const list = e.target.closest('[data-section]').querySelector('[data-lessons]');
+      const [label] = KINDS[kind];
+      const li = document.createElement('li');
+      li.className = 'adm-lesson';
+      li.draggable = true;
+      li.dataset.lesson = '';
+      li.dataset.kind = kind;
+      li.innerHTML = `<button type="button" class="adm-grip" aria-label="Move lesson. Use arrow keys">${root.querySelector('.adm-grip svg').outerHTML}</button><span class="adm-lesson-ic" title="${label}">${icon(kind)}</span><span class="adm-lesson-name"><input class="input" aria-label="${label} title" placeholder="New ${label.toLowerCase()} title"><small>${label}</small></span><span class="adm-lesson-tools"><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Delete lesson" data-del-lesson>${root.querySelector('[data-del-lesson] svg').outerHTML}</button></span>`;
+      list.append(li);
+      const input = li.querySelector('input');
+      let done = false;
+      const commit = () => {
+        if (done) return;
+        done = true;
+        const v = input.value.trim() || `Untitled ${label.toLowerCase()}`;
+        const strong = document.createElement('strong');
+        strong.textContent = v;
+        input.replaceWith(strong);
+        li.querySelector('.adm-grip').setAttribute('aria-label', `Move ${v}. Use arrow keys`);
+      };
+      input.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); commit(); li.querySelector('.adm-grip').focus(); } });
+      // The menu hands focus back to its button as it closes; take it after that.
+      requestAnimationFrame(() => { input.focus(); input.addEventListener('blur', commit, { once: true }); });
+      sync();
+      return;
+    }
+    if (e.target.closest('[data-add-section]')) {
+      const tpl = root.querySelector('[data-section]');
+      const sec = tpl.cloneNode(true);
+      sec.removeAttribute('data-collapsed');
+      sec.querySelector('[data-lessons]').innerHTML = '';
+      const n = root.querySelectorAll('[data-section]').length;
+      const input = sec.querySelector('.adm-sec-title');
+      input.id = `a2-s${n}`;
+      input.value = '';
+      input.placeholder = 'Section title';
+      sec.querySelector('label[for]').htmlFor = input.id;
+      const menu = sec.querySelector('[popover]');
+      menu.id = `a2-add${n}`;
+      sec.querySelector('[popovertarget]').setAttribute('popovertarget', menu.id);
+      e.target.closest('[data-add-section]').before(sec);
+      sync();
+      input.focus();
+    }
+  });
+  sync();
+})();
+"""))
+
+# ---------------------------------------------------------------- admin-03: lesson editor with video upload
+TOOLS = [("bold", "Bold", "bold"), ("italic", "Italic", "italic"), ("heading-2", "Heading", "formatBlock:h3"), ("list", "Bulleted list", "insertUnorderedList"), ("list-ordered", "Numbered list", "insertOrderedList"), ("quote", "Quote", "formatBlock:blockquote"), ("code", "Code", "formatBlock:pre"), ("link", "Link", "createLink")]
+toolbar = "".join(f'<button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="{l}" title="{l}" data-cmd="{c}">{si(i)}</button>' + ('<hr role="separator" aria-orientation="vertical">' if i in ("italic", "heading-2", "list-ordered") else "") for i, l, c in TOOLS)
+RES = [("Brief template.docx", "48 KB"), ("Mood board examples.pdf", "3.2 MB")]
+res = "".join(f'<li data-res>{si("paperclip")}<span><strong>{n}</strong><small>{s}</small></span><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Remove {n}" data-res-remove>{si("x")}</button></li>' for n, s in RES)
+
+add("admin-03", "Admin 03", "Lesson editor: video upload with drag and drop, progress, processing and replace; a rich text description; downloadable resources; and publish settings with save state.", "admin", adm_shell("Courses", ["Brand Identity Design", "Curriculum", "Mood boards that guide decisions"], f"""
+<form class="adm-split" data-lesson-form onsubmit="event.preventDefault()">
+  <div class="stack" data-gap="6">
+    <div class="adm-title"><div><p class="adm-muted" style="margin: 0">Section 2 · Lesson 5</p><h1>Edit lesson</h1></div><div><span class="adm-saved" data-saved role="status">All changes saved</span></div></div>
+    <div role="group" class="field"><label for="a3-title">Lesson title</label><input class="input" id="a3-title" value="Mood boards that guide decisions" maxlength="80" required></div>
+    <section class="stack" data-gap="2" aria-labelledby="a3-video-l">
+      <h2 class="adm-section-title" id="a3-video-l">Video</h2>
+      <div class="adm-upload" data-upload data-state="empty">
+        <label class="adm-drop" for="a3-file" data-drop>
+          <span class="adm-drop-ic">{si("cloud-upload")}</span>
+          <strong>Drag and drop a video, or <span class="adm-link">browse</span></strong>
+          <small>MP4, MOV or WebM, up to 4 GB. 1080p or higher recommended.</small>
+          <input type="file" id="a3-file" accept="video/*" class="sr-only" data-file>
+        </label>
+        <div class="adm-uploading" data-uploading>
+          <span class="adm-drop-ic">{si("video")}</span>
+          <div class="stack" data-gap="2"><div class="cluster" data-justify="between"><strong data-file-name>mood-boards-final.mp4</strong><span class="adm-muted" data-pct>0%</span></div>
+          <div class="progress" role="progressbar" aria-label="Upload progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-bar><span style="width: 0%"></span></div>
+          <small class="adm-muted" data-up-label>Uploading · 412 MB</small></div>
+          <button type="button" class="btn" data-variant="ghost" data-size="sm" data-cancel>Cancel</button>
+        </div>
+        <div class="adm-ready" data-ready>
+          <div class="adm-ready-thumb">{shot(2)}<span>{si("play")}</span><small>9:48</small></div>
+          <div class="stack" data-gap="1"><strong data-file-name>mood-boards-final.mp4</strong><small class="adm-muted">1080p · 9:48 · 412 MB · Captions: auto-generated</small>
+            <div class="cluster" data-gap="2"><label class="btn" data-variant="outline" data-size="sm" for="a3-file">{si("refresh-cw")}Replace</label><button type="button" class="btn" data-variant="ghost" data-size="sm" data-remove-video>{si("trash-2")}Remove</button></div></div>
+        </div>
+      </div>
+      <button type="button" class="btn adm-sample" data-variant="link" data-size="sm" data-sample>Use a sample video</button>
+    </section>
+    <section class="stack" data-gap="2" aria-labelledby="a3-desc-l">
+      <h2 class="adm-section-title" id="a3-desc-l">Description</h2>
+      <div class="adm-editor">
+        <div class="adm-editor-bar" role="toolbar" aria-label="Formatting" aria-controls="a3-desc">{toolbar}</div>
+        <div class="adm-editor-body" id="a3-desc" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="a3-desc-l" data-editor><p>Turn your research into two or three <strong>mood boards</strong> that each tell a different story, then use them to steer the client toward a direction before you draw anything.</p><ul><li>Collect 20 to 30 references per board</li><li>Name each board after a feeling, not a style</li></ul></div>
+        <div class="adm-editor-foot"><span data-words>0 words</span></div>
+      </div>
+    </section>
+    <section class="stack" data-gap="2" aria-labelledby="a3-res-l">
+      <div class="cluster" data-justify="between"><h2 class="adm-section-title" id="a3-res-l">Resources</h2><label class="btn" data-variant="outline" data-size="sm" for="a3-res-file">{si("plus")}Add file</label><input type="file" id="a3-res-file" class="sr-only" multiple data-res-file></div>
+      <ul class="adm-res" data-res-list>{res}</ul>
+    </section>
+  </div>
+  <aside>
+    <div class="card"><header><h2>Publish</h2></header><section class="stack" data-gap="4">
+      <div role="group" class="field"><label for="a3-status">Status</label><select class="select" id="a3-status"><option value="published">Published</option><option value="draft" selected>Draft</option><option value="scheduled">Scheduled</option></select></div>
+      <div role="group" class="field" data-orientation="horizontal"><input type="checkbox" role="switch" class="input" id="a3-free"><label for="a3-free">Free preview for everyone</label></div>
+      <div role="group" class="field" data-orientation="horizontal"><input type="checkbox" role="switch" class="input" id="a3-dl" checked><label for="a3-dl">Allow resource downloads</label></div>
+    </section><footer class="stack" data-gap="2"><button type="submit" class="btn" style="inline-size: 100%" data-save>Save lesson</button><button type="button" class="btn" data-variant="ghost" style="inline-size: 100%">{si("eye")}Preview as student</button></footer></div>
+    <nav class="cluster" data-justify="between" aria-label="Lessons"><a href="#" class="btn" data-variant="ghost" data-size="sm">{si("chevron-left")}Previous</a><a href="#" class="btn" data-variant="ghost" data-size="sm">Next{si("chevron-right")}</a></nav>
+  </aside>
+</form>
+"""), ADM + """
+  .adm-upload { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .adm-upload > [data-uploading], .adm-upload > [data-ready] { display: none; }
+  .adm-upload[data-state='uploading'] > [data-drop], .adm-upload[data-state='ready'] > [data-drop] { display: none; }
+  .adm-upload[data-state='uploading'] > [data-uploading] { display: grid; }
+  .adm-upload[data-state='ready'] > [data-ready] { display: grid; }
+  .adm-drop { display: grid; justify-items: center; gap: 0.5rem; padding: 2.5rem 1rem; border: 2px dashed transparent; border-radius: var(--radius); background: color-mix(in oklab, var(--muted) 50%, transparent); text-align: center; cursor: pointer; transition: border-color 150ms ease, background-color 150ms ease; }
+  .adm-drop:hover, .adm-drop[data-over] { border-color: var(--ring); background: color-mix(in oklab, var(--primary) 6%, transparent); }
+  .adm-drop:focus-within { outline: 2px solid var(--ring); outline-offset: -2px; }
+  .adm-drop strong { font-size: 0.9375rem; font-weight: 500; }
+  .adm-drop small { color: var(--muted-foreground); font-size: 0.8125rem; }
+  .adm-link { color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
+  .adm-drop-ic { display: grid; place-items: center; inline-size: 3rem; block-size: 3rem; border-radius: 999px; background: var(--background); box-shadow: 0 0 0 1px var(--border); color: var(--muted-foreground); }
+  .adm-drop-ic svg { inline-size: 1.25rem; block-size: 1.25rem; }
+  .adm-uploading { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1rem; padding: 1.25rem; }
+  .adm-uploading strong, .adm-ready strong { font-size: 0.875rem; font-weight: 500; overflow-wrap: anywhere; }
+  .adm-ready { grid-template-columns: 12rem minmax(0, 1fr); align-items: center; gap: 1rem; padding: 0.75rem; }
+  @container (width < 36rem) { .adm-ready { grid-template-columns: 1fr; } }
+  .adm-ready-thumb { position: relative; display: grid; place-items: center; aspect-ratio: 16 / 9; overflow: hidden; border-radius: calc(var(--radius) - 2px); }
+  .adm-ready-thumb img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
+  .adm-ready-thumb > span { position: relative; display: grid; place-items: center; inline-size: 2.5rem; block-size: 2.5rem; border-radius: 999px; background: rgb(255 255 255 / 0.9); color: #111; }
+  .adm-ready-thumb > span svg { inline-size: 1rem; block-size: 1rem; fill: currentColor; }
+  .adm-ready-thumb small { position: absolute; inset-inline-end: 0.375rem; inset-block-end: 0.375rem; padding: 0 0.375rem; border-radius: 4px; background: rgb(0 0 0 / 0.7); color: #fff; font-size: 0.6875rem; }
+  .adm-sample { align-self: flex-start; padding-inline: 0; }
+  .adm-upload[data-state='ready'] + .adm-sample { display: none; }
+  .adm-editor { border: 1px solid var(--input); border-radius: var(--radius); overflow: hidden; }
+  .adm-editor:focus-within { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 40%, transparent); }
+  .adm-editor-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.125rem; padding: 0.25rem; border-block-end: 1px solid var(--border); background: color-mix(in oklab, var(--muted) 50%, transparent); }
+  .adm-editor-bar hr { align-self: stretch; block-size: auto; margin: 0.25rem; }
+  .adm-editor-bar .btn[aria-pressed='true'] { background: var(--accent); color: var(--accent-foreground); }
+  .adm-editor-body { min-block-size: 10rem; padding: 0.75rem 1rem; font-size: 0.9375rem; line-height: 1.6; outline: none; }
+  .adm-editor-body > :first-child { margin-block-start: 0; }
+  .adm-editor-body p { margin: 0 0 0.75rem; }
+  .adm-editor-body ul { margin: 0 0 0.75rem; padding-inline-start: 1.25rem; list-style: disc; }
+  .adm-editor-body ol { margin: 0 0 0.75rem; padding-inline-start: 1.25rem; list-style: decimal; }
+  .adm-editor-body h3 { margin: 1rem 0 0.25rem; font-size: 1.0625rem; }
+  .adm-editor-body blockquote { margin: 0.5rem 0; padding-inline-start: 1rem; border-inline-start: 3px solid var(--border); color: var(--muted-foreground); }
+  .adm-editor-body pre { padding: 0.5rem 0.75rem; border-radius: calc(var(--radius) - 2px); background: var(--muted); font-size: 0.8125rem; white-space: pre-wrap; }
+  .adm-editor-body a { color: var(--primary); }
+  .adm-editor-foot { display: flex; justify-content: flex-end; padding: 0.375rem 0.75rem; border-block-start: 1px solid var(--border); font-size: 0.75rem; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+  .adm-res { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+  .adm-res li { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.5rem 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); }
+  .adm-res li > svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--muted-foreground); }
+  .adm-res li > span { flex: 1; min-inline-size: 0; display: grid; }
+  .adm-res strong { font-size: 0.875rem; font-weight: 500; overflow-wrap: anywhere; }
+  .adm-res small { font-size: 0.75rem; color: var(--muted-foreground); }""", scripts=script(ADM_JS + """
+(() => {
+  const form = document.querySelector('[data-lesson-form]');
+  const saved = form.querySelector('[data-saved]');
+  const dirty = () => { saved.setAttribute('data-dirty', ''); saved.textContent = 'Unsaved changes'; };
+  form.addEventListener('input', dirty);
+  form.addEventListener('change', (e) => { if (!e.target.matches('[type=file]')) dirty(); });
+  form.addEventListener('submit', () => {
+    saved.removeAttribute('data-dirty');
+    saved.textContent = `Saved at ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+  });
+  // Video: choose or drop a file, watch it upload, then it is ready.
+  const up = form.querySelector('[data-upload]');
+  const drop = up.querySelector('[data-drop]');
+  const bar = up.querySelector('[data-bar]');
+  let timer;
+  const setPct = (p) => {
+    bar.setAttribute('aria-valuenow', String(p));
+    bar.firstElementChild.style.width = `${p}%`;
+    up.querySelector('[data-pct]').textContent = `${p}%`;
+  };
+  const start = (name, size) => {
+    clearInterval(timer);
+    up.querySelectorAll('[data-file-name]').forEach((x) => { x.textContent = name; });
+    up.dataset.state = 'uploading';
+    up.querySelector('[data-up-label]').textContent = `Uploading · ${size}`;
+    let p = 0;
+    setPct(0);
+    timer = setInterval(() => {
+      p = Math.min(100, p + 7 + Math.round(Math.random() * 8));
+      setPct(p);
+      if (p === 100) {
+        clearInterval(timer);
+        up.querySelector('[data-up-label]').textContent = 'Processing video…';
+        setTimeout(() => { up.dataset.state = 'ready'; dirty(); }, 900);
+      }
+    }, 180);
+  };
+  const mb = (b) => (b > 1e9 ? `${(b / 1e9).toFixed(1)} GB` : `${Math.max(1, Math.round(b / 1e6))} MB`);
+  form.querySelector('[data-file]').addEventListener('change', (e) => { const f = e.target.files[0]; if (f) start(f.name, mb(f.size)); e.target.value = ''; });
+  form.querySelector('[data-sample]').addEventListener('click', () => start('mood-boards-final.mp4', '412 MB'));
+  ['dragenter', 'dragover'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.setAttribute('data-over', ''); }));
+  ['dragleave', 'drop'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.removeAttribute('data-over'); }));
+  drop.addEventListener('drop', (e) => { const f = [...e.dataTransfer.files].find((x) => x.type.startsWith('video/')); if (f) start(f.name, mb(f.size)); });
+  up.querySelector('[data-cancel]').addEventListener('click', () => { clearInterval(timer); up.dataset.state = 'empty'; });
+  up.querySelector('[data-remove-video]').addEventListener('click', () => { up.dataset.state = 'empty'; dirty(); });
+  // Rich text: toolbar commands, active states, word count.
+  const ed = form.querySelector('[data-editor]');
+  const words = form.querySelector('[data-words]');
+  const count = () => { const n = ed.innerText.trim().split(/\\s+/).filter(Boolean).length; words.textContent = `${n} ${n === 1 ? 'word' : 'words'}`; };
+  const states = () => form.querySelectorAll('[data-cmd]').forEach((b) => {
+    const [cmd, arg] = b.dataset.cmd.split(':');
+    let on = false;
+    try { on = arg ? document.queryCommandValue('formatBlock').toLowerCase() === arg : ['bold', 'italic', 'insertUnorderedList', 'insertOrderedList'].includes(cmd) && document.queryCommandState(cmd); } catch {}
+    b.setAttribute('aria-pressed', String(on && ed.contains(document.getSelection().anchorNode)));
+  });
+  form.querySelectorAll('[data-cmd]').forEach((b) => {
+    b.addEventListener('mousedown', (e) => e.preventDefault());
+    b.addEventListener('click', () => {
+      ed.focus();
+      const [cmd, arg] = b.dataset.cmd.split(':');
+      if (cmd === 'createLink') { const url = prompt('Link URL', 'https://'); if (url) document.execCommand('createLink', false, url); }
+      else if (arg) document.execCommand('formatBlock', false, document.queryCommandValue('formatBlock').toLowerCase() === arg ? 'p' : arg);
+      else document.execCommand(cmd);
+      states(); count(); dirty();
+    });
+  });
+  ed.addEventListener('input', count);
+  document.addEventListener('selectionchange', states);
+  count();
+  // Resources.
+  const list = form.querySelector('[data-res-list]');
+  const tpl = list.querySelector('[data-res]');
+  form.querySelector('[data-res-file]').addEventListener('change', (e) => {
+    [...e.target.files].forEach((f) => {
+      const li = tpl.cloneNode(true);
+      li.querySelector('strong').textContent = f.name;
+      li.querySelector('small').textContent = f.size > 1e6 ? `${(f.size / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(f.size / 1e3))} KB`;
+      li.querySelector('[data-res-remove]').setAttribute('aria-label', `Remove ${f.name}`);
+      list.append(li);
+    });
+    e.target.value = '';
+    dirty();
+  });
+  list.addEventListener('click', (e) => { const b = e.target.closest('[data-res-remove]'); if (b) { b.closest('li').remove(); dirty(); } });
+})();
+"""))
+
+# ---------------------------------------------------------------- admin-04: media library
+MEDIA = [("video", "welcome-to-the-course.mp4", "86 MB", "2:14", 1, 1), ("video", "interviewing-the-client.mp4", "640 MB", "11:20", 2, 1), ("image", "course-cover.jpg", "1.2 MB", "1920×1080", 3, 2), ("document", "brief-template.docx", "48 KB", "Word", 0, 1),
+         ("video", "mood-boards-final.mp4", "412 MB", "9:48", 4, 1), ("image", "logo-sketches.png", "3.8 MB", "2400×1600", 2, 1), ("document", "mood-board-examples.pdf", "3.2 MB", "PDF · 18 pages", 0, 1), ("image", "teacher-portrait.jpg", "640 KB", "1200×1200", 1, 0)]
+M_ICON = {"video": "video", "image": "image", "document": "file-text"}
+
+
+def media_card(i, kind, name, size, meta, n, used):
+    thumb = (f'{shot(n)}' if kind != "document" else f'<span class="adm-doc">{si("file-text")}</span>')
+    badge = f'<span class="adm-media-kind">{si(M_ICON[kind])}{meta if kind == "video" else ""}</span>'
+    return f"""<li data-media data-kind="{kind}" data-name="{name}" data-size="{size}" data-meta="{meta}" data-used="{used}">
+  <label class="adm-media">
+    <input type="checkbox" class="input" data-select aria-label="Select {name}">
+    <span class="adm-media-thumb">{thumb}{badge}</span>
+    <span class="adm-media-name"><strong>{name}</strong><small>{size}</small></span>
+  </label>
+</li>"""
+
+
+add("admin-04", "Admin 04", "Media library: drag-and-drop upload queue with progress, type filters, search, grid or list view, and a details panel with copy link and delete.", "admin", adm_shell("Media library", ["Instructor", "Media library"], f"""
+<div class="adm-title"><div><h1>Media library</h1><p><span data-media-count>8 files</span> · 1.1 GB of 50 GB used</p></div>
+  <div><label class="btn" for="a4-file">{si("upload")}Upload</label><input type="file" id="a4-file" class="sr-only" multiple data-file></div></div>
+<label class="adm-dropzone" for="a4-file" data-drop>{si("cloud-upload")}<span><strong>Drop files to upload</strong><small>Videos, images and documents. They're processed in the background.</small></span></label>
+<ul class="adm-queue" data-queue aria-label="Uploads"></ul>
+<div class="adm-split">
+  <div class="stack" data-gap="4">
+    <div class="adm-toolbar">
+      <fieldset class="toggle-group" data-variant="outline" data-size="sm"><legend class="sr-only">File type</legend>
+        {"".join(f'<label class="toggle"><input type="radio" name="a4-kind" value="{v}"{" checked" if v == "all" else ""}>{l}</label>' for v, l in [("all", "All"), ("video", "Videos"), ("image", "Images"), ("document", "Documents")])}
+      </fieldset>
+      {search_box("Search files...", "Search files")}
+      <span class="adm-grow"></span>
+      <fieldset class="toggle-group" data-variant="outline" data-size="sm"><legend class="sr-only">View</legend><label class="toggle" aria-label="Grid view"><input type="radio" name="a4-view" value="grid" checked>{si("layout-grid")}</label><label class="toggle" aria-label="List view"><input type="radio" name="a4-view" value="list">{si("list")}</label></fieldset>
+    </div>
+    <ul class="adm-media-grid" data-media-grid data-view="grid">{"".join(media_card(i, *m) for i, m in enumerate(MEDIA))}</ul>
+    <p class="adm-muted" data-media-empty hidden>No files match.</p>
+  </div>
+  <aside class="card adm-details" data-details>
+    <div class="adm-details-empty" data-details-empty>{si("image")}<p>Select a file to see its details.</p></div>
+    <div class="stack" data-gap="4" data-details-body hidden>
+      <span class="adm-media-thumb" data-d-thumb></span>
+      <div><strong class="adm-d-name" data-d-name></strong></div>
+      <dl class="adm-dl"><div><dt>Type</dt><dd data-d-kind></dd></div><div><dt>Size</dt><dd data-d-size></dd></div><div><dt>Details</dt><dd data-d-meta></dd></div><div><dt>Used in</dt><dd data-d-used></dd></div></dl>
+      <div class="input-group"><input readonly aria-label="File link" id="a4-url" data-d-url><span data-align="end">{copy_btn("#a4-url", "Copy link")}</span></div>
+      <div class="cluster" data-gap="2"><a href="#" class="btn" data-variant="outline" data-size="sm">{si("download")}Download</a><button type="button" class="btn" data-variant="destructive" data-size="sm" data-d-delete>{si("trash-2")}Delete</button></div>
+    </div>
+    <div class="stack" data-gap="3" data-details-multi hidden><strong data-multi-count></strong><button type="button" class="btn" data-variant="destructive" data-size="sm" data-d-delete>{si("trash-2")}Delete selected</button></div>
+  </aside>
+</div>
+"""), ADM + SUCCESS_CSS + """
+  .adm-dropzone { display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 1.25rem; border: 2px dashed var(--border); border-radius: var(--radius); color: var(--muted-foreground); cursor: pointer; transition: border-color 150ms ease, background-color 150ms ease; }
+  .adm-dropzone:hover, .adm-dropzone[data-over] { border-color: var(--ring); background: color-mix(in oklab, var(--primary) 5%, transparent); color: var(--foreground); }
+  .adm-dropzone > svg { flex: none; inline-size: 1.5rem; block-size: 1.5rem; }
+  .adm-dropzone span { display: grid; }
+  .adm-dropzone strong { color: var(--foreground); font-size: 0.875rem; font-weight: 500; }
+  .adm-dropzone small { font-size: 0.8125rem; }
+  .adm-queue { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+  .adm-queue:empty { display: none; }
+  .adm-queue li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 0.75rem; padding: 0.625rem 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.8125rem; }
+  .adm-queue li > svg { inline-size: 1rem; block-size: 1rem; color: var(--muted-foreground); }
+  .adm-queue li[data-done] > svg { color: oklch(0.6 0.15 150); }
+  .adm-queue .stack strong { font-weight: 500; overflow-wrap: anywhere; }
+  .adm-queue .progress { block-size: 0.25rem; }
+  .adm-queue li > span:last-child { font-variant-numeric: tabular-nums; color: var(--muted-foreground); }
+  @container (width >= 64rem) { .adm-split { grid-template-columns: minmax(0, 1fr) 18rem; } }
+  .adm-toolbar .toggle-group .toggle svg { inline-size: 1rem; block-size: 1rem; }
+  .adm-media-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr)); margin: 0; padding: 0; list-style: none; }
+  .adm-media-grid[data-view='list'] { grid-template-columns: 1fr; gap: 0.25rem; }
+  .adm-media { position: relative; display: grid; gap: 0.5rem; padding: 0.375rem; border: 1px solid transparent; border-radius: var(--radius); cursor: pointer; }
+  .adm-media:hover { background: var(--accent); }
+  .adm-media:has(:checked) { border-color: var(--ring); background: color-mix(in oklab, var(--primary) 6%, transparent); }
+  .adm-media:has(:focus-visible) { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .adm-media > input { position: absolute; inset-block-start: 0.75rem; inset-inline-start: 0.75rem; z-index: 1; opacity: 0; }
+  .adm-media > input:not(:checked) { background-color: var(--background); }
+  .adm-media:hover > input, .adm-media > input:checked, .adm-media > input:focus-visible { opacity: 1; }
+  .adm-media-thumb { position: relative; display: grid; place-items: center; aspect-ratio: 4 / 3; overflow: hidden; border-radius: calc(var(--radius) - 2px); background: var(--muted); }
+  .adm-media-thumb img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
+  .adm-doc { color: var(--muted-foreground); }
+  .adm-doc svg { inline-size: 2.5rem; block-size: 2.5rem; stroke-width: 1.5; }
+  .adm-media-kind { position: absolute; inset-inline-end: 0.375rem; inset-block-end: 0.375rem; display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.125rem 0.375rem; border-radius: 4px; background: rgb(0 0 0 / 0.7); color: #fff; font-size: 0.6875rem; font-variant-numeric: tabular-nums; }
+  .adm-media-kind svg { inline-size: 0.75rem; block-size: 0.75rem; }
+  .adm-media-name { display: grid; min-inline-size: 0; padding-inline: 0.125rem; }
+  .adm-media-name strong { overflow: hidden; font-size: 0.8125rem; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+  .adm-media-name small { font-size: 0.75rem; color: var(--muted-foreground); }
+  .adm-media-grid[data-view='list'] .adm-media { grid-template-columns: 4rem minmax(0, 1fr); align-items: center; padding-inline-start: 2.5rem; }
+  .adm-media-grid[data-view='list'] .adm-media > input { inset-block-start: 50%; translate: 0 -50%; opacity: 1; }
+  .adm-media-grid[data-view='list'] .adm-media-kind { display: none; }
+  .adm-media-grid[data-view='list'] .adm-doc svg { inline-size: 1.5rem; block-size: 1.5rem; }
+  .adm-details { min-block-size: 16rem; }
+  .adm-details-empty { display: grid; place-items: center; align-content: center; gap: 0.5rem; min-block-size: 14rem; color: var(--muted-foreground); font-size: 0.875rem; text-align: center; }
+  .adm-details-empty[hidden] { display: none; }
+  .adm-details-empty svg { inline-size: 2rem; block-size: 2rem; stroke-width: 1.5; }
+  .adm-details-empty p { margin: 0; }
+  .adm-details > div { padding-inline: 1rem; }
+  .adm-d-name { overflow-wrap: anywhere; font-size: 0.9375rem; }
+  .adm-dl { display: grid; gap: 0.5rem; margin: 0; font-size: 0.8125rem; }
+  .adm-dl div { display: flex; justify-content: space-between; gap: 1rem; }
+  .adm-dl dt { color: var(--muted-foreground); }
+  .adm-dl dd { margin: 0; text-align: end; text-transform: capitalize; }
+  html.dark .adm-media-thumb img { filter: brightness(0.8); }""", scripts=script(ADM_JS + """
+(() => {
+  const grid = document.querySelector('[data-media-grid]');
+  const items = () => [...grid.querySelectorAll('[data-media]')];
+  const search = document.querySelector('[data-search]');
+  const empty = document.querySelector('[data-media-empty]');
+  const details = document.querySelector('[data-details]');
+  const filter = () => {
+    const kind = document.querySelector('[name=a4-kind]:checked').value;
+    const q = search.value.trim().toLowerCase();
+    let n = 0;
+    items().forEach((li) => {
+      const ok = (kind === 'all' || li.dataset.kind === kind) && li.dataset.name.includes(q);
+      li.hidden = !ok;
+      n += ok;
+    });
+    empty.hidden = n > 0;
+    document.querySelector('[data-media-count]').textContent = `${items().length} files`;
+  };
+  const show = () => {
+    const sel = items().filter((li) => li.querySelector('[data-select]').checked);
+    details.querySelector('[data-details-empty]').hidden = sel.length > 0;
+    details.querySelector('[data-details-body]').hidden = sel.length !== 1;
+    details.querySelector('[data-details-multi]').hidden = sel.length < 2;
+    details.querySelector('[data-multi-count]').textContent = `${sel.length} files selected`;
+    if (sel.length !== 1) return;
+    const d = sel[0].dataset;
+    details.querySelector('[data-d-thumb]').innerHTML = sel[0].querySelector('.adm-media-thumb').innerHTML;
+    details.querySelector('[data-d-name]').textContent = d.name;
+    details.querySelector('[data-d-kind]').textContent = d.kind;
+    details.querySelector('[data-d-size]').textContent = d.size;
+    details.querySelector('[data-d-meta]').textContent = d.meta;
+    details.querySelector('[data-d-used]').textContent = d.used === '0' ? 'Not used' : `${d.used} ${d.used === '1' ? 'lesson' : 'lessons'}`;
+    details.querySelector('[data-d-url]').value = `https://media.acme.learn/${d.name}`;
+  };
+  document.querySelectorAll('[name=a4-kind]').forEach((r) => r.addEventListener('change', filter));
+  search.addEventListener('input', filter);
+  document.querySelectorAll('[name=a4-view]').forEach((r) => r.addEventListener('change', () => { grid.dataset.view = r.value; }));
+  grid.addEventListener('change', show);
+  details.querySelectorAll('[data-d-delete]').forEach((b) => b.addEventListener('click', () => {
+    items().filter((li) => li.querySelector('[data-select]').checked).forEach((li) => li.remove());
+    show(); filter();
+  }));
+  // Uploads: a queue with progress; finished files join the library.
+  const queue = document.querySelector('[data-queue]');
+  const ICON = { video: grid.querySelector('[data-kind=video] .adm-media-kind svg').outerHTML, image: grid.querySelector('[data-kind=image] .adm-media-kind svg').outerHTML, document: grid.querySelector('[data-kind=document] .adm-media-kind svg').outerHTML };
+  const kindOf = (f) => (f.type.startsWith('video/') ? 'video' : f.type.startsWith('image/') ? 'image' : 'document');
+  const size = (b) => (b > 1e6 ? `${(b / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(b / 1e3))} KB`);
+  const upload = (files) => files.forEach((f) => {
+    const kind = kindOf(f);
+    const li = document.createElement('li');
+    li.innerHTML = `${ICON[kind]}<div class="stack" data-gap="1"><strong></strong><div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span style="width: 0%"></span></div></div><span>0%</span>`;
+    li.querySelector('strong').textContent = f.name;
+    li.querySelector('.progress').setAttribute('aria-label', `Uploading ${f.name}`);
+    queue.append(li);
+    let p = 0;
+    const t = setInterval(() => {
+      p = Math.min(100, p + 9 + Math.round(Math.random() * 12));
+      li.querySelector('.progress').setAttribute('aria-valuenow', String(p));
+      li.querySelector('.progress > span').style.width = `${p}%`;
+      li.lastElementChild.textContent = p === 100 ? 'Done' : `${p}%`;
+      if (p < 100) return;
+      clearInterval(t);
+      li.setAttribute('data-done', '');
+      const card = grid.querySelector(`[data-kind=${kind}]`)?.cloneNode(true) || grid.querySelector('[data-media]').cloneNode(true);
+      Object.assign(card.dataset, { kind, name: f.name, size: size(f.size), meta: kind === 'document' ? 'File' : 'Processing', used: '0' });
+      card.querySelector('strong').textContent = f.name;
+      card.querySelector('small').textContent = size(f.size);
+      const box = card.querySelector('[data-select]');
+      box.checked = false;
+      box.setAttribute('aria-label', `Select ${f.name}`);
+      grid.prepend(card);
+      filter();
+      setTimeout(() => li.remove(), 2500);
+    }, 200);
+  });
+  document.querySelector('[data-file]').addEventListener('change', (e) => { upload([...e.target.files]); e.target.value = ''; });
+  const drop = document.querySelector('[data-drop]');
+  ['dragenter', 'dragover'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.setAttribute('data-over', ''); }));
+  ['dragleave', 'drop'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.removeAttribute('data-over'); }));
+  drop.addEventListener('drop', (e) => upload([...e.dataTransfer.files]));
+  filter();
+})();
+"""))
+
+# ---------------------------------------------------------------- admin-05: students
+STUDENTS = [("Maya Chen", "maya.chen@example.com", "Brand Identity Design", 100, "Today", "Mar 2, 2026", "active"), ("Daniel Okafor", "d.okafor@example.com", "Brand Identity Design", 64, "Yesterday", "Apr 18, 2026", "active"),
+            ("Sofia Rossi", "sofia.r@example.com", "Watercolor Botanicals", 38, "3 days ago", "May 9, 2026", "active"), ("Liam Nguyen", "liam.nguyen@example.com", "Hand Lettering Masterclass", 12, "2 weeks ago", "Jun 1, 2026", "inactive"),
+            ("Ava Johnson", "ava.j@example.com", "Watercolor Botanicals", 91, "Today", "Jan 27, 2026", "active"), ("Noah Schmidt", "noah.s@example.com", "Product Photography", 0, "Never", "Nov 2, 2026", "inactive"),
+            ("Hana Sato", "hana.sato@example.com", "Brand Identity Design", 47, "5 days ago", "Aug 14, 2026", "active"), ("Lucas Martin", "lucas.m@example.com", "Hand Lettering Masterclass", 100, "1 month ago", "Feb 3, 2026", "inactive")]
+COURSE_SHORT = ["Brand Identity Design", "Watercolor Botanicals", "Hand Lettering Masterclass", "Product Photography"]
+a5_rows = "\n".join(f"""<tr data-row data-status="{st}" data-filter="{c}">
+  <td><input type="checkbox" class="input" data-select aria-label="Select {n}"></td>
+  <td><div class="adm-person"><span class="avatar" data-size="sm"><span>{initials(n)}</span></span><span><strong>{n}</strong><small>{e}</small></span></div></td>
+  <td>{c}</td>
+  <td><div class="adm-progress"><span class="adm-bar"><span style="width: {p}%"></span></span><span>{p}%</span></div></td>
+  <td class="adm-muted">{la}</td>
+  <td class="adm-muted">{en}</td>
+  <td>{row_menu(f"a5-m{i}", [("Message", "mail", False, ""), ("View progress", "chart-column", False, ""), ("Remove from course", "trash-2", True, "data-row-delete")])}</td>
+</tr>""" for i, (n, e, c, p, la, en, st) in enumerate(STUDENTS))
+A5_KPIS = [("Total students", "71,680", "+1,240", "this month", False), ("Active this week", "8,412", "+6.2%", "vs last week", False), ("Avg. completion", "46%", "+2.1%", "vs last month", False), ("Certificates issued", "12,905", "-3.4%", "vs last month", True)]
+
+
+def kpi(label, value, delta, note, down=False, attrs=""):
+    return (f'<div class="card adm-kpi"{attrs}><p>{label}</p><strong data-kpi-value>{value}</strong>'
+            f'<span class="adm-trend"{" data-down" if down else ""} data-kpi-trend>{si("trending-up")}<b data-kpi-delta>{delta}</b><span>{note}</span></span></div>')
+
+
+add("admin-05", "Admin 05", "Students: KPIs, search, course and activity filters, progress bars, bulk messaging, CSV export and an invite dialog.", "admin", adm_shell("Students", ["Instructor", "Students"], f"""
+<div class="adm-title"><div><h1>Students</h1><p>Everyone enrolled in your courses.</p></div>
+  <div><button type="button" class="btn" data-variant="outline" data-export>{si("download")}Export CSV</button><button type="button" class="btn" commandfor="a5-invite" command="show-modal">{si("mail")}Invite students</button></div></div>
+<div class="adm-kpis">{"".join(kpi(*k) for k in A5_KPIS)}</div>
+<div class="stack" data-gap="4" data-adm-table id="a5-table">
+  {tabs_filter([("all", "All"), ("active", "Active"), ("inactive", "Inactive"), ("invited", "Invited")])}
+  <div class="adm-toolbar">{search_box("Search by name or email...", "Search students")}<span class="adm-grow"></span><label class="sr-only" for="a5-course">Course</label><select class="select" id="a5-course" data-filter-select><option value="all">All courses</option>{"".join(f"<option>{c}</option>" for c in COURSE_SHORT)}</select></div>
+  <div class="adm-table-wrap"><table class="table">
+    <thead><tr><th><input type="checkbox" class="input" data-select-all aria-label="Select all students"></th><th>Student</th><th>Course</th><th>Progress</th><th>Last active</th><th>Enrolled</th><th><span class="sr-only">Actions</span></th></tr></thead>
+    <tbody>
+{a5_rows}
+      <tr class="adm-empty-row" data-empty hidden><td colspan="7">No students match your filters.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="adm-bulk" data-bulk hidden role="region" aria-label="Bulk actions"><strong data-bulk-count>0 selected</strong>
+    <button type="button" class="btn" data-variant="outline" data-size="sm">{si("mail")}Message</button>
+    <button type="button" class="btn" data-variant="outline" data-size="sm">{si("award")}Issue certificate</button>
+    <button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Clear selection" data-bulk-clear>{si("x")}</button>
+  </div>
+</div>
+<dialog id="a5-invite" class="dialog" closedby="any" aria-labelledby="a5-invite-t">
+  <div>
+    <header><h2 id="a5-invite-t">Invite students</h2><p>They get an email with a link to join. Separate addresses with commas or new lines.</p></header>
+    <section><form id="a5-form" class="stack" data-gap="4" novalidate>
+      <div role="group" class="field"><label for="a5-emails">Email addresses</label><textarea class="textarea" id="a5-emails" rows="4" placeholder="ana@example.com, ben@example.com" aria-describedby="a5-err"></textarea><p class="adm-err" id="a5-err" data-err hidden></p></div>
+      <div role="group" class="field"><label for="a5-icourse">Course</label><select class="select" id="a5-icourse">{"".join(f"<option>{c}</option>" for c in COURSE_SHORT)}</select></div>
+      <div role="group" class="field" data-orientation="horizontal"><input type="checkbox" role="switch" class="input" id="a5-free" checked><label for="a5-free">Give free access</label></div>
+    </form></section>
+    <footer><button type="button" class="btn" data-variant="outline" commandfor="a5-invite" command="close">Cancel</button><button type="submit" form="a5-form" class="btn">{si("send")}Send invites</button></footer>
+  </div>
+  <button type="button" aria-label="Close dialog" commandfor="a5-invite" command="close">{si("x")}</button>
+</dialog>
+"""), ADM + "\n  .adm-err { margin: 0; color: var(--destructive); font-size: 0.8125rem; }", scripts=script(ADM_JS + """
+(() => {
+  const root = document.getElementById('a5-table');
+  document.querySelector('[data-export]').addEventListener('click', () => {
+    const rows = [...root.querySelectorAll('tr[data-row]:not([hidden])')].map((r) => {
+      const c = r.querySelectorAll('td');
+      return [c[1].querySelector('strong').textContent, c[1].querySelector('small').textContent, c[2].textContent, c[3].innerText.trim(), c[4].textContent, c[5].textContent];
+    });
+    const csv = [['Name', 'Email', 'Course', 'Progress', 'Last active', 'Enrolled'], ...rows].map((r) => r.map((v) => `"${String(v).replaceAll('"', '""')}"`).join(',')).join('\\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    a.download = 'students.csv';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+  document.getElementById('a5-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const box = document.getElementById('a5-emails');
+    const err = e.target.querySelector('[data-err]');
+    const list = box.value.split(/[\\s,;]+/).filter(Boolean);
+    const bad = list.filter((m) => !/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(m));
+    const msg = !list.length ? 'Add at least one email address.' : bad.length ? `Check ${bad.join(', ')}.` : '';
+    err.textContent = msg;
+    err.hidden = !msg;
+    box.toggleAttribute('aria-invalid', !!msg);
+    if (msg) { box.focus(); return; }
+    const course = document.getElementById('a5-icourse').value;
+    const tpl = root.querySelector('tr[data-row]');
+    list.reverse().forEach((m) => {
+      const tr = tpl.cloneNode(true);
+      tr.hidden = false;
+      tr.dataset.status = 'invited';
+      tr.dataset.filter = course;
+      tr.querySelector('[data-select]').checked = false;
+      tr.querySelector('[data-select]').setAttribute('aria-label', `Select ${m}`);
+      tr.querySelector('.avatar span').textContent = m[0].toUpperCase();
+      tr.querySelector('.adm-person strong').textContent = m.split('@')[0];
+      tr.querySelector('.adm-person small').textContent = m;
+      const c = tr.querySelectorAll('td');
+      c[2].textContent = course;
+      c[3].innerHTML = '<span class="badge adm-status" data-variant="outline" data-status="invited">Invited</span>';
+      c[4].textContent = '—';
+      c[5].textContent = 'Pending';
+      c[6].innerHTML = '';
+      root.querySelector('tbody').prepend(tr);
+    });
+    root.admRefresh();
+    box.value = '';
+    document.getElementById('a5-invite').close();
+  });
+})();
+"""))
+
+# ---------------------------------------------------------------- admin-06: analytics
+RANGES = {
+    "7d": {"labels": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], "values": [1840, 2210, 1960, 2580, 3120, 2740, 2380], "kpis": ["$16,830", "+8.4%", "1,204", "+5.1%", "47%", "+1.2%", "4.8", "+0.1"]},
+    "30d": {"labels": ["W1", "W2", "W3", "W4"], "values": [14200, 16850, 15420, 18930], "kpis": ["$65,400", "+12.6%", "4,870", "+9.8%", "46%", "+2.1%", "4.8", "0.0"]},
+    "12m": {"labels": ["Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"], "values": [42100, 51800, 48300, 55200, 58900, 54100, 61200, 59800, 63400, 66100, 64200, 65400], "kpis": ["$690,500", "+31.2%", "58,320", "+24.5%", "45%", "+4.0%", "4.8", "+0.2"]},
+}
+TOP = [("Brand Identity Design from Scratch", 412300, 28940, 4.8, 2), ("Hand Lettering Masterclass", 228150, 15210, 4.8, 3), ("Watercolor Botanicals for Beginners", 186200, 12480, 4.9, 3), ("Product Photography at Home", 97400, 8930, 4.7, 1), ("Motion Design Basics", 73440, 6120, 4.6, 1)]
+SOURCES = [("Marketplace search", 48), ("Your promotions", 22), ("Direct", 14), ("Social", 11), ("Affiliates", 5)]
+ACTIVITY = [("Maya Chen", "completed", "Brand Identity Design", "12 min ago"), ("Daniel Okafor", "left a 5-star review on", "Brand Identity Design", "40 min ago"), ("Sofia Rossi", "enrolled in", "Watercolor Botanicals", "1 hour ago"), ("Hana Sato", "asked a question in", "Brand Identity Design", "3 hours ago")]
+top_max = TOP[0][1]
+top_rows = "".join(f'<tr><td><div class="adm-course">{shot(n)}<span><strong>{t}</strong><small>{s:,} students · {r}★</small></span></div></td><td class="adm-num">{usd(rev)}</td><td><span class="adm-bar"><span style="width: {round(rev / top_max * 100)}%"></span></span></td></tr>' for t, rev, s, r, n in TOP)
+import json as _json
+bars = "".join(f'<li style="--h: {round(v / max(RANGES["30d"]["values"]) * 100)}%"><span class="adm-chart-bar" tabindex="0" aria-label="{l}: {usd(v)}"><span class="adm-chart-tip">{usd(v)}</span></span><small>{l}</small></li>' for l, v in zip(RANGES["30d"]["labels"], RANGES["30d"]["values"]))
+K = RANGES["30d"]["kpis"]
+
+add("admin-06", "Admin 06", "Instructor analytics: a date range that updates KPIs and a revenue chart with tooltips, top courses, traffic sources and recent activity.", "admin", adm_shell("Dashboard", ["Instructor", "Dashboard"], f"""
+<div class="adm-title"><div><h1>Welcome back, Lena</h1><p>Here's how your courses are doing.</p></div>
+  <div><fieldset class="toggle-group" data-variant="outline" data-size="sm" data-range><legend class="sr-only">Date range</legend>{"".join(f'<label class="toggle"><input type="radio" name="a6-range" value="{k}"{" checked" if k == "30d" else ""}>{l}</label>' for k, l in [("7d", "7 days"), ("30d", "30 days"), ("12m", "12 months")])}</fieldset></div></div>
+<div class="adm-kpis" data-kpis>
+  {kpi("Revenue", K[0], K[1], "vs previous period")}
+  {kpi("Enrollments", K[2], K[3], "vs previous period")}
+  {kpi("Completion rate", K[4], K[5], "vs previous period")}
+  {kpi("Average rating", K[6], K[7], "vs previous period")}
+</div>
+<div class="adm-dash">
+  <section class="card adm-chart-card"><header><h2>Revenue</h2><p data-chart-note>Weekly, last 30 days</p></header><section>
+    <div class="adm-chart"><div class="adm-chart-grid" aria-hidden="true"><span></span><span></span><span></span><span></span></div><ol class="adm-chart-bars" data-bars aria-label="Revenue by period">{bars}</ol></div>
+  </section></section>
+  <section class="card"><header><h2>Traffic sources</h2><p>Where new students come from</p></header><section><ul class="adm-sources">{"".join(f'<li><span>{n}</span><span class="adm-bar"><span style="width: {p}%"></span></span><b>{p}%</b></li>' for n, p in SOURCES)}</ul></section></section>
+  <section class="card adm-top"><header><h2>Top courses</h2><div class="card-action"><a href="#" class="btn" data-variant="ghost" data-size="sm">View all</a></div></header><section><table class="table"><thead><tr><th>Course</th><th class="adm-num">Revenue</th><th><span class="sr-only">Share</span></th></tr></thead><tbody>{top_rows}</tbody></table></section></section>
+  <section class="card"><header><h2>Recent activity</h2></header><section><ul class="adm-feed">{"".join(f'<li><span class="avatar" data-size="sm"><span>{initials(n)}</span></span><p><strong>{n}</strong> {a} <strong>{c}</strong><small>{t}</small></p></li>' for n, a, c, t in ACTIVITY)}</ul></section></section>
+</div>
+"""), ADM + """
+  .adm-dash { display: grid; gap: 1rem; }
+  @container (width >= 56rem) { .adm-dash { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); } }
+  .adm-chart { position: relative; block-size: 16rem; }
+  .adm-chart-grid { position: absolute; inset: 0 0 1.5rem; display: grid; grid-template-rows: repeat(4, 1fr); }
+  .adm-chart-grid span { border-block-start: 1px dashed var(--border); }
+  .adm-chart-bars { position: relative; display: flex; align-items: flex-end; gap: 0.5rem; block-size: 100%; margin: 0; padding: 0; list-style: none; }
+  .adm-chart-bars li { flex: 1; display: grid; grid-template-rows: minmax(0, 1fr) 1.5rem; justify-items: center; block-size: 100%; }
+  .adm-chart-bar { position: relative; align-self: end; inline-size: min(100%, 3rem); block-size: var(--h); border-radius: calc(var(--radius) - 2px) calc(var(--radius) - 2px) 2px 2px; background: var(--chart-1, var(--primary)); transition: block-size 300ms ease, background-color 150ms ease; outline: none; }
+  .adm-chart-bar:hover, .adm-chart-bar:focus-visible { background: color-mix(in oklab, var(--chart-1, var(--primary)) 80%, var(--foreground)); }
+  .adm-chart-bar:focus-visible { box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring); }
+  .adm-chart-tip { position: absolute; inset-block-end: calc(100% + 0.375rem); inset-inline-start: 50%; translate: -50% 0; padding: 0.25rem 0.5rem; border-radius: calc(var(--radius) - 2px); background: var(--foreground); color: var(--background); font-size: 0.75rem; font-weight: 500; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 150ms ease; }
+  .adm-chart-bar:is(:hover, :focus-visible) .adm-chart-tip { opacity: 1; }
+  .adm-chart-bars small { align-self: end; color: var(--muted-foreground); font-size: 0.75rem; }
+  .adm-sources { display: grid; gap: 0.875rem; margin: 0; padding: 0; list-style: none; font-size: 0.875rem; }
+  .adm-sources li { display: grid; grid-template-columns: minmax(0, 1fr) 5rem 2.5rem; align-items: center; gap: 0.75rem; }
+  .adm-sources b { font-weight: 500; text-align: end; font-variant-numeric: tabular-nums; }
+  .adm-top .table td { vertical-align: middle; }
+  .adm-top .adm-bar { inline-size: 6rem; }
+  .adm-feed { display: grid; gap: 1rem; margin: 0; padding: 0; list-style: none; }
+  .adm-feed li { display: flex; gap: 0.75rem; }
+  .adm-feed p { margin: 0; font-size: 0.8125rem; line-height: 1.45; }
+  .adm-feed strong { font-weight: 500; }
+  .adm-feed small { display: block; color: var(--muted-foreground); font-size: 0.75rem; }
+  @media (prefers-reduced-motion: reduce) { .adm-chart-bar { transition: none; } }""", scripts=script(ADM_JS + f"""
+(() => {{
+  const DATA = {_json.dumps(RANGES)};
+  const NOTE = {{ '7d': 'Daily, last 7 days', '30d': 'Weekly, last 30 days', '12m': 'Monthly, last 12 months' }};
+  const fmt = (v) => `$${{v.toLocaleString('en-US')}}`;
+  const draw = (k) => {{
+    const d = DATA[k];
+    const max = Math.max(...d.values);
+    const ol = document.querySelector('[data-bars]');
+    ol.innerHTML = d.values.map((v, i) => `<li style="--h: ${{Math.round((v / max) * 100)}}%"><span class="adm-chart-bar" tabindex="0" aria-label="${{d.labels[i]}}: ${{fmt(v)}}"><span class="adm-chart-tip">${{fmt(v)}}</span></span><small>${{d.labels[i]}}</small></li>`).join('');
+    document.querySelector('[data-chart-note]').textContent = NOTE[k];
+    document.querySelectorAll('[data-kpis] > .adm-kpi').forEach((c, i) => {{
+      c.querySelector('[data-kpi-value]').textContent = d.kpis[i * 2];
+      const delta = d.kpis[i * 2 + 1];
+      c.querySelector('[data-kpi-delta]').textContent = delta;
+      c.querySelector('[data-kpi-trend]').toggleAttribute('data-down', delta.startsWith('-'));
+    }});
+  }};
+  document.querySelectorAll('[name=a6-range]').forEach((r) => r.addEventListener('change', () => draw(r.value)));
+}})();
+"""))
+
+# ---------------------------------------------------------------- admin-07: pricing and coupons
+COUPONS = [("LEARN20", "20% off", 412, 1000, "Dec 31, 2026", True), ("BLACKFRIDAY", "40% off", 1280, None, "Nov 30, 2026", True), ("WELCOME10", "$10 off", 96, 500, "No expiry", True), ("SUMMER25", "25% off", 731, 750, "Aug 31, 2026", False)]
+
+
+def coupon_row(i, code, off, used, limit, exp, active):
+    lim = f"{used:,} / {limit:,}" if limit else f"{used:,}"
+    return f"""<tr data-coupon>
+  <td><span class="adm-code"><code id="a7-c{i}">{code}</code>{copy_btn(f"#a7-c{i}", f"Copy {code}")}</span></td>
+  <td>{off}</td><td class="adm-num">{lim}</td><td class="adm-muted">{exp}</td>
+  <td><input type="checkbox" role="switch" class="input" aria-label="{code} active"{" checked" if active else ""}></td>
+  <td><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Delete {code}" data-del-coupon>{si("trash-2")}</button></td>
+</tr>"""
+
+
+MODELS = [("free", "Free", "Anyone can enroll"), ("one", "One-time", "Pay once, lifetime access"), ("sub", "Subscription", "Monthly or yearly access"), ("plan", "Payment plan", "Split the price into installments")]
+models = "".join(f'<label class="adm-model"><input type="radio" name="a7-model" value="{v}" class="input"{" checked" if v == "one" else ""}><strong>{t}</strong><small>{d}</small></label>' for v, t, d in MODELS)
+
+add("admin-07", "Admin 07", "Course pricing and coupons: pricing models with the fields each needs, a live student-facing price preview, and coupons you can create, copy, pause and delete.", "admin", adm_shell("Pricing", ["Courses", "Brand Identity Design", "Pricing"], f"""
+<div class="adm-title"><div><h1>Pricing</h1><p>Brand Identity Design from Scratch</p></div><div><span class="adm-saved" data-saved role="status">All changes saved</span><button type="button" class="btn" data-save>Save pricing</button></div></div>
+<div class="adm-split">
+  <div class="stack" data-gap="6">
+    <section class="card"><header><h2>Pricing model</h2><p>How students pay for this course.</p></header><section class="stack" data-gap="6">
+      <fieldset class="adm-models"><legend class="sr-only">Pricing model</legend>{models}</fieldset>
+      <div class="adm-price-fields" data-fields>
+        <div role="group" class="field" data-for="one sub plan"><label for="a7-cur">Currency</label><select class="select" id="a7-cur" data-cur><option value="USD">USD $</option><option value="EUR">EUR €</option><option value="VND">VND ₫</option></select></div>
+        <div role="group" class="field" data-for="one plan"><label for="a7-price">Price</label><input class="input" id="a7-price" type="number" min="0" step="1" value="89" data-price></div>
+        <div role="group" class="field" data-for="one"><label for="a7-sale">Sale price <span class="adm-muted">(optional)</span></label><input class="input" id="a7-sale" type="number" min="0" step="1" value="59" data-sale></div>
+        <div role="group" class="field" data-for="sub"><label for="a7-month">Monthly</label><input class="input" id="a7-month" type="number" min="0" step="1" value="19" data-month></div>
+        <div role="group" class="field" data-for="sub"><label for="a7-year">Yearly</label><input class="input" id="a7-year" type="number" min="0" step="1" value="159" data-year></div>
+        <div role="group" class="field" data-for="plan"><label for="a7-n">Installments</label><select class="select" id="a7-n" data-n><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="6">6</option></select></div>
+      </div>
+    </section></section>
+    <section class="card"><header><h2>Coupons</h2><p>Discount codes students enter at checkout.</p><div class="card-action"><button type="button" class="btn" data-variant="outline" data-size="sm" commandfor="a7-new" command="show-modal">{si("plus")}New coupon</button></div></header><section>
+      <div class="adm-table-wrap"><table class="table" style="min-inline-size: 36rem"><thead><tr><th>Code</th><th>Discount</th><th class="adm-num">Used</th><th>Expires</th><th>Active</th><th><span class="sr-only">Delete</span></th></tr></thead><tbody data-coupons>{"".join(coupon_row(i, *c) for i, c in enumerate(COUPONS))}</tbody></table></div>
+    </section></section>
+  </div>
+  <aside><div class="card"><header><h2>Preview</h2><p>What students see on the course page.</p></header><section>
+    <div class="adm-preview">{shot(2)}<div class="stack" data-gap="1"><p class="adm-preview-price" data-preview-price></p><p class="adm-muted" data-preview-note></p></div><span class="btn" data-preview-cta>Buy now</span></div>
+  </section></div></aside>
+</div>
+<dialog id="a7-new" class="dialog" closedby="any" aria-labelledby="a7-new-t">
+  <div>
+    <header><h2 id="a7-new-t">New coupon</h2><p>Codes are not case sensitive.</p></header>
+    <section><form id="a7-form" class="stack" data-gap="4" novalidate>
+      <div role="group" class="field"><label for="a7-code">Code</label><div class="cluster" data-gap="2" style="flex-wrap: nowrap"><input class="input" id="a7-code" maxlength="20" placeholder="SPRING30" style="text-transform: uppercase" aria-describedby="a7-code-err"><button type="button" class="btn" data-variant="outline" data-gen>{si("refresh-cw")}Generate</button></div><p class="adm-err" id="a7-code-err" data-code-err hidden>Use 4–20 letters or numbers.</p></div>
+      <fieldset class="toggle-group" data-variant="outline"><legend>Discount type</legend><label class="toggle"><input type="radio" name="a7-type" value="pct" checked>Percent</label><label class="toggle"><input type="radio" name="a7-type" value="amt">Fixed amount</label></fieldset>
+      <div class="adm-price-fields">
+        <div role="group" class="field"><label for="a7-val">Amount</label><input class="input" id="a7-val" type="number" min="1" max="100" value="20"></div>
+        <div role="group" class="field"><label for="a7-limit">Usage limit</label><input class="input" id="a7-limit" type="number" min="1" placeholder="Unlimited"></div>
+        <div role="group" class="field"><label for="a7-exp">Expires</label><input class="input" id="a7-exp" type="date"></div>
+      </div>
+    </form></section>
+    <footer><button type="button" class="btn" data-variant="outline" commandfor="a7-new" command="close">Cancel</button><button type="submit" form="a7-form" class="btn">Create coupon</button></footer>
+  </div>
+  <button type="button" aria-label="Close dialog" commandfor="a7-new" command="close">{si("x")}</button>
+</dialog>
+"""), ADM + SUCCESS_CSS + """
+  .adm-models { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); margin: 0; padding: 0; border: 0; }
+  .adm-model { position: relative; display: grid; gap: 0.125rem; padding: 0.875rem 1rem; padding-inline-end: 2.5rem; border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; }
+  .adm-model:hover { background: var(--accent); }
+  .adm-model:has(:checked) { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
+  .adm-model:has(:focus-visible) { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .adm-model input { position: absolute; inset-block-start: 0.875rem; inset-inline-end: 0.875rem; }
+  .adm-model strong { font-size: 0.875rem; font-weight: 600; }
+  .adm-model small { font-size: 0.75rem; color: var(--muted-foreground); }
+  .adm-price-fields { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); }
+  .adm-price-fields .field[hidden] { display: none; }
+  .adm-err { margin: 0; color: var(--destructive); font-size: 0.8125rem; }
+  .adm-code { display: inline-flex; align-items: center; gap: 0.25rem; }
+  .adm-code code { padding: 0.125rem 0.375rem; border-radius: calc(var(--radius) - 4px); background: var(--muted); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.04em; }
+  tr[data-coupon]:has([role=switch]:not(:checked)) > td:not(:nth-last-child(-n+2)) { opacity: 0.55; }
+  .adm-preview { display: grid; gap: 0.75rem; }
+  .adm-preview img { aspect-ratio: 16 / 9; inline-size: 100%; border-radius: calc(var(--radius) - 2px); object-fit: cover; }
+  .adm-preview p { margin: 0; }
+  .adm-preview-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; }
+  .adm-preview-price s { font-size: 1rem; font-weight: 400; color: var(--muted-foreground); }
+  .adm-preview-price .badge { font-size: 0.75rem; letter-spacing: 0; }
+  .adm-preview .adm-muted { font-size: 0.8125rem; }
+  .adm-preview > .btn { inline-size: 100%; pointer-events: none; }""", scripts=script(ADM_JS + """
+(() => {
+  const $ = (s) => document.querySelector(s);
+  const saved = $('[data-saved]');
+  const dirty = () => { saved.setAttribute('data-dirty', ''); saved.textContent = 'Unsaved changes'; };
+  $('[data-save]').addEventListener('click', () => { saved.removeAttribute('data-dirty'); saved.textContent = 'Saved just now'; });
+  const SYM = { USD: (v) => `$${v.toLocaleString('en-US')}`, EUR: (v) => `€${v.toLocaleString('de-DE')}`, VND: (v) => `${v.toLocaleString('vi-VN')} ₫` };
+  const preview = () => {
+    const model = document.querySelector('[name=a7-model]:checked').value;
+    document.querySelectorAll('[data-for]').forEach((f) => { f.hidden = !f.dataset.for.split(' ').includes(model); });
+    const f = SYM[$('[data-cur]').value];
+    const n = (s) => Math.max(0, Number($(s).value) || 0);
+    let price = '', note = '', cta = 'Buy now';
+    if (model === 'free') { price = 'Free'; note = 'Enroll for free, no card needed.'; cta = 'Enroll for free'; }
+    if (model === 'one') {
+      const p = n('[data-price]'), s = n('[data-sale]');
+      price = s && s < p ? `${f(s)} <s>${f(p)}</s> <span class="badge" data-variant="secondary">${Math.round((1 - s / p) * 100)}% off</span>` : f(p);
+      note = 'One-time payment · Lifetime access';
+    }
+    if (model === 'sub') {
+      const m = n('[data-month]'), y = n('[data-year]');
+      price = `${f(m)}<s style="text-decoration: none">/month</s>`;
+      note = y && m ? `or ${f(y)}/year, save ${Math.max(0, Math.round((1 - y / (m * 12)) * 100))}%` : '';
+      cta = 'Subscribe';
+    }
+    if (model === 'plan') {
+      const p = n('[data-price]'), k = Number($('[data-n]').value);
+      price = `${k} × ${f(Math.ceil((p / k) * 100) / 100)}`;
+      note = `${f(p)} total, billed monthly`;
+      cta = 'Start payment plan';
+    }
+    $('[data-preview-price]').innerHTML = price;
+    $('[data-preview-note]').textContent = note;
+    $('[data-preview-cta]').textContent = cta;
+  };
+  document.querySelectorAll('[name=a7-model], [data-fields] input, [data-fields] select').forEach((el) => el.addEventListener('input', () => { preview(); dirty(); }));
+  preview();
+  // Coupons.
+  const body = $('[data-coupons]');
+  body.addEventListener('click', (e) => { const b = e.target.closest('[data-del-coupon]'); if (b) b.closest('tr').remove(); });
+  $('[data-gen]').addEventListener('click', () => {
+    const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    $('#a7-code').value = Array.from({ length: 8 }, () => A[Math.floor(Math.random() * A.length)]).join('');
+  });
+  let n = body.children.length;
+  $('#a7-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const code = $('#a7-code').value.trim().toUpperCase();
+    const ok = /^[A-Z0-9]{4,20}$/.test(code);
+    $('[data-code-err]').hidden = ok;
+    $('#a7-code').toggleAttribute('aria-invalid', !ok);
+    if (!ok) { $('#a7-code').focus(); return; }
+    const pct = document.querySelector('[name=a7-type]:checked').value === 'pct';
+    const v = Number($('#a7-val').value) || 0;
+    const limit = Number($('#a7-limit').value) || 0;
+    const exp = $('#a7-exp').value ? new Date($('#a7-exp').value + 'T00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'No expiry';
+    const tr = body.querySelector('tr').cloneNode(true);
+    const id = `a7-c${n++}`;
+    const c = tr.querySelectorAll('td');
+    const codeEl = c[0].querySelector('code');
+    codeEl.id = id;
+    codeEl.textContent = code;
+    c[0].querySelector('[data-copy]').dataset.copy = `#${id}`;
+    c[0].querySelector('[data-copy]').setAttribute('aria-label', `Copy ${code}`);
+    c[1].textContent = pct ? `${v}% off` : `$${v} off`;
+    c[2].textContent = limit ? `0 / ${limit.toLocaleString('en-US')}` : '0';
+    c[3].textContent = exp;
+    const sw = c[4].querySelector('[role=switch]');
+    sw.checked = true;
+    sw.setAttribute('aria-label', `${code} active`);
+    c[5].querySelector('button').setAttribute('aria-label', `Delete ${code}`);
+    body.prepend(tr);
+    e.target.reset();
+    $('#a7-new').close();
+  });
+})();
+"""))
+
+# ---------------------------------------------------------------- admin-08: review moderation
+A_REVIEWS = [("Maya Chen", 5, "Brand Identity Design", "2 hours ago", "The mood board lesson alone was worth it. I finally have a process I can explain to clients instead of just showing them logos.", None, False),
+             ("Tom Becker", 2, "Hand Lettering Masterclass", "Yesterday", "Audio in section 3 is really quiet and the brush recommendations are hard to find outside the US.", None, False),
+             ("Ava Johnson", 5, "Watercolor Botanicals", "2 days ago", "Gentle, clear and so calming. The exercises build on each other perfectly.", "Thank you, Ava! Can't wait to see your leaves.", False),
+             ("anon_user_42", 1, "Brand Identity Design", "3 days ago", "Buy cheap followers at my site!!! Best prices", None, True),
+             ("Daniel Okafor", 4, "Brand Identity Design", "1 week ago", "Great structure. I'd love a bonus lesson on presenting to stakeholders.", None, False)]
+
+
+def review_item(i, name, r, course, when, text, reply, flagged):
+    rep = f'<div class="adm-reply" data-reply-shown><span class="avatar" data-size="sm"><span>LO</span></span><p><strong>Your reply</strong>{reply}</p></div>' if reply else ""
+    status = "replied" if reply else "pending"
+    return f"""<li class="adm-review" data-review data-rating="{r}" data-state="{status}"{" data-flagged" if flagged else ""}>
+  <span class="avatar"><span>{initials(name.replace("_", " "))}</span></span>
+  <div class="stack" data-gap="2">
+    <div class="adm-review-head"><strong>{name}</strong><span class="adm-stars" aria-label="{r} out of 5 stars">{stars(r)}</span><span class="adm-muted">{course} · {when}</span>
+      <span class="badge" data-variant="destructive" data-flag-badge>Flagged</span><span class="badge" data-variant="secondary" data-hidden-badge>Hidden</span></div>
+    <p class="adm-review-text">{text}</p>
+    {rep}
+    <form class="adm-reply-form" data-reply-form hidden><label class="sr-only" for="a8-r{i}">Reply to {name}</label><textarea class="textarea" id="a8-r{i}" rows="3" placeholder="Write a public reply..."></textarea><div class="cluster" data-gap="2"><button type="submit" class="btn" data-size="sm">Post reply</button><button type="button" class="btn" data-variant="ghost" data-size="sm" data-reply-cancel>Cancel</button></div></form>
+    <div class="cluster adm-review-actions" data-gap="1">
+      <button type="button" class="btn" data-variant="ghost" data-size="sm" data-reply-open{" hidden" if reply else ""}>{si("reply")}Reply</button>
+      <button type="button" class="btn" data-variant="ghost" data-size="sm" data-flag aria-pressed="{str(flagged).lower()}">{si("flag")}<span>{"Unflag" if flagged else "Flag"}</span></button>
+      <button type="button" class="btn" data-variant="ghost" data-size="sm" data-hide aria-pressed="false">{si("eye-off")}<span>Hide</span></button>
+    </div>
+  </div>
+</li>"""
+
+
+DIST = [(5, 72), (4, 18), (3, 6), (2, 3), (1, 1)]
+add("admin-08", "Admin 08", "Review moderation: rating summary, filters for needs reply, flagged and low ratings, inline public replies, flag and hide.", "admin", adm_shell("Reviews", ["Instructor", "Reviews"], f"""
+<div class="adm-title"><div><h1>Reviews</h1><p>Reply to students and keep your course pages clean.</p></div><div><label class="sr-only" for="a8-course">Course</label><select class="select" id="a8-course"><option>All courses</option>{"".join(f"<option>{c}</option>" for c in COURSE_SHORT)}</select></div></div>
+<div class="adm-split adm-split-start">
+  <div class="stack" data-gap="4" data-reviews>
+    <div class="adm-tabs" role="group" aria-label="Filter reviews">{"".join(f'<button type="button" data-rf="{k}" aria-pressed="{str(k == "all").lower()}">{l}<span class="badge" data-variant="secondary">0</span></button>' for k, l in [("all", "All"), ("pending", "Needs reply"), ("flagged", "Flagged"), ("low", "1–2 stars")])}</div>
+    <ul class="adm-reviews">{"".join(review_item(i, *r) for i, r in enumerate(A_REVIEWS))}</ul>
+    <p class="adm-muted" data-reviews-empty hidden>Nothing here. Nice work.</p>
+  </div>
+  <aside><div class="card"><header><h2>Average rating</h2></header><section class="stack" data-gap="4">
+    <div class="adm-avg"><strong>4.8</strong><span class="adm-stars" aria-label="4.8 out of 5 stars">{stars(4.8)}</span><small class="adm-muted">7,412 reviews</small></div>
+    <ul class="adm-dist">{"".join(f'<li><span>{s}★</span><span class="adm-bar"><span style="width: {p}%"></span></span><b>{p}%</b></li>' for s, p in DIST)}</ul>
+  </section></div></aside>
+</div>
+"""), ADM + CATALOG_CSS + REVIEW_CSS + """
+  .adm-reviews { display: grid; margin: 0; padding: 0; list-style: none; border: 1px solid var(--border); border-radius: var(--radius); }
+  .adm-review { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1rem; padding: 1.25rem; }
+  .adm-review + .adm-review { border-block-start: 1px solid var(--border); }
+  .adm-review[hidden] { display: none; }
+  .adm-review[data-hidden] > div > :is(p, .adm-reply) { opacity: 0.5; }
+  .adm-review-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; font-size: 0.875rem; }
+  .adm-review-head .adm-muted { font-size: 0.8125rem; }
+  .adm-review-head .badge { display: none; }
+  .adm-review[data-flagged] [data-flag-badge], .adm-review[data-hidden] [data-hidden-badge] { display: inline-flex; }
+  .adm-stars .shop-stars { color: oklch(0.8 0.16 80); }
+  .adm-review-text { margin: 0; font-size: 0.9375rem; line-height: 1.55; }
+  .adm-reply { display: flex; gap: 0.75rem; padding: 0.75rem; border-radius: var(--radius); background: var(--muted); }
+  .adm-reply p { margin: 0; font-size: 0.875rem; }
+  .adm-reply strong { display: block; font-size: 0.8125rem; }
+  .adm-reply-form { display: grid; gap: 0.5rem; }
+  .adm-reply-form[hidden] { display: none; }
+  .adm-review-actions { margin-inline-start: -0.75rem; }
+  .adm-review-actions .btn[aria-pressed='true'] { color: var(--destructive); }
+  .adm-avg { display: grid; justify-items: start; gap: 0.25rem; }
+  .adm-avg > strong { font-size: 2.5rem; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
+  .adm-dist { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; font-size: 0.8125rem; }
+  .adm-dist li { display: grid; grid-template-columns: 2rem minmax(0, 1fr) 2.5rem; align-items: center; gap: 0.5rem; }
+  .adm-dist .adm-bar > span { background: oklch(0.8 0.16 80); }
+  .adm-dist b { font-weight: 500; text-align: end; font-variant-numeric: tabular-nums; color: var(--muted-foreground); }""", scripts=script(ADM_JS + """
+(() => {
+  const root = document.querySelector('[data-reviews]');
+  const items = () => [...root.querySelectorAll('[data-review]')];
+  const tabs = [...root.querySelectorAll('[data-rf]')];
+  const TEST = { all: () => true, pending: (r) => r.dataset.state === 'pending', flagged: (r) => r.hasAttribute('data-flagged'), low: (r) => Number(r.dataset.rating) <= 2 };
+  let cur = 'all';
+  const apply = () => {
+    tabs.forEach((t) => { t.querySelector('.badge').textContent = items().filter(TEST[t.dataset.rf]).length; });
+    let n = 0;
+    items().forEach((r) => { const ok = TEST[cur](r); r.hidden = !ok; n += ok; });
+    root.querySelector('[data-reviews-empty]').hidden = n > 0;
+  };
+  tabs.forEach((t) => t.addEventListener('click', () => { cur = t.dataset.rf; tabs.forEach((x) => x.setAttribute('aria-pressed', String(x === t))); apply(); }));
+  root.addEventListener('click', (e) => {
+    const r = e.target.closest('[data-review]');
+    if (!r) return;
+    const form = r.querySelector('[data-reply-form]');
+    if (e.target.closest('[data-reply-open]')) { form.hidden = false; form.querySelector('textarea').focus(); }
+    if (e.target.closest('[data-reply-cancel]')) { form.hidden = true; r.querySelector('[data-reply-open]').focus(); }
+    const flag = e.target.closest('[data-flag]');
+    if (flag) {
+      const on = r.toggleAttribute('data-flagged');
+      flag.setAttribute('aria-pressed', String(on));
+      flag.querySelector('span').textContent = on ? 'Unflag' : 'Flag';
+      apply();
+    }
+    const hide = e.target.closest('[data-hide]');
+    if (hide) {
+      const on = r.toggleAttribute('data-hidden');
+      hide.setAttribute('aria-pressed', String(on));
+      hide.querySelector('span').textContent = on ? 'Unhide' : 'Hide';
+    }
+  });
+  root.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const text = form.querySelector('textarea').value.trim();
+    if (!text) { form.querySelector('textarea').focus(); return; }
+    const r = form.closest('[data-review]');
+    const div = document.createElement('div');
+    div.className = 'adm-reply';
+    div.innerHTML = '<span class="avatar" data-size="sm"><span>LO</span></span><p><strong>Your reply</strong></p>';
+    div.querySelector('p').append(text);
+    form.before(div);
+    form.hidden = true;
+    r.querySelector('[data-reply-open]').hidden = true;
+    r.dataset.state = 'replied';
+    apply();
+  });
+  apply();
+})();
+"""))
 
 
 if __name__ == "__main__":

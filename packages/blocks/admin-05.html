@@ -1,0 +1,1352 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin 05 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+
+      body {
+        min-block-size: 100svh;
+      }
+      .adm-mark {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        inline-size: 2rem;
+        block-size: 2rem;
+        border-radius: calc(var(--radius) + 2px);
+        background: var(--sidebar-primary);
+        color: var(--sidebar-primary-foreground);
+      }
+      .adm-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .adm-main {
+        container-type: inline-size;
+        min-inline-size: 0;
+      }
+      .adm-header {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        block-size: 3.5rem;
+        padding-inline: 1rem;
+        border-block-end: 1px solid var(--border);
+        background: var(--background);
+      }
+      .adm-header > hr {
+        align-self: center;
+        block-size: 1rem;
+        margin-inline-end: 0.25rem;
+      }
+      .adm-header .breadcrumb {
+        min-inline-size: 0;
+      }
+      .adm-header-end {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-inline-start: auto;
+      }
+      .adm-body {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem;
+        padding: 1rem;
+      }
+      .adm-body > * {
+        min-inline-size: 0;
+      }
+      .adm-main .card {
+        min-inline-size: 0;
+      }
+      .adm-main .card > section {
+        min-inline-size: 0;
+      }
+      .adm-main .stack > * {
+        min-inline-size: 0;
+      }
+      .adm-main .card > section > * {
+        min-inline-size: 0;
+      }
+      @container (width >= 48rem) {
+        .adm-body {
+          padding: 1.5rem;
+        }
+      }
+      .adm-title {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .adm-title h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .adm-title p {
+        margin: 0.25rem 0 0;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
+      .adm-title > div:last-child {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .adm-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .adm-toolbar .input-group {
+        inline-size: min(100%, 18rem);
+      }
+      .adm-toolbar .select {
+        inline-size: auto;
+      }
+      .adm-grow {
+        flex: 1;
+      }
+      .adm-tabs {
+        display: flex;
+        gap: 0.25rem;
+        overflow-x: auto;
+        border-block-end: 1px solid var(--border);
+        scrollbar-width: none;
+      }
+      .adm-tabs button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.5rem 0.75rem;
+        border: 0;
+        border-block-end: 2px solid transparent;
+        margin-block-end: -1px;
+        background: none;
+        color: var(--muted-foreground);
+        font: inherit;
+        font-size: 0.875rem;
+        font-weight: 500;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+      .adm-tabs button:hover {
+        color: var(--foreground);
+      }
+      .adm-tabs button[aria-pressed="true"] {
+        border-color: var(--foreground);
+        color: var(--foreground);
+      }
+      .adm-tabs button:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: -2px;
+        border-radius: calc(var(--radius) - 2px);
+      }
+      .adm-tabs .badge {
+        min-inline-size: 1.25rem;
+        justify-content: center;
+        padding-inline: 0.375rem;
+        font-variant-numeric: tabular-nums;
+      }
+      .adm-table-wrap {
+        position: relative;
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+      }
+      .adm-table-wrap .table {
+        min-inline-size: 48rem;
+      }
+      .adm-table-wrap .table th:first-child {
+        inline-size: 2.5rem;
+        padding-inline-start: 1rem;
+      }
+      .adm-table-wrap .table td:first-child {
+        inline-size: 2.5rem;
+        padding-inline-start: 1rem;
+      }
+      .adm-status {
+        gap: 0.375rem;
+      }
+      .adm-status::before {
+        content: "";
+        inline-size: 0.375rem;
+        block-size: 0.375rem;
+        border-radius: 999px;
+        background: var(--muted-foreground);
+      }
+      .adm-status[data-status="published"]::before {
+        background: oklch(0.65 0.17 150);
+      }
+      .adm-status[data-status="review"]::before {
+        background: oklch(0.75 0.15 75);
+      }
+      .adm-status[data-status="invited"]::before {
+        background: oklch(0.6 0.15 255);
+      }
+      .adm-bulk {
+        position: sticky;
+        inset-block-end: 1rem;
+        z-index: 5;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        justify-self: center;
+        padding: 0.5rem 0.5rem 0.5rem 1rem;
+        border: 1px solid var(--border);
+        border-radius: calc(var(--radius) + 4px);
+        background: var(--popover);
+        color: var(--popover-foreground);
+        box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.3);
+        font-size: 0.875rem;
+      }
+      .adm-bulk[hidden] {
+        display: none;
+      }
+      .adm-bulk strong {
+        margin-inline-end: 0.5rem;
+        font-variant-numeric: tabular-nums;
+      }
+      .adm-empty-row td {
+        padding-block: 3rem;
+        text-align: center;
+        color: var(--muted-foreground);
+      }
+      .adm-row-menu [role="menu"] {
+        min-inline-size: 10rem;
+      }
+      @container (width >= 64rem) {
+        .adm-split {
+          grid-template-columns: minmax(0, 1fr) 20rem;
+        }
+        .adm-split > aside {
+          position: sticky;
+          inset-block-start: 5rem;
+        }
+      }
+      .adm-kpis {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+      }
+      .adm-kpi {
+        gap: 0.25rem;
+        padding: 1rem 1.25rem;
+      }
+      .adm-kpi > p {
+        margin: 0;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .adm-kpi > strong {
+        font-size: 1.625rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        font-variant-numeric: tabular-nums;
+      }
+      .adm-trend {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: oklch(0.55 0.15 150);
+      }
+      .adm-trend[data-down] {
+        color: var(--destructive);
+      }
+      .adm-trend svg {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+      }
+      .adm-trend[data-down] svg {
+        transform: scaleY(-1);
+      }
+      .adm-trend span {
+        color: var(--muted-foreground);
+        font-weight: 400;
+      }
+      .adm-bar {
+        display: block;
+        block-size: 0.375rem;
+        min-inline-size: 5rem;
+        border-radius: 999px;
+        background: var(--muted);
+        overflow: hidden;
+      }
+      .adm-bar > span {
+        display: block;
+        block-size: 100%;
+        border-radius: inherit;
+        background: var(--primary);
+      }
+      .adm-progress {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.75rem;
+        font-variant-numeric: tabular-nums;
+        color: var(--muted-foreground);
+      }
+      .adm-progress .adm-bar {
+        flex: 1;
+      }
+      .adm-person {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        min-inline-size: 13rem;
+      }
+      .adm-person .avatar {
+        flex: none;
+      }
+      .adm-person strong {
+        display: block;
+        font-weight: 500;
+      }
+      .adm-person small {
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+      }
+      .adm-muted {
+        color: var(--muted-foreground);
+      }
+
+      .adm-err {
+        margin: 0;
+        color: var(--destructive);
+        font-size: 0.8125rem;
+      }
+    </style>
+  </head>
+  <body>
+    <aside id="adm-sidebar" class="sidebar" data-collapsible="icon">
+      <nav aria-label="Instructor">
+        <header>
+          <ul>
+            <li>
+              <a href="#" data-size="lg">
+                <span class="adm-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0zM22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span>
+                <span>
+                  <strong>Acme Learn</strong>
+                  <small>Instructor</small>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </header>
+        <section>
+          <div role="group" aria-labelledby="adm-g0">
+            <h3 id="adm-g0">Overview</h3>
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Dashboard" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17V5"/><path d="M18 17V9"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 17v-3"/></svg>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Courses" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                  <span>Courses</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Media library" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                  <span>Media library</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div role="group" aria-labelledby="adm-g1">
+            <h3 id="adm-g1">Students</h3>
+            <ul>
+              <li>
+                <a href="#" aria-current="page" data-tooltip="Students" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
+                  <span>Students</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Reviews" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <span>Reviews</span>
+                  <span data-badge>4</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Q&A" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  <span>Q&A</span>
+                  <span data-badge>12</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div role="group" aria-labelledby="adm-g2">
+            <h3 id="adm-g2">Business</h3>
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Pricing" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+                  <span>Pricing</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Coupons" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9a3 3 0 1 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 1 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M9 9h.01"/><path d="m15 9-6 6"/><path d="M15 15h.01"/></svg>
+                  <span>Coupons</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Settings" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <span>Settings</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </section>
+        <footer>
+          <ul>
+            <li>
+              <a href="#" data-size="lg">
+                <span class="avatar" data-size="sm"><span>LO</span></span>
+                <span>
+                  <strong>Lena Ortiz</strong>
+                  <small>lena@acme.learn</small>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </footer>
+      </nav>
+    </aside>
+    <main class="adm-main">
+      <header class="adm-header">
+        <button
+          type="button"
+          class="btn"
+          data-variant="ghost"
+          data-size="icon-sm"
+          data-sidebar-toggle="adm-sidebar"
+          aria-controls="adm-sidebar"
+          aria-label="Toggle sidebar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        </button>
+        <hr role="separator" aria-orientation="vertical" />
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="#">Instructor</a></li>
+            <li aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></li>
+            <li><span aria-current="page">Students</span></li>
+          </ol>
+        </nav>
+        <div class="adm-header-end"></div>
+      </header>
+      <div class="adm-body">
+        <div class="adm-title">
+          <div>
+            <h1>Students</h1>
+            <p>Everyone enrolled in your courses.</p>
+          </div>
+          <div>
+            <button type="button" class="btn" data-variant="outline" data-export>
+              <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3m9 12v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10l5 5l5-5"/></svg>
+              Export CSV
+            </button>
+            <button type="button" class="btn" commandfor="a5-invite" command="show-modal">
+              <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/></svg>
+              Invite students
+            </button>
+          </div>
+        </div>
+        <div class="adm-kpis">
+          <div class="card adm-kpi">
+            <p>Total students</p>
+            <strong data-kpi-value>71,680</strong>
+            <span class="adm-trend" data-kpi-trend>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              <b data-kpi-delta>+1,240</b>
+              <span>this month</span>
+            </span>
+          </div>
+          <div class="card adm-kpi">
+            <p>Active this week</p>
+            <strong data-kpi-value>8,412</strong>
+            <span class="adm-trend" data-kpi-trend>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              <b data-kpi-delta>+6.2%</b>
+              <span>vs last week</span>
+            </span>
+          </div>
+          <div class="card adm-kpi">
+            <p>Avg. completion</p>
+            <strong data-kpi-value>46%</strong>
+            <span class="adm-trend" data-kpi-trend>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              <b data-kpi-delta>+2.1%</b>
+              <span>vs last month</span>
+            </span>
+          </div>
+          <div class="card adm-kpi">
+            <p>Certificates issued</p>
+            <strong data-kpi-value>12,905</strong>
+            <span class="adm-trend" data-down data-kpi-trend>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              <b data-kpi-delta>-3.4%</b>
+              <span>vs last month</span>
+            </span>
+          </div>
+        </div>
+        <div class="stack" data-gap="4" data-adm-table id="a5-table">
+          <div class="adm-tabs" role="group" aria-label="Filter by status">
+            <button type="button" data-tab="all" aria-pressed="true">
+              All
+              <span class="badge" data-variant="secondary">0</span>
+            </button>
+            <button type="button" data-tab="active" aria-pressed="false">
+              Active
+              <span class="badge" data-variant="secondary">0</span>
+            </button>
+            <button type="button" data-tab="inactive" aria-pressed="false">
+              Inactive
+              <span class="badge" data-variant="secondary">0</span>
+            </button>
+            <button type="button" data-tab="invited" aria-pressed="false">
+              Invited
+              <span class="badge" data-variant="secondary">0</span>
+            </button>
+          </div>
+          <div class="adm-toolbar">
+            <div class="input-group">
+              <input
+                type="search"
+                placeholder="Search by name or email..."
+                aria-label="Search students"
+                data-search />
+              <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+            </div>
+            <span class="adm-grow"></span>
+            <label class="sr-only" for="a5-course">Course</label>
+            <select class="select" id="a5-course" data-filter-select>
+              <option value="all">All courses</option>
+              <option>Brand Identity Design</option>
+              <option>Watercolor Botanicals</option>
+              <option>Hand Lettering Masterclass</option>
+              <option>Product Photography</option>
+            </select>
+          </div>
+          <div class="adm-table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>
+                    <input
+                      type="checkbox"
+                      class="input"
+                      data-select-all
+                      aria-label="Select all students" />
+                  </th>
+                  <th>Student</th>
+                  <th>Course</th>
+                  <th>Progress</th>
+                  <th>Last active</th>
+                  <th>Enrolled</th>
+                  <th><span class="sr-only">Actions</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-row data-status="active" data-filter="Brand Identity Design">
+                  <td>
+                    <input
+                      type="checkbox"
+                      class="input"
+                      data-select
+                      aria-label="Select Maya Chen" />
+                  </td>
+                  <td>
+                    <div class="adm-person">
+                      <span class="avatar" data-size="sm"><span>MC</span></span>
+                      <span>
+                        <strong>Maya Chen</strong>
+                        <small>maya.chen@example.com</small>
+                      </span>
+                    </div>
+                  </td>
+                  <td>Brand Identity Design</td>
+                  <td>
+                    <div class="adm-progress">
+                      <span class="adm-bar"><span style="width: 100%"></span></span>
+                      <span>100%</span>
+                    </div>
+                  </td>
+                  <td class="adm-muted">Today</td>
+                  <td class="adm-muted">Mar 2, 2026</td>
+                  <td>
+                    <div class="dropdown-menu adm-row-menu">
+                      <button
+                        type="button"
+                        class="btn"
+                        data-variant="ghost"
+                        data-size="icon-sm"
+                        popovertarget="a5-m0"
+                        aria-haspopup="menu"
+                        aria-label="Actions">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                      </button>
+                      <div id="a5-m0" data-popover popover data-side="bottom" data-align="end">
+                        <div role="menu" aria-label="Actions">
+                          <button type="button" role="menuitem">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/></svg>
+                            <span>Message</span>
+                          </button>
+                          <button type="button" role="menuitem">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17V5"/><path d="M18 17V9"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 17v-3"/></svg>
+                            <span>View progress</span>
+                          </button>
+                          <button
+                            type="button"
+                            role="menuitem"
+                            data-variant="destructive"
+                            data-row-delete>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                            <span>Remove from course</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr data-row data-status="active" data-filter="Brand Identity Design">
+                  <td>
+                    <input
+                      type="checkbox"
+                      class="input"
+                      data-select
+                      aria-label="Select Daniel Okafor" />
+                  </td>
+                  <td>
+                    <div class="adm-person">
+                      <span class="avatar" data-size="sm"><span>DO</span></span>
+                      <span>
+                        <strong>Daniel Okafor</strong>
+                        <small>d.okafor@example.com</small>
+                      </span>
+                    </div>
+                  </td>
+                  <td>Brand Identity Design</td>
+                  <td>
+                    <div class="adm-progress">
+                      <span class="adm-bar"><span style="width: 64%"></span></span>
+                      <span>64%</span>
+                    </div>
+                  </td>
+                  <td class="adm-muted">Yesterday</td>
+                  <td class="adm-muted">Apr 18, 2026</td>
+                  <td>
+                    <div class="dropdown-menu adm-row-menu">
+                      <button
+                        type="button"
+                        class="btn"
+                        data-variant="ghost"
+                        data-size="icon-sm"
+                        popovertarget="a5-m1"
+                        aria-haspopup="menu"
+                        aria-label="Actions">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                      </button>
+                      <div id="a5-m1" data-popover popover data-side="bottom" data-align="end">
+                        <div role="menu" aria-label="Actions">
+                          <button type="button" role="menuitem">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/></svg>
+                            <span>Message</span>
+                          </button>
+                          <button type="button" role="menuitem">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17V5"/><path d="M18 17V9"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 17v-3"/></svg>
+                            <span>View progress</span>
+                          </button>
+                          <button
+                            type="button"
+                            role="menuitem"
+                            data-variant="destructive"
+                            data-row-delete>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                            <span>Remove from course</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr data-row data-status="active" data-filter="Watercolor Botanicals">
+                  <td>
+                    <input
+                      type="checkbox"
+                      class="input"
+                      data-select
+                      aria-label="Select Sofia Rossi" />
+                  </td>
+                  <td>
+                    <div class="adm-person">
+                      <span class="avatar" data-size="sm"><span>SR</span></span>
+                      <span>
+                        <strong>Sofia Rossi</strong>
+                        <small>sofia.r@example.com</small>
+                      </span>
+                    </div>
+                  </td>
+                  <td>Watercolor Botanicals</td>
+                  <td>
+                    <div class="adm-progress">
+                      <span class="adm-bar"><span style="width: 38%"></span></span>
+                      <span>38%</span>
+                    </div>
+                  </td>
+                  <td class="adm-muted">3 days ago</td>
+                  <td class="adm-muted">May 9, 2026</td>
+                  <td>
+                    <div class="dropdown-menu adm-row-menu">
+                      <button
+                        type="button"
+                        class="btn"
+                        data-variant="ghost"
+                        data-size="icon-sm"
+                        popovertarget="a5-m2"
+                        aria-haspopup="menu"
+                        aria-label="Actions">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                      </button>
+                      <div id="a5-m2" data-popover popover data-side="bottom" data-align="end">
+                        <div role="menu" aria-label="Actions">
+                          <button type="button" role="menuitem">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/></svg>
+                            <span>Message</span>
+                          </button>
+                          <button type="button" role="menuitem">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17V5"/><path d="M18 17V9"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 17v-3"/></svg>
+                            <span>View progress</span>
+                          </button>
+                          <button
+                            type="button"
+                            role="menuitem"
+                            data-variant="destructive"
+                            data-row-delete>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                            <span>Remove from course</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr data-row data-status="inactive" data-filter="Hand Lettering Masterclass">
+                  <td>
+                    <input
+                      type="checkbox"
+                      class="input"
+                      data-select
+                      aria-label="Select Liam Nguyen" />
+                  </td>
+                  <td>
+                    <div class="adm-person">
+                      <span class="avatar" data-size="sm"><span>LN</span></span>
+                      <span>
+                        <strong>Liam Nguyen</strong>
+                        <small>liam.nguyen@example.com</small>
+                      </span>
+                    </div>
+                  </td>
+                  <td>Hand Lettering Masterclass</td>
+                  <td>
+                    <div class="adm-progress">
+                      <span class="adm-bar"><span style="width: 12%"></span></span>
+                      <span>12%</span>
+                    </div>
+                  </td>
+                  <td class="adm-muted">2 weeks ago</td>
+                  <td class="adm-muted">Jun 1, 2026</td>
+                  <td>
+                    <div class="dropdown-menu adm-row-menu">
+                      <button
+                        type="button"
+                        class="btn"
+                        data-variant="ghost"
+                        data-size="icon-sm"
+                        popovertarget="a5-m3"
+                        aria-haspopup="menu"
+                        aria-label="Actions">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                      </button>
+                      <div id="a5-m3" data-popover popover data-side="bottom" data-align="end">
+                        <div role="menu" aria-label="Actions">
+                          <button type="button" role="menuitem">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/></svg>
+                            <span>Message</span>
+                          </button>
+                          <button type="button" role="menuitem">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17V5"/><path d="M18 17V9"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 17v-3"/></svg>
+                            <span>View progress</span>
+                          </button>
+                          <button
+                            type="button"
+                            role="menuitem"
+                            data-variant="destructive"
+                            data-row-delete>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                            <span>Remove from course</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr data-row data-status="active" data-filter="Watercolor Botanicals">
+                  <td>
+                    <input
+                      type="checkbox"
+                      class="input"
+                      data-select
+                      aria-label="Select Ava Johnson" />
+                  </td>
+                  <td>
+                    <div class="adm-person">
+                      <span class="avatar" data-size="sm"><span>AJ</span></span>
+                      <span>
+                        <strong>Ava Johnson</strong>
+                        <small>ava.j@example.com</small>
+                      </span>
+                    </div>
+                  </td>
+                  <td>Watercolor Botanicals</td>
+                  <td>
+                    <div class="adm-progress">
+                      <span class="adm-bar"><span style="width: 91%"></span></span>
+                      <span>91%</span>
+                    </div>
+                  </td>
+                  <td class="adm-muted">Today</td>
+                  <td class="adm-muted">Jan 27, 2026</td>
+                  <td>
+                    <div class="dropdown-menu adm-row-menu">
+                      <button
+                        type="button"
+                        class="btn"
+                        data-variant="ghost"
+                        data-size="icon-sm"
+                        popovertarget="a5-m4"
+                        aria-haspopup="menu"
+                        aria-label="Actions">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                      </button>
+                      <div id="a5-m4" data-popover popover data-side="bottom" data-align="end">
+                        <div role="menu" aria-label="Actions">
+                          <button type="button" role="menuitem">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/></svg>
+                            <span>Message</span>
+                          </button>
+                          <button type="button" role="menuitem">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17V5"/><path d="M18 17V9"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 17v-3"/></svg>
+                            <span>View progress</span>
+                          </button>
+                          <button
+                            type="button"
+                            role="menuitem"
+                            data-variant="destructive"
+                            data-row-delete>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                            <span>Remove from course</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr data-row data-status="inactive" data-filter="Product Photography">
+                  <td>
+                    <input
+                      type="checkbox"
+                      class="input"
+                      data-select
+                      aria-label="Select Noah Schmidt" />
+                  </td>
+                  <td>
+                    <div class="adm-person">
+                      <span class="avatar" data-size="sm"><span>NS</span></span>
+                      <span>
+                        <strong>Noah Schmidt</strong>
+                        <small>noah.s@example.com</small>
+                      </span>
+                    </div>
+                  </td>
+                  <td>Product Photography</td>
+                  <td>
+                    <div class="adm-progress">
+                      <span class="adm-bar"><span style="width: 0%"></span></span>
+                      <span>0%</span>
+                    </div>
+                  </td>
+                  <td class="adm-muted">Never</td>
+                  <td class="adm-muted">Nov 2, 2026</td>
+                  <td>
+                    <div class="dropdown-menu adm-row-menu">
+                      <button
+                        type="button"
+                        class="btn"
+                        data-variant="ghost"
+                        data-size="icon-sm"
+                        popovertarget="a5-m5"
+                        aria-haspopup="menu"
+                        aria-label="Actions">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                      </button>
+                      <div id="a5-m5" data-popover popover data-side="bottom" data-align="end">
+                        <div role="menu" aria-label="Actions">
+                          <button type="button" role="menuitem">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/></svg>
+                            <span>Message</span>
+                          </button>
+                          <button type="button" role="menuitem">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17V5"/><path d="M18 17V9"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 17v-3"/></svg>
+                            <span>View progress</span>
+                          </button>
+                          <button
+                            type="button"
+                            role="menuitem"
+                            data-variant="destructive"
+                            data-row-delete>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                            <span>Remove from course</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr data-row data-status="active" data-filter="Brand Identity Design">
+                  <td>
+                    <input
+                      type="checkbox"
+                      class="input"
+                      data-select
+                      aria-label="Select Hana Sato" />
+                  </td>
+                  <td>
+                    <div class="adm-person">
+                      <span class="avatar" data-size="sm"><span>HS</span></span>
+                      <span>
+                        <strong>Hana Sato</strong>
+                        <small>hana.sato@example.com</small>
+                      </span>
+                    </div>
+                  </td>
+                  <td>Brand Identity Design</td>
+                  <td>
+                    <div class="adm-progress">
+                      <span class="adm-bar"><span style="width: 47%"></span></span>
+                      <span>47%</span>
+                    </div>
+                  </td>
+                  <td class="adm-muted">5 days ago</td>
+                  <td class="adm-muted">Aug 14, 2026</td>
+                  <td>
+                    <div class="dropdown-menu adm-row-menu">
+                      <button
+                        type="button"
+                        class="btn"
+                        data-variant="ghost"
+                        data-size="icon-sm"
+                        popovertarget="a5-m6"
+                        aria-haspopup="menu"
+                        aria-label="Actions">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                      </button>
+                      <div id="a5-m6" data-popover popover data-side="bottom" data-align="end">
+                        <div role="menu" aria-label="Actions">
+                          <button type="button" role="menuitem">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/></svg>
+                            <span>Message</span>
+                          </button>
+                          <button type="button" role="menuitem">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17V5"/><path d="M18 17V9"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 17v-3"/></svg>
+                            <span>View progress</span>
+                          </button>
+                          <button
+                            type="button"
+                            role="menuitem"
+                            data-variant="destructive"
+                            data-row-delete>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                            <span>Remove from course</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr data-row data-status="inactive" data-filter="Hand Lettering Masterclass">
+                  <td>
+                    <input
+                      type="checkbox"
+                      class="input"
+                      data-select
+                      aria-label="Select Lucas Martin" />
+                  </td>
+                  <td>
+                    <div class="adm-person">
+                      <span class="avatar" data-size="sm"><span>LM</span></span>
+                      <span>
+                        <strong>Lucas Martin</strong>
+                        <small>lucas.m@example.com</small>
+                      </span>
+                    </div>
+                  </td>
+                  <td>Hand Lettering Masterclass</td>
+                  <td>
+                    <div class="adm-progress">
+                      <span class="adm-bar"><span style="width: 100%"></span></span>
+                      <span>100%</span>
+                    </div>
+                  </td>
+                  <td class="adm-muted">1 month ago</td>
+                  <td class="adm-muted">Feb 3, 2026</td>
+                  <td>
+                    <div class="dropdown-menu adm-row-menu">
+                      <button
+                        type="button"
+                        class="btn"
+                        data-variant="ghost"
+                        data-size="icon-sm"
+                        popovertarget="a5-m7"
+                        aria-haspopup="menu"
+                        aria-label="Actions">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                      </button>
+                      <div id="a5-m7" data-popover popover data-side="bottom" data-align="end">
+                        <div role="menu" aria-label="Actions">
+                          <button type="button" role="menuitem">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/></svg>
+                            <span>Message</span>
+                          </button>
+                          <button type="button" role="menuitem">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17V5"/><path d="M18 17V9"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 17v-3"/></svg>
+                            <span>View progress</span>
+                          </button>
+                          <button
+                            type="button"
+                            role="menuitem"
+                            data-variant="destructive"
+                            data-row-delete>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                            <span>Remove from course</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="adm-empty-row" data-empty hidden>
+                  <td colspan="7">No students match your filters.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="adm-bulk" data-bulk hidden role="region" aria-label="Bulk actions">
+            <strong data-bulk-count>0 selected</strong>
+            <button type="button" class="btn" data-variant="outline" data-size="sm">
+              <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/></svg>
+              Message
+            </button>
+            <button type="button" class="btn" data-variant="outline" data-size="sm">
+              <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15.477 12.89l1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/></svg>
+              Issue certificate
+            </button>
+            <button
+              type="button"
+              class="btn"
+              data-variant="ghost"
+              data-size="icon-sm"
+              aria-label="Clear selection"
+              data-bulk-clear>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </div>
+        </div>
+        <dialog id="a5-invite" class="dialog" closedby="any" aria-labelledby="a5-invite-t">
+          <div>
+            <header>
+              <h2 id="a5-invite-t">Invite students</h2>
+              <p>
+                They get an email with a link to join. Separate addresses with commas or new lines.
+              </p>
+            </header>
+            <section>
+              <form id="a5-form" class="stack" data-gap="4" novalidate>
+                <div role="group" class="field">
+                  <label for="a5-emails">Email addresses</label>
+                  <textarea
+                    class="textarea"
+                    id="a5-emails"
+                    rows="4"
+                    placeholder="ana@example.com, ben@example.com"
+                    aria-describedby="a5-err"></textarea>
+                  <p class="adm-err" id="a5-err" data-err hidden></p>
+                </div>
+                <div role="group" class="field">
+                  <label for="a5-icourse">Course</label>
+                  <select class="select" id="a5-icourse">
+                    <option>Brand Identity Design</option>
+                    <option>Watercolor Botanicals</option>
+                    <option>Hand Lettering Masterclass</option>
+                    <option>Product Photography</option>
+                  </select>
+                </div>
+                <div role="group" class="field" data-orientation="horizontal">
+                  <input type="checkbox" role="switch" class="input" id="a5-free" checked />
+                  <label for="a5-free">Give free access</label>
+                </div>
+              </form>
+            </section>
+            <footer>
+              <button
+                type="button"
+                class="btn"
+                data-variant="outline"
+                commandfor="a5-invite"
+                command="close">
+                Cancel
+              </button>
+              <button type="submit" form="a5-form" class="btn">
+                <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
+                Send invites
+              </button>
+            </footer>
+          </div>
+          <button type="button" aria-label="Close dialog" commandfor="a5-invite" command="close">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </dialog>
+      </div>
+    </main>
+    <script>
+      // Dropdown row menus close after a choice.
+      document
+        .querySelectorAll("[data-popover] [role=menuitem]")
+        .forEach((m) => m.addEventListener("click", () => m.closest("[popover]")?.hidePopover?.()));
+      // Tables: status tabs, search, row selection with a bulk bar.
+      document.querySelectorAll("[data-adm-table]").forEach((root) => {
+        const tbody = root.querySelector("tbody");
+        const rows = () => [...tbody.querySelectorAll("tr[data-row]")];
+        const tabs = [...root.querySelectorAll("[data-tab]")];
+        const search = root.querySelector("[data-search]");
+        const select = root.querySelector("[data-filter-select]");
+        const all = root.querySelector("[data-select-all]");
+        const bulk = root.querySelector("[data-bulk]");
+        const empty = root.querySelector("[data-empty]");
+        let tab = "all";
+        const counts = () =>
+          tabs.forEach((t) => {
+            const k = t.dataset.tab;
+            t.querySelector(".badge").textContent = rows().filter(
+              (r) => k === "all" || r.dataset.status === k,
+            ).length;
+          });
+        const apply = () => {
+          const q = (search?.value || "").trim().toLowerCase();
+          const f = select?.value || "all";
+          let shown = 0;
+          rows().forEach((r) => {
+            const ok =
+              (tab === "all" || r.dataset.status === tab) &&
+              (!q || r.textContent.toLowerCase().includes(q)) &&
+              (f === "all" || r.dataset.filter === f);
+            r.hidden = !ok;
+            if (!ok) r.querySelector("[data-select]").checked = false;
+            shown += ok;
+          });
+          if (empty) empty.hidden = shown > 0;
+          sync();
+        };
+        const sync = () => {
+          const vis = rows().filter((r) => !r.hidden);
+          const sel = vis.filter((r) => r.querySelector("[data-select]").checked);
+          vis.forEach((r) =>
+            r.toggleAttribute("data-selected", r.querySelector("[data-select]").checked),
+          );
+          if (all) {
+            all.checked = vis.length > 0 && sel.length === vis.length;
+            all.indeterminate = sel.length > 0 && sel.length < vis.length;
+          }
+          if (bulk) {
+            bulk.hidden = !sel.length;
+            bulk.querySelector("[data-bulk-count]").textContent = `${sel.length} selected`;
+          }
+        };
+        tabs.forEach((t) =>
+          t.addEventListener("click", () => {
+            tab = t.dataset.tab;
+            tabs.forEach((x) => x.setAttribute("aria-pressed", String(x === t)));
+            apply();
+          }),
+        );
+        search?.addEventListener("input", apply);
+        select?.addEventListener("change", apply);
+        all?.addEventListener("change", () => {
+          rows()
+            .filter((r) => !r.hidden)
+            .forEach((r) => {
+              r.querySelector("[data-select]").checked = all.checked;
+            });
+          sync();
+        });
+        tbody.addEventListener("change", (e) => {
+          if (e.target.matches("[data-select]")) sync();
+        });
+        const selected = () =>
+          rows().filter((r) => !r.hidden && r.querySelector("[data-select]").checked);
+        root.querySelectorAll("[data-bulk-status]").forEach((b) =>
+          b.addEventListener("click", () => {
+            selected().forEach((r) => {
+              r.dataset.status = b.dataset.bulkStatus;
+              const s = r.querySelector(".adm-status");
+              s.dataset.status = b.dataset.bulkStatus;
+              s.textContent = b.dataset.label;
+              r.querySelector("[data-select]").checked = false;
+            });
+            counts();
+            apply();
+          }),
+        );
+        root.querySelector("[data-bulk-delete]")?.addEventListener("click", () => {
+          selected().forEach((r) => r.remove());
+          counts();
+          apply();
+        });
+        root.querySelector("[data-bulk-clear]")?.addEventListener("click", () => {
+          rows().forEach((r) => {
+            r.querySelector("[data-select]").checked = false;
+          });
+          sync();
+        });
+        root.addEventListener("click", (e) => {
+          const del = e.target.closest("[data-row-delete]");
+          if (del) {
+            del.closest("tr").remove();
+            counts();
+            apply();
+          }
+        });
+        root.admRefresh = () => {
+          counts();
+          apply();
+        };
+        counts();
+        apply();
+      });
+
+      (() => {
+        const root = document.getElementById("a5-table");
+        document.querySelector("[data-export]").addEventListener("click", () => {
+          const rows = [...root.querySelectorAll("tr[data-row]:not([hidden])")].map((r) => {
+            const c = r.querySelectorAll("td");
+            return [
+              c[1].querySelector("strong").textContent,
+              c[1].querySelector("small").textContent,
+              c[2].textContent,
+              c[3].innerText.trim(),
+              c[4].textContent,
+              c[5].textContent,
+            ];
+          });
+          const csv = [["Name", "Email", "Course", "Progress", "Last active", "Enrolled"], ...rows]
+            .map((r) => r.map((v) => `"${String(v).replaceAll('"', '""')}"`).join(","))
+            .join("\n");
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+          a.download = "students.csv";
+          a.click();
+          URL.revokeObjectURL(a.href);
+        });
+        document.getElementById("a5-form").addEventListener("submit", (e) => {
+          e.preventDefault();
+          const box = document.getElementById("a5-emails");
+          const err = e.target.querySelector("[data-err]");
+          const list = box.value.split(/[\s,;]+/).filter(Boolean);
+          const bad = list.filter((m) => !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m));
+          const msg = !list.length
+            ? "Add at least one email address."
+            : bad.length
+              ? `Check ${bad.join(", ")}.`
+              : "";
+          err.textContent = msg;
+          err.hidden = !msg;
+          box.toggleAttribute("aria-invalid", !!msg);
+          if (msg) {
+            box.focus();
+            return;
+          }
+          const course = document.getElementById("a5-icourse").value;
+          const tpl = root.querySelector("tr[data-row]");
+          list.reverse().forEach((m) => {
+            const tr = tpl.cloneNode(true);
+            tr.hidden = false;
+            tr.dataset.status = "invited";
+            tr.dataset.filter = course;
+            tr.querySelector("[data-select]").checked = false;
+            tr.querySelector("[data-select]").setAttribute("aria-label", `Select ${m}`);
+            tr.querySelector(".avatar span").textContent = m[0].toUpperCase();
+            tr.querySelector(".adm-person strong").textContent = m.split("@")[0];
+            tr.querySelector(".adm-person small").textContent = m;
+            const c = tr.querySelectorAll("td");
+            c[2].textContent = course;
+            c[3].innerHTML =
+              '<span class="badge adm-status" data-variant="outline" data-status="invited">Invited</span>';
+            c[4].textContent = "—";
+            c[5].textContent = "Pending";
+            c[6].innerHTML = "";
+            root.querySelector("tbody").prepend(tr);
+          });
+          root.admRefresh();
+          box.value = "";
+          document.getElementById("a5-invite").close();
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin 04 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+
+      body {
+        min-block-size: 100svh;
+      }
+      .adm-mark {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        inline-size: 2rem;
+        block-size: 2rem;
+        border-radius: calc(var(--radius) + 2px);
+        background: var(--sidebar-primary);
+        color: var(--sidebar-primary-foreground);
+      }
+      .adm-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .adm-main {
+        container-type: inline-size;
+        min-inline-size: 0;
+      }
+      .adm-header {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        block-size: 3.5rem;
+        padding-inline: 1rem;
+        border-block-end: 1px solid var(--border);
+        background: var(--background);
+      }
+      .adm-header > hr {
+        align-self: center;
+        block-size: 1rem;
+        margin-inline-end: 0.25rem;
+      }
+      .adm-header .breadcrumb {
+        min-inline-size: 0;
+      }
+      .adm-header-end {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-inline-start: auto;
+      }
+      .adm-body {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem;
+        padding: 1rem;
+      }
+      .adm-split > * {
+        min-inline-size: 0;
+      }
+      .adm-body > * {
+        min-inline-size: 0;
+      }
+      .adm-main .card {
+        min-inline-size: 0;
+      }
+      .adm-main .card > section {
+        min-inline-size: 0;
+      }
+      .adm-main .stack > * {
+        min-inline-size: 0;
+      }
+      .adm-main .card > section > * {
+        min-inline-size: 0;
+      }
+      @container (width >= 48rem) {
+        .adm-body {
+          padding: 1.5rem;
+        }
+      }
+      .adm-title {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .adm-title h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .adm-title p {
+        margin: 0.25rem 0 0;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
+      .adm-title > div:last-child {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .adm-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .adm-toolbar .input-group {
+        inline-size: min(100%, 18rem);
+      }
+      .adm-toolbar .select {
+        inline-size: auto;
+      }
+      .adm-grow {
+        flex: 1;
+      }
+      .adm-split {
+        display: grid;
+        gap: 1.5rem;
+        align-items: start;
+      }
+      @container (width >= 64rem) {
+        .adm-split {
+          grid-template-columns: minmax(0, 1fr) 20rem;
+        }
+        .adm-split > aside {
+          position: sticky;
+          inset-block-start: 5rem;
+        }
+      }
+      .adm-split > aside {
+        display: grid;
+        gap: 1rem;
+      }
+      .adm-muted {
+        color: var(--muted-foreground);
+      }
+
+      @keyframes shop-draw {
+        from {
+          stroke-dashoffset: 30;
+        }
+      }
+      @keyframes shop-pop-in {
+        from {
+          transform: scale(0.6);
+          opacity: 0;
+        }
+      }
+      @keyframes shop-fall {
+        0% {
+          opacity: 1;
+          transform: translateY(0) rotate(0);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(18rem) rotate(540deg);
+        }
+      }
+      .shop-copy svg + svg {
+        display: none;
+      }
+      .shop-copy[data-copied] svg {
+        display: none;
+      }
+      .shop-copy[data-copied] svg + svg {
+        display: block;
+        color: var(--primary);
+      }
+
+      .adm-dropzone {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        padding: 1.25rem;
+        border: 2px dashed var(--border);
+        border-radius: var(--radius);
+        color: var(--muted-foreground);
+        cursor: pointer;
+        transition:
+          border-color 150ms ease,
+          background-color 150ms ease;
+      }
+      .adm-dropzone:hover,
+      .adm-dropzone[data-over] {
+        border-color: var(--ring);
+        background: color-mix(in oklab, var(--primary) 5%, transparent);
+        color: var(--foreground);
+      }
+      .adm-dropzone > svg {
+        flex: none;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+      }
+      .adm-dropzone span {
+        display: grid;
+      }
+      .adm-dropzone strong {
+        color: var(--foreground);
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+      .adm-dropzone small {
+        font-size: 0.8125rem;
+      }
+      .adm-queue {
+        display: grid;
+        gap: 0.5rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .adm-queue:empty {
+        display: none;
+      }
+      .adm-queue li {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.625rem 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        font-size: 0.8125rem;
+      }
+      .adm-queue li > svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+        color: var(--muted-foreground);
+      }
+      .adm-queue li[data-done] > svg {
+        color: oklch(0.6 0.15 150);
+      }
+      .adm-queue .stack strong {
+        font-weight: 500;
+        overflow-wrap: anywhere;
+      }
+      .adm-queue .progress {
+        block-size: 0.25rem;
+      }
+      .adm-queue li > span:last-child {
+        font-variant-numeric: tabular-nums;
+        color: var(--muted-foreground);
+      }
+      @container (width >= 64rem) {
+        .adm-split {
+          grid-template-columns: minmax(0, 1fr) 18rem;
+        }
+      }
+      .adm-toolbar .toggle-group .toggle svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .adm-media-grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .adm-media-grid[data-view="list"] {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+      }
+      .adm-media {
+        position: relative;
+        display: grid;
+        gap: 0.5rem;
+        padding: 0.375rem;
+        border: 1px solid transparent;
+        border-radius: var(--radius);
+        cursor: pointer;
+      }
+      .adm-media:hover {
+        background: var(--accent);
+      }
+      .adm-media:has(:checked) {
+        border-color: var(--ring);
+        background: color-mix(in oklab, var(--primary) 6%, transparent);
+      }
+      .adm-media:has(:focus-visible) {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+      .adm-media > input {
+        position: absolute;
+        inset-block-start: 0.75rem;
+        inset-inline-start: 0.75rem;
+        z-index: 1;
+        opacity: 0;
+      }
+      .adm-media > input:not(:checked) {
+        background-color: var(--background);
+      }
+      .adm-media:hover > input,
+      .adm-media > input:checked,
+      .adm-media > input:focus-visible {
+        opacity: 1;
+      }
+      .adm-media-thumb {
+        position: relative;
+        display: grid;
+        place-items: center;
+        aspect-ratio: 4 / 3;
+        overflow: hidden;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--muted);
+      }
+      .adm-media-thumb img {
+        position: absolute;
+        inset: 0;
+        inline-size: 100%;
+        block-size: 100%;
+        object-fit: cover;
+      }
+      .adm-doc {
+        color: var(--muted-foreground);
+      }
+      .adm-doc svg {
+        inline-size: 2.5rem;
+        block-size: 2.5rem;
+        stroke-width: 1.5;
+      }
+      .adm-media-kind {
+        position: absolute;
+        inset-inline-end: 0.375rem;
+        inset-block-end: 0.375rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.125rem 0.375rem;
+        border-radius: 4px;
+        background: rgb(0 0 0 / 0.7);
+        color: #fff;
+        font-size: 0.6875rem;
+        font-variant-numeric: tabular-nums;
+      }
+      .adm-media-kind svg {
+        inline-size: 0.75rem;
+        block-size: 0.75rem;
+      }
+      .adm-media-name {
+        display: grid;
+        min-inline-size: 0;
+        padding-inline: 0.125rem;
+      }
+      .adm-media-name strong {
+        overflow: hidden;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .adm-media-name small {
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+      }
+      .adm-media-grid[data-view="list"] .adm-media {
+        grid-template-columns: 4rem minmax(0, 1fr);
+        align-items: center;
+        padding-inline-start: 2.5rem;
+      }
+      .adm-media-grid[data-view="list"] .adm-media > input {
+        inset-block-start: 50%;
+        translate: 0 -50%;
+        opacity: 1;
+      }
+      .adm-media-grid[data-view="list"] .adm-media-kind {
+        display: none;
+      }
+      .adm-media-grid[data-view="list"] .adm-doc svg {
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+      }
+      .adm-details {
+        min-block-size: 16rem;
+      }
+      .adm-details-empty {
+        display: grid;
+        place-items: center;
+        align-content: center;
+        gap: 0.5rem;
+        min-block-size: 14rem;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+        text-align: center;
+      }
+      .adm-details-empty[hidden] {
+        display: none;
+      }
+      .adm-details-empty svg {
+        inline-size: 2rem;
+        block-size: 2rem;
+        stroke-width: 1.5;
+      }
+      .adm-details-empty p {
+        margin: 0;
+      }
+      .adm-details > div {
+        padding-inline: 1rem;
+      }
+      .adm-d-name {
+        overflow-wrap: anywhere;
+        font-size: 0.9375rem;
+      }
+      .adm-dl {
+        display: grid;
+        gap: 0.5rem;
+        margin: 0;
+        font-size: 0.8125rem;
+      }
+      .adm-dl div {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .adm-dl dt {
+        color: var(--muted-foreground);
+      }
+      .adm-dl dd {
+        margin: 0;
+        text-align: end;
+        text-transform: capitalize;
+      }
+      html.dark .adm-media-thumb img {
+        filter: brightness(0.8);
+      }
+    </style>
+  </head>
+  <body>
+    <aside id="adm-sidebar" class="sidebar" data-collapsible="icon">
+      <nav aria-label="Instructor">
+        <header>
+          <ul>
+            <li>
+              <a href="#" data-size="lg">
+                <span class="adm-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0zM22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span>
+                <span>
+                  <strong>Acme Learn</strong>
+                  <small>Instructor</small>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </header>
+        <section>
+          <div role="group" aria-labelledby="adm-g0">
+            <h3 id="adm-g0">Overview</h3>
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Dashboard" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17V5"/><path d="M18 17V9"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 17v-3"/></svg>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Courses" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                  <span>Courses</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" aria-current="page" data-tooltip="Media library" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                  <span>Media library</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div role="group" aria-labelledby="adm-g1">
+            <h3 id="adm-g1">Students</h3>
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Students" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
+                  <span>Students</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Reviews" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <span>Reviews</span>
+                  <span data-badge>4</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Q&A" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  <span>Q&A</span>
+                  <span data-badge>12</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div role="group" aria-labelledby="adm-g2">
+            <h3 id="adm-g2">Business</h3>
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Pricing" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+                  <span>Pricing</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Coupons" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9a3 3 0 1 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 1 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M9 9h.01"/><path d="m15 9-6 6"/><path d="M15 15h.01"/></svg>
+                  <span>Coupons</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Settings" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <span>Settings</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </section>
+        <footer>
+          <ul>
+            <li>
+              <a href="#" data-size="lg">
+                <span class="avatar" data-size="sm"><span>LO</span></span>
+                <span>
+                  <strong>Lena Ortiz</strong>
+                  <small>lena@acme.learn</small>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </footer>
+      </nav>
+    </aside>
+    <main class="adm-main">
+      <header class="adm-header">
+        <button
+          type="button"
+          class="btn"
+          data-variant="ghost"
+          data-size="icon-sm"
+          data-sidebar-toggle="adm-sidebar"
+          aria-controls="adm-sidebar"
+          aria-label="Toggle sidebar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        </button>
+        <hr role="separator" aria-orientation="vertical" />
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="#">Instructor</a></li>
+            <li aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></li>
+            <li><span aria-current="page">Media library</span></li>
+          </ol>
+        </nav>
+        <div class="adm-header-end"></div>
+      </header>
+      <div class="adm-body">
+        <div class="adm-title">
+          <div>
+            <h1>Media library</h1>
+            <p>
+              <span data-media-count>8 files</span>
+              · 1.1 GB of 50 GB used
+            </p>
+          </div>
+          <div>
+            <label class="btn" for="a4-file">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+              Upload
+            </label>
+            <input type="file" id="a4-file" class="sr-only" multiple data-file />
+          </div>
+        </div>
+        <label class="adm-dropzone" for="a4-file" data-drop>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 13v8m-8-6.101A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="m8 17 4-4 4 4"/></svg>
+          <span>
+            <strong>Drop files to upload</strong>
+            <small>Videos, images and documents. They're processed in the background.</small>
+          </span>
+        </label>
+        <ul class="adm-queue" data-queue aria-label="Uploads"></ul>
+        <div class="adm-split">
+          <div class="stack" data-gap="4">
+            <div class="adm-toolbar">
+              <fieldset class="toggle-group" data-variant="outline" data-size="sm">
+                <legend class="sr-only">File type</legend>
+                <label class="toggle">
+                  <input type="radio" name="a4-kind" value="all" checked />
+                  All
+                </label>
+                <label class="toggle">
+                  <input type="radio" name="a4-kind" value="video" />
+                  Videos
+                </label>
+                <label class="toggle">
+                  <input type="radio" name="a4-kind" value="image" />
+                  Images
+                </label>
+                <label class="toggle">
+                  <input type="radio" name="a4-kind" value="document" />
+                  Documents
+                </label>
+              </fieldset>
+              <div class="input-group">
+                <input
+                  type="search"
+                  placeholder="Search files..."
+                  aria-label="Search files"
+                  data-search />
+                <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+              </div>
+              <span class="adm-grow"></span>
+              <fieldset class="toggle-group" data-variant="outline" data-size="sm">
+                <legend class="sr-only">View</legend>
+                <label class="toggle" aria-label="Grid view">
+                  <input type="radio" name="a4-view" value="grid" checked />
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+                </label>
+                <label class="toggle" aria-label="List view">
+                  <input type="radio" name="a4-view" value="list" />
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h.01"/><path d="M3 12h.01"/><path d="M3 19h.01"/><path d="M8 5h13"/><path d="M8 12h13"/><path d="M8 19h13"/></svg>
+                </label>
+              </fieldset>
+            </div>
+            <ul class="adm-media-grid" data-media-grid data-view="grid">
+              <li
+                data-media
+                data-kind="video"
+                data-name="welcome-to-the-course.mp4"
+                data-size="86 MB"
+                data-meta="2:14"
+                data-used="1">
+                <label class="adm-media">
+                  <input
+                    type="checkbox"
+                    class="input"
+                    data-select
+                    aria-label="Select welcome-to-the-course.mp4" />
+                  <span class="adm-media-thumb">
+                    <img class="shop-shot" src="assets/placeholder.svg" alt />
+                    <span class="adm-media-kind">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect width="14" height="12" x="2" y="6" rx="2"/></svg>
+                      2:14
+                    </span>
+                  </span>
+                  <span class="adm-media-name">
+                    <strong>welcome-to-the-course.mp4</strong>
+                    <small>86 MB</small>
+                  </span>
+                </label>
+              </li>
+              <li
+                data-media
+                data-kind="video"
+                data-name="interviewing-the-client.mp4"
+                data-size="640 MB"
+                data-meta="11:20"
+                data-used="1">
+                <label class="adm-media">
+                  <input
+                    type="checkbox"
+                    class="input"
+                    data-select
+                    aria-label="Select interviewing-the-client.mp4" />
+                  <span class="adm-media-thumb">
+                    <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="2" />
+                    <span class="adm-media-kind">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect width="14" height="12" x="2" y="6" rx="2"/></svg>
+                      11:20
+                    </span>
+                  </span>
+                  <span class="adm-media-name">
+                    <strong>interviewing-the-client.mp4</strong>
+                    <small>640 MB</small>
+                  </span>
+                </label>
+              </li>
+              <li
+                data-media
+                data-kind="image"
+                data-name="course-cover.jpg"
+                data-size="1.2 MB"
+                data-meta="1920×1080"
+                data-used="2">
+                <label class="adm-media">
+                  <input
+                    type="checkbox"
+                    class="input"
+                    data-select
+                    aria-label="Select course-cover.jpg" />
+                  <span class="adm-media-thumb">
+                    <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="3" />
+                    <span class="adm-media-kind"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span>
+                  </span>
+                  <span class="adm-media-name">
+                    <strong>course-cover.jpg</strong>
+                    <small>1.2 MB</small>
+                  </span>
+                </label>
+              </li>
+              <li
+                data-media
+                data-kind="document"
+                data-name="brief-template.docx"
+                data-size="48 KB"
+                data-meta="Word"
+                data-used="1">
+                <label class="adm-media">
+                  <input
+                    type="checkbox"
+                    class="input"
+                    data-select
+                    aria-label="Select brief-template.docx" />
+                  <span class="adm-media-thumb">
+                    <span class="adm-doc"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 9H8"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/></svg></span>
+                    <span class="adm-media-kind"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 9H8"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/></svg></span>
+                  </span>
+                  <span class="adm-media-name">
+                    <strong>brief-template.docx</strong>
+                    <small>48 KB</small>
+                  </span>
+                </label>
+              </li>
+              <li
+                data-media
+                data-kind="video"
+                data-name="mood-boards-final.mp4"
+                data-size="412 MB"
+                data-meta="9:48"
+                data-used="1">
+                <label class="adm-media">
+                  <input
+                    type="checkbox"
+                    class="input"
+                    data-select
+                    aria-label="Select mood-boards-final.mp4" />
+                  <span class="adm-media-thumb">
+                    <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="4" />
+                    <span class="adm-media-kind">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect width="14" height="12" x="2" y="6" rx="2"/></svg>
+                      9:48
+                    </span>
+                  </span>
+                  <span class="adm-media-name">
+                    <strong>mood-boards-final.mp4</strong>
+                    <small>412 MB</small>
+                  </span>
+                </label>
+              </li>
+              <li
+                data-media
+                data-kind="image"
+                data-name="logo-sketches.png"
+                data-size="3.8 MB"
+                data-meta="2400×1600"
+                data-used="1">
+                <label class="adm-media">
+                  <input
+                    type="checkbox"
+                    class="input"
+                    data-select
+                    aria-label="Select logo-sketches.png" />
+                  <span class="adm-media-thumb">
+                    <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="2" />
+                    <span class="adm-media-kind"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span>
+                  </span>
+                  <span class="adm-media-name">
+                    <strong>logo-sketches.png</strong>
+                    <small>3.8 MB</small>
+                  </span>
+                </label>
+              </li>
+              <li
+                data-media
+                data-kind="document"
+                data-name="mood-board-examples.pdf"
+                data-size="3.2 MB"
+                data-meta="PDF · 18 pages"
+                data-used="1">
+                <label class="adm-media">
+                  <input
+                    type="checkbox"
+                    class="input"
+                    data-select
+                    aria-label="Select mood-board-examples.pdf" />
+                  <span class="adm-media-thumb">
+                    <span class="adm-doc"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 9H8"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/></svg></span>
+                    <span class="adm-media-kind"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 9H8"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/></svg></span>
+                  </span>
+                  <span class="adm-media-name">
+                    <strong>mood-board-examples.pdf</strong>
+                    <small>3.2 MB</small>
+                  </span>
+                </label>
+              </li>
+              <li
+                data-media
+                data-kind="image"
+                data-name="teacher-portrait.jpg"
+                data-size="640 KB"
+                data-meta="1200×1200"
+                data-used="0">
+                <label class="adm-media">
+                  <input
+                    type="checkbox"
+                    class="input"
+                    data-select
+                    aria-label="Select teacher-portrait.jpg" />
+                  <span class="adm-media-thumb">
+                    <img class="shop-shot" src="assets/placeholder.svg" alt />
+                    <span class="adm-media-kind"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span>
+                  </span>
+                  <span class="adm-media-name">
+                    <strong>teacher-portrait.jpg</strong>
+                    <small>640 KB</small>
+                  </span>
+                </label>
+              </li>
+            </ul>
+            <p class="adm-muted" data-media-empty hidden>No files match.</p>
+          </div>
+          <aside class="card adm-details" data-details>
+            <div class="adm-details-empty" data-details-empty>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <p>Select a file to see its details.</p>
+            </div>
+            <div class="stack" data-gap="4" data-details-body hidden>
+              <span class="adm-media-thumb" data-d-thumb></span>
+              <div><strong class="adm-d-name" data-d-name></strong></div>
+              <dl class="adm-dl">
+                <div>
+                  <dt>Type</dt>
+                  <dd data-d-kind></dd>
+                </div>
+                <div>
+                  <dt>Size</dt>
+                  <dd data-d-size></dd>
+                </div>
+                <div>
+                  <dt>Details</dt>
+                  <dd data-d-meta></dd>
+                </div>
+                <div>
+                  <dt>Used in</dt>
+                  <dd data-d-used></dd>
+                </div>
+              </dl>
+              <div class="input-group">
+                <input readonly aria-label="File link" id="a4-url" data-d-url />
+                <span data-align="end">
+                  <button
+                    type="button"
+                    class="btn shop-copy"
+                    data-variant="ghost"
+                    data-size="icon-xs"
+                    data-copy="#a4-url"
+                    aria-label="Copy link"
+                    data-copied-label="Copied">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                  </button>
+                </span>
+              </div>
+              <div class="cluster" data-gap="2">
+                <a href="#" class="btn" data-variant="outline" data-size="sm">
+                  <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3m9 12v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10l5 5l5-5"/></svg>
+                  Download
+                </a>
+                <button
+                  type="button"
+                  class="btn"
+                  data-variant="destructive"
+                  data-size="sm"
+                  data-d-delete>
+                  <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                  Delete
+                </button>
+              </div>
+            </div>
+            <div class="stack" data-gap="3" data-details-multi hidden>
+              <strong data-multi-count></strong>
+              <button
+                type="button"
+                class="btn"
+                data-variant="destructive"
+                data-size="sm"
+                data-d-delete>
+                <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                Delete selected
+              </button>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </main>
+    <script>
+      // Dropdown row menus close after a choice.
+      document
+        .querySelectorAll("[data-popover] [role=menuitem]")
+        .forEach((m) => m.addEventListener("click", () => m.closest("[popover]")?.hidePopover?.()));
+      // Tables: status tabs, search, row selection with a bulk bar.
+      document.querySelectorAll("[data-adm-table]").forEach((root) => {
+        const tbody = root.querySelector("tbody");
+        const rows = () => [...tbody.querySelectorAll("tr[data-row]")];
+        const tabs = [...root.querySelectorAll("[data-tab]")];
+        const search = root.querySelector("[data-search]");
+        const select = root.querySelector("[data-filter-select]");
+        const all = root.querySelector("[data-select-all]");
+        const bulk = root.querySelector("[data-bulk]");
+        const empty = root.querySelector("[data-empty]");
+        let tab = "all";
+        const counts = () =>
+          tabs.forEach((t) => {
+            const k = t.dataset.tab;
+            t.querySelector(".badge").textContent = rows().filter(
+              (r) => k === "all" || r.dataset.status === k,
+            ).length;
+          });
+        const apply = () => {
+          const q = (search?.value || "").trim().toLowerCase();
+          const f = select?.value || "all";
+          let shown = 0;
+          rows().forEach((r) => {
+            const ok =
+              (tab === "all" || r.dataset.status === tab) &&
+              (!q || r.textContent.toLowerCase().includes(q)) &&
+              (f === "all" || r.dataset.filter === f);
+            r.hidden = !ok;
+            if (!ok) r.querySelector("[data-select]").checked = false;
+            shown += ok;
+          });
+          if (empty) empty.hidden = shown > 0;
+          sync();
+        };
+        const sync = () => {
+          const vis = rows().filter((r) => !r.hidden);
+          const sel = vis.filter((r) => r.querySelector("[data-select]").checked);
+          vis.forEach((r) =>
+            r.toggleAttribute("data-selected", r.querySelector("[data-select]").checked),
+          );
+          if (all) {
+            all.checked = vis.length > 0 && sel.length === vis.length;
+            all.indeterminate = sel.length > 0 && sel.length < vis.length;
+          }
+          if (bulk) {
+            bulk.hidden = !sel.length;
+            bulk.querySelector("[data-bulk-count]").textContent = `${sel.length} selected`;
+          }
+        };
+        tabs.forEach((t) =>
+          t.addEventListener("click", () => {
+            tab = t.dataset.tab;
+            tabs.forEach((x) => x.setAttribute("aria-pressed", String(x === t)));
+            apply();
+          }),
+        );
+        search?.addEventListener("input", apply);
+        select?.addEventListener("change", apply);
+        all?.addEventListener("change", () => {
+          rows()
+            .filter((r) => !r.hidden)
+            .forEach((r) => {
+              r.querySelector("[data-select]").checked = all.checked;
+            });
+          sync();
+        });
+        tbody.addEventListener("change", (e) => {
+          if (e.target.matches("[data-select]")) sync();
+        });
+        const selected = () =>
+          rows().filter((r) => !r.hidden && r.querySelector("[data-select]").checked);
+        root.querySelectorAll("[data-bulk-status]").forEach((b) =>
+          b.addEventListener("click", () => {
+            selected().forEach((r) => {
+              r.dataset.status = b.dataset.bulkStatus;
+              const s = r.querySelector(".adm-status");
+              s.dataset.status = b.dataset.bulkStatus;
+              s.textContent = b.dataset.label;
+              r.querySelector("[data-select]").checked = false;
+            });
+            counts();
+            apply();
+          }),
+        );
+        root.querySelector("[data-bulk-delete]")?.addEventListener("click", () => {
+          selected().forEach((r) => r.remove());
+          counts();
+          apply();
+        });
+        root.querySelector("[data-bulk-clear]")?.addEventListener("click", () => {
+          rows().forEach((r) => {
+            r.querySelector("[data-select]").checked = false;
+          });
+          sync();
+        });
+        root.addEventListener("click", (e) => {
+          const del = e.target.closest("[data-row-delete]");
+          if (del) {
+            del.closest("tr").remove();
+            counts();
+            apply();
+          }
+        });
+        root.admRefresh = () => {
+          counts();
+          apply();
+        };
+        counts();
+        apply();
+      });
+
+      (() => {
+        const grid = document.querySelector("[data-media-grid]");
+        const items = () => [...grid.querySelectorAll("[data-media]")];
+        const search = document.querySelector("[data-search]");
+        const empty = document.querySelector("[data-media-empty]");
+        const details = document.querySelector("[data-details]");
+        const filter = () => {
+          const kind = document.querySelector("[name=a4-kind]:checked").value;
+          const q = search.value.trim().toLowerCase();
+          let n = 0;
+          items().forEach((li) => {
+            const ok = (kind === "all" || li.dataset.kind === kind) && li.dataset.name.includes(q);
+            li.hidden = !ok;
+            n += ok;
+          });
+          empty.hidden = n > 0;
+          document.querySelector("[data-media-count]").textContent = `${items().length} files`;
+        };
+        const show = () => {
+          const sel = items().filter((li) => li.querySelector("[data-select]").checked);
+          details.querySelector("[data-details-empty]").hidden = sel.length > 0;
+          details.querySelector("[data-details-body]").hidden = sel.length !== 1;
+          details.querySelector("[data-details-multi]").hidden = sel.length < 2;
+          details.querySelector("[data-multi-count]").textContent = `${sel.length} files selected`;
+          if (sel.length !== 1) return;
+          const d = sel[0].dataset;
+          details.querySelector("[data-d-thumb]").innerHTML =
+            sel[0].querySelector(".adm-media-thumb").innerHTML;
+          details.querySelector("[data-d-name]").textContent = d.name;
+          details.querySelector("[data-d-kind]").textContent = d.kind;
+          details.querySelector("[data-d-size]").textContent = d.size;
+          details.querySelector("[data-d-meta]").textContent = d.meta;
+          details.querySelector("[data-d-used]").textContent =
+            d.used === "0" ? "Not used" : `${d.used} ${d.used === "1" ? "lesson" : "lessons"}`;
+          details.querySelector("[data-d-url]").value = `https://media.acme.learn/${d.name}`;
+        };
+        document
+          .querySelectorAll("[name=a4-kind]")
+          .forEach((r) => r.addEventListener("change", filter));
+        search.addEventListener("input", filter);
+        document.querySelectorAll("[name=a4-view]").forEach((r) =>
+          r.addEventListener("change", () => {
+            grid.dataset.view = r.value;
+          }),
+        );
+        grid.addEventListener("change", show);
+        details.querySelectorAll("[data-d-delete]").forEach((b) =>
+          b.addEventListener("click", () => {
+            items()
+              .filter((li) => li.querySelector("[data-select]").checked)
+              .forEach((li) => li.remove());
+            show();
+            filter();
+          }),
+        );
+        // Uploads: a queue with progress; finished files join the library.
+        const queue = document.querySelector("[data-queue]");
+        const ICON = {
+          video: grid.querySelector("[data-kind=video] .adm-media-kind svg").outerHTML,
+          image: grid.querySelector("[data-kind=image] .adm-media-kind svg").outerHTML,
+          document: grid.querySelector("[data-kind=document] .adm-media-kind svg").outerHTML,
+        };
+        const kindOf = (f) =>
+          f.type.startsWith("video/")
+            ? "video"
+            : f.type.startsWith("image/")
+              ? "image"
+              : "document";
+        const size = (b) =>
+          b > 1e6 ? `${(b / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(b / 1e3))} KB`;
+        const upload = (files) =>
+          files.forEach((f) => {
+            const kind = kindOf(f);
+            const li = document.createElement("li");
+            li.innerHTML = `${ICON[kind]}<div class="stack" data-gap="1"><strong></strong><div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span style="width: 0%"></span></div></div><span>0%</span>`;
+            li.querySelector("strong").textContent = f.name;
+            li.querySelector(".progress").setAttribute("aria-label", `Uploading ${f.name}`);
+            queue.append(li);
+            let p = 0;
+            const t = setInterval(() => {
+              p = Math.min(100, p + 9 + Math.round(Math.random() * 12));
+              li.querySelector(".progress").setAttribute("aria-valuenow", String(p));
+              li.querySelector(".progress > span").style.width = `${p}%`;
+              li.lastElementChild.textContent = p === 100 ? "Done" : `${p}%`;
+              if (p < 100) return;
+              clearInterval(t);
+              li.setAttribute("data-done", "");
+              const card =
+                grid.querySelector(`[data-kind=${kind}]`)?.cloneNode(true) ||
+                grid.querySelector("[data-media]").cloneNode(true);
+              Object.assign(card.dataset, {
+                kind,
+                name: f.name,
+                size: size(f.size),
+                meta: kind === "document" ? "File" : "Processing",
+                used: "0",
+              });
+              card.querySelector("strong").textContent = f.name;
+              card.querySelector("small").textContent = size(f.size);
+              const box = card.querySelector("[data-select]");
+              box.checked = false;
+              box.setAttribute("aria-label", `Select ${f.name}`);
+              grid.prepend(card);
+              filter();
+              setTimeout(() => li.remove(), 2500);
+            }, 200);
+          });
+        document.querySelector("[data-file]").addEventListener("change", (e) => {
+          upload([...e.target.files]);
+          e.target.value = "";
+        });
+        const drop = document.querySelector("[data-drop]");
+        ["dragenter", "dragover"].forEach((t) =>
+          drop.addEventListener(t, (e) => {
+            e.preventDefault();
+            drop.setAttribute("data-over", "");
+          }),
+        );
+        ["dragleave", "drop"].forEach((t) =>
+          drop.addEventListener(t, (e) => {
+            e.preventDefault();
+            drop.removeAttribute("data-over");
+          }),
+        );
+        drop.addEventListener("drop", (e) => upload([...e.dataTransfer.files]));
+        filter();
+      })();
+    </script>
+  </body>
+</html>

@@ -14,6 +14,46 @@
     "description": "An address book with a default address and an add-address dialog.",
     "category": "account"
   },
+  "admin-01": {
+    "title": "Admin 01",
+    "description": "Instructor course list: status tabs with counts, search, row selection with bulk publish and delete, row menus and a new course dialog.",
+    "category": "admin"
+  },
+  "admin-02": {
+    "title": "Admin 02",
+    "description": "Curriculum builder: sections and lessons you can drag (or move with the keyboard) to reorder, add by type, rename, collapse and delete, with live totals.",
+    "category": "admin"
+  },
+  "admin-03": {
+    "title": "Admin 03",
+    "description": "Lesson editor: video upload with drag and drop, progress, processing and replace; a rich text description; downloadable resources; and publish settings with save state.",
+    "category": "admin"
+  },
+  "admin-04": {
+    "title": "Admin 04",
+    "description": "Media library: drag-and-drop upload queue with progress, type filters, search, grid or list view, and a details panel with copy link and delete.",
+    "category": "admin"
+  },
+  "admin-05": {
+    "title": "Admin 05",
+    "description": "Students: KPIs, search, course and activity filters, progress bars, bulk messaging, CSV export and an invite dialog.",
+    "category": "admin"
+  },
+  "admin-06": {
+    "title": "Admin 06",
+    "description": "Instructor analytics: a date range that updates KPIs and a revenue chart with tooltips, top courses, traffic sources and recent activity.",
+    "category": "admin"
+  },
+  "admin-07": {
+    "title": "Admin 07",
+    "description": "Course pricing and coupons: pricing models with the fields each needs, a live student-facing price preview, and coupons you can create, copy, pause and delete.",
+    "category": "admin"
+  },
+  "admin-08": {
+    "title": "Admin 08",
+    "description": "Review moderation: rating summary, filters for needs reply, flagged and low ratings, inline public replies, flag and hide.",
+    "category": "admin"
+  },
   "bottom-nav-01": {
     "title": "Bottom Navigation 01",
     "description": "A mobile app shell with a bottom tab bar and a cart badge.",
@@ -333,6 +373,66 @@
     "title": "Filter 03",
     "description": "Mobile filters in a bottom sheet: grouped filters, a live result count and a sticky show-results button.",
     "category": "filter"
+  },
+  "footer-01": {
+    "title": "Footer 01",
+    "description": "An ecommerce footer: newsletter with validation, link columns that collapse on mobile, social links, locale, payment methods and back to top.",
+    "category": "footer"
+  },
+  "footer-02": {
+    "title": "Footer 02",
+    "description": "A footer for an online course platform: teach-on-us call to action, link columns, app download buttons, language and social links.",
+    "category": "footer"
+  },
+  "footer-03": {
+    "title": "Footer 03",
+    "description": "A blog footer: newsletter signup, about, recent posts, topic tags, social links and RSS.",
+    "category": "footer"
+  },
+  "footer-04": {
+    "title": "Footer 04",
+    "description": "A spa or local business footer: contact details, opening hours with today highlighted, a map with directions, booking and gift cards.",
+    "category": "footer"
+  },
+  "footer-05": {
+    "title": "Footer 05",
+    "description": "A beauty footer: brand values strip, newsletter with a welcome discount, link columns, social links and payment methods.",
+    "category": "footer"
+  },
+  "footer-06": {
+    "title": "Footer 06",
+    "description": "A playful kids footer: wave edge, club newsletter, colorful columns, safety badges and social links.",
+    "category": "footer"
+  },
+  "header-01": {
+    "title": "Header 01",
+    "description": "An ecommerce header: rotating announcements, utility bar with locale, search by category, account, wishlist and cart, a mega menu and a mobile menu.",
+    "category": "header"
+  },
+  "header-02": {
+    "title": "Header 02",
+    "description": "A header for an online course platform: categories menu, rounded search, Plus and Teach links, and sign in buttons.",
+    "category": "header"
+  },
+  "header-03": {
+    "title": "Header 03",
+    "description": "A blog or magazine header: centered masthead with the date, category row, search that opens under the header, theme toggle and subscribe.",
+    "category": "header"
+  },
+  "header-04": {
+    "title": "Header 04",
+    "description": "A spa or wellness header over a hero: contact and hours bar, transparent nav that turns solid on scroll, and a Book now button.",
+    "category": "header"
+  },
+  "header-05": {
+    "title": "Header 05",
+    "description": "A beauty and cosmetics header: soft announcement bar, centered logo, mega menu with a featured product, search, account and bag.",
+    "category": "header"
+  },
+  "header-06": {
+    "title": "Header 06",
+    "description": "A playful kids and toys header: free shipping bar, big rounded search, colorful age and category chips, and a mobile menu.",
+    "category": "header"
   },
   "login-01": {
     "title": "Login 01",

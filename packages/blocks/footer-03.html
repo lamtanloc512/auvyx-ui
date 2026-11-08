@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Footer 03 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-section-title {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+
+      .shop-shot {
+        display: block;
+        aspect-ratio: 4 / 5;
+        inline-size: 100%;
+        object-fit: cover;
+        background: var(--muted);
+      }
+      .shop-shot[data-shot="2"] {
+        transform: scaleX(-1);
+        filter: hue-rotate(160deg) saturate(1.6);
+      }
+      .shop-shot[data-shot="3"] {
+        filter: sepia(0.6) saturate(1.4);
+      }
+      .shop-shot[data-shot="4"] {
+        transform: scaleX(-1);
+        filter: grayscale(1) contrast(1.2);
+      }
+      html.dark .shop-shot {
+        opacity: 0.6;
+      }
+
+      @keyframes shop-pop {
+        from {
+          transform: scale(0.96);
+          opacity: 0.6;
+        }
+        to {
+          transform: none;
+          opacity: 1;
+        }
+      }
+      /* Reduced motion: the hover states still apply, without movement. !important so it wins over every card's transition rules. */
+
+      .hf-demo {
+        min-block-size: 24rem;
+        padding: 3rem 1rem;
+        display: grid;
+        place-items: center;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+        background: repeating-linear-gradient(
+          -45deg,
+          var(--muted),
+          var(--muted) 10px,
+          transparent 10px,
+          transparent 20px
+        );
+      }
+      .hf-demo p {
+        margin: 0;
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        background: var(--background);
+      }
+      .hf-foot {
+        background: var(--foot-bg, var(--muted));
+        color: var(--foot-fg, var(--foreground));
+      }
+      .hf-foot a:not(.btn, .badge) {
+        color: inherit;
+        text-decoration: none;
+      }
+      .hf-foot-cols {
+        display: grid;
+        gap: 2rem;
+        padding-block: 3rem 2rem;
+      }
+      @media (width >= 48rem) {
+        .hf-foot-cols {
+          grid-template-columns: minmax(0, 1.4fr) repeat(var(--cols, 4), minmax(0, 1fr));
+        }
+      }
+      .hf-foot-brand {
+        display: grid;
+        gap: 1rem;
+        align-content: start;
+        max-inline-size: 22rem;
+      }
+      .hf-foot-brand p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: var(--foot-muted, var(--muted-foreground));
+        line-height: 1.6;
+      }
+      .hf-foot details {
+        border-block-end: 1px solid var(--foot-line, var(--border));
+      }
+      .hf-foot summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-block: 0.875rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        list-style: none;
+      }
+      .hf-foot summary::-webkit-details-marker {
+        display: none;
+      }
+      .hf-foot summary svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+        transition: transform 150ms ease;
+      }
+      .hf-foot details[open] > summary svg {
+        transform: rotate(180deg);
+      }
+      .hf-foot details ul {
+        display: grid;
+        gap: 0.625rem;
+        margin: 0;
+        padding: 0 0 1rem;
+        list-style: none;
+        font-size: 0.875rem;
+        color: var(--foot-muted, var(--muted-foreground));
+      }
+      .hf-foot details li a:hover {
+        color: var(--foot-fg, var(--foreground));
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      @media (width >= 48rem) {
+        .hf-foot details {
+          border: 0;
+        }
+        .hf-foot summary {
+          pointer-events: none;
+          padding-block: 0 1rem;
+        }
+        .hf-foot summary svg {
+          display: none;
+        }
+      }
+      .hf-social {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .hf-social a {
+        display: grid;
+        place-items: center;
+        inline-size: 2.25rem;
+        block-size: 2.25rem;
+        border: 1px solid var(--foot-line, var(--border));
+        border-radius: 999px;
+        transition:
+          background-color 150ms ease,
+          transform 150ms ease;
+        corner-shape: round;
+      }
+      .hf-social a:hover {
+        background: var(--foot-fg, var(--foreground));
+        color: var(--foot-bg, var(--background));
+        transform: translateY(-2px);
+      }
+      .hf-social a:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+      .hf-social svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .hf-bottom {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding-block: 1.25rem;
+        border-block-start: 1px solid var(--foot-line, var(--border));
+        font-size: 0.8125rem;
+        color: var(--foot-muted, var(--muted-foreground));
+      }
+      .hf-bottom nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .hf-bottom a:hover {
+        color: var(--foot-fg, var(--foreground));
+      }
+      .hf-news {
+        display: grid;
+        gap: 1.25rem;
+        align-items: center;
+        padding-block: 2.5rem;
+        border-block-end: 1px solid var(--foot-line, var(--border));
+      }
+      @media (width >= 48rem) {
+        .hf-news {
+          grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
+        }
+      }
+      .hf-news h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .hf-news p {
+        margin: 0;
+        color: var(--foot-muted, var(--muted-foreground));
+        font-size: 0.9375rem;
+      }
+      .hf-news form {
+        display: grid;
+        gap: 0.5rem;
+      }
+      .hf-news-row {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .hf-news-row input {
+        flex: 1;
+        min-inline-size: 0;
+      }
+      .hf-news-msg {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0;
+        font-size: 0.8125rem;
+      }
+      .hf-news-msg[hidden] {
+        display: none;
+      }
+      .hf-news-msg svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .hf-news-msg[data-tone="error"] {
+        color: var(--destructive);
+      }
+      .hf-news-small {
+        font-size: 0.75rem;
+        color: var(--foot-muted, var(--muted-foreground));
+      }
+      .hf-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+      }
+      .hf-posts {
+        display: grid;
+        gap: 0.875rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .hf-posts a {
+        display: grid;
+        grid-template-columns: 4rem minmax(0, 1fr);
+        gap: 0.75rem;
+        align-items: center;
+      }
+      .hf-posts img {
+        inline-size: 4rem;
+        block-size: 3rem;
+        border-radius: calc(var(--radius) - 2px);
+        object-fit: cover;
+        background: var(--muted);
+      }
+      .hf-posts strong {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        line-height: 1.35;
+      }
+      .hf-posts small {
+        color: var(--foot-muted, var(--muted-foreground));
+        font-size: 0.75rem;
+      }
+      .hf-posts a:hover strong {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      @media (width < 48rem) {
+        .hf-foot-cols:has(> details) {
+          gap: 0;
+        }
+        .hf-foot-cols:has(> details) > .hf-foot-brand {
+          margin-block-end: 1.5rem;
+        }
+      }
+
+      .hf-foot {
+        border-block-start: 1px solid var(--border);
+      }
+      .hf-bottom nav a svg {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hf-demo"><p>Article</p></div>
+    <footer class="hf-foot" style="--foot-bg: var(--background)">
+      <div class="wrapper" data-size="lg">
+        <div class="hf-news">
+          <div class="stack" data-gap="2">
+            <h2>The Sunday Margin</h2>
+            <p>
+              One thoughtful email a week: our best essays, links worth your time and nothing else.
+              48,000 readers.
+            </p>
+          </div>
+          <form data-newsletter novalidate>
+            <div data-news-fields class="stack" data-gap="2">
+              <div class="hf-news-row">
+                <label class="sr-only" for="f3-email">Email</label>
+                <input
+                  class="input"
+                  id="f3-email"
+                  type="email"
+                  placeholder="you@example.com"
+                  autocomplete="email"
+                  aria-describedby="f3-err" />
+                <button type="submit" class="btn">Subscribe</button>
+              </div>
+              <p class="hf-news-msg" data-tone="error" id="f3-err" data-news-error hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                Enter a valid email address.
+              </p>
+              <span class="hf-news-small">Free. One email a week.</span>
+            </div>
+            <p class="hf-news-msg" data-news-done hidden role="status">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+              You're in. Look for it on Sunday.
+            </p>
+          </form>
+        </div>
+        <div
+          class="hf-foot-cols"
+          style="--cols: 2; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr))">
+          <div class="hf-foot-brand">
+            <a
+              href="#"
+              style="
+                font-family: var(--font-serif, Georgia, serif);
+                font-size: 1.75rem;
+                font-weight: 700;
+              ">
+              The Margin
+            </a>
+            <p>
+              An independent magazine about design, technology and the people who make things.
+              Reader-supported since 2019.
+            </p>
+            <div class="hf-social">
+              <a href="#" aria-label="X"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6c2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4c-.9-4.2 4-6.6 7-3.8c1.1 0 3-1.2 3-1.2"/></svg></a>
+              <a href="#" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8A4 4 0 0 1 16 11.37m1.5-4.87h.01"/></svg></a>
+              <a href="#" aria-label="LinkedIn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2a2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6M2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></a>
+            </div>
+          </div>
+          <div class="stack" data-gap="3">
+            <h3 class="shop-section-title">Recent posts</h3>
+            <ul class="hf-posts">
+              <li>
+                <a href="#">
+                  <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="2" />
+                  <span>
+                    <strong>Why slow design is winning again</strong>
+                    <small>Nov 6 · 6 min read</small>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="3" />
+                  <span>
+                    <strong>Inside the studio: a week with Lena Ortiz</strong>
+                    <small>Nov 3 · 9 min read</small>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="4" />
+                  <span>
+                    <strong>The best tools for writers in 2026</strong>
+                    <small>Oct 29 · 4 min read</small>
+                  </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="stack" data-gap="3">
+            <h3 class="shop-section-title">Topics</h3>
+            <div class="hf-tags">
+              <a href="#" class="badge" data-variant="outline">Design</a>
+              <a href="#" class="badge" data-variant="outline">Technology</a>
+              <a href="#" class="badge" data-variant="outline">Culture</a>
+              <a href="#" class="badge" data-variant="outline">Travel</a>
+              <a href="#" class="badge" data-variant="outline">Food</a>
+              <a href="#" class="badge" data-variant="outline">Interviews</a>
+              <a href="#" class="badge" data-variant="outline">Essays</a>
+              <a href="#" class="badge" data-variant="outline">Podcasts</a>
+            </div>
+          </div>
+        </div>
+        <div class="hf-bottom">
+          <span>© 2026 The Margin</span>
+          <nav aria-label="More">
+            <a href="#">About</a>
+            <a href="#">Write for us</a>
+            <a href="#">Advertise</a>
+            <a href="#">Privacy</a>
+            <a href="#" class="cluster" data-gap="1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+              RSS
+            </a>
+          </nav>
+        </div>
+      </div>
+    </footer>
+    <script>
+      // Announcement bar: previous/next messages, dismiss.
+      document.querySelectorAll("[data-bar]").forEach((bar) => {
+        const msgs = [...bar.querySelectorAll(".hf-bar-msgs > span")];
+        let i = 0;
+        const show = (n) => {
+          i = (n + msgs.length) % msgs.length;
+          msgs.forEach((m, k) => m.toggleAttribute("data-on", k === i));
+        };
+        bar.querySelector("[data-bar-prev]")?.addEventListener("click", () => show(i - 1));
+        bar.querySelector("[data-bar-next]")?.addEventListener("click", () => show(i + 1));
+        bar.querySelector("[data-bar-close]")?.addEventListener("click", () => {
+          bar.hidden = true;
+        });
+      });
+      // Search that opens under the header.
+      document.querySelectorAll("[data-search-toggle]").forEach((b) =>
+        b.addEventListener("click", () => {
+          const head = b.closest(".hf-head");
+          const open = !head.hasAttribute("data-search");
+          head.toggleAttribute("data-search", open);
+          b.setAttribute("aria-expanded", String(open));
+          if (open) head.querySelector(".hf-searchbox input").focus();
+        }),
+      );
+      // Header over a hero: solid once the page scrolls.
+      document.querySelectorAll("[data-overlay]").forEach((h) => {
+        const sync = () => h.toggleAttribute("data-scrolled", window.scrollY > 40);
+        window.addEventListener("scroll", sync, { passive: true });
+        sync();
+      });
+      // Newsletter forms: validate the email, then thank.
+      document.querySelectorAll("[data-newsletter]").forEach((form) => {
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const input = form.querySelector("input[type=email]");
+          const ok = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(input.value.trim());
+          input.toggleAttribute("aria-invalid", !ok);
+          form.querySelector("[data-news-error]").hidden = ok;
+          if (!ok) {
+            input.focus();
+            return;
+          }
+          form.querySelector("[data-news-fields]").hidden = true;
+          form.querySelector("[data-news-done]").hidden = false;
+        });
+      });
+      // Footer link columns: open on wide screens, collapsible on small ones.
+      (() => {
+        const groups = document.querySelectorAll("[data-foot-group]");
+        if (!groups.length) return;
+        const mq = window.matchMedia("(width >= 48rem)");
+        const apply = () =>
+          groups.forEach((d) => {
+            d.open = mq.matches;
+          });
+        mq.addEventListener("change", apply);
+        apply();
+      })();
+      // Bottom tab bar: the tapped tab becomes current.
+      document.querySelectorAll(".hf-bnav").forEach((nav) =>
+        nav.addEventListener("click", (e) => {
+          const a = e.target.closest("a");
+          if (!a) return;
+          e.preventDefault();
+          nav.querySelectorAll("a[aria-current]").forEach((x) => x.removeAttribute("aria-current"));
+          a.setAttribute("aria-current", "page");
+        }),
+      );
+      // Back to top.
+      document.querySelectorAll("[data-to-top]").forEach((b) => {
+        const sync = () => b.toggleAttribute("data-show", window.scrollY > 300);
+        window.addEventListener("scroll", sync, { passive: true });
+        sync();
+        b.addEventListener("click", () =>
+          window.scrollTo({
+            top: 0,
+            behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+          }),
+        );
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,895 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Header 05 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-cart-btn {
+        position: relative;
+      }
+      .shop-count {
+        position: absolute;
+        inset-block-start: -0.25rem;
+        inset-inline-end: -0.25rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-inline-size: 1.125rem;
+        block-size: 1.125rem;
+        padding-inline: 0.25rem;
+        border-radius: 999px;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+      .shop-count:empty,
+      .shop-count[data-count="0"] {
+        display: none;
+      }
+      .shop-bottom-nav {
+        position: fixed;
+        inset-block-end: 0;
+        inset-inline: 0;
+        z-index: 20;
+        max-inline-size: 28rem;
+        margin-inline: auto;
+        padding-block-end: env(safe-area-inset-bottom, 0px);
+        border-block-start: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 92%, transparent);
+        backdrop-filter: blur(8px);
+      }
+      .shop-bottom-nav ul {
+        display: grid;
+        grid-auto-columns: 1fr;
+        grid-auto-flow: column;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .shop-bottom-nav a {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        padding-block: 0.625rem 0.5rem;
+        color: var(--muted-foreground);
+        font-size: 0.6875rem;
+        font-weight: 500;
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .shop-bottom-nav a svg {
+        inline-size: 1.375rem;
+        block-size: 1.375rem;
+      }
+      .shop-bottom-nav a[aria-current="page"] {
+        color: var(--foreground);
+      }
+      .shop-bottom-nav a[aria-current="page"]::before {
+        content: "";
+        position: absolute;
+        inset-block-start: 0;
+        inline-size: 2rem;
+        block-size: 2px;
+        border-radius: 0 0 2px 2px;
+        background: var(--primary);
+      }
+      .shop-bottom-nav a:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: -2px;
+      }
+      .shop-nav-icon {
+        position: relative;
+        display: inline-flex;
+      }
+      .shop-nav-icon > .shop-count {
+        inset-block-start: -0.25rem;
+        inset-inline-end: -0.625rem;
+      }
+      .shop-bottom-nav[data-variant="floating"] {
+        inset-block-end: calc(1rem + env(safe-area-inset-bottom, 0px));
+        inset-inline: 1rem;
+        max-inline-size: 26rem;
+        padding: 0.375rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.25);
+      }
+      .shop-bottom-nav[data-variant="floating"] a {
+        padding-block: 0.5rem;
+        border-radius: 999px;
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"] {
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"]::before {
+        display: none;
+      }
+      .shop-bottom-nav[data-variant="floating"] a > span:not(.shop-nav-icon) {
+        display: none;
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"] {
+        flex-direction: row;
+        justify-content: center;
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"] > span:not(.shop-nav-icon) {
+        display: inline;
+        font-size: 0.75rem;
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+      .shop-count {
+        corner-shape: round;
+      }
+      .shop-bottom-nav {
+        corner-shape: round;
+      }
+      .shop-bottom-nav a {
+        corner-shape: round;
+      }
+
+      .shop-shot {
+        display: block;
+        aspect-ratio: 4 / 5;
+        inline-size: 100%;
+        object-fit: cover;
+        background: var(--muted);
+      }
+      .shop-shot[data-shot="2"] {
+        transform: scaleX(-1);
+        filter: hue-rotate(160deg) saturate(1.6);
+      }
+      .shop-shot[data-shot="3"] {
+        filter: sepia(0.6) saturate(1.4);
+      }
+      .shop-shot[data-shot="4"] {
+        transform: scaleX(-1);
+        filter: grayscale(1) contrast(1.2);
+      }
+      html.dark .shop-shot {
+        opacity: 0.6;
+      }
+
+      @keyframes shop-pop {
+        from {
+          transform: scale(0.96);
+          opacity: 0.6;
+        }
+        to {
+          transform: none;
+          opacity: 1;
+        }
+      }
+      /* Reduced motion: the hover states still apply, without movement. !important so it wins over every card's transition rules. */
+
+      .hf-demo {
+        min-block-size: 24rem;
+        padding: 3rem 1rem;
+        display: grid;
+        place-items: center;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+        background: repeating-linear-gradient(
+          -45deg,
+          var(--muted),
+          var(--muted) 10px,
+          transparent 10px,
+          transparent 20px
+        );
+      }
+      .hf-demo p {
+        margin: 0;
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        background: var(--background);
+      }
+      .hf-bar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        min-block-size: 2.25rem;
+        padding: 0.375rem 2.75rem;
+        position: relative;
+        background: var(--biz, var(--primary));
+        color: var(--biz-fg, var(--primary-foreground));
+        font-size: 0.8125rem;
+        text-align: center;
+      }
+      .hf-bar[hidden] {
+        display: none;
+      }
+      .hf-bar a {
+        color: inherit;
+        font-weight: 600;
+        text-underline-offset: 3px;
+      }
+      .hf-bar .btn {
+        color: inherit;
+      }
+      .hf-bar .btn:hover {
+        background: color-mix(in oklab, currentColor 15%, transparent);
+        color: inherit;
+      }
+      .hf-bar-close {
+        position: absolute;
+        inset-inline-end: 0.5rem;
+      }
+      .hf-bar-msgs {
+        display: grid;
+      }
+      .hf-bar-msgs > span {
+        grid-area: 1 / 1;
+        transition: opacity 250ms ease;
+      }
+      .hf-bar-msgs > span:not([data-on]) {
+        opacity: 0;
+        visibility: hidden;
+      }
+      .hf-head {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 20;
+        border-block-end: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 94%, transparent);
+        backdrop-filter: blur(10px);
+      }
+      .hf-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        block-size: 4rem;
+      }
+      .hf-row[data-size="lg"] {
+        block-size: 5rem;
+      }
+      .hf-nav {
+        display: flex;
+        align-items: center;
+        gap: 0.125rem;
+      }
+      .hf-nav > a {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.5rem 0.75rem;
+        border: 0;
+        border-radius: var(--radius);
+        background: none;
+        color: var(--muted-foreground);
+        font: inherit;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .hf-nav > .popover > button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.5rem 0.75rem;
+        border: 0;
+        border-radius: var(--radius);
+        background: none;
+        color: var(--muted-foreground);
+        font: inherit;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .hf-nav > a:hover {
+        color: var(--foreground);
+        background: var(--accent);
+      }
+      .hf-nav > .popover > button:hover {
+        color: var(--foreground);
+        background: var(--accent);
+      }
+      .hf-nav > .popover > button[aria-expanded="true"] {
+        color: var(--foreground);
+        background: var(--accent);
+      }
+      .hf-nav > a[aria-current] {
+        color: var(--foreground);
+      }
+      .hf-nav > .popover > button svg {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+        transition: transform 150ms ease;
+      }
+      .hf-nav > a:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+      .hf-nav > .popover > button:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+      .hf-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        margin-inline-start: auto;
+      }
+      .hf-burger {
+        display: none;
+      }
+      .hf-mega {
+        inline-size: min(52rem, calc(100vw - 2rem));
+        padding: 1.25rem;
+      }
+      .hf-mega-grid {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) 14rem;
+      }
+      .hf-mega h3 {
+        margin: 0 0 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted-foreground);
+      }
+      .hf-mega ul {
+        display: grid;
+        gap: 0.125rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .hf-mega li a {
+        display: block;
+        padding: 0.375rem 0.5rem;
+        margin-inline: -0.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        color: inherit;
+        font-size: 0.875rem;
+        text-decoration: none;
+      }
+      .hf-mega li a:hover {
+        background: var(--accent);
+      }
+      .hf-mega-promo {
+        position: relative;
+        display: grid;
+        align-content: end;
+        gap: 0.25rem;
+        min-block-size: 12rem;
+        padding: 1rem;
+        overflow: hidden;
+        border-radius: var(--radius);
+        color: #fff;
+        text-decoration: none;
+      }
+      .hf-mega-promo img {
+        position: absolute;
+        inset: 0;
+        inline-size: 100%;
+        block-size: 100%;
+        object-fit: cover;
+      }
+      .hf-mega-promo::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(transparent 30%, rgb(0 0 0 / 0.65));
+      }
+      .hf-mega-promo > :not(img) {
+        position: relative;
+        z-index: 1;
+      }
+      .hf-mega-promo strong {
+        font-size: 1rem;
+      }
+      .hf-mega-promo span {
+        font-size: 0.8125rem;
+        opacity: 0.9;
+      }
+      .hf-sheet nav {
+        display: grid;
+        gap: 0.125rem;
+      }
+      .hf-sheet nav > a {
+        padding: 0.625rem 0.75rem;
+        border-radius: var(--radius);
+        color: inherit;
+        font-weight: 500;
+        text-decoration: none;
+      }
+      .hf-sheet nav > a:hover {
+        background: var(--accent);
+      }
+      .hf-sheet .accordion summary {
+        padding-inline: 0.75rem;
+        font-weight: 500;
+      }
+      .hf-sheet .accordion ul {
+        display: grid;
+        gap: 0.125rem;
+        margin: 0;
+        padding: 0 0 0.5rem 0.75rem;
+        list-style: none;
+      }
+      .hf-sheet .accordion li a {
+        display: block;
+        padding: 0.5rem 0.75rem;
+        border-radius: var(--radius);
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+        text-decoration: none;
+      }
+      .hf-sheet .accordion li a:hover {
+        background: var(--accent);
+        color: var(--foreground);
+      }
+      .hf-sheet > section {
+        display: grid;
+        gap: 1rem;
+        align-content: start;
+      }
+      .hf-searchbox {
+        display: none;
+        padding-block: 0.75rem;
+        border-block-start: 1px solid var(--border);
+      }
+      .hf-head[data-search] .hf-searchbox {
+        display: block;
+      }
+      html.dark .hf-mega-promo img {
+        filter: brightness(0.6);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .hf-bar-msgs > span {
+          transition: none;
+        }
+      }
+      @media (width < 64rem) {
+        .hf-nav {
+          display: none;
+        }
+        .hf-burger {
+          display: inline-flex;
+        }
+      }
+      .hf-bnav button {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        inline-size: 100%;
+        padding-block: 0.625rem 0.5rem;
+        border: 0;
+        background: none;
+        color: var(--muted-foreground);
+        font: inherit;
+        font-size: 0.6875rem;
+        font-weight: 500;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .hf-bnav button svg {
+        inline-size: 1.375rem;
+        block-size: 1.375rem;
+      }
+      .hf-bnav button:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: -2px;
+      }
+      .hf-bnav {
+        max-inline-size: none;
+      }
+      .hf-bnav a {
+        padding-block-start: 0.875rem;
+      }
+      .hf-bnav button {
+        padding-block-start: 0.875rem;
+      }
+      .hf-actions .shop-count {
+        inset-block-start: -0.125rem;
+        inset-inline-end: -0.125rem;
+      }
+      @media (width >= 48rem) {
+        .hf-bnav {
+          display: none;
+        }
+      }
+      @media (width < 48rem) {
+        .hf-burger.hf-burger {
+          display: none;
+        }
+        body:has(.hf-bnav) {
+          padding-block-end: calc(4rem + env(safe-area-inset-bottom, 0px));
+        }
+      }
+
+      .hf-beauty-row {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+      }
+      .hf-beauty-row .hf-actions {
+        justify-self: end;
+      }
+      @media (width >= 48rem) {
+        .hf-beauty-row .hf-burger {
+          display: inline-flex;
+        }
+      }
+      @media (width >= 64rem) {
+        .hf-beauty-row .hf-burger {
+          display: none;
+        }
+      }
+      .hf-beauty-logo {
+        color: inherit;
+        font-family: var(--font-serif, Georgia, serif);
+        font-size: 1.75rem;
+        font-style: italic;
+        letter-spacing: 0.02em;
+        text-decoration: none;
+      }
+      .hf-beauty-nav {
+        justify-content: center;
+        padding-block-end: 0.5rem;
+      }
+      .hf-beauty-nav .hf-mega {
+        --primary: var(--biz);
+      }
+      .hf-bar {
+        background: color-mix(in oklab, var(--biz) 14%, var(--background));
+        color: var(--foreground);
+      }
+    </style>
+  </head>
+  <body>
+    <div style="--biz: oklch(0.62 0.12 10); --biz-fg: #fff">
+      <div class="hf-bar" role="region" aria-label="Announcement" data-bar>
+        <button
+          type="button"
+          class="btn"
+          data-variant="ghost"
+          data-size="icon-xs"
+          aria-label="Previous message"
+          data-bar-prev>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <div class="hf-bar-msgs" aria-live="polite">
+          <span data-on>Free samples with every order</span>
+          <span>Join Glow Club: 10% off your first order</span>
+        </div>
+        <button
+          type="button"
+          class="btn"
+          data-variant="ghost"
+          data-size="icon-xs"
+          aria-label="Next message"
+          data-bar-next>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+        <button
+          type="button"
+          class="btn hf-bar-close"
+          data-variant="ghost"
+          data-size="icon-xs"
+          aria-label="Dismiss"
+          data-bar-close>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <header class="hf-head">
+        <div class="wrapper hf-row hf-beauty-row" data-size="xl">
+          <div class="cluster" data-gap="1">
+            <button
+              type="button"
+              class="btn hf-burger"
+              data-variant="ghost"
+              data-size="icon"
+              aria-label="Open menu"
+              commandfor="h5-menu"
+              command="show-modal">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+            </button>
+            <button
+              type="button"
+              class="btn"
+              data-variant="ghost"
+              data-size="icon"
+              aria-label="Search"
+              aria-expanded="false"
+              data-search-toggle>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </button>
+          </div>
+          <a href="#" class="hf-beauty-logo">lumière</a>
+          <div class="hf-actions">
+            <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Account">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </a>
+            <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Wishlist">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+            </a>
+            <a
+              href="#"
+              class="btn shop-cart-btn"
+              data-variant="ghost"
+              data-size="icon"
+              aria-label="Cart, 2 items">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+              <span class="shop-count" data-count="2">2</span>
+            </a>
+          </div>
+        </div>
+        <nav class="hf-nav hf-beauty-nav" aria-label="Main">
+          <div class="popover">
+            <button type="button" popovertarget="h5-shop">
+              Shop
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div
+              id="h5-shop"
+              class="hf-mega"
+              data-popover
+              popover
+              data-side="bottom"
+              data-align="start">
+              <div class="hf-mega-grid">
+                <div>
+                  <h3>Skincare</h3>
+                  <ul>
+                    <li><a href="#">Cleansers</a></li>
+                    <li><a href="#">Serums</a></li>
+                    <li><a href="#">Moisturizers</a></li>
+                    <li><a href="#">Sunscreen</a></li>
+                    <li><a href="#">Masks</a></li>
+                  </ul>
+                </div>
+                <div>
+                  <h3>Makeup</h3>
+                  <ul>
+                    <li><a href="#">Foundation</a></li>
+                    <li><a href="#">Concealer</a></li>
+                    <li><a href="#">Lips</a></li>
+                    <li><a href="#">Eyes</a></li>
+                    <li><a href="#">Brushes</a></li>
+                  </ul>
+                </div>
+                <div>
+                  <h3>Hair and body</h3>
+                  <ul>
+                    <li><a href="#">Shampoo</a></li>
+                    <li><a href="#">Treatments</a></li>
+                    <li><a href="#">Body care</a></li>
+                    <li><a href="#">Fragrance</a></li>
+                    <li><a href="#">Travel sizes</a></li>
+                  </ul>
+                </div>
+                <a href="#" class="hf-mega-promo">
+                  <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="2" />
+                  <strong>Dew Drops serum</strong>
+                  <span>Our bestseller, now in 50 ml</span>
+                </a>
+              </div>
+            </div>
+          </div>
+          <a href="#">Bestsellers</a>
+          <a href="#">New</a>
+          <a href="#">Sets and gifts</a>
+          <a href="#">Skin quiz</a>
+          <a href="#">Glow Club</a>
+        </nav>
+        <div class="hf-searchbox">
+          <form class="wrapper" data-size="md" role="search" onsubmit="event.preventDefault()">
+            <div class="input-group">
+              <input
+                type="search"
+                placeholder="Search serums, lipstick, sunscreen..."
+                aria-label="Search products" />
+              <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+            </div>
+          </form>
+        </div>
+      </header>
+      <dialog
+        id="h5-menu"
+        class="sheet hf-sheet"
+        data-side="left"
+        closedby="any"
+        aria-labelledby="h5-menu-t">
+        <header><h2 id="h5-menu-t">lumière</h2></header>
+        <section>
+          <nav aria-label="Mobile">
+            <div class="accordion">
+              <details>
+                <summary>Skincare</summary>
+                <ul>
+                  <li><a href="#">Cleansers</a></li>
+                  <li><a href="#">Serums</a></li>
+                  <li><a href="#">Moisturizers</a></li>
+                  <li><a href="#">Sunscreen</a></li>
+                  <li><a href="#">Masks</a></li>
+                </ul>
+              </details>
+              <details>
+                <summary>Makeup</summary>
+                <ul>
+                  <li><a href="#">Foundation</a></li>
+                  <li><a href="#">Concealer</a></li>
+                  <li><a href="#">Lips</a></li>
+                  <li><a href="#">Eyes</a></li>
+                  <li><a href="#">Brushes</a></li>
+                </ul>
+              </details>
+              <details>
+                <summary>Hair and body</summary>
+                <ul>
+                  <li><a href="#">Shampoo</a></li>
+                  <li><a href="#">Treatments</a></li>
+                  <li><a href="#">Body care</a></li>
+                  <li><a href="#">Fragrance</a></li>
+                  <li><a href="#">Travel sizes</a></li>
+                </ul>
+              </details>
+            </div>
+            <a href="#">Bestsellers</a>
+            <a href="#">New</a>
+            <a href="#">Sets and gifts</a>
+            <a href="#">Skin quiz</a>
+            <a href="#">Glow Club</a>
+          </nav>
+        </section>
+        <button type="button" aria-label="Close menu" commandfor="h5-menu" command="close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </dialog>
+      <nav class="shop-bottom-nav hf-bnav" aria-label="Primary">
+        <ul>
+          <li>
+            <a href="#" aria-current="page">
+              <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+              <span>Home</span>
+            </a>
+          </li>
+          <li>
+            <button type="button" commandfor="h5-menu" command="show-modal">
+              <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span>
+              <span>Shop</span>
+            </button>
+          </li>
+          <li>
+            <a href="#">
+              <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg></span>
+              <span>Skin quiz</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span class="shop-nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+                <span class="shop-count" data-count="2">2</span>
+              </span>
+              <span>Bag</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+              <span>Account</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div class="hf-demo"><p>Page content</p></div>
+    </div>
+    <script>
+      // Announcement bar: previous/next messages, dismiss.
+      document.querySelectorAll("[data-bar]").forEach((bar) => {
+        const msgs = [...bar.querySelectorAll(".hf-bar-msgs > span")];
+        let i = 0;
+        const show = (n) => {
+          i = (n + msgs.length) % msgs.length;
+          msgs.forEach((m, k) => m.toggleAttribute("data-on", k === i));
+        };
+        bar.querySelector("[data-bar-prev]")?.addEventListener("click", () => show(i - 1));
+        bar.querySelector("[data-bar-next]")?.addEventListener("click", () => show(i + 1));
+        bar.querySelector("[data-bar-close]")?.addEventListener("click", () => {
+          bar.hidden = true;
+        });
+      });
+      // Search that opens under the header.
+      document.querySelectorAll("[data-search-toggle]").forEach((b) =>
+        b.addEventListener("click", () => {
+          const head = b.closest(".hf-head");
+          const open = !head.hasAttribute("data-search");
+          head.toggleAttribute("data-search", open);
+          b.setAttribute("aria-expanded", String(open));
+          if (open) head.querySelector(".hf-searchbox input").focus();
+        }),
+      );
+      // Header over a hero: solid once the page scrolls.
+      document.querySelectorAll("[data-overlay]").forEach((h) => {
+        const sync = () => h.toggleAttribute("data-scrolled", window.scrollY > 40);
+        window.addEventListener("scroll", sync, { passive: true });
+        sync();
+      });
+      // Newsletter forms: validate the email, then thank.
+      document.querySelectorAll("[data-newsletter]").forEach((form) => {
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const input = form.querySelector("input[type=email]");
+          const ok = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(input.value.trim());
+          input.toggleAttribute("aria-invalid", !ok);
+          form.querySelector("[data-news-error]").hidden = ok;
+          if (!ok) {
+            input.focus();
+            return;
+          }
+          form.querySelector("[data-news-fields]").hidden = true;
+          form.querySelector("[data-news-done]").hidden = false;
+        });
+      });
+      // Footer link columns: open on wide screens, collapsible on small ones.
+      (() => {
+        const groups = document.querySelectorAll("[data-foot-group]");
+        if (!groups.length) return;
+        const mq = window.matchMedia("(width >= 48rem)");
+        const apply = () =>
+          groups.forEach((d) => {
+            d.open = mq.matches;
+          });
+        mq.addEventListener("change", apply);
+        apply();
+      })();
+      // Bottom tab bar: the tapped tab becomes current.
+      document.querySelectorAll(".hf-bnav").forEach((nav) =>
+        nav.addEventListener("click", (e) => {
+          const a = e.target.closest("a");
+          if (!a) return;
+          e.preventDefault();
+          nav.querySelectorAll("a[aria-current]").forEach((x) => x.removeAttribute("aria-current"));
+          a.setAttribute("aria-current", "page");
+        }),
+      );
+      // Back to top.
+      document.querySelectorAll("[data-to-top]").forEach((b) => {
+        const sync = () => b.toggleAttribute("data-show", window.scrollY > 300);
+        window.addEventListener("scroll", sync, { passive: true });
+        sync();
+        b.addEventListener("click", () =>
+          window.scrollTo({
+            top: 0,
+            behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+          }),
+        );
+      });
+    </script>
+  </body>
+</html>

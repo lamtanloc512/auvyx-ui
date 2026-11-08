@@ -1,0 +1,675 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Header 02 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-bottom-nav {
+        position: fixed;
+        inset-block-end: 0;
+        inset-inline: 0;
+        z-index: 20;
+        max-inline-size: 28rem;
+        margin-inline: auto;
+        padding-block-end: env(safe-area-inset-bottom, 0px);
+        border-block-start: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 92%, transparent);
+        backdrop-filter: blur(8px);
+      }
+      .shop-bottom-nav ul {
+        display: grid;
+        grid-auto-columns: 1fr;
+        grid-auto-flow: column;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .shop-bottom-nav a {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        padding-block: 0.625rem 0.5rem;
+        color: var(--muted-foreground);
+        font-size: 0.6875rem;
+        font-weight: 500;
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .shop-bottom-nav a svg {
+        inline-size: 1.375rem;
+        block-size: 1.375rem;
+      }
+      .shop-bottom-nav a[aria-current="page"] {
+        color: var(--foreground);
+      }
+      .shop-bottom-nav a[aria-current="page"]::before {
+        content: "";
+        position: absolute;
+        inset-block-start: 0;
+        inline-size: 2rem;
+        block-size: 2px;
+        border-radius: 0 0 2px 2px;
+        background: var(--primary);
+      }
+      .shop-bottom-nav a:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: -2px;
+      }
+      .shop-nav-icon {
+        position: relative;
+        display: inline-flex;
+      }
+      .shop-bottom-nav[data-variant="floating"] {
+        inset-block-end: calc(1rem + env(safe-area-inset-bottom, 0px));
+        inset-inline: 1rem;
+        max-inline-size: 26rem;
+        padding: 0.375rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.25);
+      }
+      .shop-bottom-nav[data-variant="floating"] a {
+        padding-block: 0.5rem;
+        border-radius: 999px;
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"] {
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"]::before {
+        display: none;
+      }
+      .shop-bottom-nav[data-variant="floating"] a > span:not(.shop-nav-icon) {
+        display: none;
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"] {
+        flex-direction: row;
+        justify-content: center;
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"] > span:not(.shop-nav-icon) {
+        display: inline;
+        font-size: 0.75rem;
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+      .shop-bottom-nav {
+        corner-shape: round;
+      }
+      .shop-bottom-nav a {
+        corner-shape: round;
+      }
+
+      .block-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: inherit;
+        text-decoration: none;
+      }
+      .block-logo-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .block-logo-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+
+      @keyframes shop-pop {
+        from {
+          transform: scale(0.96);
+          opacity: 0.6;
+        }
+        to {
+          transform: none;
+          opacity: 1;
+        }
+      }
+      /* Reduced motion: the hover states still apply, without movement. !important so it wins over every card's transition rules. */
+
+      .hf-demo {
+        min-block-size: 24rem;
+        padding: 3rem 1rem;
+        display: grid;
+        place-items: center;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+        background: repeating-linear-gradient(
+          -45deg,
+          var(--muted),
+          var(--muted) 10px,
+          transparent 10px,
+          transparent 20px
+        );
+      }
+      .hf-demo p {
+        margin: 0;
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        background: var(--background);
+      }
+      .hf-head {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 20;
+        border-block-end: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 94%, transparent);
+        backdrop-filter: blur(10px);
+      }
+      .hf-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        block-size: 4rem;
+      }
+      .hf-row[data-size="lg"] {
+        block-size: 5rem;
+      }
+      .hf-nav {
+        display: flex;
+        align-items: center;
+        gap: 0.125rem;
+      }
+      .hf-nav > a {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.5rem 0.75rem;
+        border: 0;
+        border-radius: var(--radius);
+        background: none;
+        color: var(--muted-foreground);
+        font: inherit;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .hf-nav > .popover > button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.5rem 0.75rem;
+        border: 0;
+        border-radius: var(--radius);
+        background: none;
+        color: var(--muted-foreground);
+        font: inherit;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .hf-nav > a:hover {
+        color: var(--foreground);
+        background: var(--accent);
+      }
+      .hf-nav > .popover > button:hover {
+        color: var(--foreground);
+        background: var(--accent);
+      }
+      .hf-nav > .popover > button[aria-expanded="true"] {
+        color: var(--foreground);
+        background: var(--accent);
+      }
+      .hf-nav > a[aria-current] {
+        color: var(--foreground);
+      }
+      .hf-nav > .popover > button svg {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+        transition: transform 150ms ease;
+      }
+      .hf-nav > a:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+      .hf-nav > .popover > button:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+      .hf-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        margin-inline-start: auto;
+      }
+      .hf-burger {
+        display: none;
+      }
+      .hf-catmenu {
+        inline-size: 18rem;
+        padding: 0.375rem;
+      }
+      .hf-catmenu a {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 0.625rem;
+        border-radius: calc(var(--radius) - 2px);
+        color: inherit;
+        font-size: 0.875rem;
+        text-decoration: none;
+      }
+      .hf-catmenu a:hover {
+        background: var(--accent);
+      }
+      .hf-catmenu a svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+        color: var(--muted-foreground);
+      }
+      .hf-catmenu a small {
+        margin-inline-start: auto;
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+      }
+      .hf-search {
+        flex: 1;
+        max-inline-size: 36rem;
+      }
+      .hf-pill {
+        border-radius: 999px;
+        corner-shape: round;
+      }
+      .hf-msearch {
+        padding-block-end: 0.75rem;
+      }
+      @media (width >= 64rem) {
+        .hf-msearch {
+          display: none;
+        }
+      }
+      .hf-search select {
+        flex: none;
+        inline-size: auto;
+        border: 0;
+        border-inline-end: 1px solid var(--border);
+        border-radius: 0;
+        background-color: transparent;
+        box-shadow: none;
+        font-size: 0.8125rem;
+      }
+      .hf-sheet nav {
+        display: grid;
+        gap: 0.125rem;
+      }
+      .hf-sheet nav > a {
+        padding: 0.625rem 0.75rem;
+        border-radius: var(--radius);
+        color: inherit;
+        font-weight: 500;
+        text-decoration: none;
+      }
+      .hf-sheet nav > a:hover {
+        background: var(--accent);
+      }
+      .hf-sheet .accordion summary {
+        padding-inline: 0.75rem;
+        font-weight: 500;
+      }
+      .hf-sheet .accordion ul {
+        display: grid;
+        gap: 0.125rem;
+        margin: 0;
+        padding: 0 0 0.5rem 0.75rem;
+        list-style: none;
+      }
+      .hf-sheet .accordion li a {
+        display: block;
+        padding: 0.5rem 0.75rem;
+        border-radius: var(--radius);
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+        text-decoration: none;
+      }
+      .hf-sheet .accordion li a:hover {
+        background: var(--accent);
+        color: var(--foreground);
+      }
+      .hf-sheet > section {
+        display: grid;
+        gap: 1rem;
+        align-content: start;
+      }
+      .hf-head .block-logo {
+        flex: none;
+        white-space: nowrap;
+      }
+      @media (width < 64rem) {
+        .hf-nav {
+          display: none;
+        }
+        .hf-hide-sm {
+          display: none;
+        }
+        .hf-burger {
+          display: inline-flex;
+        }
+      }
+      .hf-bnav button {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        inline-size: 100%;
+        padding-block: 0.625rem 0.5rem;
+        border: 0;
+        background: none;
+        color: var(--muted-foreground);
+        font: inherit;
+        font-size: 0.6875rem;
+        font-weight: 500;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .hf-bnav button svg {
+        inline-size: 1.375rem;
+        block-size: 1.375rem;
+      }
+      .hf-bnav button:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: -2px;
+      }
+      .hf-bnav {
+        max-inline-size: none;
+      }
+      .hf-bnav a {
+        padding-block-start: 0.875rem;
+      }
+      .hf-bnav button {
+        padding-block-start: 0.875rem;
+      }
+      @media (width >= 48rem) {
+        .hf-bnav {
+          display: none;
+        }
+      }
+      @media (width < 48rem) {
+        .hf-burger.hf-burger {
+          display: none;
+        }
+        body:has(.hf-bnav) {
+          padding-block-end: calc(4rem + env(safe-area-inset-bottom, 0px));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="hf-head">
+      <div class="wrapper hf-row" data-size="xl">
+        <button
+          type="button"
+          class="btn hf-burger"
+          data-variant="ghost"
+          data-size="icon"
+          aria-label="Open menu"
+          commandfor="h2-menu"
+          command="show-modal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        </button>
+        <a href="#" class="block-logo">
+          <span class="block-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0zM22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span>
+          Acme Learn
+        </a>
+        <nav class="hf-nav" aria-label="Main">
+          <div class="popover">
+            <button type="button" popovertarget="h2-cats">
+              Categories
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div
+              id="h2-cats"
+              class="hf-catmenu"
+              data-popover
+              popover
+              data-side="bottom"
+              data-align="start">
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+                <span>Design</span>
+                <small>214</small>
+              </a>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" x2="12" y1="17" y2="21"/><line x1="8" x2="16" y1="21" y2="21"/><rect height="14" rx="2" width="20" x="2" y="3"/></svg>
+                <span>Development</span>
+                <small>382</small>
+              </a>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497zM15 5l4 4"/></svg>
+                <span>Illustration</span>
+                <small>96</small>
+              </a>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696a10.75 10.75 0 0 1 19.876 0a1 1 0 0 1 0 .696a10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+                <span>Photography</span>
+                <small>121</small>
+              </a>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17V5"/><path d="M18 17V9"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 17v-3"/></svg>
+                <span>Business</span>
+                <small>175</small>
+              </a>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                <span>Marketing</span>
+                <small>88</small>
+              </a>
+            </div>
+          </div>
+        </nav>
+        <form
+          class="input-group hf-search hf-pill hf-hide-sm"
+          role="search"
+          onsubmit="event.preventDefault()">
+          <input
+            type="search"
+            placeholder="What do you want to learn?"
+            aria-label="Search courses" />
+          <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        </form>
+        <div class="hf-actions">
+          <nav class="hf-nav" aria-label="Secondary">
+            <a href="#">Plus</a>
+            <a href="#">Teach on Acme</a>
+          </nav>
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Cart">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+          </a>
+          <a href="#" class="btn hf-hide-sm" data-variant="outline" data-size="sm">Log in</a>
+          <a href="#" class="btn" data-size="sm">Sign up</a>
+        </div>
+      </div>
+      <form class="wrapper hf-msearch" role="search" onsubmit="event.preventDefault()">
+        <div class="input-group hf-pill">
+          <input
+            type="search"
+            placeholder="What do you want to learn?"
+            aria-label="Search"
+            id="h2-msearch" />
+          <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        </div>
+      </form>
+    </header>
+    <dialog
+      id="h2-menu"
+      class="sheet hf-sheet"
+      data-side="left"
+      closedby="any"
+      aria-labelledby="h2-menu-t">
+      <header><h2 id="h2-menu-t">Menu</h2></header>
+      <section>
+        <nav aria-label="Mobile">
+          <div class="accordion">
+            <details>
+              <summary>Categories</summary>
+              <ul>
+                <li><a href="#">Design</a></li>
+                <li><a href="#">Development</a></li>
+                <li><a href="#">Illustration</a></li>
+                <li><a href="#">Photography</a></li>
+                <li><a href="#">Business</a></li>
+                <li><a href="#">Marketing</a></li>
+              </ul>
+            </details>
+          </div>
+          <a href="#">Plus</a>
+          <a href="#">Teach on Acme</a>
+          <a href="#">Log in</a>
+        </nav>
+      </section>
+      <button type="button" aria-label="Close menu" commandfor="h2-menu" command="close">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </dialog>
+    <nav class="shop-bottom-nav hf-bnav" aria-label="Primary">
+      <ul>
+        <li>
+          <a href="#" aria-current="page">
+            <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+            <span>Home</span>
+          </a>
+        </li>
+        <li>
+          <button type="button" commandfor="h2-menu" command="show-modal">
+            <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span>
+            <span>Explore</span>
+          </button>
+        </li>
+        <li>
+          <a href="#">
+            <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"/><circle cx="12" cy="12" r="10"/></svg></span>
+            <span>My learning</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+            <span>Wishlist</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+            <span>Account</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <div class="hf-demo"><p>Page content</p></div>
+    <script>
+      // Announcement bar: previous/next messages, dismiss.
+      document.querySelectorAll("[data-bar]").forEach((bar) => {
+        const msgs = [...bar.querySelectorAll(".hf-bar-msgs > span")];
+        let i = 0;
+        const show = (n) => {
+          i = (n + msgs.length) % msgs.length;
+          msgs.forEach((m, k) => m.toggleAttribute("data-on", k === i));
+        };
+        bar.querySelector("[data-bar-prev]")?.addEventListener("click", () => show(i - 1));
+        bar.querySelector("[data-bar-next]")?.addEventListener("click", () => show(i + 1));
+        bar.querySelector("[data-bar-close]")?.addEventListener("click", () => {
+          bar.hidden = true;
+        });
+      });
+      // Search that opens under the header.
+      document.querySelectorAll("[data-search-toggle]").forEach((b) =>
+        b.addEventListener("click", () => {
+          const head = b.closest(".hf-head");
+          const open = !head.hasAttribute("data-search");
+          head.toggleAttribute("data-search", open);
+          b.setAttribute("aria-expanded", String(open));
+          if (open) head.querySelector(".hf-searchbox input").focus();
+        }),
+      );
+      // Header over a hero: solid once the page scrolls.
+      document.querySelectorAll("[data-overlay]").forEach((h) => {
+        const sync = () => h.toggleAttribute("data-scrolled", window.scrollY > 40);
+        window.addEventListener("scroll", sync, { passive: true });
+        sync();
+      });
+      // Newsletter forms: validate the email, then thank.
+      document.querySelectorAll("[data-newsletter]").forEach((form) => {
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const input = form.querySelector("input[type=email]");
+          const ok = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(input.value.trim());
+          input.toggleAttribute("aria-invalid", !ok);
+          form.querySelector("[data-news-error]").hidden = ok;
+          if (!ok) {
+            input.focus();
+            return;
+          }
+          form.querySelector("[data-news-fields]").hidden = true;
+          form.querySelector("[data-news-done]").hidden = false;
+        });
+      });
+      // Footer link columns: open on wide screens, collapsible on small ones.
+      (() => {
+        const groups = document.querySelectorAll("[data-foot-group]");
+        if (!groups.length) return;
+        const mq = window.matchMedia("(width >= 48rem)");
+        const apply = () =>
+          groups.forEach((d) => {
+            d.open = mq.matches;
+          });
+        mq.addEventListener("change", apply);
+        apply();
+      })();
+      // Bottom tab bar: the tapped tab becomes current.
+      document.querySelectorAll(".hf-bnav").forEach((nav) =>
+        nav.addEventListener("click", (e) => {
+          const a = e.target.closest("a");
+          if (!a) return;
+          e.preventDefault();
+          nav.querySelectorAll("a[aria-current]").forEach((x) => x.removeAttribute("aria-current"));
+          a.setAttribute("aria-current", "page");
+        }),
+      );
+      // Back to top.
+      document.querySelectorAll("[data-to-top]").forEach((b) => {
+        const sync = () => b.toggleAttribute("data-show", window.scrollY > 300);
+        window.addEventListener("scroll", sync, { passive: true });
+        sync();
+        b.addEventListener("click", () =>
+          window.scrollTo({
+            top: 0,
+            behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+          }),
+        );
+      });
+    </script>
+  </body>
+</html>

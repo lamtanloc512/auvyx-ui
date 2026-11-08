@@ -59,6 +59,12 @@
   "medal",
   "award-line"
  ],
+ "baby": [
+  "baby-carriage",
+  "baby-01",
+  "baby",
+  "parent-line"
+ ],
  "bell": [
   "bell",
   "notification-01",
@@ -221,6 +227,12 @@
   "cloud",
   "cloud-line"
  ],
+ "cloud-upload": [
+  "cloud-upload",
+  "cloud-upload",
+  "cloud-arrow-up",
+  "upload-cloud-2-line"
+ ],
  "code": [
   "code",
   "source-code",
@@ -241,6 +253,12 @@
  ],
  "copy": [
   "copy",
+  "copy-01",
+  "copy",
+  "file-copy-line"
+ ],
+ "copy-plus": [
+  "copy-plus",
   "copy-01",
   "copy",
   "file-copy-line"
@@ -287,6 +305,12 @@
   "eye-slash",
   "eye-off-line"
  ],
+ "facebook": [
+  "brand-facebook",
+  "facebook-01",
+  "facebook-logo",
+  "facebook-line"
+ ],
  "file": [
   "file",
   "file-01",
@@ -304,6 +328,12 @@
   "file-01",
   "file-text",
   "file-text-line"
+ ],
+ "flag": [
+  "flag",
+  "flag-01",
+  "flag",
+  "flag-line"
  ],
  "folder": [
   "folder",
@@ -353,6 +383,24 @@
   "graduation-cap",
   "graduation-cap-line"
  ],
+ "grip-vertical": [
+  "grip-vertical",
+  "drag-drop-vertical",
+  "dots-six-vertical",
+  "draggable"
+ ],
+ "heading-2": [
+  "h-2",
+  "heading-02",
+  "text-h-two",
+  "h-2"
+ ],
+ "headphones": [
+  "headphones",
+  "headphones",
+  "headphones",
+  "headphone-line"
+ ],
  "heart": [
   "heart",
   "favourite",
@@ -395,6 +443,12 @@
   "info",
   "information-line"
  ],
+ "instagram": [
+  "brand-instagram",
+  "instagram",
+  "instagram-logo",
+  "instagram-line"
+ ],
  "italic": [
   "italic",
   "text-italic",
@@ -413,11 +467,29 @@
   "squares-four",
   "layout-grid-line"
  ],
+ "leaf": [
+  "leaf",
+  "leaf-01",
+  "leaf",
+  "leaf-line"
+ ],
  "life-buoy": [
   "lifebuoy",
   "help-circle",
   "lifebuoy",
   "lifebuoy-line"
+ ],
+ "link": [
+  "link",
+  "link-01",
+  "link",
+  "link"
+ ],
+ "linkedin": [
+  "brand-linkedin",
+  "linkedin-01",
+  "linkedin-logo",
+  "linkedin-box-line"
  ],
  "list": [
   "list",
@@ -425,11 +497,23 @@
   "list-bullets",
   "list-unordered"
  ],
+ "list-checks": [
+  "list-check",
+  "task-done-01",
+  "list-checks",
+  "list-check-3"
+ ],
  "list-filter-plus": [
   "filter-plus",
   "filter-add",
   "funnel",
   "filter-line"
+ ],
+ "list-ordered": [
+  "list-numbers",
+  "left-to-right-list-number",
+  "list-numbers",
+  "list-ordered-2"
  ],
  "loader-circle": [
   "loader-2",
@@ -545,6 +629,12 @@
   "sidebar-simple",
   "side-bar-line"
  ],
+ "paperclip": [
+  "paperclip",
+  "attachment-01",
+  "paperclip",
+  "attachment-2"
+ ],
  "pause": [
   "player-pause",
   "pause",
@@ -581,17 +671,59 @@
   "plus",
   "add-line"
  ],
+ "puzzle": [
+  "puzzle",
+  "puzzle",
+  "puzzle-piece",
+  "puzzle-line"
+ ],
+ "quote": [
+  "quote",
+  "quote-down",
+  "quotes",
+  "double-quotes-l"
+ ],
+ "rabbit": [
+  "pig",
+  "rabbit",
+  "rabbit",
+  "bear-smile-line"
+ ],
+ "recycle": [
+  "recycle",
+  "recycle-01",
+  "recycle",
+  "recycle-line"
+ ],
  "refresh-ccw": [
   "refresh",
   "refresh",
   "arrows-counter-clockwise",
   "refresh-line"
  ],
+ "refresh-cw": [
+  "refresh",
+  "refresh",
+  "arrows-clockwise",
+  "refresh-line"
+ ],
+ "reply": [
+  "arrow-back-up",
+  "arrow-turn-backward",
+  "arrow-bend-up-left",
+  "reply-line"
+ ],
  "rotate-ccw": [
   "rotate",
   "rotate-left-01",
   "arrow-counter-clockwise",
   "anticlockwise-line"
+ ],
+ "rss": [
+  "rss",
+  "rss",
+  "rss",
+  "rss-line"
  ],
  "scissors": [
   "scissors",
@@ -707,6 +839,12 @@
   "star",
   "star-line"
  ],
+ "store": [
+  "building-store",
+  "store-01",
+  "storefront",
+  "store-2-line"
+ ],
  "sun": [
   "sun",
   "sun-03",
@@ -719,6 +857,12 @@
   "device-tablet",
   "tablet-line"
  ],
+ "tag": [
+  "tag",
+  "tag-01",
+  "tag",
+  "price-tag-3-line"
+ ],
  "target": [
   "target",
   "target-02",
@@ -730,6 +874,12 @@
   "command-line",
   "terminal",
   "terminal-line"
+ ],
+ "ticket-percent": [
+  "ticket",
+  "coupon-percent",
+  "ticket",
+  "coupon-3-line"
  ],
  "trash": [
   "trash",
@@ -779,6 +929,12 @@
   "television",
   "tv-2-line"
  ],
+ "twitter": [
+  "brand-x",
+  "new-twitter",
+  "x-logo",
+  "twitter-x-line"
+ ],
  "undo-2": [
   "arrow-back-up",
   "undo-02",
@@ -809,6 +965,12 @@
   "seal-check",
   "verified-badge-line"
  ],
+ "video": [
+  "video",
+  "video-01",
+  "video-camera",
+  "video-line"
+ ],
  "volume-2": [
   "volume",
   "volume-high",
@@ -826,6 +988,12 @@
   "cancel-01",
   "x",
   "close-line"
+ ],
+ "youtube": [
+  "brand-youtube",
+  "youtube",
+  "youtube-logo",
+  "youtube-line"
  ],
  "zoom-in": [
   "zoom-in",

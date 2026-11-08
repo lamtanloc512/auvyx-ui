@@ -86,6 +86,8 @@ function convertAttrs(token, ctx) {
       continue;
     }
     if (lower === 'style') { out.push(`style=${styleObject(value)}`); continue; }
+    // The editable content is the initial value; React must not warn that it manages it.
+    if (lower === 'contenteditable') out.push('suppressContentEditableWarning');
     if (lower === 'selected' && tag === 'option') { ctx.selected = attrs.find((a) => a.name === 'value')?.value; continue; }
     if (UNTYPED.has(lower)) { untyped.push(`${lower}: ${JSON.stringify(value)}`); continue; }
     let prop = RENAME[lower] ?? name;

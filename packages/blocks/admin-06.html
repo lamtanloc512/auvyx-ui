@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin 06 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+
+      body {
+        min-block-size: 100svh;
+      }
+      .adm-mark {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        inline-size: 2rem;
+        block-size: 2rem;
+        border-radius: calc(var(--radius) + 2px);
+        background: var(--sidebar-primary);
+        color: var(--sidebar-primary-foreground);
+      }
+      .adm-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .adm-main {
+        container-type: inline-size;
+        min-inline-size: 0;
+      }
+      .adm-header {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        block-size: 3.5rem;
+        padding-inline: 1rem;
+        border-block-end: 1px solid var(--border);
+        background: var(--background);
+      }
+      .adm-header > hr {
+        align-self: center;
+        block-size: 1rem;
+        margin-inline-end: 0.25rem;
+      }
+      .adm-header .breadcrumb {
+        min-inline-size: 0;
+      }
+      .adm-header-end {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-inline-start: auto;
+      }
+      .adm-body {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem;
+        padding: 1rem;
+      }
+      .adm-body > * {
+        min-inline-size: 0;
+      }
+      .adm-main .card {
+        min-inline-size: 0;
+      }
+      .adm-main .card > section {
+        min-inline-size: 0;
+      }
+      .adm-dash > * {
+        min-inline-size: 0;
+      }
+      .adm-main .stack > * {
+        min-inline-size: 0;
+      }
+      .adm-main .card > section > * {
+        min-inline-size: 0;
+      }
+      .adm-top > section {
+        position: relative;
+        overflow-x: auto;
+      }
+      @container (width >= 48rem) {
+        .adm-body {
+          padding: 1.5rem;
+        }
+      }
+      .adm-title {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .adm-title h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .adm-title p {
+        margin: 0.25rem 0 0;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
+      .adm-title > div:last-child {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .adm-num {
+        text-align: end;
+        font-variant-numeric: tabular-nums;
+      }
+      .adm-course {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        min-inline-size: 16rem;
+      }
+      .adm-course img {
+        flex: none;
+        inline-size: 4rem;
+        block-size: 2.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        object-fit: cover;
+        background: var(--muted);
+      }
+      .adm-course strong {
+        display: block;
+        font-weight: 500;
+      }
+      .adm-course small {
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+      }
+      .adm-course a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .adm-course a:hover {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      @container (width >= 64rem) {
+        .adm-split {
+          grid-template-columns: minmax(0, 1fr) 20rem;
+        }
+        .adm-split > aside {
+          position: sticky;
+          inset-block-start: 5rem;
+        }
+      }
+      .adm-kpis {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+      }
+      .adm-kpi {
+        gap: 0.25rem;
+        padding: 1rem 1.25rem;
+      }
+      .adm-kpi > p {
+        margin: 0;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .adm-kpi > strong {
+        font-size: 1.625rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        font-variant-numeric: tabular-nums;
+      }
+      .adm-trend {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: oklch(0.55 0.15 150);
+      }
+      .adm-trend[data-down] {
+        color: var(--destructive);
+      }
+      .adm-trend svg {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+      }
+      .adm-trend[data-down] svg {
+        transform: scaleY(-1);
+      }
+      .adm-trend span {
+        color: var(--muted-foreground);
+        font-weight: 400;
+      }
+      .adm-bar {
+        display: block;
+        block-size: 0.375rem;
+        min-inline-size: 5rem;
+        border-radius: 999px;
+        background: var(--muted);
+        overflow: hidden;
+      }
+      .adm-bar > span {
+        display: block;
+        block-size: 100%;
+        border-radius: inherit;
+        background: var(--primary);
+      }
+      html.dark .adm-course img {
+        filter: brightness(0.8);
+      }
+
+      .adm-dash {
+        display: grid;
+        gap: 1rem;
+      }
+      @container (width >= 56rem) {
+        .adm-dash {
+          grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+        }
+      }
+      .adm-chart {
+        position: relative;
+        block-size: 16rem;
+      }
+      .adm-chart-grid {
+        position: absolute;
+        inset: 0 0 1.5rem;
+        display: grid;
+        grid-template-rows: repeat(4, 1fr);
+      }
+      .adm-chart-grid span {
+        border-block-start: 1px dashed var(--border);
+      }
+      .adm-chart-bars {
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        gap: 0.5rem;
+        block-size: 100%;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .adm-chart-bars li {
+        flex: 1;
+        display: grid;
+        grid-template-rows: minmax(0, 1fr) 1.5rem;
+        justify-items: center;
+        block-size: 100%;
+      }
+      .adm-chart-bar {
+        position: relative;
+        align-self: end;
+        inline-size: min(100%, 3rem);
+        block-size: var(--h);
+        border-radius: calc(var(--radius) - 2px) calc(var(--radius) - 2px) 2px 2px;
+        background: var(--chart-1, var(--primary));
+        transition:
+          block-size 300ms ease,
+          background-color 150ms ease;
+        outline: none;
+      }
+      .adm-chart-bar:hover,
+      .adm-chart-bar:focus-visible {
+        background: color-mix(in oklab, var(--chart-1, var(--primary)) 80%, var(--foreground));
+      }
+      .adm-chart-bar:focus-visible {
+        box-shadow:
+          0 0 0 2px var(--background),
+          0 0 0 4px var(--ring);
+      }
+      .adm-chart-tip {
+        position: absolute;
+        inset-block-end: calc(100% + 0.375rem);
+        inset-inline-start: 50%;
+        translate: -50% 0;
+        padding: 0.25rem 0.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--foreground);
+        color: var(--background);
+        font-size: 0.75rem;
+        font-weight: 500;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 150ms ease;
+      }
+      .adm-chart-bar:is(:hover, :focus-visible) .adm-chart-tip {
+        opacity: 1;
+      }
+      .adm-chart-bars small {
+        align-self: end;
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+      }
+      .adm-sources {
+        display: grid;
+        gap: 0.875rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-size: 0.875rem;
+      }
+      .adm-sources li {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 5rem 2.5rem;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .adm-sources b {
+        font-weight: 500;
+        text-align: end;
+        font-variant-numeric: tabular-nums;
+      }
+      .adm-top .table td {
+        vertical-align: middle;
+      }
+      .adm-top .adm-bar {
+        inline-size: 6rem;
+      }
+      .adm-feed {
+        display: grid;
+        gap: 1rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .adm-feed li {
+        display: flex;
+        gap: 0.75rem;
+      }
+      .adm-feed p {
+        margin: 0;
+        font-size: 0.8125rem;
+        line-height: 1.45;
+      }
+      .adm-feed strong {
+        font-weight: 500;
+      }
+      .adm-feed small {
+        display: block;
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .adm-chart-bar {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <aside id="adm-sidebar" class="sidebar" data-collapsible="icon">
+      <nav aria-label="Instructor">
+        <header>
+          <ul>
+            <li>
+              <a href="#" data-size="lg">
+                <span class="adm-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0zM22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span>
+                <span>
+                  <strong>Acme Learn</strong>
+                  <small>Instructor</small>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </header>
+        <section>
+          <div role="group" aria-labelledby="adm-g0">
+            <h3 id="adm-g0">Overview</h3>
+            <ul>
+              <li>
+                <a href="#" aria-current="page" data-tooltip="Dashboard" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17V5"/><path d="M18 17V9"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 17v-3"/></svg>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Courses" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                  <span>Courses</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Media library" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                  <span>Media library</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div role="group" aria-labelledby="adm-g1">
+            <h3 id="adm-g1">Students</h3>
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Students" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
+                  <span>Students</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Reviews" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <span>Reviews</span>
+                  <span data-badge>4</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Q&A" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  <span>Q&A</span>
+                  <span data-badge>12</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div role="group" aria-labelledby="adm-g2">
+            <h3 id="adm-g2">Business</h3>
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Pricing" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+                  <span>Pricing</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Coupons" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9a3 3 0 1 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 1 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M9 9h.01"/><path d="m15 9-6 6"/><path d="M15 15h.01"/></svg>
+                  <span>Coupons</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Settings" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <span>Settings</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </section>
+        <footer>
+          <ul>
+            <li>
+              <a href="#" data-size="lg">
+                <span class="avatar" data-size="sm"><span>LO</span></span>
+                <span>
+                  <strong>Lena Ortiz</strong>
+                  <small>lena@acme.learn</small>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </footer>
+      </nav>
+    </aside>
+    <main class="adm-main">
+      <header class="adm-header">
+        <button
+          type="button"
+          class="btn"
+          data-variant="ghost"
+          data-size="icon-sm"
+          data-sidebar-toggle="adm-sidebar"
+          aria-controls="adm-sidebar"
+          aria-label="Toggle sidebar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        </button>
+        <hr role="separator" aria-orientation="vertical" />
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="#">Instructor</a></li>
+            <li aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></li>
+            <li><span aria-current="page">Dashboard</span></li>
+          </ol>
+        </nav>
+        <div class="adm-header-end"></div>
+      </header>
+      <div class="adm-body">
+        <div class="adm-title">
+          <div>
+            <h1>Welcome back, Lena</h1>
+            <p>Here's how your courses are doing.</p>
+          </div>
+          <div>
+            <fieldset class="toggle-group" data-variant="outline" data-size="sm" data-range>
+              <legend class="sr-only">Date range</legend>
+              <label class="toggle">
+                <input type="radio" name="a6-range" value="7d" />
+                7 days
+              </label>
+              <label class="toggle">
+                <input type="radio" name="a6-range" value="30d" checked />
+                30 days
+              </label>
+              <label class="toggle">
+                <input type="radio" name="a6-range" value="12m" />
+                12 months
+              </label>
+            </fieldset>
+          </div>
+        </div>
+        <div class="adm-kpis" data-kpis>
+          <div class="card adm-kpi">
+            <p>Revenue</p>
+            <strong data-kpi-value>$65,400</strong>
+            <span class="adm-trend" data-kpi-trend>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              <b data-kpi-delta>+12.6%</b>
+              <span>vs previous period</span>
+            </span>
+          </div>
+          <div class="card adm-kpi">
+            <p>Enrollments</p>
+            <strong data-kpi-value>4,870</strong>
+            <span class="adm-trend" data-kpi-trend>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              <b data-kpi-delta>+9.8%</b>
+              <span>vs previous period</span>
+            </span>
+          </div>
+          <div class="card adm-kpi">
+            <p>Completion rate</p>
+            <strong data-kpi-value>46%</strong>
+            <span class="adm-trend" data-kpi-trend>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              <b data-kpi-delta>+2.1%</b>
+              <span>vs previous period</span>
+            </span>
+          </div>
+          <div class="card adm-kpi">
+            <p>Average rating</p>
+            <strong data-kpi-value>4.8</strong>
+            <span class="adm-trend" data-kpi-trend>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              <b data-kpi-delta>0.0</b>
+              <span>vs previous period</span>
+            </span>
+          </div>
+        </div>
+        <div class="adm-dash">
+          <section class="card adm-chart-card">
+            <header>
+              <h2>Revenue</h2>
+              <p data-chart-note>Weekly, last 30 days</p>
+            </header>
+            <section>
+              <div class="adm-chart">
+                <div class="adm-chart-grid" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <ol class="adm-chart-bars" data-bars aria-label="Revenue by period">
+                  <li style="--h: 75%">
+                    <span class="adm-chart-bar" tabindex="0" aria-label="W1: $14,200">
+                      <span class="adm-chart-tip">$14,200</span>
+                    </span>
+                    <small>W1</small>
+                  </li>
+                  <li style="--h: 89%">
+                    <span class="adm-chart-bar" tabindex="0" aria-label="W2: $16,850">
+                      <span class="adm-chart-tip">$16,850</span>
+                    </span>
+                    <small>W2</small>
+                  </li>
+                  <li style="--h: 81%">
+                    <span class="adm-chart-bar" tabindex="0" aria-label="W3: $15,420">
+                      <span class="adm-chart-tip">$15,420</span>
+                    </span>
+                    <small>W3</small>
+                  </li>
+                  <li style="--h: 100%">
+                    <span class="adm-chart-bar" tabindex="0" aria-label="W4: $18,930">
+                      <span class="adm-chart-tip">$18,930</span>
+                    </span>
+                    <small>W4</small>
+                  </li>
+                </ol>
+              </div>
+            </section>
+          </section>
+          <section class="card">
+            <header>
+              <h2>Traffic sources</h2>
+              <p>Where new students come from</p>
+            </header>
+            <section>
+              <ul class="adm-sources">
+                <li>
+                  <span>Marketplace search</span>
+                  <span class="adm-bar"><span style="width: 48%"></span></span>
+                  <b>48%</b>
+                </li>
+                <li>
+                  <span>Your promotions</span>
+                  <span class="adm-bar"><span style="width: 22%"></span></span>
+                  <b>22%</b>
+                </li>
+                <li>
+                  <span>Direct</span>
+                  <span class="adm-bar"><span style="width: 14%"></span></span>
+                  <b>14%</b>
+                </li>
+                <li>
+                  <span>Social</span>
+                  <span class="adm-bar"><span style="width: 11%"></span></span>
+                  <b>11%</b>
+                </li>
+                <li>
+                  <span>Affiliates</span>
+                  <span class="adm-bar"><span style="width: 5%"></span></span>
+                  <b>5%</b>
+                </li>
+              </ul>
+            </section>
+          </section>
+          <section class="card adm-top">
+            <header>
+              <h2>Top courses</h2>
+              <div class="card-action">
+                <a href="#" class="btn" data-variant="ghost" data-size="sm">View all</a>
+              </div>
+            </header>
+            <section>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Course</th>
+                    <th class="adm-num">Revenue</th>
+                    <th><span class="sr-only">Share</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="adm-course">
+                        <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="2" />
+                        <span>
+                          <strong>Brand Identity Design from Scratch</strong>
+                          <small>28,940 students · 4.8★</small>
+                        </span>
+                      </div>
+                    </td>
+                    <td class="adm-num">$412,300</td>
+                    <td>
+                      <span class="adm-bar"><span style="width: 100%"></span></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="adm-course">
+                        <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="3" />
+                        <span>
+                          <strong>Hand Lettering Masterclass</strong>
+                          <small>15,210 students · 4.8★</small>
+                        </span>
+                      </div>
+                    </td>
+                    <td class="adm-num">$228,150</td>
+                    <td>
+                      <span class="adm-bar"><span style="width: 55%"></span></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="adm-course">
+                        <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="3" />
+                        <span>
+                          <strong>Watercolor Botanicals for Beginners</strong>
+                          <small>12,480 students · 4.9★</small>
+                        </span>
+                      </div>
+                    </td>
+                    <td class="adm-num">$186,200</td>
+                    <td>
+                      <span class="adm-bar"><span style="width: 45%"></span></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="adm-course">
+                        <img class="shop-shot" src="assets/placeholder.svg" alt />
+                        <span>
+                          <strong>Product Photography at Home</strong>
+                          <small>8,930 students · 4.7★</small>
+                        </span>
+                      </div>
+                    </td>
+                    <td class="adm-num">$97,400</td>
+                    <td>
+                      <span class="adm-bar"><span style="width: 24%"></span></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="adm-course">
+                        <img class="shop-shot" src="assets/placeholder.svg" alt />
+                        <span>
+                          <strong>Motion Design Basics</strong>
+                          <small>6,120 students · 4.6★</small>
+                        </span>
+                      </div>
+                    </td>
+                    <td class="adm-num">$73,440</td>
+                    <td>
+                      <span class="adm-bar"><span style="width: 18%"></span></span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+          </section>
+          <section class="card">
+            <header><h2>Recent activity</h2></header>
+            <section>
+              <ul class="adm-feed">
+                <li>
+                  <span class="avatar" data-size="sm"><span>MC</span></span>
+                  <p>
+                    <strong>Maya Chen</strong>
+                    completed
+                    <strong>Brand Identity Design</strong>
+                    <small>12 min ago</small>
+                  </p>
+                </li>
+                <li>
+                  <span class="avatar" data-size="sm"><span>DO</span></span>
+                  <p>
+                    <strong>Daniel Okafor</strong>
+                    left a 5-star review on
+                    <strong>Brand Identity Design</strong>
+                    <small>40 min ago</small>
+                  </p>
+                </li>
+                <li>
+                  <span class="avatar" data-size="sm"><span>SR</span></span>
+                  <p>
+                    <strong>Sofia Rossi</strong>
+                    enrolled in
+                    <strong>Watercolor Botanicals</strong>
+                    <small>1 hour ago</small>
+                  </p>
+                </li>
+                <li>
+                  <span class="avatar" data-size="sm"><span>HS</span></span>
+                  <p>
+                    <strong>Hana Sato</strong>
+                    asked a question in
+                    <strong>Brand Identity Design</strong>
+                    <small>3 hours ago</small>
+                  </p>
+                </li>
+              </ul>
+            </section>
+          </section>
+        </div>
+      </div>
+    </main>
+    <script>
+      // Dropdown row menus close after a choice.
+      document
+        .querySelectorAll("[data-popover] [role=menuitem]")
+        .forEach((m) => m.addEventListener("click", () => m.closest("[popover]")?.hidePopover?.()));
+      // Tables: status tabs, search, row selection with a bulk bar.
+      document.querySelectorAll("[data-adm-table]").forEach((root) => {
+        const tbody = root.querySelector("tbody");
+        const rows = () => [...tbody.querySelectorAll("tr[data-row]")];
+        const tabs = [...root.querySelectorAll("[data-tab]")];
+        const search = root.querySelector("[data-search]");
+        const select = root.querySelector("[data-filter-select]");
+        const all = root.querySelector("[data-select-all]");
+        const bulk = root.querySelector("[data-bulk]");
+        const empty = root.querySelector("[data-empty]");
+        let tab = "all";
+        const counts = () =>
+          tabs.forEach((t) => {
+            const k = t.dataset.tab;
+            t.querySelector(".badge").textContent = rows().filter(
+              (r) => k === "all" || r.dataset.status === k,
+            ).length;
+          });
+        const apply = () => {
+          const q = (search?.value || "").trim().toLowerCase();
+          const f = select?.value || "all";
+          let shown = 0;
+          rows().forEach((r) => {
+            const ok =
+              (tab === "all" || r.dataset.status === tab) &&
+              (!q || r.textContent.toLowerCase().includes(q)) &&
+              (f === "all" || r.dataset.filter === f);
+            r.hidden = !ok;
+            if (!ok) r.querySelector("[data-select]").checked = false;
+            shown += ok;
+          });
+          if (empty) empty.hidden = shown > 0;
+          sync();
+        };
+        const sync = () => {
+          const vis = rows().filter((r) => !r.hidden);
+          const sel = vis.filter((r) => r.querySelector("[data-select]").checked);
+          vis.forEach((r) =>
+            r.toggleAttribute("data-selected", r.querySelector("[data-select]").checked),
+          );
+          if (all) {
+            all.checked = vis.length > 0 && sel.length === vis.length;
+            all.indeterminate = sel.length > 0 && sel.length < vis.length;
+          }
+          if (bulk) {
+            bulk.hidden = !sel.length;
+            bulk.querySelector("[data-bulk-count]").textContent = `${sel.length} selected`;
+          }
+        };
+        tabs.forEach((t) =>
+          t.addEventListener("click", () => {
+            tab = t.dataset.tab;
+            tabs.forEach((x) => x.setAttribute("aria-pressed", String(x === t)));
+            apply();
+          }),
+        );
+        search?.addEventListener("input", apply);
+        select?.addEventListener("change", apply);
+        all?.addEventListener("change", () => {
+          rows()
+            .filter((r) => !r.hidden)
+            .forEach((r) => {
+              r.querySelector("[data-select]").checked = all.checked;
+            });
+          sync();
+        });
+        tbody.addEventListener("change", (e) => {
+          if (e.target.matches("[data-select]")) sync();
+        });
+        const selected = () =>
+          rows().filter((r) => !r.hidden && r.querySelector("[data-select]").checked);
+        root.querySelectorAll("[data-bulk-status]").forEach((b) =>
+          b.addEventListener("click", () => {
+            selected().forEach((r) => {
+              r.dataset.status = b.dataset.bulkStatus;
+              const s = r.querySelector(".adm-status");
+              s.dataset.status = b.dataset.bulkStatus;
+              s.textContent = b.dataset.label;
+              r.querySelector("[data-select]").checked = false;
+            });
+            counts();
+            apply();
+          }),
+        );
+        root.querySelector("[data-bulk-delete]")?.addEventListener("click", () => {
+          selected().forEach((r) => r.remove());
+          counts();
+          apply();
+        });
+        root.querySelector("[data-bulk-clear]")?.addEventListener("click", () => {
+          rows().forEach((r) => {
+            r.querySelector("[data-select]").checked = false;
+          });
+          sync();
+        });
+        root.addEventListener("click", (e) => {
+          const del = e.target.closest("[data-row-delete]");
+          if (del) {
+            del.closest("tr").remove();
+            counts();
+            apply();
+          }
+        });
+        root.admRefresh = () => {
+          counts();
+          apply();
+        };
+        counts();
+        apply();
+      });
+
+      (() => {
+        const DATA = {
+          "7d": {
+            labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            values: [1840, 2210, 1960, 2580, 3120, 2740, 2380],
+            kpis: ["$16,830", "+8.4%", "1,204", "+5.1%", "47%", "+1.2%", "4.8", "+0.1"],
+          },
+          "30d": {
+            labels: ["W1", "W2", "W3", "W4"],
+            values: [14200, 16850, 15420, 18930],
+            kpis: ["$65,400", "+12.6%", "4,870", "+9.8%", "46%", "+2.1%", "4.8", "0.0"],
+          },
+          "12m": {
+            labels: [
+              "Dec",
+              "Jan",
+              "Feb",
+              "Mar",
+              "Apr",
+              "May",
+              "Jun",
+              "Jul",
+              "Aug",
+              "Sep",
+              "Oct",
+              "Nov",
+            ],
+            values: [
+              42100, 51800, 48300, 55200, 58900, 54100, 61200, 59800, 63400, 66100, 64200, 65400,
+            ],
+            kpis: ["$690,500", "+31.2%", "58,320", "+24.5%", "45%", "+4.0%", "4.8", "+0.2"],
+          },
+        };
+        const NOTE = {
+          "7d": "Daily, last 7 days",
+          "30d": "Weekly, last 30 days",
+          "12m": "Monthly, last 12 months",
+        };
+        const fmt = (v) => `$${v.toLocaleString("en-US")}`;
+        const draw = (k) => {
+          const d = DATA[k];
+          const max = Math.max(...d.values);
+          const ol = document.querySelector("[data-bars]");
+          ol.innerHTML = d.values
+            .map(
+              (v, i) =>
+                `<li style="--h: ${Math.round((v / max) * 100)}%"><span class="adm-chart-bar" tabindex="0" aria-label="${d.labels[i]}: ${fmt(v)}"><span class="adm-chart-tip">${fmt(v)}</span></span><small>${d.labels[i]}</small></li>`,
+            )
+            .join("");
+          document.querySelector("[data-chart-note]").textContent = NOTE[k];
+          document.querySelectorAll("[data-kpis] > .adm-kpi").forEach((c, i) => {
+            c.querySelector("[data-kpi-value]").textContent = d.kpis[i * 2];
+            const delta = d.kpis[i * 2 + 1];
+            c.querySelector("[data-kpi-delta]").textContent = delta;
+            c.querySelector("[data-kpi-trend]").toggleAttribute("data-down", delta.startsWith("-"));
+          });
+        };
+        document
+          .querySelectorAll("[name=a6-range]")
+          .forEach((r) => r.addEventListener("change", () => draw(r.value)));
+      })();
+    </script>
+  </body>
+</html>

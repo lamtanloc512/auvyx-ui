@@ -110,7 +110,7 @@ LEGAL_CSS = """
   .block-legal a:hover { color: var(--primary); }"""
 
 
-PREFIXES = ("block-", "sb-", "cal-", "app-", "db-", "shop-")
+PREFIXES = ("block-", "sb-", "cal-", "app-", "db-", "shop-", "hf-", "adm-")
 
 
 def prune_css(css, html):
