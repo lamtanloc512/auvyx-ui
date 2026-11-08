@@ -56,6 +56,26 @@ SHOP_ICONS = {
     "shield-check": '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12l2 2l4-4"/>',
     "chevron-right": '<path d="m9 18 6-6-6-6"/>',
     "chevron-down": '<path d="m6 9 6 6 6-6"/>',
+    "play": '<path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/>',
+    "pause": '<rect height="18" rx="1" width="5" x="14" y="3"/><rect height="18" rx="1" width="5" x="5" y="3"/>',
+    "book-open": '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+    "users": '<circle cx="9" cy="7" r="4"/><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/>',
+    "monitor": '<line x1="12" x2="12" y1="17" y2="21"/><line x1="8" x2="16" y1="21" y2="21"/><rect height="14" rx="2" width="20" x="2" y="3"/>',
+    "smartphone": '<path d="M12 18h.01"/><rect height="20" rx="2" width="14" x="5" y="2"/>',
+    "file-text": '<path d="M10 9H8"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/>',
+    "chart-column": '<path d="M13 17V5"/><path d="M18 17V9"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 17v-3"/>',
+    "calendar": '<path d="M16 2v4"/><path d="M3 10h18"/><path d="M8 2v4"/><rect height="18" rx="2" width="18" x="3" y="4"/>',
+    "message-square": '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+    "award": '<path d="m15.477 12.89l1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/>',
+    "globe": '<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20a14.5 14.5 0 0 0 0-20M2 12h20"/>',
+    "infinity": '<path d="M6 16c5 0 7-8 12-8a4 4 0 0 1 0 8c-5 0-7-8-12-8a4 4 0 1 0 0 8"/>',
+    "captions": '<rect width="18" height="14" x="3" y="5" rx="2" ry="2"/><path d="M7 15h4m4 0h2M7 11h2m4 0h4"/>',
+    "graduation-cap": '<path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0zM22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>',
+    "volume-2": '<path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298zM16 9a5 5 0 0 1 0 6m3.364 3.364a9 9 0 0 0 0-12.728"/>',
+    "maximize": '<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m8 0h3a2 2 0 0 0 2-2v-3"/>',
+    "circle-play": '<path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"/><circle cx="12" cy="12" r="10"/>',
+    "notebook-pen": '<path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4M2 6h4m-4 4h4m-4 4h4m-4 4h4"/><path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/>',
+    "trophy": '<path d="M10 14.66V17a1 1 0 0 1-1 1a2 2 0 0 0-2 2v2m7-7.34V17a1 1 0 0 0 1 1a2 2 0 0 1 2 2v2m.916-12H19.5A2.5 2.5 0 0 0 22 7.5V5a1 1 0 0 0-1-1h-3M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3"/>',
     "upload": '<path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>',
     "sparkles": '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>',
     "copy": '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
@@ -1615,6 +1635,7 @@ CATALOG_CSS = """
   .shop-check-list { display: grid; gap: 0.625rem; padding-block-end: 0.5rem; }
   .shop-check-list label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; }
   .shop-check-list label span { margin-inline-start: auto; color: var(--muted-foreground); font-size: 0.75rem; }
+  .shop-check-list label > .shop-stars { margin-inline-start: 0; }
   .shop-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; }
   .shop-toolbar .select { inline-size: auto; }
   .shop-chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
@@ -1917,7 +1938,7 @@ add("product-02", "Product 02", "Product grid with a quick view dialog: images, 
       <section>
         <div class="shop-qv-grid">
           <img class="shop-pdp-main" src="{PH}" alt="">
-          <div class="stack" data-gap="5">
+          <div class="stack" data-gap="4">
             <div class="stack" data-gap="2">
               <p class="shop-card-cat">{QV["cat"]}</p>
               <h2 class="shop-pdp-title" id="p2-qv-title">{QV["name"]}</h2>
@@ -2264,7 +2285,7 @@ add("search-02", "Search 02", "Search results with filters, sort, active filter 
     </div>
     <div class="shop-results">
       {filters_panel}
-      <div class="stack" data-gap="5">
+      <div class="stack" data-gap="4">
         <div class="shop-toolbar">
           <p class="shop-lead">Showing 6 of 24 results</p>
           <div class="cluster" data-gap="2">
@@ -2937,7 +2958,7 @@ add("filter-01", "Filter 01", "A filter sidebar that filters the grid live: cate
         </div>
         <div class="shop-switch-row"><label for="f1-stock">In stock only</label><input type="checkbox" role="switch" class="input" id="f1-stock" name="stock" value="in"></div>
       </form>
-      <div class="stack" data-gap="5">
+      <div class="stack" data-gap="4">
         <div class="shop-toolbar">
           {chip_box()}
           <div class="cluster shop-filter-end" data-gap="2">
@@ -2973,7 +2994,7 @@ f2_bar = "".join([
 add("filter-02", "Filter 02", "A horizontal filter bar with a popover per filter, active chips, a result count and sort.", "filter", f"""
 {store_header(3)}
 <main class="wrapper shop-page">
-  <div class="stack" data-gap="5">
+  <div class="stack" data-gap="4">
     <div class="stack" data-gap="1">
       <h1 class="shop-h1">Shop all</h1>
       <p class="shop-lead">Considered pieces for every room and every day.</p>
@@ -3239,7 +3260,7 @@ add("category-03", "Category 03", "A category listing: subcategory tree, pills, 
     </div>
     <div class="shop-results">
       <nav class="shop-tree shop-filters-panel" aria-label="Categories"><ul>{tree}</ul></nav>
-      <div class="stack" data-gap="5">
+      <div class="stack" data-gap="4">
         <div class="shop-toolbar">
           <nav class="shop-pills" aria-label="Sweater types">{pills}</nav>
           <div class="cluster" data-gap="2">
@@ -4060,6 +4081,1148 @@ add("reviews-03", "Reviews 03", "Review highlights: a summary, pro and con tags 
   .shop-tags button svg { inline-size: 0.875rem; block-size: 0.875rem; }
   .shop-tags-mini { display: flex; flex-wrap: wrap; gap: 0.25rem; }
   .shop-reel:focus-visible { outline: 2px solid var(--ring); outline-offset: 4px; }""", scripts=script(TAGS_JS))
+
+
+
+# ================================================================== online courses (Udemy / Domestika style)
+COURSES = [
+    {"id": "brand", "title": "Brand Identity Design from Scratch", "by": "Lena Ortiz", "role": "Brand designer", "cat": "Design", "rating": 4.8, "reviews": 3412, "students": 28940, "hours": 7.5, "lectures": 64, "level": "Beginner", "price": 19.99, "was": 89.99, "badge": "Bestseller", "shot": 1,
+     "sub": "Build a complete visual identity: research, logo, color, type and a brand book.", "learn": ["Research a brand and write a creative brief", "Sketch and refine a logo in Illustrator", "Pick a palette and type pairing that fit", "Deliver a brand book clients understand"]},
+    {"id": "watercolor", "title": "Expressive Watercolor Botanicals", "by": "Mai Tanaka", "role": "Illustrator", "cat": "Illustration", "rating": 4.9, "reviews": 1288, "students": 9120, "hours": 4.0, "lectures": 31, "level": "Beginner", "price": 14.99, "was": 59.99, "badge": "Highest rated", "shot": 2,
+     "sub": "Paint loose, luminous flowers with a limited palette and confident brushwork.", "learn": ["Mix a limited palette", "Control wet-on-wet blooms", "Compose a botanical page", "Scan and clean your art"]},
+    {"id": "react", "title": "React 19 and TypeScript: Build Real Apps", "by": "Daniel Rossi", "role": "Senior engineer", "cat": "Development", "rating": 4.7, "reviews": 15211, "students": 112400, "hours": 32.0, "lectures": 248, "level": "Intermediate", "price": 24.99, "was": 129.99, "badge": "Bestseller", "shot": 3,
+     "sub": "Hooks, server components, forms and testing, with four portfolio projects.", "learn": ["Model state with hooks and reducers", "Fetch data with server components", "Type props and forms with TypeScript", "Test components with Vitest"]},
+    {"id": "photo", "title": "Mobile Photography for Instagram", "by": "Sofia Lind", "role": "Photographer", "cat": "Photography", "rating": 4.6, "reviews": 2204, "students": 17630, "hours": 3.5, "lectures": 27, "level": "Beginner", "price": 0, "was": None, "badge": "Free", "shot": 4,
+     "sub": "Compose, shoot and edit striking photos with the phone in your pocket.", "learn": ["Use light and composition", "Shoot portraits and food", "Edit in Lightroom Mobile", "Plan a consistent feed"]},
+    {"id": "motion", "title": "Motion Design in After Effects", "by": "Tom Becker", "role": "Motion designer", "cat": "Animation", "rating": 4.8, "reviews": 4103, "students": 31200, "hours": 12.5, "lectures": 96, "level": "Intermediate", "price": 22.99, "was": 99.99, "badge": "New", "shot": 1,
+     "sub": "Animate logos, UI and explainer scenes with keyframes, easing and expressions.", "learn": ["Ease keyframes in the graph editor", "Animate shape layers and text", "Use expressions for loops", "Export for web and social"]},
+    {"id": "excel", "title": "Data Analysis with Excel and Power BI", "by": "Priya Shah", "role": "Data analyst", "cat": "Business", "rating": 4.5, "reviews": 8840, "students": 64010, "hours": 18.0, "lectures": 140, "level": "All levels", "price": 17.99, "was": 84.99, "badge": None, "shot": 3,
+     "sub": "Clean data, build pivot tables and publish interactive dashboards.", "learn": ["Clean data with Power Query", "Summarize with pivot tables", "Model data in Power BI", "Share dashboards with your team"]},
+    {"id": "ceramics", "title": "Wheel-Thrown Ceramics at Home", "by": "Hugo Martín", "role": "Ceramist", "cat": "Craft", "rating": 4.9, "reviews": 642, "students": 5230, "hours": 5.5, "lectures": 42, "level": "Beginner", "price": 29.99, "was": None, "badge": "Highest rated", "shot": 2,
+     "sub": "Center, throw, trim and glaze bowls and mugs on a tabletop wheel.", "learn": ["Wedge and center clay", "Throw cylinders and bowls", "Trim and add handles", "Glaze and fire safely"]},
+    {"id": "copy", "title": "Copywriting That Sells", "by": "Grace Kim", "role": "Copywriter", "cat": "Marketing", "rating": 4.4, "reviews": 1910, "students": 22870, "hours": 6.0, "lectures": 48, "level": "Advanced", "price": 16.99, "was": 74.99, "badge": None, "shot": 4,
+     "sub": "Write headlines, landing pages and emails that turn readers into customers.", "learn": ["Find the promise that sells", "Write headlines that hook", "Structure a landing page", "Write a 5-email sequence"]},
+]
+C = {c["id"]: c for c in COURSES}
+
+COURSE_CSS = """
+  .crs-thumb { aspect-ratio: 16 / 9; }
+  .crs-grid { display: grid; gap: 1.75rem 1.25rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
+  .crs-card { position: relative; display: flex; flex-direction: column; gap: 0.625rem; }
+  .crs-card-media { position: relative; overflow: hidden; border-radius: var(--radius); background: var(--muted); }
+  .crs-card-media > img { display: block; transition: transform 300ms ease; }
+  .crs-card:hover .crs-card-media > img { transform: scale(1.04); }
+  .crs-card-media .badge { position: absolute; inset-block-start: 0.625rem; inset-inline-start: 0.625rem; }
+  .crs-dur { position: absolute; inset-block-end: 0.5rem; inset-inline-end: 0.5rem; padding: 0.125rem 0.375rem; border-radius: calc(var(--radius) - 4px); background: rgb(0 0 0 / 0.72); color: #fff; font-size: 0.6875rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .crs-card h3 { margin: 0; font-size: 0.9375rem; font-weight: 600; line-height: 1.35; }
+  .crs-card h3 a { color: inherit; text-decoration: none; }
+  .crs-card h3 a::after { content: ''; position: absolute; inset: 0; z-index: 1; }
+  .crs-card h3 a:focus-visible { outline: none; }
+  .crs-card:has(h3 a:focus-visible) .crs-card-media { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .crs-by { margin: 0; font-size: 0.8125rem; color: var(--muted-foreground); }
+  .crs-rate { display: flex; align-items: center; gap: 0.375rem; margin: 0; font-size: 0.8125rem; }
+  .crs-rate strong { font-weight: 700; color: oklch(0.6 0.15 70); }
+  .crs-rate .shop-stars { color: oklch(0.72 0.16 75); }
+  .crs-rate span { color: var(--muted-foreground); }
+  .crs-meta { display: flex; flex-wrap: wrap; gap: 0.25rem 0.5rem; margin: 0; padding: 0; list-style: none; font-size: 0.75rem; color: var(--muted-foreground); }
+  .crs-meta li { display: inline-flex; align-items: center; gap: 0.25rem; }
+  .crs-meta li + li::before { content: '·'; margin-inline-end: 0.25rem; }
+  .crs-price { display: flex; align-items: baseline; gap: 0.5rem; margin: 0; font-variant-numeric: tabular-nums; }
+  .crs-price strong { font-size: 1rem; font-weight: 700; }
+  .crs-price s { font-size: 0.8125rem; color: var(--muted-foreground); }
+  .crs-price[data-size='lg'] strong { font-size: 2rem; letter-spacing: -0.02em; }
+  .crs-price[data-size='lg'] s { font-size: 1rem; }
+  .crs-off { font-size: 0.875rem; font-weight: 500; }
+  .crs-header { position: sticky; inset-block-start: 0; z-index: 10; border-block-end: 1px solid var(--border); background: color-mix(in oklab, var(--background) 92%, transparent); backdrop-filter: blur(8px); }
+  .crs-header-row { display: flex; align-items: center; gap: 1rem; block-size: 4rem; }
+  .crs-header-search { flex: 1; max-inline-size: 30rem; }
+  .crs-header-search input { border-radius: 999px; }
+  .crs-header-nav { display: flex; align-items: center; gap: 0.25rem; margin-inline-start: auto; }
+  .crs-header-nav > a:not(.btn) { padding: 0.5rem 0.625rem; color: var(--muted-foreground); font-size: 0.875rem; text-decoration: none; border-radius: var(--radius); }
+  .crs-header-nav > a:not(.btn):hover { color: var(--foreground); background: var(--accent); }
+  .crs-header .avatar { inline-size: 2rem; block-size: 2rem; font-size: 0.75rem; }
+  @media (width < 56rem) { .crs-header-nav > a:not(.btn) { display: none; } }
+  @media (width < 40rem) { .crs-header-search { display: none; } .crs-header-nav { margin-inline-start: auto; } }
+  .crs-pills { display: flex; gap: 0.5rem; overflow-x: auto; scrollbar-width: none; padding-block: 0.125rem; }
+  .crs-pills button { flex: none; padding: 0.4375rem 0.875rem; border: 1px solid var(--border); border-radius: 999px; background: none; color: inherit; font: inherit; font-size: 0.875rem; cursor: pointer; corner-shape: round; }
+  .crs-pills button:hover { background: var(--accent); }
+  .crs-pills button[aria-pressed='true'] { border-color: var(--foreground); background: var(--foreground); color: var(--background); }
+  .crs-pills button:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .crs-list-card { display: grid; grid-template-columns: 15rem minmax(0, 1fr) auto; gap: 1.25rem; padding-block: 1.25rem; border-block-end: 1px solid var(--border); position: relative; }
+  .crs-list-card .crs-card-media { align-self: start; }
+  .crs-list-card p { margin: 0; }
+  .crs-list-card .stack { min-inline-size: 0; }
+  @media (width < 48rem) { .crs-list-card { grid-template-columns: 8rem minmax(0, 1fr); } .crs-list-card > :last-child { grid-column: 2; } }
+  .crs-pop { position: absolute; inset-block-start: 0; inset-inline-start: calc(100% + 0.75rem); z-index: 20; inline-size: 20rem; display: grid; gap: 0.75rem; padding: 1.25rem; border: 1px solid var(--border); border-radius: calc(var(--radius) + 2px); background: var(--popover); color: var(--popover-foreground); box-shadow: 0 16px 40px -12px rgb(0 0 0 / 0.3); opacity: 0; visibility: hidden; transform: translateX(-0.5rem); transition: opacity 150ms ease, transform 150ms ease, visibility 0s 150ms; }
+  .crs-card[data-flip] .crs-pop { inset-inline-start: auto; inset-inline-end: calc(100% + 0.75rem); transform: translateX(0.5rem); }
+  .crs-card:hover .crs-pop { opacity: 1; visibility: visible; transform: none; transition-delay: 250ms, 250ms, 0s; }
+  .crs-card:focus-within .crs-pop { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+  .crs-pop::before { content: ''; position: absolute; inset-block-start: 2rem; inset-inline-start: -0.5rem; inline-size: 1rem; block-size: 1rem; rotate: 45deg; background: var(--popover); border-inline-start: 1px solid var(--border); border-block-end: 1px solid var(--border); }
+  .crs-card[data-flip] .crs-pop::before { inset-inline-start: auto; inset-inline-end: -0.5rem; border: 0; border-inline-end: 1px solid var(--border); border-block-start: 1px solid var(--border); }
+  .crs-pop h4 { margin: 0; font-size: 1rem; font-weight: 600; }
+  .crs-pop p { margin: 0; font-size: 0.8125rem; }
+  .crs-pop .crs-learn { gap: 0.375rem; }
+  .crs-pop-actions { position: relative; z-index: 2; display: flex; gap: 0.5rem; }
+  .crs-pop-actions .btn:first-child { flex: 1; }
+  @media (hover: none) { .crs-pop { display: none; } }
+  @media (width < 64rem) { .crs-pop { display: none; } }
+  .crs-learn { display: grid; gap: 0.625rem 1.5rem; margin: 0; padding: 0; list-style: none; font-size: 0.875rem; }
+  .crs-learn[data-cols='2'] { grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+  .crs-learn li { display: flex; gap: 0.625rem; align-items: flex-start; }
+  .crs-learn svg { flex: none; inline-size: 1rem; block-size: 1rem; margin-block-start: 0.1875rem; color: var(--primary); }
+  .crs-hero { color: #fff; background: oklch(0.2 0.02 270); }
+  .crs-hero-in { display: grid; gap: 1rem; padding-block: 2.5rem; }
+  @media (width >= 64rem) { .crs-hero-in { padding-inline-end: 24rem; } }
+  .crs-hero h1 { margin: 0; font-size: clamp(1.75rem, 3.6vw, 2.25rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; }
+  .crs-hero p { margin: 0; }
+  .crs-hero .shop-crumbs a { color: oklch(0.82 0.08 280); }
+  .crs-hero .shop-crumbs span { color: #fff; }
+  .crs-hero .crs-rate span { color: rgb(255 255 255 / 0.75); }
+  .crs-hero .crs-meta { color: rgb(255 255 255 / 0.8); font-size: 0.8125rem; }
+  .crs-hero .crs-meta svg { inline-size: 0.875rem; block-size: 0.875rem; }
+  .crs-hero a.crs-inline { color: oklch(0.82 0.08 280); }
+  .crs-detail { display: grid; gap: 2.5rem; align-items: start; padding-block: 2rem 4rem; }
+  @media (width >= 64rem) { .crs-detail { grid-template-columns: minmax(0, 1fr) 21rem; } .crs-buy { margin-block-start: -17rem; position: sticky; inset-block-start: 5rem; } }
+  .crs-buy { overflow: hidden; padding: 0; }
+  .crs-buy > section { padding: 1.25rem; }
+  .crs-preview { position: relative; display: block; inline-size: 100%; padding: 0; border: 0; background: #000; cursor: pointer; }
+  .crs-preview img { display: block; opacity: 0.85; }
+  .crs-preview > span { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 0.5rem; color: #fff; font-weight: 600; font-size: 0.875rem; background: linear-gradient(to top, rgb(0 0 0 / 0.65), transparent 70%); }
+  .crs-preview > span > span { display: grid; place-items: center; inline-size: 3.5rem; block-size: 3.5rem; border-radius: 999px; background: #fff; color: #111; transition: transform 150ms ease; corner-shape: round; }
+  .crs-preview > span > span svg { inline-size: 1.25rem; block-size: 1.25rem; fill: currentColor; margin-inline-start: 0.125rem; }
+  .crs-preview:hover > span > span { transform: scale(1.08); }
+  .crs-preview:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .crs-timer { display: flex; align-items: center; gap: 0.375rem; margin: 0; font-size: 0.8125rem; color: var(--destructive); }
+  .crs-timer svg { inline-size: 0.875rem; block-size: 0.875rem; }
+  .crs-includes { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; font-size: 0.8125rem; }
+  .crs-includes li { display: flex; gap: 0.625rem; align-items: center; }
+  .crs-includes svg { inline-size: 1rem; block-size: 1rem; flex: none; color: var(--muted-foreground); }
+  .crs-rating-head { display: flex; align-items: center; gap: 0.5rem; }
+  .crs-rating-head svg { inline-size: 1.25rem; block-size: 1.25rem; fill: oklch(0.72 0.16 75); color: oklch(0.72 0.16 75); }
+  .crs-box { padding: 1.5rem; border: 1px solid var(--border); border-radius: var(--radius); }
+  .crs-curr-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem; font-size: 0.875rem; }
+  .crs-curr { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .crs-curr > details { border-block-end: 1px solid var(--border); }
+  .crs-curr > details:last-child { border-block-end: 0; }
+  .crs-curr summary { display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 1rem; background: var(--muted); font-size: 0.9375rem; font-weight: 600; cursor: pointer; list-style: none; }
+  .crs-curr summary::-webkit-details-marker { display: none; }
+  .crs-curr summary > svg { inline-size: 1rem; block-size: 1rem; flex: none; transition: transform 150ms ease; }
+  .crs-curr details[open] > summary > svg { transform: rotate(180deg); }
+  .crs-curr summary small { margin-inline-start: auto; font-size: 0.8125rem; font-weight: 400; color: var(--muted-foreground); white-space: nowrap; }
+  .crs-curr summary:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; }
+  .crs-curr ul { list-style: none; margin: 0; padding: 0.5rem 1rem; }
+  .crs-lesson { display: flex; align-items: center; gap: 0.75rem; padding-block: 0.5rem; font-size: 0.875rem; }
+  .crs-lesson > svg { inline-size: 1rem; block-size: 1rem; flex: none; color: var(--muted-foreground); }
+  .crs-lesson > span:first-of-type { flex: 1; }
+  .crs-lesson a { color: var(--primary); }
+  .crs-lesson time { color: var(--muted-foreground); font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
+  .crs-clamp { position: relative; max-block-size: 12rem; overflow: hidden; }
+  .crs-clamp::after { content: ''; position: absolute; inset-inline: 0; inset-block-end: 0; block-size: 4rem; background: linear-gradient(transparent, var(--background)); }
+  .crs-clamp[data-open] { max-block-size: none; }
+  .crs-clamp[data-open]::after { display: none; }
+  .crs-prose { display: grid; gap: 0.75rem; font-size: 0.9375rem; line-height: 1.65; }
+  .crs-prose p { margin: 0; }
+  .crs-prose ul { margin: 0; padding-inline-start: 1.25rem; }
+  .crs-teacher { display: grid; gap: 1rem; }
+  .crs-teacher-top { display: flex; gap: 1rem; align-items: center; }
+  .crs-teacher-top .avatar { inline-size: 5rem; block-size: 5rem; font-size: 1.25rem; }
+  .crs-teacher-top h3 { margin: 0; font-size: 1.125rem; }
+  .crs-teacher-top h3 a { color: var(--primary); }
+  .crs-teacher-top p { margin: 0; color: var(--muted-foreground); font-size: 0.875rem; }
+  .crs-facts { display: grid; gap: 0.375rem; margin: 0; padding: 0; list-style: none; font-size: 0.875rem; }
+  .crs-facts li { display: flex; gap: 0.625rem; align-items: center; }
+  .crs-facts svg { inline-size: 1rem; block-size: 1rem; color: var(--muted-foreground); }
+  .crs-video { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius); background: #000; }
+  .crs-video > img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; opacity: 0.8; }
+  .crs-video-big { position: absolute; inset: 0; margin: auto; display: grid; place-items: center; inline-size: 4.5rem; block-size: 4.5rem; padding: 0; border: 0; border-radius: 999px; background: rgb(255 255 255 / 0.95); color: #111; cursor: pointer; corner-shape: round; transition: transform 150ms ease, opacity 150ms ease; }
+  .crs-video-big svg { inline-size: 1.75rem; block-size: 1.75rem; fill: currentColor; margin-inline-start: 0.1875rem; }
+  .crs-video-big:hover { transform: scale(1.06); }
+  .crs-video-big:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  .crs-video[data-playing] .crs-video-big { opacity: 0; pointer-events: none; }
+  .crs-controls { position: absolute; inset-inline: 0; inset-block-end: 0; display: grid; gap: 0.5rem; padding: 2rem 1rem 0.75rem; color: #fff; background: linear-gradient(transparent, rgb(0 0 0 / 0.75)); }
+  .crs-controls .progress { block-size: 0.25rem; background: rgb(255 255 255 / 0.3); }
+  .crs-controls .progress > span { background: var(--primary); }
+  .crs-controls-row { display: flex; align-items: center; gap: 0.25rem; font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
+  .crs-controls-row .btn { color: #fff; }
+  .crs-controls-row .btn:hover { background: rgb(255 255 255 / 0.15); color: #fff; }
+  .crs-controls-row time { margin-inline: 0.5rem auto; }
+  .crs-play svg + svg { display: none; }
+  .crs-play[aria-pressed='true'] svg { display: none; }
+  .crs-play[aria-pressed='true'] svg + svg { display: block; }
+  .crs-learnpage { display: grid; min-block-size: calc(100svh - 3.5rem); }
+  @media (width >= 64rem) { .crs-learnpage { grid-template-columns: minmax(0, 1fr) 24rem; } }
+  .crs-learn-main { display: grid; align-content: start; gap: 1.5rem; padding: 1.5rem; min-inline-size: 0; }
+  .crs-learn-side { border-inline-start: 1px solid var(--border); background: var(--background); }
+  @media (width >= 64rem) { .crs-learn-side { position: sticky; inset-block-start: 3.5rem; block-size: calc(100svh - 3.5rem); overflow-y: auto; } }
+  .crs-learn-side-head { position: sticky; inset-block-start: 0; z-index: 1; display: grid; gap: 0.5rem; padding: 1rem; border-block-end: 1px solid var(--border); background: var(--background); }
+  .crs-learn-side-head h2 { margin: 0; font-size: 1rem; }
+  .crs-learn-side-head p { margin: 0; font-size: 0.8125rem; color: var(--muted-foreground); }
+  .crs-learn-side details { border-block-end: 1px solid var(--border); }
+  .crs-learn-side summary { display: grid; gap: 0.125rem; padding: 0.875rem 1rem; background: var(--muted); cursor: pointer; list-style: none; }
+  .crs-learn-side summary::-webkit-details-marker { display: none; }
+  .crs-learn-side summary strong { font-size: 0.875rem; }
+  .crs-learn-side summary small { font-size: 0.75rem; color: var(--muted-foreground); }
+  .crs-learn-side ol { list-style: none; margin: 0; padding: 0; }
+  .crs-learn-side li { display: flex; gap: 0.75rem; align-items: flex-start; padding: 0.625rem 1rem; }
+  .crs-learn-side li[aria-current] { background: var(--accent); }
+  .crs-learn-side li > button { display: grid; gap: 0.125rem; flex: 1; padding: 0; border: 0; background: none; color: inherit; font: inherit; font-size: 0.875rem; text-align: start; cursor: pointer; }
+  .crs-learn-side li > button small { display: flex; align-items: center; gap: 0.25rem; color: var(--muted-foreground); font-size: 0.75rem; }
+  .crs-learn-side li > button small svg { inline-size: 0.75rem; block-size: 0.75rem; }
+  .crs-learn-side li > button:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .crs-learn-side li > input { margin-block-start: 0.1875rem; }
+  .crs-topbar { position: sticky; inset-block-start: 0; z-index: 10; display: flex; align-items: center; gap: 1rem; block-size: 3.5rem; padding-inline: 1rem; background: oklch(0.2 0.02 270); color: #fff; }
+  .crs-topbar .block-logo { color: #fff; }
+  .crs-topbar h1 { flex: 1; min-inline-size: 0; margin: 0; padding-inline-start: 1rem; border-inline-start: 1px solid rgb(255 255 255 / 0.2); font-size: 0.9375rem; font-weight: 500; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .crs-topbar .btn { color: #fff; }
+  .crs-topbar .btn:hover { background: rgb(255 255 255 / 0.12); color: #fff; }
+  .crs-ring { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; white-space: nowrap; }
+  .crs-ring svg { inline-size: 2rem; block-size: 2rem; rotate: -90deg; }
+  .crs-ring circle { fill: none; stroke-width: 3; }
+  .crs-ring circle:first-child { stroke: rgb(255 255 255 / 0.25); }
+  .crs-ring circle:last-child { stroke: oklch(0.82 0.15 85); stroke-linecap: round; transition: stroke-dashoffset 300ms ease; }
+  @media (width < 40rem) { .crs-ring span { display: none; } }
+  .crs-notes { display: grid; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+  .crs-notes li { display: grid; gap: 0.25rem; padding: 0.75rem 1rem; border-radius: var(--radius); background: var(--muted); font-size: 0.875rem; }
+  .crs-notes li .badge { justify-self: start; font-variant-numeric: tabular-nums; }
+  .crs-qa { display: grid; gap: 1.25rem; margin: 0; padding: 0; list-style: none; }
+  .crs-qa li { display: flex; gap: 0.75rem; }
+  .crs-qa .avatar { flex: none; inline-size: 2.25rem; block-size: 2.25rem; font-size: 0.75rem; }
+  .crs-qa p { margin: 0; font-size: 0.875rem; }
+  .crs-qa small { color: var(--muted-foreground); font-size: 0.75rem; }
+  .crs-mine { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); }
+  .crs-mine .card { overflow: hidden; padding-block-start: 0; gap: 0.875rem; }
+  .crs-mine .card[hidden] { display: none; }
+  .crs-mine .card > a { display: block; position: relative; }
+  .crs-mine .card > a img { display: block; }
+  .crs-mine .card > a::after { content: ''; position: absolute; inset: 0; background: rgb(0 0 0 / 0.35); opacity: 0; transition: opacity 150ms ease; }
+  .crs-mine .card > a > span { position: absolute; inset: 0; z-index: 1; display: grid; place-items: center; color: #fff; opacity: 0; transition: opacity 150ms ease; }
+  .crs-mine .card > a > span svg { inline-size: 3rem; block-size: 3rem; }
+  .crs-mine .card > a:hover::after { opacity: 1; }
+  .crs-mine .card > a:hover > span { opacity: 1; }
+  .crs-mine .card > a:focus-visible > span { opacity: 1; }
+  .crs-mine h3 { margin: 0; font-size: 0.9375rem; }
+  .crs-mine .progress { block-size: 0.375rem; }
+  .crs-mine-foot { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--muted-foreground); }
+  .crs-stars-input { display: inline-flex; gap: 0.125rem; color: oklch(0.72 0.16 75); }
+  .crs-stars-input svg { inline-size: 0.875rem; block-size: 0.875rem; fill: currentColor; }
+  .crs-continue { display: grid; gap: 1.25rem; padding: 1.25rem; border: 1px solid var(--border); border-radius: calc(var(--radius) + 2px); }
+  @media (width >= 48rem) { .crs-continue { grid-template-columns: 18rem minmax(0, 1fr); align-items: center; } }
+  .crs-continue img { border-radius: var(--radius); }
+  .crs-continue h2 { margin: 0; font-size: 1.25rem; }
+  .crs-profile { display: grid; gap: 2rem; align-items: start; }
+  @media (width >= 56rem) { .crs-profile { grid-template-columns: minmax(0, 1fr) 16rem; } }
+  .crs-profile-side { display: grid; justify-items: center; gap: 1rem; text-align: center; }
+  .crs-profile-side .avatar { inline-size: 10rem; block-size: 10rem; font-size: 2.5rem; }
+  .crs-stat-row { display: flex; flex-wrap: wrap; gap: 2rem; margin: 0; }
+  .crs-stat-row dt { font-size: 0.8125rem; color: var(--muted-foreground); }
+  .crs-stat-row dd { margin: 0.125rem 0 0; font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .crs-plans { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); align-items: stretch; }
+  .crs-plan { position: relative; display: flex; flex-direction: column; gap: 1.25rem; padding: 1.75rem; border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px); background: var(--card); }
+  .crs-plan[data-featured] { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary), 0 20px 40px -24px color-mix(in oklab, var(--primary) 60%, transparent); }
+  .crs-plan > .badge { position: absolute; inset-block-start: -0.75rem; inset-inline-start: 1.75rem; }
+  .crs-plan h3 { margin: 0; font-size: 1.125rem; }
+  .crs-plan p { margin: 0; }
+  .crs-plan-price { display: flex; align-items: baseline; gap: 0.25rem; }
+  .crs-plan-price strong { font-size: 2.5rem; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .crs-plan-price span { color: var(--muted-foreground); font-size: 0.875rem; }
+  .crs-plan ul { display: grid; gap: 0.625rem; margin: 0; padding: 0; list-style: none; font-size: 0.875rem; flex: 1; }
+  .crs-plan li { display: flex; gap: 0.625rem; }
+  .crs-plan li svg { flex: none; inline-size: 1rem; block-size: 1rem; margin-block-start: 0.1875rem; color: var(--primary); }
+  .crs-billing { display: inline-flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; }
+  .crs-billing .badge { font-weight: 600; }
+  .crs-cert { position: relative; display: grid; gap: 1.5rem; padding: clamp(1.5rem, 5vw, 3.5rem); border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px); background: var(--card); box-shadow: inset 0 0 0 0.5rem var(--background), inset 0 0 0 calc(0.5rem + 1px) var(--border); }
+  .crs-cert-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+  .crs-cert h2 { margin: 0; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted-foreground); }
+  .crs-cert-name { margin: 0; font-family: var(--font-serif, Georgia, serif); font-size: clamp(2rem, 6vw, 3.25rem); font-weight: 600; letter-spacing: -0.01em; line-height: 1.1; }
+  .crs-cert-course { margin: 0; font-size: clamp(1.125rem, 2.5vw, 1.5rem); font-weight: 600; }
+  .crs-cert-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 1.5rem; padding-block-start: 1.5rem; border-block-start: 1px solid var(--border); }
+  .crs-cert-sign { display: grid; gap: 0.25rem; font-size: 0.8125rem; }
+  .crs-cert-sign strong { font-family: var(--font-serif, Georgia, serif); font-size: 1.375rem; font-style: italic; font-weight: 400; }
+  .crs-cert-seal { display: grid; place-items: center; inline-size: 6rem; block-size: 6rem; border-radius: 999px; background: var(--primary); color: var(--primary-foreground); box-shadow: 0 0 0 4px var(--background), 0 0 0 5px var(--primary); corner-shape: round; }
+  .crs-cert-seal svg { inline-size: 2.75rem; block-size: 2.75rem; }
+  .crs-cert-meta { display: grid; gap: 0.125rem; font-size: 0.75rem; color: var(--muted-foreground); }
+  .crs-cart-line { display: grid; grid-template-columns: 8rem minmax(0, 1fr) auto; gap: 1rem; padding-block: 1.25rem; border-block-end: 1px solid var(--border); }
+  .crs-cart-line p { margin: 0; }
+  .crs-cart-line h3 { margin: 0; font-size: 0.9375rem; }
+  .crs-cart-actions { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; }
+  .crs-cart-actions .btn { padding-inline: 0; }
+  .crs-coupon-ok { display: flex; align-items: center; gap: 0.5rem; margin: 0; font-size: 0.8125rem; color: var(--primary); }
+  .crs-coupon-ok svg { inline-size: 1rem; block-size: 1rem; }
+  .crs-section { display: grid; gap: 1.25rem; }
+  .crs-band { display: grid; gap: 1.5rem; align-items: center; padding: clamp(1.5rem, 4vw, 3rem); border-radius: calc(var(--radius) + 6px); color: #fff; background: radial-gradient(120% 120% at 100% 0%, oklch(0.45 0.18 290), oklch(0.22 0.04 275) 60%); }
+  @media (width >= 56rem) { .crs-band { grid-template-columns: minmax(0, 1fr) 24rem; } }
+  .crs-band h1 { margin: 0; font-size: clamp(2rem, 5vw, 3.25rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; }
+  .crs-band p { margin: 0; font-size: 1.0625rem; color: rgb(255 255 255 / 0.85); }
+  .crs-band form { display: flex; gap: 0.5rem; padding: 0.375rem; border-radius: 999px; background: #fff; }
+  .crs-band form input { flex: 1; min-inline-size: 0; border: 0; padding-inline: 1rem; background: transparent; color: #111; font: inherit; }
+  .crs-band form input:focus { outline: none; }
+  .crs-band form:focus-within { outline: 3px solid rgb(255 255 255 / 0.5); outline-offset: 2px; }
+  .crs-band form .btn { border-radius: 999px; }
+  .crs-band-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center; }
+  .crs-band-stats strong { display: block; font-size: 1.75rem; font-weight: 700; }
+  .crs-band-stats span { font-size: 0.8125rem; color: rgb(255 255 255 / 0.75); }
+  .crs-teachers { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr)); }
+  .crs-teacher-tile { position: relative; display: grid; justify-items: center; gap: 0.5rem; padding: 1.25rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); text-align: center; color: inherit; text-decoration: none; transition: border-color 150ms ease, transform 150ms ease; }
+  .crs-teacher-tile:hover { border-color: var(--ring); transform: translateY(-2px); }
+  .crs-teacher-tile .avatar { inline-size: 4rem; block-size: 4rem; }
+  .crs-teacher-tile strong { font-size: 0.9375rem; }
+  .crs-teacher-tile small { font-size: 0.75rem; color: var(--muted-foreground); }
+  .crs-reel .carousel > ol > li { min-inline-size: 0; }
+  html.dark .crs-hero { background: oklch(0.16 0.02 270); }
+  html.dark .crs-topbar { background: oklch(0.16 0.02 270); }
+"""
+CRS = CAT_CSS + FX_CSS + COURSE_CSS
+
+
+def initials(name):
+    return "".join(w[0] for w in name.split()[:2])
+
+
+def money_or_free(v):
+    return "Free" if not v else money(v)
+
+
+def crs_rate(c):
+    return f'<p class="crs-rate"><strong>{c["rating"]}</strong>{stars(c["rating"])}<span>({c["reviews"]:,})</span></p>'
+
+
+def crs_price(c, size=None):
+    sz = f' data-size="{size}"' if size else ""
+    was = f'<s>{money(c["was"])}</s><span class="sr-only">Was {money(c["was"])}</span>' if c["was"] else ""
+    return f'<p class="crs-price"{sz}><strong>{money_or_free(c["price"])}</strong>{was}</p>'
+
+
+def crs_badge(c):
+    if not c["badge"]:
+        return ""
+    v = {"Bestseller": ' data-variant="secondary"', "Free": ' data-variant="outline"', "Highest rated": ' data-variant="secondary"'}.get(c["badge"], "")
+    return f'<span class="badge"{v}>{c["badge"]}</span>'
+
+
+def thumb(c, extra=""):
+    return f'<img class="shop-shot crs-thumb" src="{PH}" alt=""{f" data-shot={chr(34)}{c["shot"]}{chr(34)}" if c["shot"] > 1 else ""}{extra}>'
+
+
+def hours(c):
+    h = c["hours"]
+    return f"{h:g} total hours"
+
+
+def crs_meta(c):
+    return f'<ul class="crs-meta"><li>{hours(c)}</li><li>{c["lectures"]} lectures</li><li>{c["level"]}</li></ul>'
+
+
+def learn_header(cart=2, current=None):
+    nav = "".join(f'<a href="#"{" aria-current=\"page\"" if t == current else ""}>{t}</a>' for t in ["Explore", "Plus", "Teach"])
+    return f"""<header class="crs-header">
+  <div class="wrapper crs-header-row" data-size="xl">
+    {logo("Acme Learn")}
+    <form class="input-group crs-header-search" role="search" onsubmit="event.preventDefault()">
+      <input type="search" placeholder="What do you want to learn?" aria-label="Search courses">
+      <span data-align="start" aria-hidden="true">{si("search")}</span>
+    </form>
+    <nav class="crs-header-nav" aria-label="Main">
+      {nav}
+      <a href="#" class="btn" data-variant="ghost" data-size="sm">My learning</a>
+      <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Wishlist">{si("heart")}</a>
+      <a href="#" class="btn shop-cart-btn" data-variant="ghost" data-size="icon" aria-label="Cart, {cart} courses">{si("shopping-bag")}<span class="shop-count" data-cart-count data-count="{cart}">{cart}</span></a>
+      <span class="avatar"><span>OM</span></span>
+    </nav>
+  </div>
+</header>"""
+
+
+def course_card(c, pop=True):
+    learn = "".join(f"<li>{si('check')}<span>{t}</span></li>" for t in c["learn"][:3])
+    popup = f"""<div class="crs-pop" role="tooltip" id="pop-{c["id"]}">
+      <h4>{c["title"]}</h4>
+      <p class="shop-muted">Updated October 2026 · {hours(c)} · {c["level"]}</p>
+      <p>{c["sub"]}</p>
+      <ul class="crs-learn">{learn}</ul>
+      <div class="crs-pop-actions"><button type="button" class="btn" data-add-course="{c["id"]}">Add to cart</button>{wish_btn({"name": c["title"]}, size="icon")}</div>
+    </div>""" if pop else ""
+    desc = f' aria-describedby="pop-{c["id"]}"' if pop else ""
+    return f"""<article class="crs-card" data-course data-cat="{c["cat"]}" data-level="{c["level"]}" data-rating="{c["rating"]}" data-hours="{c["hours"]}" data-price="{c["price"]}" data-students="{c["students"]}">
+  <div class="crs-card-media">{thumb(c)}{crs_badge(c)}<span class="crs-dur">{c["hours"]:g}h</span></div>
+  <h3><a href="#"{desc}>{c["title"]}</a></h3>
+  <p class="crs-by">{c["by"]}</p>
+  {crs_rate(c)}
+  {crs_price(c)}
+  {popup}
+</article>"""
+
+
+ADD_COURSE_JS = """
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-add-course]');
+  if (!b || b.dataset.added) return;
+  b.dataset.added = '';
+  b.textContent = 'Go to cart';
+  b.dataset.variant = 'outline';
+  document.querySelectorAll('[data-cart-count]').forEach((el) => { const n = (parseInt(el.textContent, 10) || 0) + 1; el.textContent = n; el.dataset.count = n; });
+});
+"""
+# Udemy-style preview: flip the popover to the other side for cards near the inline end.
+POP_JS = """
+document.querySelectorAll('.crs-card').forEach((card) => {
+  const place = () => {
+    const r = card.getBoundingClientRect();
+    const rtl = getComputedStyle(card).direction === 'rtl';
+    const room = rtl ? r.left : window.innerWidth - r.right;
+    card.toggleAttribute('data-flip', room < 340);
+  };
+  card.addEventListener('pointerenter', place);
+  card.addEventListener('focusin', place);
+});
+"""
+
+CATS = ["All", "Design", "Illustration", "Development", "Photography", "Animation", "Business", "Craft", "Marketing"]
+CATALOG_JS = """
+document.querySelectorAll('[data-course-filter]').forEach((form) => {
+  const grid = document.getElementById(form.dataset.courseFilter);
+  const cards = [...grid.querySelectorAll('[data-course]')];
+  const pills = document.querySelectorAll('[data-course-cat]');
+  const sort = document.querySelector(`[data-course-sort="${form.dataset.courseFilter}"]`);
+  let cat = 'All';
+  const inRange = (h, r) => { const [a, b] = r.split('-').map(Number); return h >= a && (!b || h < b); };
+  const run = () => {
+    const fd = new FormData(form);
+    const levels = fd.getAll('level'), lengths = fd.getAll('length');
+    const rating = Number(fd.get('rating')) || 0;
+    const price = fd.get('price') || 'all';
+    let n = 0;
+    for (const c of cards) {
+      const d = c.dataset;
+      const ok = (cat === 'All' || d.cat === cat) && (!levels.length || levels.includes(d.level))
+        && (!lengths.length || lengths.some((r) => inRange(Number(d.hours), r)))
+        && Number(d.rating) >= rating && (price === 'all' || (price === 'free') === (Number(d.price) === 0));
+      c.hidden = !ok;
+      if (ok) n++;
+    }
+    document.querySelectorAll('[data-course-count]').forEach((el) => { el.textContent = n + (n === 1 ? ' course' : ' courses'); });
+    document.querySelectorAll('[data-course-empty]').forEach((el) => { el.hidden = n > 0; });
+  };
+  form.addEventListener('input', run);
+  form.addEventListener('reset', () => setTimeout(run));
+  pills.forEach((p) => p.addEventListener('click', () => {
+    cat = p.dataset.courseCat;
+    pills.forEach((x) => x.setAttribute('aria-pressed', String(x === p)));
+    run();
+  }));
+  sort?.addEventListener('change', () => {
+    const by = { rating: (a, b) => b.dataset.rating - a.dataset.rating, popular: (a, b) => b.dataset.students - a.dataset.students, 'price-asc': (a, b) => a.dataset.price - b.dataset.price, short: (a, b) => a.dataset.hours - b.dataset.hours }[sort.value];
+    grid.prepend(...(by ? [...cards].sort(by) : cards));
+  });
+});
+"""
+LEVELS = ["Beginner", "Intermediate", "Advanced", "All levels"]
+LENGTHS = [("0-3", "0–3 hours"), ("3-6", "3–6 hours"), ("6-17", "6–17 hours"), ("17-", "17+ hours")]
+level_count = {l: sum(1 for c in COURSES if c["level"] == l) for l in LEVELS}
+course_filters = f"""<form class="shop-filters-panel" id="crs1-form" data-course-filter="crs1-grid" aria-label="Filters" onsubmit="event.preventDefault()">
+  <div class="shop-filter-head"><h2 class="shop-section-title">Filter</h2><button type="reset" class="btn" data-variant="link" data-size="sm">Clear</button></div>
+  <div class="accordion" data-multiple>
+    <details open><summary>Rating</summary><section><div class="shop-check-list" role="radiogroup" aria-label="Rating">{"".join(f'<label><input type="radio" class="input" name="rating" value="{r}">{stars(r)}<span class="shop-rate-label">{r} &amp; up</span></label>' for r in [4.5, 4.0, 3.5])}</div></section></details>
+    <details open><summary>Level</summary><section><div class="shop-check-list">{"".join(f'<label><input type="checkbox" class="input" name="level" value="{l}">{l}<span>{level_count[l]}</span></label>' for l in LEVELS)}</div></section></details>
+    <details open><summary>Video duration</summary><section><div class="shop-check-list">{"".join(f'<label><input type="checkbox" class="input" name="length" value="{v}">{t}</label>' for v, t in LENGTHS)}</div></section></details>
+    <details><summary>Price</summary><section><div class="shop-check-list" role="radiogroup" aria-label="Price">{"".join(f'<label><input type="radio" class="input" name="price" value="{v}"{" checked" if v == "all" else ""}>{t}</label>' for v, t in [("all", "All"), ("paid", "Paid"), ("free", "Free")])}</div></section></details>
+  </div>
+</form>"""
+pills = "".join(f'<button type="button" data-course-cat="{c}" aria-pressed="{"true" if c == "All" else "false"}">{c}</button>' for c in CATS)
+
+add("course-01", "Course 01", "A course catalog: topic pills, filters for rating, level, length and price, sort, and cards with a hover preview.", "course", f"""
+{learn_header(current="Explore")}
+<main class="wrapper shop-page" data-size="xl">
+  <div class="stack" data-gap="6">
+    <div class="stack" data-gap="2">
+      <h1 class="shop-h1">Explore courses</h1>
+      <p class="shop-lead">Learn creative and professional skills from people who do it every day.</p>
+    </div>
+    <nav class="crs-pills" aria-label="Topics">{pills}</nav>
+    <div class="shop-results">
+      {course_filters}
+      <div class="stack" data-gap="4">
+        <div class="shop-toolbar">
+          <p class="shop-lead" data-course-count>{len(COURSES)} courses</p>
+          <label class="sr-only" for="crs1-sort">Sort by</label>
+          <select class="select" id="crs1-sort" data-course-sort="crs1-grid"><option value="">Most relevant</option><option value="popular">Most popular</option><option value="rating">Highest rated</option><option value="price-asc">Lowest price</option><option value="short">Shortest</option></select>
+        </div>
+        <div class="crs-grid" id="crs1-grid">{"".join(course_card(c) for c in COURSES)}</div>
+        <section class="empty" data-course-empty hidden><header><figure>{si("search")}</figure><h3>No courses match</h3><p>Try another topic or clear a filter.</p></header><footer><button type="reset" form="crs1-form" class="btn" data-variant="outline">Clear filters</button></footer></section>
+      </div>
+    </div>
+  </div>
+</main>
+""", CRS + FILTER_CSS + "\n  @media (width < 56rem) { .shop-filters-panel { display: none; } }\n  .shop-check-list .shop-rate-label { margin-inline-start: 0.25rem; color: var(--muted-foreground); font-size: 0.8125rem; }", scripts=script(CATALOG_JS + POP_JS + ADD_COURSE_JS + WISH_JS))
+
+
+# ---------------------------------------------------------------- course-02: card styles
+def list_card(c):
+    return f"""<article class="crs-list-card crs-card" data-course>
+  <div class="crs-card-media">{thumb(c)}<span class="crs-dur">{c["hours"]:g}h</span></div>
+  <div class="stack" data-gap="1">
+    <h3><a href="#">{c["title"]}</a></h3>
+    <p class="shop-lead">{c["sub"]}</p>
+    <p class="crs-by">{c["by"]}</p>
+    {crs_rate(c)}
+    {crs_meta(c)}
+    <div class="cluster" data-gap="2">{crs_badge(c)}</div>
+  </div>
+  {crs_price(c)}
+</article>"""
+
+
+def domestika_card(c, pct):
+    off = round((1 - c["price"] / c["was"]) * 100) if c["was"] else 0
+    return f"""<article class="crs-card crs-dcard">
+  <div class="crs-card-media">{thumb(c)}{f'<span class="badge" data-variant="destructive">-{off}%</span>' if off else crs_badge(c)}</div>
+  <span class="avatar crs-dcard-avatar"><span>{initials(c["by"])}</span></span>
+  <p class="crs-by">A course by <strong>{c["by"]}</strong></p>
+  <h3><a href="#">{c["title"]}</a></h3>
+  <div class="crs-dcard-stats"><span>{si("users")}{c["students"]:,}</span><span>{si("star")}{pct}% positive</span></div>
+  <div class="crs-dcard-buy">{crs_price(c)}<button type="button" class="btn" data-size="sm" data-add-course="{c["id"]}">Add to cart</button></div>
+</article>"""
+
+
+add("course-02", "Course 02", "Course card styles: a list row with details, and Domestika-style cards with the teacher, students and a quick add to cart.", "course", f"""
+{learn_header()}
+<main class="wrapper shop-page" data-size="xl">
+  <div class="stack" data-gap="12">
+    <section class="crs-section" aria-labelledby="crs2-a">
+      <div class="cluster" data-justify="between"><h2 class="shop-h2" id="crs2-a">Recommended for you</h2><a href="#" class="btn" data-variant="link" data-size="sm">See all{si("arrow-right")}</a></div>
+      <div>{"".join(list_card(c) for c in [C["react"], C["brand"], C["excel"]])}</div>
+    </section>
+    <section class="crs-section" aria-labelledby="crs2-b">
+      <div class="cluster" data-justify="between"><h2 class="shop-h2" id="crs2-b">New in illustration and craft</h2><a href="#" class="btn" data-variant="link" data-size="sm">See all{si("arrow-right")}</a></div>
+      <div class="crs-grid">{"".join(domestika_card(c, p) for c, p in [(C["watercolor"], 99), (C["ceramics"], 98), (C["motion"], 97), (C["brand"], 98)])}</div>
+    </section>
+  </div>
+</main>
+""", CRS + """
+  .crs-list-card h3 { font-size: 1rem; }
+  .crs-dcard .crs-dcard-avatar { position: relative; z-index: 2; inline-size: 2.75rem; block-size: 2.75rem; margin-block-start: -2rem; margin-inline-start: 0.75rem; box-shadow: 0 0 0 3px var(--background); font-size: 0.8125rem; }
+  .crs-dcard .crs-by strong { color: var(--foreground); font-weight: 600; }
+  .crs-dcard-stats { display: flex; gap: 1rem; font-size: 0.8125rem; color: var(--muted-foreground); }
+  .crs-dcard-stats span { display: inline-flex; align-items: center; gap: 0.375rem; }
+  .crs-dcard-stats svg { inline-size: 0.875rem; block-size: 0.875rem; }
+  .crs-dcard-buy { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-block-start: auto; padding-block-start: 0.5rem; border-block-start: 1px solid var(--border); }""", scripts=script(ADD_COURSE_JS))
+
+
+# ---------------------------------------------------------------- course-03: learning home
+def reel_slide(c, i, n):
+    return f'<li aria-roledescription="slide" aria-label="{i + 1} of {n}">{course_card(c, pop=False)}</li>'
+
+
+reel_courses = [C["react"], C["motion"], C["brand"], C["excel"], C["copy"], C["photo"]]
+reel = "".join(reel_slide(c, i, len(reel_courses)) for i, c in enumerate(reel_courses))
+arrow = lambda d, ic_: f'<button type="button" class="btn rounded-full" data-variant="outline" data-size="icon-sm" data-carousel="{d}" aria-label="{"Previous" if d == "prev" else "Next"} courses">{si(ic_)}</button>'
+TEACHERS = [("Lena Ortiz", "Brand designer", "5 courses"), ("Mai Tanaka", "Illustrator", "3 courses"), ("Daniel Rossi", "Senior engineer", "8 courses"), ("Sofia Lind", "Photographer", "4 courses"), ("Hugo Martín", "Ceramist", "2 courses"), ("Grace Kim", "Copywriter", "6 courses")]
+add("course-03", "Course 03", "A learning home page: search hero, continue learning, a course carousel with drag and arrows, topics and teachers.", "course", f"""
+{learn_header()}
+<main class="wrapper shop-page" data-size="xl">
+  <div class="stack" data-gap="12">
+    <section class="crs-band" aria-labelledby="crs3-title">
+      <div class="stack" data-gap="4">
+        <h1 id="crs3-title">Learn the skills that shape what you make</h1>
+        <p>1,200+ courses taught by working designers, developers and makers. Learn at your pace, on any device.</p>
+        <form role="search" onsubmit="event.preventDefault()"><input type="search" placeholder="Try “brand identity” or “watercolor”" aria-label="Search courses"><button type="submit" class="btn">{si("search")}Search</button></form>
+      </div>
+      <div class="crs-band-stats"><div><strong>1.2k</strong><span>courses</span></div><div><strong>380</strong><span>teachers</span></div><div><strong>4.7</strong><span>average rating</span></div></div>
+    </section>
+    <section class="crs-continue" aria-labelledby="crs3-cont">
+      {thumb(C["react"])}
+      <div class="stack" data-gap="3">
+        <p class="shop-line-meta">Continue learning · Section 4, lecture 12</p>
+        <h2 id="crs3-cont">{C["react"]["title"]}</h2>
+        <div class="stack" data-gap="1"><div class="progress" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="42"><span style="width: 42%"></span></div><p class="shop-line-meta">42% complete · 18h 30m left</p></div>
+        <div class="cluster" data-gap="2"><a href="#" class="btn">{si("play")}Resume</a><a href="#" class="btn" data-variant="ghost">All my courses</a></div>
+      </div>
+    </section>
+    <section class="crs-section crs-reel" aria-labelledby="crs3-pop">
+      <div class="cluster" data-justify="between"><h2 class="shop-h2" id="crs3-pop">Most popular this week</h2><a href="#" class="btn" data-variant="link" data-size="sm">See all{si("arrow-right")}</a></div>
+      <section class="carousel" data-items="4" aria-roledescription="carousel" aria-label="Popular courses" style="--carousel-controls-inset: -0.75rem; --carousel-controls-top: 30%">
+        <ol>{reel}</ol>
+        {arrow("prev", "chevron-left")}{arrow("next", "chevron-right")}
+      </section>
+    </section>
+    <section class="crs-section" aria-labelledby="crs3-topics">
+      <h2 class="shop-h2" id="crs3-topics">Browse by topic</h2>
+      <nav class="crs-pills" aria-label="Topics">{"".join(f'<button type="button" aria-pressed="false">{c}</button>' for c in CATS[1:])}</nav>
+    </section>
+    <section class="crs-section" aria-labelledby="crs3-teach">
+      <div class="cluster" data-justify="between"><h2 class="shop-h2" id="crs3-teach">Learn from creative pros</h2><a href="#" class="btn" data-variant="link" data-size="sm">All teachers{si("arrow-right")}</a></div>
+      <div class="crs-teachers">{"".join(f'<a href="#" class="crs-teacher-tile"><span class="avatar"><span>{initials(n)}</span></span><strong>{n}</strong><small>{r} · {k}</small></a>' for n, r, k in TEACHERS)}</div>
+    </section>
+  </div>
+</main>
+""", CRS + "\n  @media (width < 64rem) { .crs-reel .carousel { --per-view: 2.2; } }\n  @media (width < 40rem) { .crs-reel .carousel { --per-view: 1.2; } }", scripts=script(ADD_COURSE_JS))
+
+
+# ---------------------------------------------------------------- course-04: course page
+CURRICULUM = [
+    ("Introduction", [("Welcome to the course", "02:14", True), ("What you'll need", "04:05", True), ("How to get the most out of it", "03:30", False)]),
+    ("Research and the creative brief", [("Interviewing the client", "11:20", False), ("Mood boards that guide decisions", "09:45", False), ("Writing the brief", "08:12", False), ("Downloadable brief template", "Resource", False)]),
+    ("Designing the logo", [("From words to sketches", "14:02", False), ("Refining in Illustrator", "21:37", False), ("Testing at small sizes", "07:48", False)]),
+    ("Color, type and the brand book", [("Building a palette", "12:30", False), ("Pairing typefaces", "10:05", False), ("Assembling the brand book", "16:44", True), ("Final project", "Quiz", False)]),
+]
+
+
+def curriculum(sections, open_first=True):
+    out = []
+    for i, (title, lessons) in enumerate(sections):
+        items = "".join(
+            f'<li class="crs-lesson">{si("file-text") if d in ("Resource", "Quiz") else si("circle-play")}<span>{t}</span>{"<a href=\"#\" data-preview>Preview</a>" if pv else ""}<time>{d}</time></li>'
+            for t, d, pv in lessons)
+        mins = sum(int(d.split(":")[0]) for _, d, _ in lessons if ":" in d)
+        out.append(f'<details{" open" if i == 0 and open_first else ""}><summary>{si("chevron-down")}<span>{title}</span><small>{len(lessons)} lectures · {mins} min</small></summary><ul>{items}</ul></details>')
+    return '<div class="crs-curr" data-curriculum>' + "".join(out) + "</div>"
+
+
+DETAIL_JS = """
+document.querySelectorAll('[data-expand-all]').forEach((b) => {
+  const box = document.querySelector('[data-curriculum]');
+  b.addEventListener('click', () => {
+    const open = b.getAttribute('aria-expanded') !== 'true';
+    box.querySelectorAll('details').forEach((d) => { d.open = open; });
+    b.setAttribute('aria-expanded', String(open));
+    b.textContent = open ? 'Collapse all sections' : 'Expand all sections';
+  });
+});
+document.querySelectorAll('[data-clamp-toggle]').forEach((b) => {
+  const box = document.getElementById(b.getAttribute('aria-controls'));
+  b.addEventListener('click', () => {
+    const open = b.getAttribute('aria-expanded') !== 'true';
+    box.toggleAttribute('data-open', open);
+    b.setAttribute('aria-expanded', String(open));
+    b.firstChild.textContent = open ? 'Show less ' : 'Show more ';
+  });
+});
+document.querySelectorAll('[data-preview]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('crs4-video').showModal(); }));
+"""
+VIDEO_JS = """
+document.querySelectorAll('.crs-video').forEach((v) => {
+  const play = v.querySelector('.crs-play');
+  const big = v.querySelector('.crs-video-big');
+  const set = (on) => {
+    v.toggleAttribute('data-playing', on);
+    play.setAttribute('aria-pressed', String(on));
+    play.setAttribute('aria-label', on ? 'Pause' : 'Play');
+  };
+  play.addEventListener('click', () => set(!v.hasAttribute('data-playing')));
+  big?.addEventListener('click', () => { set(true); play.focus(); });
+});
+"""
+
+
+def video(c, label, pct=0, now="0:00", total="2:14"):
+    return f"""<div class="crs-video">
+  {thumb(c)}
+  <button type="button" class="crs-video-big" aria-label="Play {label}">{si("play")}</button>
+  <div class="crs-controls">
+    <div class="progress" role="progressbar" aria-label="Video progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{pct}"><span style="width: {pct}%"></span></div>
+    <div class="crs-controls-row">
+      <button type="button" class="btn crs-play" data-variant="ghost" data-size="icon-sm" aria-pressed="false" aria-label="Play">{si("play")}{si("pause")}</button>
+      <button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Rewind 5 seconds">{si("rotate-ccw")}</button>
+      <time>{now} / {total}</time>
+      <button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Captions">{si("captions")}</button>
+      <button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Volume">{si("volume-2")}</button>
+      <button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Full screen">{si("maximize")}</button>
+    </div>
+  </div>
+</div>"""
+
+
+B = C["brand"]
+INCLUDES = [("monitor", "7.5 hours on-demand video"), ("file-text", "12 downloadable resources"), ("smartphone", "Access on mobile and TV"), ("infinity", "Full lifetime access"), ("award", "Certificate of completion")]
+c4_reviews = [("Hannah K.", 5, "2 weeks ago", "Clear, practical and beautifully paced. I rebranded my own studio while following along."), ("Marco P.", 5, "1 month ago", "The brief template alone was worth it. Lena explains the why behind every decision."), ("Ines R.", 4, "1 month ago", "Great content. I wish the Illustrator part went a little deeper into grids.")]
+add("course-04", "Course 04", "A course page: hero, sticky purchase card with a video preview, what you'll learn, curriculum with previews, description, teacher and reviews.", "course", f"""
+{learn_header()}
+<section class="crs-hero">
+  <div class="wrapper crs-hero-in" data-size="xl">
+    <nav class="breadcrumb shop-crumbs" aria-label="Breadcrumb"><ol><li><a href="#">Design</a></li>{crumb_sep}<li><a href="#">Branding</a></li>{crumb_sep}<li><span aria-current="page">Brand identity</span></li></ol></nav>
+    <h1>{B["title"]}</h1>
+    <p>{B["sub"]}</p>
+    <div class="cluster" data-gap="3">{crs_badge(B)}{crs_rate(B)}<span class="crs-meta">{B["students"]:,} students</span></div>
+    <p>Created by <a href="#" class="crs-inline">{B["by"]}</a></p>
+    <ul class="crs-meta"><li>{si("calendar")}Last updated 10/2026</li><li>{si("globe")}English</li><li>{si("captions")}English, Spanish, Vietnamese</li></ul>
+  </div>
+</section>
+<main class="wrapper" data-size="xl">
+  <div class="crs-detail">
+    <div class="stack" data-gap="8">
+      <section class="crs-box" aria-labelledby="crs4-learn">
+        <h2 class="shop-h2" id="crs4-learn">What you'll learn</h2>
+        <ul class="crs-learn" data-cols="2">{"".join(f"<li>{si('check')}<span>{t}</span></li>" for t in B["learn"] + ["Present work with confidence", "Price and scope branding projects"])}</ul>
+      </section>
+      <section class="stack" data-gap="4" aria-labelledby="crs4-content">
+        <h2 class="shop-h2" id="crs4-content">Course content</h2>
+        <div class="crs-curr-head"><span class="shop-muted">4 sections · 14 lectures · 2h 25m total length</span><button type="button" class="btn" data-variant="link" data-size="sm" data-expand-all aria-expanded="false">Expand all sections</button></div>
+        {curriculum(CURRICULUM)}
+      </section>
+      <section class="stack" data-gap="3" aria-labelledby="crs4-req">
+        <h2 class="shop-h2" id="crs4-req">Requirements</h2>
+        <div class="crs-prose"><ul><li>A computer with Adobe Illustrator (a free trial works)</li><li>Pencil and paper for sketching</li><li>No design experience needed</li></ul></div>
+      </section>
+      <section class="stack" data-gap="3" aria-labelledby="crs4-desc">
+        <h2 class="shop-h2" id="crs4-desc">Description</h2>
+        <div class="crs-clamp crs-prose" id="crs4-desc-body">
+          <p>A brand is more than a logo. In this course you'll build a complete identity for a real client brief, from the first interview to a brand book you can hand over with confidence.</p>
+          <p>We start with research: how to ask the right questions, collect references and turn them into a brief that keeps everyone aligned. Then we sketch, refine and test a logo, choose a palette and a type pairing, and design the touchpoints that make a brand feel consistent.</p>
+          <p>Every lesson ends with a short exercise, and the final project is a full brand book in your portfolio.</p>
+          <p><strong>Who this course is for:</strong> beginners who want to work in branding, freelancers who want a repeatable process, and founders who want to understand what good branding involves.</p>
+        </div>
+        <button type="button" class="btn" data-variant="link" data-size="sm" data-clamp-toggle aria-controls="crs4-desc-body" aria-expanded="false">Show more {si("chevron-down")}</button>
+      </section>
+      <section class="stack" data-gap="4" aria-labelledby="crs4-teacher">
+        <h2 class="shop-h2" id="crs4-teacher">Your teacher</h2>
+        <div class="crs-teacher">
+          <div class="crs-teacher-top"><span class="avatar"><span>LO</span></span><div><h3><a href="#">{B["by"]}</a></h3><p>Brand designer and studio founder</p></div></div>
+          <ul class="crs-facts"><li>{si("star")}4.8 instructor rating</li><li>{si("message-square")}9,812 reviews</li><li>{si("users")}64,300 students</li><li>{si("circle-play")}5 courses</li></ul>
+          <p class="crs-prose">Lena has spent 12 years building identities for restaurants, festivals and tech start-ups. She runs a small studio in Lisbon and teaches the process she uses with clients every week.</p>
+        </div>
+      </section>
+      <section class="stack" data-gap="4" aria-labelledby="crs4-reviews">
+        <h2 class="shop-h2 crs-rating-head" id="crs4-reviews">{si("star")}{B["rating"]} course rating · {B["reviews"]:,} ratings</h2>
+        <div class="shop-review">{"".join(f'''<article class="crs-box stack" data-gap="2"><div class="cluster" data-gap="3"><span class="avatar"><span>{initials(n)}</span></span><div><p class="shop-line-name">{n}</p><div class="cluster" data-gap="2">{stars(r)}<small class="shop-line-meta">{w}</small></div></div></div><p>{t}</p></article>''' for n, r, w, t in c4_reviews)}</div>
+        <button type="button" class="btn" data-variant="outline">Show all reviews</button>
+      </section>
+    </div>
+    <aside class="card crs-buy" aria-label="Buy this course">
+      <button type="button" class="crs-preview" commandfor="crs4-video" command="show-modal">{thumb(B)}<span><span>{si("play")}</span>Preview this course</span></button>
+      <section class="stack" data-gap="4">
+        <div class="cluster" data-gap="2">{crs_price(B, "lg")}<span class="crs-off">78% off</span></div>
+        <p class="crs-timer">{si("clock")}<strong>2 days</strong> left at this price!</p>
+        <div class="stack" data-gap="2">
+          <div class="cluster" data-gap="2"><button type="button" class="btn shop-grow" data-size="lg" data-add-course="brand">Add to cart</button>{wish_btn({"name": B["title"]}, size="icon-lg")}</div>
+          <a href="#" class="btn shop-full" data-variant="outline" data-size="lg">Buy now</a>
+        </div>
+        <p class="shop-note shop-center">30-day money-back guarantee</p>
+        <div class="stack" data-gap="2"><p class="shop-line-name">This course includes:</p><ul class="crs-includes">{"".join(f"<li>{si(i)}<span>{t}</span></li>" for i, t in INCLUDES)}</ul></div>
+        <div class="cluster" data-justify="between"><button type="button" class="btn" data-variant="link" data-size="sm">Share</button><button type="button" class="btn" data-variant="link" data-size="sm">Gift this course</button><button type="button" class="btn" data-variant="link" data-size="sm">Apply coupon</button></div>
+      </section>
+    </aside>
+  </div>
+</main>
+<dialog id="crs4-video" class="dialog" closedby="any" aria-labelledby="crs4-video-title">
+  <div class="crs-dialog">
+    <header><p class="shop-line-meta">Course preview</p><h2 id="crs4-video-title">{B["title"]}</h2></header>
+    <section>{video(B, "the preview")}</section>
+    <button type="button" aria-label="Close" commandfor="crs4-video" command="close">{si("x")}</button>
+  </div>
+</dialog>
+""", CRS + """
+  .shop-grow { flex: 1; }
+  .shop-center { justify-content: center; }
+  .crs-dialog { inline-size: min(48rem, calc(100vw - 2rem)); max-inline-size: none; }""", scripts=script(DETAIL_JS + VIDEO_JS + ADD_COURSE_JS + WISH_JS))
+
+
+# ---------------------------------------------------------------- course-05: learning player
+LESSONS = [
+    ("Introduction", [("Welcome to the course", "2 min", True), ("What you'll need", "4 min", True), ("How to get the most out of it", "3 min", True)]),
+    ("Research and the creative brief", [("Interviewing the client", "11 min", True), ("Mood boards that guide decisions", "10 min", False), ("Writing the brief", "8 min", False)]),
+    ("Designing the logo", [("From words to sketches", "14 min", False), ("Refining in Illustrator", "22 min", False), ("Testing at small sizes", "8 min", False)]),
+]
+flat = [(s, t, d, done) for s, ls in LESSONS for t, d, done in ls]
+total_l = len(flat)
+done_l = sum(1 for *_, d in flat if d)
+side = []
+k = 0
+for si_, (sec, ls) in enumerate(LESSONS):
+    items = []
+    for t, d, done in ls:
+        cur = k == 4
+        items.append(f'<li data-lesson="{k}"{" aria-current=\"true\"" if cur else ""}><input type="checkbox" class="input" aria-label="Mark “{t}” complete"{" checked" if done else ""} data-done><button type="button" data-goto="{k}"><span>{k + 1}. {t}</span><small>{si("circle-play")}{d}</small></button></li>')
+        k += 1
+    side.append(f'<details{" open" if si_ < 2 else ""}><summary><strong>Section {si_ + 1}: {sec}</strong><small data-sec-count>{sum(1 for *_, d in ls if d)} / {len(ls)} · {sum(int(d.split()[0]) for _, d, _ in ls)} min</small></summary><ol>{"".join(items)}</ol></details>')
+circ = 2 * 3.14159 * 13
+PLAYER_JS = """
+(() => {
+  const root = document.querySelector('[data-player]');
+  if (!root) return;
+  const items = [...root.querySelectorAll('[data-lesson]')];
+  const title = root.querySelector('[data-lesson-title]');
+  const ring = root.querySelector('[data-ring]');
+  const label = root.querySelector('[data-progress-label]');
+  const C = Number(ring.getAttribute('stroke-dasharray'));
+  const sync = () => {
+    const done = items.filter((li) => li.querySelector('[data-done]').checked).length;
+    ring.setAttribute('stroke-dashoffset', String(C * (1 - done / items.length)));
+    label.textContent = `${done} of ${items.length} complete`;
+    root.querySelectorAll('details').forEach((d) => {
+      const boxes = [...d.querySelectorAll('[data-done]')];
+      const c = d.querySelector('[data-sec-count]');
+      c.textContent = c.textContent.replace(/^\\d+ \\/ \\d+/, `${boxes.filter((b) => b.checked).length} / ${boxes.length}`);
+    });
+  };
+  const go = (i) => {
+    const li = items[Math.max(0, Math.min(items.length - 1, i))];
+    items.forEach((x) => x.toggleAttribute('aria-current', x === li));
+    if (li.hasAttribute('aria-current')) li.setAttribute('aria-current', 'true');
+    li.closest('details').open = true;
+    title.textContent = li.querySelector('button span').textContent.replace(/^\\d+\\. /, '');
+    root.querySelector('.crs-video')?.removeAttribute('data-playing');
+  };
+  const current = () => items.findIndex((x) => x.hasAttribute('aria-current'));
+  root.addEventListener('change', (e) => { if (e.target.matches('[data-done]')) sync(); });
+  root.addEventListener('click', (e) => {
+    const g = e.target.closest('[data-goto]');
+    if (g) go(Number(g.dataset.goto));
+    const step = e.target.closest('[data-step-lesson]');
+    if (step) {
+      const i = current();
+      if (Number(step.dataset.stepLesson) > 0) items[i].querySelector('[data-done]').checked = true;
+      go(i + Number(step.dataset.stepLesson));
+      sync();
+    }
+  });
+  const form = root.querySelector('[data-note-form]');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = form.elements.note.value.trim();
+    if (!text) return;
+    const li = document.createElement('li');
+    const b = document.createElement('span');
+    b.className = 'badge';
+    b.dataset.variant = 'outline';
+    b.textContent = '4:12 · ' + title.textContent;
+    const p = document.createElement('span');
+    p.textContent = text;
+    li.append(b, p);
+    root.querySelector('[data-notes]').prepend(li);
+    form.reset();
+  });
+})();
+"""
+add("course-05", "Course 05", "A course player: video, progress ring, curriculum with completion checkboxes, next and previous lesson, and tabs for overview, Q&A and notes.", "course", f"""
+<div data-player>
+  <header class="crs-topbar">
+    {logo("Acme Learn")}
+    <h1>{B["title"]}</h1>
+    <div class="crs-ring"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13"/><circle cx="16" cy="16" r="13" stroke-dasharray="{circ:.2f}" stroke-dashoffset="{circ * (1 - done_l / total_l):.2f}" data-ring/></svg><span data-progress-label>{done_l} of {total_l} complete</span></div>
+    <button type="button" class="btn" data-variant="ghost" data-size="icon" aria-label="Share">{si("share-2")}</button>
+  </header>
+  <div class="crs-learnpage">
+    <div class="crs-learn-main">
+      {video(B, "the lesson", 35, "3:28", "9:45")}
+      <div class="cluster" data-justify="between" data-gap="3">
+        <div class="stack" data-gap="1"><p class="shop-line-meta">Section 2 · Lecture 5</p><h2 class="shop-h2" data-lesson-title>Mood boards that guide decisions</h2></div>
+        <div class="cluster" data-gap="2"><button type="button" class="btn" data-variant="outline" data-step-lesson="-1">{si("chevron-left")}Previous</button><button type="button" class="btn" data-step-lesson="1">Complete and continue{si("chevron-right")}</button></div>
+      </div>
+      <div class="tabs" id="crs5-tabs">
+        <nav role="tablist" aria-orientation="horizontal">
+          <button type="button" role="tab" id="crs5-t1" aria-controls="crs5-p1" aria-selected="true" tabindex="0">Overview</button>
+          <button type="button" role="tab" id="crs5-t2" aria-controls="crs5-p2" aria-selected="false" tabindex="-1">Q&amp;A</button>
+          <button type="button" role="tab" id="crs5-t3" aria-controls="crs5-p3" aria-selected="false" tabindex="-1">Notes</button>
+        </nav>
+        <div role="tabpanel" id="crs5-p1" aria-labelledby="crs5-t1" tabindex="-1">
+          <div class="stack" data-gap="4">
+            <p class="crs-prose">Turn your research into two or three mood boards that each tell a different story, then use them to steer the client toward a direction before you draw anything.</p>
+            <dl class="crs-stat-row"><div><dt>Skill level</dt><dd class="shop-h2">Beginner</dd></div><div><dt>Students</dt><dd class="shop-h2">{B["students"]:,}</dd></div><div><dt>Lectures</dt><dd class="shop-h2">{B["lectures"]}</dd></div><div><dt>Video</dt><dd class="shop-h2">7.5 hours</dd></div></dl>
+          </div>
+        </div>
+        <div role="tabpanel" id="crs5-p2" aria-labelledby="crs5-t2" tabindex="-1" hidden>
+          <ul class="crs-qa">
+            <li><span class="avatar"><span>JR</span></span><div class="stack" data-gap="1"><p><strong>How many mood boards do you usually present?</strong></p><p>Three feels like a choice; more becomes noise. Is that the same for small clients?</p><small>Jamie R. · Lecture 5 · 3 replies</small></div></li>
+            <li><span class="avatar"><span>LO</span></span><div class="stack" data-gap="1"><p><strong>Teacher answer</strong></p><p>Two or three, yes, even for small clients. Each one should be a clear direction, not a variation.</p><small>Lena Ortiz · Instructor · 2 days ago</small></div></li>
+          </ul>
+        </div>
+        <div role="tabpanel" id="crs5-p3" aria-labelledby="crs5-t3" tabindex="-1" hidden>
+          <div class="stack" data-gap="4">
+            <form class="stack" data-gap="2" data-note-form>
+              <label class="label" for="crs5-note">Create a note at 4:12</label>
+              <textarea class="textarea" id="crs5-note" name="note" rows="3" placeholder="What do you want to remember?"></textarea>
+              <div class="cluster" data-justify="end"><button type="submit" class="btn" data-size="sm">{si("notebook-pen")}Save note</button></div>
+            </form>
+            <ul class="crs-notes" data-notes><li><span class="badge" data-variant="outline">2:05 · Interviewing the client</span><span>Ask “what should people feel?” before “what should it look like?”.</span></li></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <aside class="crs-learn-side" aria-label="Course content">
+      <div class="crs-learn-side-head"><h2>Course content</h2><p>{len(LESSONS)} sections · {total_l} lectures</p></div>
+      {"".join(side)}
+    </aside>
+  </div>
+</div>
+""", CRS + """
+  .crs-learn-main .tabs [role='tabpanel'] { padding-block-start: 1rem; }
+  .crs-stat-row dd.shop-h2 { font-size: 1.125rem; }""", scripts=script(PLAYER_JS + VIDEO_JS))
+
+
+# ---------------------------------------------------------------- course-06: my learning
+MINE = [(C["react"], 42, "progress"), (C["brand"], 100, "done"), (C["watercolor"], 8, "progress"), (C["excel"], 0, "new"), (C["motion"], 100, "done"), (C["photo"], 65, "progress")]
+
+
+def mine_card(c, pct, state):
+    foot = {"done": f'<span class="cluster" data-gap="1">{si("award")}Completed</span><a href="#" class="btn" data-variant="link" data-size="sm">Certificate</a>',
+            "new": '<span>Not started</span><span class="crs-stars-input" aria-hidden="true"></span>',
+            "progress": f'<span>{pct}% complete</span><span class="crs-stars-input" aria-label="Your rating: 4 stars">{"".join(si("star") for _ in range(4))}</span>'}[state]
+    return f"""<article class="card" data-state="{state}">
+  <a href="#" aria-label="{"Start" if state == "new" else "Continue"} {c["title"]}">{thumb(c)}<span>{si("circle-play")}</span></a>
+  <section class="stack" data-gap="2"><h3>{c["title"]}</h3><p class="crs-by">{c["by"]}</p></section>
+  <section class="stack" data-gap="2">
+    <div class="progress" role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{pct}"><span style="width: {pct}%"></span></div>
+    <div class="crs-mine-foot">{foot}</div>
+  </section>
+</article>"""
+
+
+MINE_JS = """
+document.querySelectorAll('[data-mine-filter]').forEach((bar) => {
+  const grid = document.getElementById(bar.dataset.mineFilter);
+  bar.addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-state-filter]');
+    if (!b) return;
+    bar.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    const f = b.dataset.stateFilter;
+    grid.querySelectorAll('[data-state]').forEach((c) => { c.hidden = f !== 'all' && c.dataset.state !== f; });
+  });
+});
+"""
+add("course-06", "Course 06", "My learning: a weekly goal, stats, and enrolled courses with progress, filters for in progress, not started and completed.", "course", f"""
+{learn_header(current=None)}
+<main class="wrapper shop-page" data-size="xl">
+  <div class="stack" data-gap="8">
+    <div class="cluster" data-justify="between" data-align="end" data-gap="4">
+      <div class="stack" data-gap="1"><h1 class="shop-h1">My learning</h1><p class="shop-lead">Pick up where you left off.</p></div>
+      <div class="crs-box crs-goal">
+        <div class="stack" data-gap="1"><p class="shop-line-name">{si("trophy")} Weekly goal</p><p class="shop-line-meta">3 of 5 days · keep your streak going</p></div>
+        <div class="crs-week" aria-label="This week: learned on Monday, Tuesday and Thursday">{"".join(f'<span{" data-on" if on else ""}>{d}</span>' for d, on in zip("MTWTFSS", [1, 1, 0, 1, 0, 0, 0]))}</div>
+      </div>
+    </div>
+    <dl class="crs-stat-row"><div><dt>Courses</dt><dd>6</dd></div><div><dt>Hours learned</dt><dd>38.5</dd></div><div><dt>Certificates</dt><dd>2</dd></div><div><dt>Day streak</dt><dd>4</dd></div></dl>
+    <div class="crs-pills" role="group" aria-label="Filter courses" data-mine-filter="crs6-grid">{"".join(f'<button type="button" data-state-filter="{k}" aria-pressed="{"true" if k == "all" else "false"}">{t}</button>' for k, t in [("all", "All courses"), ("progress", "In progress"), ("new", "Not started"), ("done", "Completed")])}</div>
+    <div class="crs-mine" id="crs6-grid">{"".join(mine_card(c, p, s_) for c, p, s_ in MINE)}</div>
+  </div>
+</main>
+""", CRS + """
+  .crs-goal { display: flex; align-items: center; gap: 1.5rem; padding: 1rem 1.25rem; }
+  .crs-goal .shop-line-name { display: flex; align-items: center; gap: 0.375rem; }
+  .crs-goal .shop-line-name svg { inline-size: 1rem; block-size: 1rem; color: oklch(0.72 0.16 75); }
+  .crs-week { display: flex; gap: 0.375rem; }
+  .crs-week span { display: grid; place-items: center; inline-size: 1.75rem; block-size: 1.75rem; border-radius: 999px; border: 1px solid var(--border); font-size: 0.6875rem; font-weight: 600; color: var(--muted-foreground); corner-shape: round; }
+  .crs-week span[data-on] { border-color: var(--primary); background: var(--primary); color: var(--primary-foreground); }
+  .crs-mine-foot .cluster svg { inline-size: 0.875rem; block-size: 0.875rem; color: var(--primary); }""", scripts=script(MINE_JS))
+
+
+# ---------------------------------------------------------------- course-07: teacher profile
+L_COURSES = [C["brand"], C["copy"], C["motion"]]
+add("course-07", "Course 07", "A teacher profile: bio, stats, links, a follow button and the teacher's courses.", "course", f"""
+{learn_header()}
+<main class="wrapper shop-page" data-size="lg">
+  <div class="crs-profile">
+    <div class="stack" data-gap="6">
+      <div class="stack" data-gap="2">
+        <p class="shop-card-cat">Instructor</p>
+        <h1 class="shop-h1">Lena Ortiz</h1>
+        <p class="shop-lead">Brand designer and founder of Studio Ortiz, Lisbon</p>
+        <div class="cluster" data-gap="2"><span class="badge" data-variant="secondary">Top teacher</span><span class="badge" data-variant="outline">Branding</span><span class="badge" data-variant="outline">Typography</span></div>
+      </div>
+      <dl class="crs-stat-row"><div><dt>Students</dt><dd>64,300</dd></div><div><dt>Reviews</dt><dd>9,812</dd></div><div><dt>Rating</dt><dd>4.8</dd></div><div><dt>Courses</dt><dd>5</dd></div></dl>
+      <section class="stack" data-gap="3" aria-labelledby="crs7-about"><h2 class="shop-h2" id="crs7-about">About me</h2>
+        <div class="crs-prose"><p>I've spent 12 years building identities for restaurants, festivals and tech start-ups. My studio works with a handful of clients a year, and I teach the same process we use with them.</p><p>My courses are practical: every lesson ends with something you make, and every course ends with a project for your portfolio.</p></div>
+      </section>
+      <section class="stack" data-gap="4" aria-labelledby="crs7-courses"><h2 class="shop-h2" id="crs7-courses">My courses (5)</h2>
+        <div class="crs-grid">{"".join(course_card(c, pop=False) for c in L_COURSES)}</div>
+      </section>
+    </div>
+    <aside class="crs-profile-side">
+      <span class="avatar"><span>LO</span></span>
+      <button type="button" class="btn shop-full" aria-pressed="false" data-follow>{si("plus")}Follow</button>
+      <div class="stack shop-full" data-gap="2">
+        <a href="#" class="btn shop-full" data-variant="outline">{si("globe")}Website</a>
+        <a href="#" class="btn shop-full" data-variant="outline">{si("mail")}Message</a>
+      </div>
+      <p class="shop-line-meta">Teaching since 2019 · Replies within a day</p>
+    </aside>
+  </div>
+</main>
+""", CRS, scripts=script("""
+document.querySelectorAll('[data-follow]').forEach((b) => b.addEventListener('click', () => {
+  const on = b.getAttribute('aria-pressed') !== 'true';
+  b.setAttribute('aria-pressed', String(on));
+  b.lastChild.textContent = on ? 'Following' : 'Follow';
+  b.dataset.variant = on ? 'outline' : '';
+  if (!on) b.removeAttribute('data-variant');
+}));
+"""))
+
+
+# ---------------------------------------------------------------- course-08: plans
+PLANS = [
+    ("Single courses", 0, 0, "Buy only the courses you want.", ["Lifetime access to each course", "Certificate of completion", "Download resources"], "Browse courses", False, "outline"),
+    ("Plus", 12, 96, "Unlimited access for curious people.", ["10,000+ courses, no limits", "New courses every week", "Offline viewing in the app", "Certificates for every course", "Cancel anytime"], "Start 7-day free trial", True, ""),
+    ("Teams", 24, 192, "For teams of 5 or more.", ["Everything in Plus", "Admin dashboard and reports", "Assign learning paths", "SSO and invoicing"], "Contact sales", False, "outline"),
+]
+
+
+def plan_card(name, mo, yr, desc, feats, cta, featured, variant):
+    price = (f'<div class="crs-plan-price"><strong data-monthly="${mo}" data-yearly="${yr / 12:g}">${yr / 12:g}</strong><span data-monthly="/ month" data-yearly="/ month, billed ${yr} yearly">/ month, billed ${yr} yearly</span></div>'
+             if mo else '<div class="crs-plan-price"><strong>From $9.99</strong><span>/ course</span></div>')
+    v = f' data-variant="{variant}"' if variant else ""
+    return f"""<article class="crs-plan"{" data-featured" if featured else ""}>
+  {'<span class="badge">Most popular</span>' if featured else ""}
+  <div class="stack" data-gap="1"><h3>{name}</h3><p class="shop-lead">{desc}</p></div>
+  {price}
+  <ul>{"".join(f"<li>{si('check')}<span>{f}</span></li>" for f in feats)}</ul>
+  <a href="#" class="btn"{v} data-size="lg">{cta}</a>
+</article>"""
+
+
+BILLING_JS = """
+document.querySelectorAll('[data-billing]').forEach((sw) => {
+  const apply = () => {
+    const key = sw.checked ? 'yearly' : 'monthly';
+    document.querySelectorAll('[data-monthly]').forEach((el) => { el.textContent = el.dataset[key]; });
+  };
+  sw.addEventListener('change', apply);
+});
+"""
+add("course-08", "Course 08", "Subscription plans with a monthly or yearly switch, a featured plan and an FAQ.", "course", f"""
+{learn_header(current="Plus")}
+<main class="wrapper shop-page" data-size="lg">
+  <div class="stack" data-gap="12">
+    <div class="stack shop-center-text" data-gap="3" data-align="center">
+      <span class="badge" data-variant="secondary">{si("sparkles")}Acme Learn Plus</span>
+      <h1 class="shop-h1">Learn without limits</h1>
+      <p class="shop-lead">One subscription, every course. Try it free for 7 days.</p>
+      <label class="crs-billing" for="crs8-billing">Monthly <input type="checkbox" role="switch" class="input" id="crs8-billing" data-billing checked> Yearly <span class="badge" data-variant="secondary">Save 33%</span></label>
+    </div>
+    <div class="crs-plans">{"".join(plan_card(*p) for p in PLANS)}</div>
+    <section class="stack" data-gap="4" aria-labelledby="crs8-faq">
+      <h2 class="shop-h2" id="crs8-faq">Questions</h2>
+      <div class="accordion">
+        <details><summary>Can I cancel anytime?</summary><section><p class="shop-lead">Yes. You keep access until the end of the billing period and won't be charged again.</p></section></details>
+        <details><summary>Do I keep my certificates?</summary><section><p class="shop-lead">Yes, certificates stay in your account even after you cancel.</p></section></details>
+        <details><summary>Is there a student discount?</summary><section><p class="shop-lead">Students get 40% off Plus with a valid school email.</p></section></details>
+      </div>
+    </section>
+  </div>
+</main>
+""", CRS + "\n  .shop-center-text { text-align: center; }\n  .crs-billing .input { margin-inline: 0.25rem; }\n  .shop-center-text .badge svg { inline-size: 0.875rem; block-size: 0.875rem; }", scripts=script(BILLING_JS))
+
+
+# ---------------------------------------------------------------- course-09: certificate
+CERT_JS = """
+document.querySelectorAll('[data-print]').forEach((b) => b.addEventListener('click', () => window.print()));
+"""
+add("course-09", "Course 09", "A certificate of completion with a verification ID to copy, download, print and share.", "course", f"""
+{learn_header()}
+<main class="wrapper shop-page" data-size="md">
+  <div class="stack" data-gap="6">
+    <div class="cluster" data-justify="between" data-gap="3">
+      <div class="stack" data-gap="1"><h1 class="shop-h2">Your certificate</h1><p class="shop-line-meta">Completed November 6, 2026 · 7.5 hours</p></div>
+      <div class="cluster" data-gap="2">
+        <button type="button" class="btn" data-variant="outline" data-print>{si("download")}Download PDF</button>
+        <button type="button" class="btn">{si("share-2")}Share</button>
+      </div>
+    </div>
+    <article class="crs-cert" aria-labelledby="crs9-name">
+      <div class="crs-cert-top">{logo("Acme Learn")}<div class="crs-cert-meta"><span>Certificate no. <span id="crs9-id">UC-8F3A-29D1</span> {copy_btn("#crs9-id", "Copy certificate number")}</span><span>acme.learn/cert/UC-8F3A-29D1</span></div></div>
+      <h2>Certificate of completion</h2>
+      <p class="crs-cert-name" id="crs9-name">Olivia Martin</p>
+      <div class="stack" data-gap="1"><p class="shop-lead">has successfully completed</p><p class="crs-cert-course">{B["title"]}</p><p class="shop-line-meta">14 lectures · 7.5 total hours · Final project approved</p></div>
+      <div class="crs-cert-foot">
+        <div class="crs-cert-sign"><strong>Lena Ortiz</strong><span class="shop-line-meta">Lena Ortiz, Instructor</span></div>
+        <span class="crs-cert-seal" aria-hidden="true">{si("award")}</span>
+        <div class="crs-cert-sign"><strong>Acme Learn</strong><span class="shop-line-meta">Issued Nov 6, 2026</span></div>
+      </div>
+    </article>
+    <div class="crs-box cluster" data-justify="between" data-gap="3"><p class="shop-line-name">Add it to your LinkedIn profile</p><a href="#" class="btn" data-variant="outline" data-size="sm">Add to profile</a></div>
+  </div>
+</main>
+""", CRS + SUCCESS_CSS + """
+  .crs-cert-meta .shop-copy { vertical-align: middle; }
+  @media print { .crs-header { display: none; } .crs-cert { box-shadow: none; } }""", scripts=script(CERT_JS))
+
+
+# ---------------------------------------------------------------- course-10: cart and checkout
+CART_C = [C["brand"], C["motion"], C["watercolor"]]
+cart_lines = "".join(f"""<li class="crs-cart-line" data-course-line data-price="{c["price"]}" data-was="{c["was"]}">
+  {thumb(c)}
+  <div class="stack" data-gap="1"><h3>{c["title"]}</h3><p class="crs-by">By {c["by"]}</p>{crs_rate(c)}{crs_meta(c)}
+    <div class="crs-cart-actions"><button type="button" class="btn" data-variant="link" data-size="sm" data-remove-course>Remove</button><button type="button" class="btn" data-variant="link" data-size="sm">Save for later</button></div></div>
+  {crs_price(c)}
+</li>""" for c in CART_C)
+sub = sum(c["price"] for c in CART_C)
+orig = sum(c["was"] for c in CART_C)
+COURSE_CART_JS = """
+(() => {
+  const root = document.querySelector('[data-course-cart]');
+  if (!root) return;
+  const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+  let coupon = 0;
+  const sync = () => {
+    const lines = [...root.querySelectorAll('[data-course-line]')];
+    const sub = lines.reduce((s, l) => s + Number(l.dataset.price), 0);
+    const orig = lines.reduce((s, l) => s + Number(l.dataset.was || l.dataset.price), 0);
+    const off = Math.round(sub * coupon * 100) / 100;
+    root.querySelector('[data-c-orig]').textContent = fmt.format(orig);
+    root.querySelector('[data-c-disc]').textContent = '-' + fmt.format(orig - sub);
+    root.querySelector('[data-c-coupon-row]').hidden = !coupon;
+    root.querySelector('[data-c-coupon]').textContent = '-' + fmt.format(off);
+    root.querySelector('[data-c-total]').textContent = fmt.format(sub - off);
+    root.querySelector('[data-c-pay]').textContent = 'Pay ' + fmt.format(sub - off);
+    root.querySelectorAll('[data-c-count]').forEach((el) => { el.textContent = lines.length + (lines.length === 1 ? ' course in cart' : ' courses in cart'); });
+    document.querySelectorAll('[data-cart-count]').forEach((el) => { el.textContent = lines.length; el.dataset.count = lines.length; });
+    root.querySelectorAll('[data-c-filled]').forEach((el) => { el.hidden = !lines.length; });
+    root.querySelectorAll('[data-c-empty]').forEach((el) => { el.hidden = !!lines.length; });
+  };
+  root.addEventListener('click', (e) => {
+    const r = e.target.closest('[data-remove-course]');
+    if (r) { r.closest('[data-course-line]').remove(); sync(); }
+  });
+  const form = root.querySelector('[data-coupon-form]');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const code = form.elements.code.value.trim().toUpperCase();
+    const ok = code === 'LEARN20';
+    coupon = ok ? 0.2 : 0;
+    root.querySelector('[data-coupon-ok]').hidden = !ok;
+    root.querySelector('[data-coupon-err]').hidden = ok || !code;
+    form.elements.code.toggleAttribute('aria-invalid', !ok && !!code);
+    sync();
+  });
+})();
+"""
+add("course-10", "Course 10", "A course cart and checkout: remove courses, apply a coupon (try LEARN20), payment choice and a live total.", "course", f"""
+{learn_header(cart=3)}
+<main class="wrapper shop-page" data-size="xl" data-course-cart>
+  <div class="stack" data-gap="6">
+    <div class="stack" data-gap="1"><h1 class="shop-h1">Shopping cart</h1><p class="shop-lead" data-c-count>3 courses in cart</p></div>
+    <div class="shop-cols" data-c-filled>
+      <ul class="shop-lines crs-cart">{cart_lines}</ul>
+      <aside class="card shop-sticky" aria-labelledby="crs10-sum">
+        <header><h2 id="crs10-sum">Checkout</h2></header>
+        <section class="stack" data-gap="4">
+          <dl class="shop-summary">
+            <div><dt>Original price</dt><dd data-c-orig>{money(orig)}</dd></div>
+            <div data-discount><dt>Discounts</dt><dd data-c-disc>-{money(orig - sub)}</dd></div>
+            <div data-discount data-c-coupon-row hidden><dt>Coupon LEARN20</dt><dd data-c-coupon>-$0.00</dd></div>
+            <div data-total><dt>Total</dt><dd data-c-total>{money(sub)}</dd></div>
+          </dl>
+          <form class="stack" data-gap="2" data-coupon-form novalidate>
+            <label class="label" for="crs10-code">Coupon</label>
+            <div class="cluster" data-gap="2"><input class="input shop-grow" id="crs10-code" name="code" type="text" placeholder="Enter coupon" autocomplete="off" aria-describedby="crs10-coupon-msg"><button type="submit" class="btn" data-variant="outline">Apply</button></div>
+            <p class="crs-coupon-ok" id="crs10-coupon-msg" data-coupon-ok hidden>{si("circle-check")}LEARN20 applied: 20% off</p>
+            <p class="shop-error" data-coupon-err hidden>{si("info")}That coupon isn't valid. Try LEARN20.</p>
+          </form>
+          <div class="stack" data-gap="2"><span class="label">Payment</span><div data-payment>{choice_cards("crs10-pay", "crs10-pay-", [("card", "Card", "Visa, Mastercard, Amex", ""), ("paypal", "PayPal", "Pay with your PayPal account", ""), ("momo", "MoMo", "Scan to pay with MoMo", "")], label="Payment method")}</div></div>
+        </section>
+        <footer class="stack" data-gap="3">
+          <button type="button" class="btn shop-full" data-size="lg" data-c-pay>Pay {money(sub)}</button>
+          <p class="shop-note">{si("lock")}30-day money-back guarantee · Lifetime access</p>
+        </footer>
+      </aside>
+    </div>
+    <section class="empty" data-c-empty hidden><header><figure>{si("graduation-cap")}</figure><h3>Your cart is empty</h3><p>Keep exploring to find a course.</p></header><footer><a href="#" class="btn">Explore courses</a></footer></section>
+  </div>
+</main>
+""", CRS + CHOICE_CSS + """
+  .shop-grow { flex: 1; min-inline-size: 0; }
+  .crs-cart { display: grid; }
+  .crs-cart-line > img { border-radius: var(--radius); }
+  .crs-cart-line .crs-price { flex-direction: column; align-items: flex-end; gap: 0; }
+  @media (width < 40rem) { .crs-cart-line { grid-template-columns: 6rem minmax(0, 1fr); } .crs-cart-line > .crs-price { grid-column: 2; flex-direction: row; align-items: baseline; gap: 0.5rem; } }""", scripts=script(COURSE_CART_JS))
 
 
 if __name__ == "__main__":

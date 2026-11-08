@@ -4,10 +4,12 @@
 
 ### Added
 
+- Online course blocks (Udemy / Domestika style), 10 in a new Courses category: `course-01` catalog with topic pills, filters (rating, level, length, price), sort and a hover preview with Add to cart; `course-02` list rows and Domestika-style cards; `course-03` learning home with a search hero, continue learning, a course carousel and teachers; `course-04` course page with a sticky purchase card, video preview dialog, what you'll learn, expandable curriculum with previews, description, teacher and reviews; `course-05` course player with a progress ring, completion checkboxes, next and previous lesson, Q&A and notes; `course-06` my learning with a weekly goal and status filters; `course-07` teacher profile; `course-08` subscription plans with a monthly or yearly switch; `course-09` certificate of completion; `course-10` course cart with a coupon (`LEARN20`) and payment choice.
 - Create: font weight controls. A Font Weight slider next to Font Size shifts regular, medium, semibold and bold together (`--font-weight-normal|medium|semibold|bold`, which every component reads), and Customize theme → Typography sets each one. The Google Fonts link now loads each family's whole weight axis, so any chosen weight renders with real glyphs.
 
 ### Fixed
 
+- Rating filters in `filter-01`, `filter-03` and `search-02` pushed the stars to the far edge of the row. Some blocks used `data-gap` values outside the layout scale (5, 10), which fell back to the default gap; they now use 4 and 12.
 - Create: importing tweakcn's full CSS export (the one that starts with `@import "tailwindcss"` and `@custom-variant dark (&:is(.dark *))`) read the `:root` block as dark, so the light colors, radius and fonts were dropped. The import box also grew with a long paste until Apply was off screen; it now keeps a fixed height and scrolls.
 - Docs: choosing a style on Create replaced nothing; the style's stylesheet loaded on top of the Vega bundle inside `docs.css`, so whatever the style does not set kept Vega's value (the header's small buttons kept Vega's radius under Maia while the preview, which loads the style alone, did not). The site and block pages now load one component stylesheet, `dist/auvyx.min.css` or the chosen style's bundle in its place, and `docs.css` holds only the docs utilities (41 kB → 5 kB gzip).
 

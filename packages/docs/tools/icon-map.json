@@ -53,6 +53,12 @@
   "waveform",
   "voiceprint-line"
  ],
+ "award": [
+  "award",
+  "award-01",
+  "medal",
+  "award-line"
+ ],
  "bell": [
   "bell",
   "notification-01",
@@ -119,6 +125,12 @@
   "calendar-blank",
   "calendar-line"
  ],
+ "captions": [
+  "badge-cc",
+  "closed-caption",
+  "closed-captioning",
+  "closed-captioning-line"
+ ],
  "car": [
   "car",
   "car-01",
@@ -178,6 +190,12 @@
   "add-circle",
   "plus-circle",
   "add-circle-line"
+ ],
+ "circle-play": [
+  "player-play",
+  "play-circle",
+  "play-circle",
+  "play-circle-line"
  ],
  "clipboard-paste": [
   "clipboard",
@@ -323,6 +341,18 @@
   "gift",
   "gift-line"
  ],
+ "globe": [
+  "world",
+  "globe-02",
+  "globe",
+  "global-line"
+ ],
+ "graduation-cap": [
+  "school",
+  "mortarboard-01",
+  "graduation-cap",
+  "graduation-cap-line"
+ ],
  "heart": [
   "heart",
   "favourite",
@@ -352,6 +382,12 @@
   "inbox",
   "tray",
   "inbox-line"
+ ],
+ "infinity": [
+  "infinity",
+  "infinity-01",
+  "infinity",
+  "infinity-line"
  ],
  "info": [
   "info-circle",
@@ -443,6 +479,12 @@
   "map-pin",
   "map-pin-line"
  ],
+ "maximize": [
+  "maximize",
+  "maximize-01",
+  "arrows-out",
+  "fullscreen-line"
+ ],
  "menu": [
   "menu-2",
   "menu-01",
@@ -472,6 +514,12 @@
   "moon-02",
   "moon",
   "moon-line"
+ ],
+ "notebook-pen": [
+  "notebook",
+  "note-edit",
+  "notepad",
+  "sticky-note-line"
  ],
  "package": [
   "package",
@@ -713,6 +761,12 @@
   "warning",
   "error-warning-line"
  ],
+ "trophy": [
+  "trophy",
+  "champion",
+  "trophy",
+  "trophy-line"
+ ],
  "truck": [
   "truck",
   "truck-delivery",
@@ -754,6 +808,12 @@
   "checkmark-badge-01",
   "seal-check",
   "verified-badge-line"
+ ],
+ "volume-2": [
+  "volume",
+  "volume-high",
+  "speaker-high",
+  "volume-up-line"
  ],
  "wallet": [
   "wallet",

@@ -107,6 +107,11 @@ const INTERACTIONS = [
   ['reviews-02', (p) => p.click('.shop-star-input label:nth-of-type(4)')],
   ['reviews-03', (p) => p.click('button[data-tag="Warm"]')],
   ['product-01', (p) => p.click('#p1-gallery [data-carousel="next"]')],
+  ['course-01', (p) => p.click('[data-course-cat="Design"]')],
+  ['course-04', (p) => p.click('[data-expand-all]')],
+  ['course-05', (p) => p.click('[data-step-lesson="1"]')],
+  ['course-08', (p) => p.uncheck('[data-billing]')],
+  ['course-10', async (p) => { await p.fill('#crs10-code', 'LEARN20'); await p.click('[data-coupon-form] button[type=submit]'); }],
 ];
 
 test('React blocks behave like the HTML blocks', async () => {

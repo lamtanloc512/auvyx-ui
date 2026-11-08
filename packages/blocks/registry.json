@@ -264,6 +264,56 @@
     "description": "Compare checkboxes on product cards with a floating compare tray.",
     "category": "compare"
   },
+  "course-01": {
+    "title": "Course 01",
+    "description": "A course catalog: topic pills, filters for rating, level, length and price, sort, and cards with a hover preview.",
+    "category": "course"
+  },
+  "course-02": {
+    "title": "Course 02",
+    "description": "Course card styles: a list row with details, and Domestika-style cards with the teacher, students and a quick add to cart.",
+    "category": "course"
+  },
+  "course-03": {
+    "title": "Course 03",
+    "description": "A learning home page: search hero, continue learning, a course carousel with drag and arrows, topics and teachers.",
+    "category": "course"
+  },
+  "course-04": {
+    "title": "Course 04",
+    "description": "A course page: hero, sticky purchase card with a video preview, what you'll learn, curriculum with previews, description, teacher and reviews.",
+    "category": "course"
+  },
+  "course-05": {
+    "title": "Course 05",
+    "description": "A course player: video, progress ring, curriculum with completion checkboxes, next and previous lesson, and tabs for overview, Q&A and notes.",
+    "category": "course"
+  },
+  "course-06": {
+    "title": "Course 06",
+    "description": "My learning: a weekly goal, stats, and enrolled courses with progress, filters for in progress, not started and completed.",
+    "category": "course"
+  },
+  "course-07": {
+    "title": "Course 07",
+    "description": "A teacher profile: bio, stats, links, a follow button and the teacher's courses.",
+    "category": "course"
+  },
+  "course-08": {
+    "title": "Course 08",
+    "description": "Subscription plans with a monthly or yearly switch, a featured plan and an FAQ.",
+    "category": "course"
+  },
+  "course-09": {
+    "title": "Course 09",
+    "description": "A certificate of completion with a verification ID to copy, download, print and share.",
+    "category": "course"
+  },
+  "course-10": {
+    "title": "Course 10",
+    "description": "A course cart and checkout: remove courses, apply a coupon (try LEARN20), payment choice and a live total.",
+    "category": "course"
+  },
   "dashboard-01": {
     "title": "Dashboard 01",
     "description": "A dashboard with sidebar, charts and data table.",
