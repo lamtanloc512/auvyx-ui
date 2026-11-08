@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Footer 01 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+
+      .block-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: inherit;
+        text-decoration: none;
+      }
+      .block-logo-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .block-logo-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+
+      @keyframes shop-pop {
+        from {
+          transform: scale(0.96);
+          opacity: 0.6;
+        }
+        to {
+          transform: none;
+          opacity: 1;
+        }
+      }
+      /* Reduced motion: the hover states still apply, without movement. !important so it wins over every card's transition rules. */
+
+      .hf-demo {
+        min-block-size: 24rem;
+        padding: 3rem 1rem;
+        display: grid;
+        place-items: center;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+        background: repeating-linear-gradient(
+          -45deg,
+          var(--muted),
+          var(--muted) 10px,
+          transparent 10px,
+          transparent 20px
+        );
+      }
+      .hf-demo p {
+        margin: 0;
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        background: var(--background);
+      }
+      .hf-foot {
+        background: var(--foot-bg, var(--muted));
+        color: var(--foot-fg, var(--foreground));
+      }
+      .hf-foot a:not(.btn, .badge) {
+        color: inherit;
+        text-decoration: none;
+      }
+      .hf-foot-cols {
+        display: grid;
+        gap: 2rem;
+        padding-block: 3rem 2rem;
+      }
+      @media (width >= 48rem) {
+        .hf-foot-cols {
+          grid-template-columns: minmax(0, 1.4fr) repeat(var(--cols, 4), minmax(0, 1fr));
+        }
+      }
+      .hf-foot-brand {
+        display: grid;
+        gap: 1rem;
+        align-content: start;
+        max-inline-size: 22rem;
+      }
+      .hf-foot-brand p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: var(--foot-muted, var(--muted-foreground));
+        line-height: 1.6;
+      }
+      .hf-foot details {
+        border-block-end: 1px solid var(--foot-line, var(--border));
+      }
+      .hf-foot summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-block: 0.875rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        list-style: none;
+      }
+      .hf-foot summary::-webkit-details-marker {
+        display: none;
+      }
+      .hf-foot summary svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+        transition: transform 150ms ease;
+      }
+      .hf-foot details[open] > summary svg {
+        transform: rotate(180deg);
+      }
+      .hf-foot details ul {
+        display: grid;
+        gap: 0.625rem;
+        margin: 0;
+        padding: 0 0 1rem;
+        list-style: none;
+        font-size: 0.875rem;
+        color: var(--foot-muted, var(--muted-foreground));
+      }
+      .hf-foot details li a:hover {
+        color: var(--foot-fg, var(--foreground));
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      @media (width >= 48rem) {
+        .hf-foot details {
+          border: 0;
+        }
+        .hf-foot summary {
+          pointer-events: none;
+          padding-block: 0 1rem;
+        }
+        .hf-foot summary svg {
+          display: none;
+        }
+      }
+      .hf-social {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .hf-social a {
+        display: grid;
+        place-items: center;
+        inline-size: 2.25rem;
+        block-size: 2.25rem;
+        border: 1px solid var(--foot-line, var(--border));
+        border-radius: 999px;
+        transition:
+          background-color 150ms ease,
+          transform 150ms ease;
+        corner-shape: round;
+      }
+      .hf-social a:hover {
+        background: var(--foot-fg, var(--foreground));
+        color: var(--foot-bg, var(--background));
+        transform: translateY(-2px);
+      }
+      .hf-social a:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+      .hf-social svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .hf-bottom {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding-block: 1.25rem;
+        border-block-start: 1px solid var(--foot-line, var(--border));
+        font-size: 0.8125rem;
+        color: var(--foot-muted, var(--muted-foreground));
+      }
+      .hf-bottom nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .hf-bottom a:hover {
+        color: var(--foot-fg, var(--foreground));
+      }
+      .hf-pay {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+      }
+      .hf-pay span {
+        padding: 0.125rem 0.5rem;
+        border: 1px solid var(--foot-line, var(--border));
+        border-radius: calc(var(--radius) - 4px);
+        background: var(--background);
+        color: var(--foreground);
+        font-size: 0.6875rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+      .hf-locale {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .hf-locale .select {
+        block-size: 2rem;
+        font-size: 0.8125rem;
+        background-color: transparent;
+      }
+      .hf-news {
+        display: grid;
+        gap: 1.25rem;
+        align-items: center;
+        padding-block: 2.5rem;
+        border-block-end: 1px solid var(--foot-line, var(--border));
+      }
+      @media (width >= 48rem) {
+        .hf-news {
+          grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
+        }
+      }
+      .hf-news h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .hf-news p {
+        margin: 0;
+        color: var(--foot-muted, var(--muted-foreground));
+        font-size: 0.9375rem;
+      }
+      .hf-news form {
+        display: grid;
+        gap: 0.5rem;
+      }
+      .hf-news-row {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .hf-news-row input {
+        flex: 1;
+        min-inline-size: 0;
+      }
+      .hf-news-msg {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0;
+        font-size: 0.8125rem;
+      }
+      .hf-news-msg[hidden] {
+        display: none;
+      }
+      .hf-news-msg svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .hf-news-msg[data-tone="error"] {
+        color: var(--destructive);
+      }
+      .hf-news-small {
+        font-size: 0.75rem;
+        color: var(--foot-muted, var(--muted-foreground));
+      }
+      .hf-top {
+        position: fixed;
+        inset-block-end: 1.25rem;
+        inset-inline-end: 1.25rem;
+        z-index: 30;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(0.5rem);
+        transition:
+          opacity 200ms ease,
+          transform 200ms ease;
+      }
+      .hf-top[data-show] {
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+      }
+      @media (width < 48rem) {
+        .hf-foot-cols:has(> details) {
+          gap: 0;
+        }
+        .hf-foot-cols:has(> details) > .hf-foot-brand {
+          margin-block-end: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hf-demo"><p>Page content</p></div>
+    <footer class="hf-foot">
+      <div class="wrapper" data-size="xl">
+        <div class="hf-news">
+          <div class="stack" data-gap="2">
+            <h2>Get 10% off your first order</h2>
+            <p>New arrivals, restocks and members-only offers, twice a month.</p>
+          </div>
+          <form data-newsletter novalidate>
+            <div data-news-fields class="stack" data-gap="2">
+              <div class="hf-news-row">
+                <label class="sr-only" for="f1-email">Email</label>
+                <input
+                  class="input"
+                  id="f1-email"
+                  type="email"
+                  placeholder="you@example.com"
+                  autocomplete="email"
+                  aria-describedby="f1-err" />
+                <button type="submit" class="btn">Subscribe</button>
+              </div>
+              <p class="hf-news-msg" data-tone="error" id="f1-err" data-news-error hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                Enter a valid email address.
+              </p>
+              <span class="hf-news-small">No spam. Unsubscribe anytime.</span>
+            </div>
+            <p class="hf-news-msg" data-news-done hidden role="status">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+              Thanks! Check your inbox to confirm.
+            </p>
+          </form>
+        </div>
+        <div class="hf-foot-cols" style="--cols: 4">
+          <div class="hf-foot-brand">
+            <a href="#" class="block-logo">
+              <span class="block-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+              Acme Store
+            </a>
+            <p>
+              Considered pieces for every room and every day. Designed in Portland, made to last.
+            </p>
+            <div class="hf-social">
+              <a href="#" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+              <a href="#" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8A4 4 0 0 1 16 11.37m1.5-4.87h.01"/></svg></a>
+              <a href="#" aria-label="YouTube"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 17a24.1 24.1 0 0 1 0-10a2 2 0 0 1 1.4-1.4a49.6 49.6 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.1 24.1 0 0 1 0 10a2 2 0 0 1-1.4 1.4a49.6 49.6 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15l5-3l-5-3z"/></svg></a>
+              <a href="#" aria-label="X"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6c2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4c-.9-4.2 4-6.6 7-3.8c1.1 0 3-1.2 3-1.2"/></svg></a>
+            </div>
+          </div>
+          <details data-foot-group open>
+            <summary>
+              Shop
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <ul>
+              <li><a href="#">New arrivals</a></li>
+              <li><a href="#">Women</a></li>
+              <li><a href="#">Men</a></li>
+              <li><a href="#">Home</a></li>
+              <li><a href="#">Gift cards</a></li>
+              <li><a href="#">Sale</a></li>
+            </ul>
+          </details>
+          <details data-foot-group open>
+            <summary>
+              Help
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <ul>
+              <li><a href="#">Order status</a></li>
+              <li><a href="#">Shipping</a></li>
+              <li><a href="#">Returns</a></li>
+              <li><a href="#">Size guide</a></li>
+              <li><a href="#">Contact us</a></li>
+            </ul>
+          </details>
+          <details data-foot-group open>
+            <summary>
+              Company
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <ul>
+              <li><a href="#">About</a></li>
+              <li><a href="#">Stores</a></li>
+              <li><a href="#">Careers</a></li>
+              <li><a href="#">Sustainability</a></li>
+              <li><a href="#">Press</a></li>
+            </ul>
+          </details>
+          <details data-foot-group open>
+            <summary>
+              Account
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <ul>
+              <li><a href="#">Sign in</a></li>
+              <li><a href="#">Create account</a></li>
+              <li><a href="#">Wishlist</a></li>
+              <li><a href="#">Rewards</a></li>
+            </ul>
+          </details>
+        </div>
+        <div class="hf-bottom">
+          <span>© 2026 Acme Store, Inc.</span>
+          <nav aria-label="Legal">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Cookies</a>
+            <a href="#">Accessibility</a>
+          </nav>
+          <div class="hf-pay" aria-label="Payment methods">
+            <span>VISA</span>
+            <span>Mastercard</span>
+            <span>AMEX</span>
+            <span>PayPal</span>
+            <span>Apple Pay</span>
+            <span>MoMo</span>
+          </div>
+          <div class="hf-locale">
+            <label class="sr-only" for="f1-lang">Language</label>
+            <select class="select" id="f1-lang">
+              <option>English</option>
+              <option>Tiếng Việt</option>
+            </select>
+            <label class="sr-only" for="f1-cur">Currency</label>
+            <select class="select" id="f1-cur">
+              <option>USD $</option>
+              <option>VND ₫</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <button
+      type="button"
+      class="btn hf-top"
+      data-variant="outline"
+      data-size="icon"
+      aria-label="Back to top"
+      data-to-top>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
+    </button>
+    <script>
+      // Announcement bar: previous/next messages, dismiss.
+      document.querySelectorAll("[data-bar]").forEach((bar) => {
+        const msgs = [...bar.querySelectorAll(".hf-bar-msgs > span")];
+        let i = 0;
+        const show = (n) => {
+          i = (n + msgs.length) % msgs.length;
+          msgs.forEach((m, k) => m.toggleAttribute("data-on", k === i));
+        };
+        bar.querySelector("[data-bar-prev]")?.addEventListener("click", () => show(i - 1));
+        bar.querySelector("[data-bar-next]")?.addEventListener("click", () => show(i + 1));
+        bar.querySelector("[data-bar-close]")?.addEventListener("click", () => {
+          bar.hidden = true;
+        });
+      });
+      // Search that opens under the header.
+      document.querySelectorAll("[data-search-toggle]").forEach((b) =>
+        b.addEventListener("click", () => {
+          const head = b.closest(".hf-head");
+          const open = !head.hasAttribute("data-search");
+          head.toggleAttribute("data-search", open);
+          b.setAttribute("aria-expanded", String(open));
+          if (open) head.querySelector(".hf-searchbox input").focus();
+        }),
+      );
+      // Header over a hero: solid once the page scrolls.
+      document.querySelectorAll("[data-overlay]").forEach((h) => {
+        const sync = () => h.toggleAttribute("data-scrolled", window.scrollY > 40);
+        window.addEventListener("scroll", sync, { passive: true });
+        sync();
+      });
+      // Newsletter forms: validate the email, then thank.
+      document.querySelectorAll("[data-newsletter]").forEach((form) => {
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const input = form.querySelector("input[type=email]");
+          const ok = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(input.value.trim());
+          input.toggleAttribute("aria-invalid", !ok);
+          form.querySelector("[data-news-error]").hidden = ok;
+          if (!ok) {
+            input.focus();
+            return;
+          }
+          form.querySelector("[data-news-fields]").hidden = true;
+          form.querySelector("[data-news-done]").hidden = false;
+        });
+      });
+      // Footer link columns: open on wide screens, collapsible on small ones.
+      (() => {
+        const groups = document.querySelectorAll("[data-foot-group]");
+        if (!groups.length) return;
+        const mq = window.matchMedia("(width >= 48rem)");
+        const apply = () =>
+          groups.forEach((d) => {
+            d.open = mq.matches;
+          });
+        mq.addEventListener("change", apply);
+        apply();
+      })();
+      // Bottom tab bar: the tapped tab becomes current.
+      document.querySelectorAll(".hf-bnav").forEach((nav) =>
+        nav.addEventListener("click", (e) => {
+          const a = e.target.closest("a");
+          if (!a) return;
+          e.preventDefault();
+          nav.querySelectorAll("a[aria-current]").forEach((x) => x.removeAttribute("aria-current"));
+          a.setAttribute("aria-current", "page");
+        }),
+      );
+      // Back to top.
+      document.querySelectorAll("[data-to-top]").forEach((b) => {
+        const sync = () => b.toggleAttribute("data-show", window.scrollY > 300);
+        window.addEventListener("scroll", sync, { passive: true });
+        sync();
+        b.addEventListener("click", () =>
+          window.scrollTo({
+            top: 0,
+            behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+          }),
+        );
+      });
+    </script>
+  </body>
+</html>

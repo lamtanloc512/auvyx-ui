@@ -1,0 +1,1107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin 07 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+
+      body {
+        min-block-size: 100svh;
+      }
+      .adm-mark {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        inline-size: 2rem;
+        block-size: 2rem;
+        border-radius: calc(var(--radius) + 2px);
+        background: var(--sidebar-primary);
+        color: var(--sidebar-primary-foreground);
+      }
+      .adm-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .adm-main {
+        container-type: inline-size;
+        min-inline-size: 0;
+      }
+      .adm-header {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        block-size: 3.5rem;
+        padding-inline: 1rem;
+        border-block-end: 1px solid var(--border);
+        background: var(--background);
+      }
+      .adm-header > hr {
+        align-self: center;
+        block-size: 1rem;
+        margin-inline-end: 0.25rem;
+      }
+      .adm-header .breadcrumb {
+        min-inline-size: 0;
+      }
+      .adm-header-end {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-inline-start: auto;
+      }
+      .adm-body {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem;
+        padding: 1rem;
+      }
+      .adm-split > * {
+        min-inline-size: 0;
+      }
+      .adm-body > * {
+        min-inline-size: 0;
+      }
+      .adm-main .card {
+        min-inline-size: 0;
+      }
+      .adm-main .card > section {
+        min-inline-size: 0;
+      }
+      .adm-main .stack > * {
+        min-inline-size: 0;
+      }
+      .adm-main .card > section > * {
+        min-inline-size: 0;
+      }
+      @container (width >= 48rem) {
+        .adm-body {
+          padding: 1.5rem;
+        }
+      }
+      .adm-title {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .adm-title h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .adm-title p {
+        margin: 0.25rem 0 0;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
+      .adm-title > div:last-child {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .adm-table-wrap {
+        position: relative;
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+      }
+      .adm-table-wrap .table {
+        min-inline-size: 48rem;
+      }
+      .adm-table-wrap .table th:first-child {
+        inline-size: 2.5rem;
+        padding-inline-start: 1rem;
+      }
+      .adm-table-wrap .table td:first-child {
+        inline-size: 2.5rem;
+        padding-inline-start: 1rem;
+      }
+      .adm-num {
+        text-align: end;
+        font-variant-numeric: tabular-nums;
+      }
+      .adm-split {
+        display: grid;
+        gap: 1.5rem;
+        align-items: start;
+      }
+      @container (width >= 64rem) {
+        .adm-split {
+          grid-template-columns: minmax(0, 1fr) 20rem;
+        }
+        .adm-split > aside {
+          position: sticky;
+          inset-block-start: 5rem;
+        }
+      }
+      .adm-split > aside {
+        display: grid;
+        gap: 1rem;
+      }
+      .adm-muted {
+        color: var(--muted-foreground);
+      }
+      .adm-saved {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .adm-saved::before {
+        content: "";
+        inline-size: 0.5rem;
+        block-size: 0.5rem;
+        border-radius: 999px;
+        background: oklch(0.65 0.17 150);
+      }
+      .adm-saved[data-dirty]::before {
+        background: oklch(0.75 0.15 75);
+      }
+
+      @keyframes shop-draw {
+        from {
+          stroke-dashoffset: 30;
+        }
+      }
+      @keyframes shop-pop-in {
+        from {
+          transform: scale(0.6);
+          opacity: 0;
+        }
+      }
+      @keyframes shop-fall {
+        0% {
+          opacity: 1;
+          transform: translateY(0) rotate(0);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(18rem) rotate(540deg);
+        }
+      }
+      .shop-copy svg + svg {
+        display: none;
+      }
+      .shop-copy[data-copied] svg {
+        display: none;
+      }
+      .shop-copy[data-copied] svg + svg {
+        display: block;
+        color: var(--primary);
+      }
+
+      .adm-models {
+        display: grid;
+        gap: 0.75rem;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+        margin: 0;
+        padding: 0;
+        border: 0;
+      }
+      .adm-model {
+        position: relative;
+        display: grid;
+        gap: 0.125rem;
+        padding: 0.875rem 1rem;
+        padding-inline-end: 2.5rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        cursor: pointer;
+      }
+      .adm-model:hover {
+        background: var(--accent);
+      }
+      .adm-model:has(:checked) {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 1px var(--primary);
+      }
+      .adm-model:has(:focus-visible) {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+      .adm-model input {
+        position: absolute;
+        inset-block-start: 0.875rem;
+        inset-inline-end: 0.875rem;
+      }
+      .adm-model strong {
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+      .adm-model small {
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+      }
+      .adm-price-fields {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+      }
+      .adm-price-fields .field[hidden] {
+        display: none;
+      }
+      .adm-err {
+        margin: 0;
+        color: var(--destructive);
+        font-size: 0.8125rem;
+      }
+      .adm-code {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .adm-code code {
+        padding: 0.125rem 0.375rem;
+        border-radius: calc(var(--radius) - 4px);
+        background: var(--muted);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+      }
+      tr[data-coupon]:has([role="switch"]:not(:checked)) > td:not(:nth-last-child(-n + 2)) {
+        opacity: 0.55;
+      }
+      .adm-preview {
+        display: grid;
+        gap: 0.75rem;
+      }
+      .adm-preview img {
+        aspect-ratio: 16 / 9;
+        inline-size: 100%;
+        border-radius: calc(var(--radius) - 2px);
+        object-fit: cover;
+      }
+      .adm-preview p {
+        margin: 0;
+      }
+      .adm-preview-price {
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        font-size: 1.75rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .adm-preview-price s {
+        font-size: 1rem;
+        font-weight: 400;
+        color: var(--muted-foreground);
+      }
+      .adm-preview-price .badge {
+        font-size: 0.75rem;
+        letter-spacing: 0;
+      }
+      .adm-preview .adm-muted {
+        font-size: 0.8125rem;
+      }
+      .adm-preview > .btn {
+        inline-size: 100%;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <aside id="adm-sidebar" class="sidebar" data-collapsible="icon">
+      <nav aria-label="Instructor">
+        <header>
+          <ul>
+            <li>
+              <a href="#" data-size="lg">
+                <span class="adm-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0zM22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span>
+                <span>
+                  <strong>Acme Learn</strong>
+                  <small>Instructor</small>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </header>
+        <section>
+          <div role="group" aria-labelledby="adm-g0">
+            <h3 id="adm-g0">Overview</h3>
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Dashboard" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17V5"/><path d="M18 17V9"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 17v-3"/></svg>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Courses" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                  <span>Courses</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Media library" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                  <span>Media library</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div role="group" aria-labelledby="adm-g1">
+            <h3 id="adm-g1">Students</h3>
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Students" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
+                  <span>Students</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Reviews" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <span>Reviews</span>
+                  <span data-badge>4</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Q&A" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  <span>Q&A</span>
+                  <span data-badge>12</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div role="group" aria-labelledby="adm-g2">
+            <h3 id="adm-g2">Business</h3>
+            <ul>
+              <li>
+                <a href="#" aria-current="page" data-tooltip="Pricing" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+                  <span>Pricing</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Coupons" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9a3 3 0 1 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 1 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M9 9h.01"/><path d="m15 9-6 6"/><path d="M15 15h.01"/></svg>
+                  <span>Coupons</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Settings" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <span>Settings</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </section>
+        <footer>
+          <ul>
+            <li>
+              <a href="#" data-size="lg">
+                <span class="avatar" data-size="sm"><span>LO</span></span>
+                <span>
+                  <strong>Lena Ortiz</strong>
+                  <small>lena@acme.learn</small>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </footer>
+      </nav>
+    </aside>
+    <main class="adm-main">
+      <header class="adm-header">
+        <button
+          type="button"
+          class="btn"
+          data-variant="ghost"
+          data-size="icon-sm"
+          data-sidebar-toggle="adm-sidebar"
+          aria-controls="adm-sidebar"
+          aria-label="Toggle sidebar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        </button>
+        <hr role="separator" aria-orientation="vertical" />
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="#">Courses</a></li>
+            <li aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></li>
+            <li><a href="#">Brand Identity Design</a></li>
+            <li aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></li>
+            <li><span aria-current="page">Pricing</span></li>
+          </ol>
+        </nav>
+        <div class="adm-header-end"></div>
+      </header>
+      <div class="adm-body">
+        <div class="adm-title">
+          <div>
+            <h1>Pricing</h1>
+            <p>Brand Identity Design from Scratch</p>
+          </div>
+          <div>
+            <span class="adm-saved" data-saved role="status">All changes saved</span>
+            <button type="button" class="btn" data-save>Save pricing</button>
+          </div>
+        </div>
+        <div class="adm-split">
+          <div class="stack" data-gap="6">
+            <section class="card">
+              <header>
+                <h2>Pricing model</h2>
+                <p>How students pay for this course.</p>
+              </header>
+              <section class="stack" data-gap="6">
+                <fieldset class="adm-models">
+                  <legend class="sr-only">Pricing model</legend>
+                  <label class="adm-model">
+                    <input type="radio" name="a7-model" value="free" class="input" />
+                    <strong>Free</strong>
+                    <small>Anyone can enroll</small>
+                  </label>
+                  <label class="adm-model">
+                    <input type="radio" name="a7-model" value="one" class="input" checked />
+                    <strong>One-time</strong>
+                    <small>Pay once, lifetime access</small>
+                  </label>
+                  <label class="adm-model">
+                    <input type="radio" name="a7-model" value="sub" class="input" />
+                    <strong>Subscription</strong>
+                    <small>Monthly or yearly access</small>
+                  </label>
+                  <label class="adm-model">
+                    <input type="radio" name="a7-model" value="plan" class="input" />
+                    <strong>Payment plan</strong>
+                    <small>Split the price into installments</small>
+                  </label>
+                </fieldset>
+                <div class="adm-price-fields" data-fields>
+                  <div role="group" class="field" data-for="one sub plan">
+                    <label for="a7-cur">Currency</label>
+                    <select class="select" id="a7-cur" data-cur>
+                      <option value="USD">USD $</option>
+                      <option value="EUR">EUR €</option>
+                      <option value="VND">VND ₫</option>
+                    </select>
+                  </div>
+                  <div role="group" class="field" data-for="one plan">
+                    <label for="a7-price">Price</label>
+                    <input
+                      class="input"
+                      id="a7-price"
+                      type="number"
+                      min="0"
+                      step="1"
+                      value="89"
+                      data-price />
+                  </div>
+                  <div role="group" class="field" data-for="one">
+                    <label for="a7-sale">
+                      Sale price
+                      <span class="adm-muted">(optional)</span>
+                    </label>
+                    <input
+                      class="input"
+                      id="a7-sale"
+                      type="number"
+                      min="0"
+                      step="1"
+                      value="59"
+                      data-sale />
+                  </div>
+                  <div role="group" class="field" data-for="sub">
+                    <label for="a7-month">Monthly</label>
+                    <input
+                      class="input"
+                      id="a7-month"
+                      type="number"
+                      min="0"
+                      step="1"
+                      value="19"
+                      data-month />
+                  </div>
+                  <div role="group" class="field" data-for="sub">
+                    <label for="a7-year">Yearly</label>
+                    <input
+                      class="input"
+                      id="a7-year"
+                      type="number"
+                      min="0"
+                      step="1"
+                      value="159"
+                      data-year />
+                  </div>
+                  <div role="group" class="field" data-for="plan">
+                    <label for="a7-n">Installments</label>
+                    <select class="select" id="a7-n" data-n>
+                      <option value="2">2</option>
+                      <option value="3" selected>3</option>
+                      <option value="4">4</option>
+                      <option value="6">6</option>
+                    </select>
+                  </div>
+                </div>
+              </section>
+            </section>
+            <section class="card">
+              <header>
+                <h2>Coupons</h2>
+                <p>Discount codes students enter at checkout.</p>
+                <div class="card-action">
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="outline"
+                    data-size="sm"
+                    commandfor="a7-new"
+                    command="show-modal">
+                    <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                    New coupon
+                  </button>
+                </div>
+              </header>
+              <section>
+                <div class="adm-table-wrap">
+                  <table class="table" style="min-inline-size: 36rem">
+                    <thead>
+                      <tr>
+                        <th>Code</th>
+                        <th>Discount</th>
+                        <th class="adm-num">Used</th>
+                        <th>Expires</th>
+                        <th>Active</th>
+                        <th><span class="sr-only">Delete</span></th>
+                      </tr>
+                    </thead>
+                    <tbody data-coupons>
+                      <tr data-coupon>
+                        <td>
+                          <span class="adm-code">
+                            <code id="a7-c0">LEARN20</code>
+                            <button
+                              type="button"
+                              class="btn shop-copy"
+                              data-variant="ghost"
+                              data-size="icon-xs"
+                              data-copy="#a7-c0"
+                              aria-label="Copy LEARN20"
+                              data-copied-label="Copied">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                            </button>
+                          </span>
+                        </td>
+                        <td>20% off</td>
+                        <td class="adm-num">412 / 1,000</td>
+                        <td class="adm-muted">Dec 31, 2026</td>
+                        <td>
+                          <input
+                            type="checkbox"
+                            role="switch"
+                            class="input"
+                            aria-label="LEARN20 active"
+                            checked />
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            class="btn"
+                            data-variant="ghost"
+                            data-size="icon-sm"
+                            aria-label="Delete LEARN20"
+                            data-del-coupon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr data-coupon>
+                        <td>
+                          <span class="adm-code">
+                            <code id="a7-c1">BLACKFRIDAY</code>
+                            <button
+                              type="button"
+                              class="btn shop-copy"
+                              data-variant="ghost"
+                              data-size="icon-xs"
+                              data-copy="#a7-c1"
+                              aria-label="Copy BLACKFRIDAY"
+                              data-copied-label="Copied">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                            </button>
+                          </span>
+                        </td>
+                        <td>40% off</td>
+                        <td class="adm-num">1,280</td>
+                        <td class="adm-muted">Nov 30, 2026</td>
+                        <td>
+                          <input
+                            type="checkbox"
+                            role="switch"
+                            class="input"
+                            aria-label="BLACKFRIDAY active"
+                            checked />
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            class="btn"
+                            data-variant="ghost"
+                            data-size="icon-sm"
+                            aria-label="Delete BLACKFRIDAY"
+                            data-del-coupon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr data-coupon>
+                        <td>
+                          <span class="adm-code">
+                            <code id="a7-c2">WELCOME10</code>
+                            <button
+                              type="button"
+                              class="btn shop-copy"
+                              data-variant="ghost"
+                              data-size="icon-xs"
+                              data-copy="#a7-c2"
+                              aria-label="Copy WELCOME10"
+                              data-copied-label="Copied">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                            </button>
+                          </span>
+                        </td>
+                        <td>$10 off</td>
+                        <td class="adm-num">96 / 500</td>
+                        <td class="adm-muted">No expiry</td>
+                        <td>
+                          <input
+                            type="checkbox"
+                            role="switch"
+                            class="input"
+                            aria-label="WELCOME10 active"
+                            checked />
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            class="btn"
+                            data-variant="ghost"
+                            data-size="icon-sm"
+                            aria-label="Delete WELCOME10"
+                            data-del-coupon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr data-coupon>
+                        <td>
+                          <span class="adm-code">
+                            <code id="a7-c3">SUMMER25</code>
+                            <button
+                              type="button"
+                              class="btn shop-copy"
+                              data-variant="ghost"
+                              data-size="icon-xs"
+                              data-copy="#a7-c3"
+                              aria-label="Copy SUMMER25"
+                              data-copied-label="Copied">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                            </button>
+                          </span>
+                        </td>
+                        <td>25% off</td>
+                        <td class="adm-num">731 / 750</td>
+                        <td class="adm-muted">Aug 31, 2026</td>
+                        <td>
+                          <input
+                            type="checkbox"
+                            role="switch"
+                            class="input"
+                            aria-label="SUMMER25 active" />
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            class="btn"
+                            data-variant="ghost"
+                            data-size="icon-sm"
+                            aria-label="Delete SUMMER25"
+                            data-del-coupon>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </section>
+          </div>
+          <aside>
+            <div class="card">
+              <header>
+                <h2>Preview</h2>
+                <p>What students see on the course page.</p>
+              </header>
+              <section>
+                <div class="adm-preview">
+                  <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="2" />
+                  <div class="stack" data-gap="1">
+                    <p class="adm-preview-price" data-preview-price></p>
+                    <p class="adm-muted" data-preview-note></p>
+                  </div>
+                  <span class="btn" data-preview-cta>Buy now</span>
+                </div>
+              </section>
+            </div>
+          </aside>
+        </div>
+        <dialog id="a7-new" class="dialog" closedby="any" aria-labelledby="a7-new-t">
+          <div>
+            <header>
+              <h2 id="a7-new-t">New coupon</h2>
+              <p>Codes are not case sensitive.</p>
+            </header>
+            <section>
+              <form id="a7-form" class="stack" data-gap="4" novalidate>
+                <div role="group" class="field">
+                  <label for="a7-code">Code</label>
+                  <div class="cluster" data-gap="2" style="flex-wrap: nowrap">
+                    <input
+                      class="input"
+                      id="a7-code"
+                      maxlength="20"
+                      placeholder="SPRING30"
+                      style="text-transform: uppercase"
+                      aria-describedby="a7-code-err" />
+                    <button type="button" class="btn" data-variant="outline" data-gen>
+                      <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9a9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5m5 4a9 9 0 0 1-9 9a9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                      Generate
+                    </button>
+                  </div>
+                  <p class="adm-err" id="a7-code-err" data-code-err hidden>
+                    Use 4–20 letters or numbers.
+                  </p>
+                </div>
+                <fieldset class="toggle-group" data-variant="outline">
+                  <legend>Discount type</legend>
+                  <label class="toggle">
+                    <input type="radio" name="a7-type" value="pct" checked />
+                    Percent
+                  </label>
+                  <label class="toggle">
+                    <input type="radio" name="a7-type" value="amt" />
+                    Fixed amount
+                  </label>
+                </fieldset>
+                <div class="adm-price-fields">
+                  <div role="group" class="field">
+                    <label for="a7-val">Amount</label>
+                    <input class="input" id="a7-val" type="number" min="1" max="100" value="20" />
+                  </div>
+                  <div role="group" class="field">
+                    <label for="a7-limit">Usage limit</label>
+                    <input
+                      class="input"
+                      id="a7-limit"
+                      type="number"
+                      min="1"
+                      placeholder="Unlimited" />
+                  </div>
+                  <div role="group" class="field">
+                    <label for="a7-exp">Expires</label>
+                    <input class="input" id="a7-exp" type="date" />
+                  </div>
+                </div>
+              </form>
+            </section>
+            <footer>
+              <button
+                type="button"
+                class="btn"
+                data-variant="outline"
+                commandfor="a7-new"
+                command="close">
+                Cancel
+              </button>
+              <button type="submit" form="a7-form" class="btn">Create coupon</button>
+            </footer>
+          </div>
+          <button type="button" aria-label="Close dialog" commandfor="a7-new" command="close">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </dialog>
+      </div>
+    </main>
+    <script>
+      // Dropdown row menus close after a choice.
+      document
+        .querySelectorAll("[data-popover] [role=menuitem]")
+        .forEach((m) => m.addEventListener("click", () => m.closest("[popover]")?.hidePopover?.()));
+      // Tables: status tabs, search, row selection with a bulk bar.
+      document.querySelectorAll("[data-adm-table]").forEach((root) => {
+        const tbody = root.querySelector("tbody");
+        const rows = () => [...tbody.querySelectorAll("tr[data-row]")];
+        const tabs = [...root.querySelectorAll("[data-tab]")];
+        const search = root.querySelector("[data-search]");
+        const select = root.querySelector("[data-filter-select]");
+        const all = root.querySelector("[data-select-all]");
+        const bulk = root.querySelector("[data-bulk]");
+        const empty = root.querySelector("[data-empty]");
+        let tab = "all";
+        const counts = () =>
+          tabs.forEach((t) => {
+            const k = t.dataset.tab;
+            t.querySelector(".badge").textContent = rows().filter(
+              (r) => k === "all" || r.dataset.status === k,
+            ).length;
+          });
+        const apply = () => {
+          const q = (search?.value || "").trim().toLowerCase();
+          const f = select?.value || "all";
+          let shown = 0;
+          rows().forEach((r) => {
+            const ok =
+              (tab === "all" || r.dataset.status === tab) &&
+              (!q || r.textContent.toLowerCase().includes(q)) &&
+              (f === "all" || r.dataset.filter === f);
+            r.hidden = !ok;
+            if (!ok) r.querySelector("[data-select]").checked = false;
+            shown += ok;
+          });
+          if (empty) empty.hidden = shown > 0;
+          sync();
+        };
+        const sync = () => {
+          const vis = rows().filter((r) => !r.hidden);
+          const sel = vis.filter((r) => r.querySelector("[data-select]").checked);
+          vis.forEach((r) =>
+            r.toggleAttribute("data-selected", r.querySelector("[data-select]").checked),
+          );
+          if (all) {
+            all.checked = vis.length > 0 && sel.length === vis.length;
+            all.indeterminate = sel.length > 0 && sel.length < vis.length;
+          }
+          if (bulk) {
+            bulk.hidden = !sel.length;
+            bulk.querySelector("[data-bulk-count]").textContent = `${sel.length} selected`;
+          }
+        };
+        tabs.forEach((t) =>
+          t.addEventListener("click", () => {
+            tab = t.dataset.tab;
+            tabs.forEach((x) => x.setAttribute("aria-pressed", String(x === t)));
+            apply();
+          }),
+        );
+        search?.addEventListener("input", apply);
+        select?.addEventListener("change", apply);
+        all?.addEventListener("change", () => {
+          rows()
+            .filter((r) => !r.hidden)
+            .forEach((r) => {
+              r.querySelector("[data-select]").checked = all.checked;
+            });
+          sync();
+        });
+        tbody.addEventListener("change", (e) => {
+          if (e.target.matches("[data-select]")) sync();
+        });
+        const selected = () =>
+          rows().filter((r) => !r.hidden && r.querySelector("[data-select]").checked);
+        root.querySelectorAll("[data-bulk-status]").forEach((b) =>
+          b.addEventListener("click", () => {
+            selected().forEach((r) => {
+              r.dataset.status = b.dataset.bulkStatus;
+              const s = r.querySelector(".adm-status");
+              s.dataset.status = b.dataset.bulkStatus;
+              s.textContent = b.dataset.label;
+              r.querySelector("[data-select]").checked = false;
+            });
+            counts();
+            apply();
+          }),
+        );
+        root.querySelector("[data-bulk-delete]")?.addEventListener("click", () => {
+          selected().forEach((r) => r.remove());
+          counts();
+          apply();
+        });
+        root.querySelector("[data-bulk-clear]")?.addEventListener("click", () => {
+          rows().forEach((r) => {
+            r.querySelector("[data-select]").checked = false;
+          });
+          sync();
+        });
+        root.addEventListener("click", (e) => {
+          const del = e.target.closest("[data-row-delete]");
+          if (del) {
+            del.closest("tr").remove();
+            counts();
+            apply();
+          }
+        });
+        root.admRefresh = () => {
+          counts();
+          apply();
+        };
+        counts();
+        apply();
+      });
+
+      (() => {
+        const $ = (s) => document.querySelector(s);
+        const saved = $("[data-saved]");
+        const dirty = () => {
+          saved.setAttribute("data-dirty", "");
+          saved.textContent = "Unsaved changes";
+        };
+        $("[data-save]").addEventListener("click", () => {
+          saved.removeAttribute("data-dirty");
+          saved.textContent = "Saved just now";
+        });
+        const SYM = {
+          USD: (v) => `$${v.toLocaleString("en-US")}`,
+          EUR: (v) => `€${v.toLocaleString("de-DE")}`,
+          VND: (v) => `${v.toLocaleString("vi-VN")} ₫`,
+        };
+        const preview = () => {
+          const model = document.querySelector("[name=a7-model]:checked").value;
+          document.querySelectorAll("[data-for]").forEach((f) => {
+            f.hidden = !f.dataset.for.split(" ").includes(model);
+          });
+          const f = SYM[$("[data-cur]").value];
+          const n = (s) => Math.max(0, Number($(s).value) || 0);
+          let price = "",
+            note = "",
+            cta = "Buy now";
+          if (model === "free") {
+            price = "Free";
+            note = "Enroll for free, no card needed.";
+            cta = "Enroll for free";
+          }
+          if (model === "one") {
+            const p = n("[data-price]"),
+              s = n("[data-sale]");
+            price =
+              s && s < p
+                ? `${f(s)} <s>${f(p)}</s> <span class="badge" data-variant="secondary">${Math.round((1 - s / p) * 100)}% off</span>`
+                : f(p);
+            note = "One-time payment · Lifetime access";
+          }
+          if (model === "sub") {
+            const m = n("[data-month]"),
+              y = n("[data-year]");
+            price = `${f(m)}<s style="text-decoration: none">/month</s>`;
+            note =
+              y && m
+                ? `or ${f(y)}/year, save ${Math.max(0, Math.round((1 - y / (m * 12)) * 100))}%`
+                : "";
+            cta = "Subscribe";
+          }
+          if (model === "plan") {
+            const p = n("[data-price]"),
+              k = Number($("[data-n]").value);
+            price = `${k} × ${f(Math.ceil((p / k) * 100) / 100)}`;
+            note = `${f(p)} total, billed monthly`;
+            cta = "Start payment plan";
+          }
+          $("[data-preview-price]").innerHTML = price;
+          $("[data-preview-note]").textContent = note;
+          $("[data-preview-cta]").textContent = cta;
+        };
+        document
+          .querySelectorAll("[name=a7-model], [data-fields] input, [data-fields] select")
+          .forEach((el) =>
+            el.addEventListener("input", () => {
+              preview();
+              dirty();
+            }),
+          );
+        preview();
+        // Coupons.
+        const body = $("[data-coupons]");
+        body.addEventListener("click", (e) => {
+          const b = e.target.closest("[data-del-coupon]");
+          if (b) b.closest("tr").remove();
+        });
+        $("[data-gen]").addEventListener("click", () => {
+          const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+          $("#a7-code").value = Array.from(
+            { length: 8 },
+            () => A[Math.floor(Math.random() * A.length)],
+          ).join("");
+        });
+        let n = body.children.length;
+        $("#a7-form").addEventListener("submit", (e) => {
+          e.preventDefault();
+          const code = $("#a7-code").value.trim().toUpperCase();
+          const ok = /^[A-Z0-9]{4,20}$/.test(code);
+          $("[data-code-err]").hidden = ok;
+          $("#a7-code").toggleAttribute("aria-invalid", !ok);
+          if (!ok) {
+            $("#a7-code").focus();
+            return;
+          }
+          const pct = document.querySelector("[name=a7-type]:checked").value === "pct";
+          const v = Number($("#a7-val").value) || 0;
+          const limit = Number($("#a7-limit").value) || 0;
+          const exp = $("#a7-exp").value
+            ? new Date($("#a7-exp").value + "T00:00").toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })
+            : "No expiry";
+          const tr = body.querySelector("tr").cloneNode(true);
+          const id = `a7-c${n++}`;
+          const c = tr.querySelectorAll("td");
+          const codeEl = c[0].querySelector("code");
+          codeEl.id = id;
+          codeEl.textContent = code;
+          c[0].querySelector("[data-copy]").dataset.copy = `#${id}`;
+          c[0].querySelector("[data-copy]").setAttribute("aria-label", `Copy ${code}`);
+          c[1].textContent = pct ? `${v}% off` : `$${v} off`;
+          c[2].textContent = limit ? `0 / ${limit.toLocaleString("en-US")}` : "0";
+          c[3].textContent = exp;
+          const sw = c[4].querySelector("[role=switch]");
+          sw.checked = true;
+          sw.setAttribute("aria-label", `${code} active`);
+          c[5].querySelector("button").setAttribute("aria-label", `Delete ${code}`);
+          body.prepend(tr);
+          e.target.reset();
+          $("#a7-new").close();
+        });
+      })();
+    </script>
+  </body>
+</html>

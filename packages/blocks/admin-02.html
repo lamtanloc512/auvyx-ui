@@ -1,0 +1,1262 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin 02 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+
+      body {
+        min-block-size: 100svh;
+      }
+      .adm-mark {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        inline-size: 2rem;
+        block-size: 2rem;
+        border-radius: calc(var(--radius) + 2px);
+        background: var(--sidebar-primary);
+        color: var(--sidebar-primary-foreground);
+      }
+      .adm-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .adm-main {
+        container-type: inline-size;
+        min-inline-size: 0;
+      }
+      .adm-header {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        block-size: 3.5rem;
+        padding-inline: 1rem;
+        border-block-end: 1px solid var(--border);
+        background: var(--background);
+      }
+      .adm-header > hr {
+        align-self: center;
+        block-size: 1rem;
+        margin-inline-end: 0.25rem;
+      }
+      .adm-header .breadcrumb {
+        min-inline-size: 0;
+      }
+      .adm-header-end {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-inline-start: auto;
+      }
+      .adm-body {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem;
+        padding: 1rem;
+      }
+      .adm-body > * {
+        min-inline-size: 0;
+      }
+      .adm-main .card {
+        min-inline-size: 0;
+      }
+      .adm-main .card > section {
+        min-inline-size: 0;
+      }
+      .adm-main .stack > * {
+        min-inline-size: 0;
+      }
+      .adm-main .card > section > * {
+        min-inline-size: 0;
+      }
+      @container (width >= 48rem) {
+        .adm-body {
+          padding: 1.5rem;
+        }
+      }
+      .adm-title {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .adm-title h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .adm-title p {
+        margin: 0.25rem 0 0;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
+      .adm-title > div:last-child {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .adm-status {
+        gap: 0.375rem;
+      }
+      .adm-status::before {
+        content: "";
+        inline-size: 0.375rem;
+        block-size: 0.375rem;
+        border-radius: 999px;
+        background: var(--muted-foreground);
+      }
+      .adm-status[data-status="published"]::before {
+        background: oklch(0.65 0.17 150);
+      }
+      .adm-status[data-status="review"]::before {
+        background: oklch(0.75 0.15 75);
+      }
+      .adm-status[data-status="invited"]::before {
+        background: oklch(0.6 0.15 255);
+      }
+      @container (width >= 64rem) {
+        .adm-split {
+          grid-template-columns: minmax(0, 1fr) 20rem;
+        }
+        .adm-split > aside {
+          position: sticky;
+          inset-block-start: 5rem;
+        }
+      }
+      .adm-muted {
+        color: var(--muted-foreground);
+      }
+      .adm-coursenav {
+        display: flex;
+        gap: 0.25rem;
+        overflow-x: auto;
+        border-block-end: 1px solid var(--border);
+        scrollbar-width: none;
+      }
+      .adm-coursenav a {
+        padding: 0.5rem 0.75rem;
+        border-block-end: 2px solid transparent;
+        margin-block-end: -1px;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .adm-coursenav a:hover {
+        color: var(--foreground);
+      }
+      .adm-coursenav a[aria-current] {
+        border-color: var(--foreground);
+        color: var(--foreground);
+      }
+
+      .adm-title p {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .adm-sec {
+        gap: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      .adm-sec-head {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 0.75rem 0.75rem 1rem;
+        background: var(--muted);
+      }
+      .adm-sec-num {
+        flex: none;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--muted-foreground);
+      }
+      .adm-sec-title {
+        flex: 1;
+        min-inline-size: 0;
+        block-size: 2.25rem;
+        border-color: transparent;
+        background: transparent;
+        box-shadow: none;
+        font-weight: 600;
+      }
+      .adm-sec-title:hover {
+        border-color: var(--input);
+      }
+      .adm-sec-title:focus {
+        background: var(--background);
+      }
+      .adm-sec-count {
+        flex: none;
+        font-size: 0.75rem;
+      }
+      .adm-sec [data-sec-toggle] svg {
+        transition: transform 150ms ease;
+      }
+      .adm-sec[data-collapsed] [data-sec-toggle] svg {
+        transform: rotate(-90deg);
+      }
+      .adm-sec[data-collapsed] > :is(ol, footer) {
+        display: none;
+      }
+      .adm-lessons {
+        display: grid;
+        margin: 0;
+        padding: 0.5rem;
+        list-style: none;
+        min-block-size: 3rem;
+      }
+      .adm-lesson {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem;
+        border-radius: var(--radius);
+        background: var(--card);
+      }
+      .adm-lesson:hover {
+        background: var(--accent);
+      }
+      .adm-lesson[data-dragging] {
+        opacity: 0.4;
+      }
+      .adm-lessons[data-over] {
+        background: color-mix(in oklab, var(--primary) 6%, transparent);
+        outline: 2px dashed color-mix(in oklab, var(--primary) 40%, transparent);
+        outline-offset: -4px;
+        border-radius: var(--radius);
+      }
+      .adm-grip {
+        display: grid;
+        place-items: center;
+        flex: none;
+        inline-size: 1.5rem;
+        block-size: 2rem;
+        padding: 0;
+        border: 0;
+        border-radius: calc(var(--radius) - 2px);
+        background: none;
+        color: var(--muted-foreground);
+        cursor: grab;
+      }
+      .adm-grip:focus-visible {
+        outline: 2px solid var(--ring);
+      }
+      .adm-grip svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .adm-lesson-ic {
+        display: grid;
+        place-items: center;
+        flex: none;
+        inline-size: 2rem;
+        block-size: 2rem;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--muted);
+        color: var(--muted-foreground);
+      }
+      .adm-lesson-ic svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .adm-lesson-name {
+        flex: 1;
+        min-inline-size: 0;
+        display: grid;
+      }
+      .adm-lesson-name strong {
+        overflow: hidden;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .adm-lesson-name small {
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+      }
+      .adm-lesson-name input {
+        block-size: 2rem;
+      }
+      .adm-lesson-tools {
+        display: flex;
+        opacity: 0;
+        transition: opacity 150ms ease;
+      }
+      .adm-lesson:is(:hover, :focus-within) .adm-lesson-tools {
+        opacity: 1;
+      }
+      @media (hover: none) {
+        .adm-lesson-tools {
+          opacity: 1;
+        }
+      }
+      .adm-sec-foot {
+        padding: 0 0.5rem 0.5rem;
+      }
+      .adm-add-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        block-size: 3.5rem;
+        border: 2px dashed var(--border);
+        border-radius: var(--radius);
+        background: none;
+        color: var(--muted-foreground);
+        font: inherit;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .adm-add-section:hover {
+        border-color: var(--ring);
+        color: var(--foreground);
+      }
+      .adm-add-section:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+      .adm-add-section svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <aside id="adm-sidebar" class="sidebar" data-collapsible="icon">
+      <nav aria-label="Instructor">
+        <header>
+          <ul>
+            <li>
+              <a href="#" data-size="lg">
+                <span class="adm-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0zM22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span>
+                <span>
+                  <strong>Acme Learn</strong>
+                  <small>Instructor</small>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </header>
+        <section>
+          <div role="group" aria-labelledby="adm-g0">
+            <h3 id="adm-g0">Overview</h3>
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Dashboard" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17V5"/><path d="M18 17V9"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 17v-3"/></svg>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" aria-current="page" data-tooltip="Courses" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                  <span>Courses</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Media library" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                  <span>Media library</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div role="group" aria-labelledby="adm-g1">
+            <h3 id="adm-g1">Students</h3>
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Students" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
+                  <span>Students</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Reviews" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <span>Reviews</span>
+                  <span data-badge>4</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Q&A" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  <span>Q&A</span>
+                  <span data-badge>12</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div role="group" aria-labelledby="adm-g2">
+            <h3 id="adm-g2">Business</h3>
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Pricing" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+                  <span>Pricing</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Coupons" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9a3 3 0 1 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 1 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M9 9h.01"/><path d="m15 9-6 6"/><path d="M15 15h.01"/></svg>
+                  <span>Coupons</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Settings" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <span>Settings</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </section>
+        <footer>
+          <ul>
+            <li>
+              <a href="#" data-size="lg">
+                <span class="avatar" data-size="sm"><span>LO</span></span>
+                <span>
+                  <strong>Lena Ortiz</strong>
+                  <small>lena@acme.learn</small>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </footer>
+      </nav>
+    </aside>
+    <main class="adm-main">
+      <header class="adm-header">
+        <button
+          type="button"
+          class="btn"
+          data-variant="ghost"
+          data-size="icon-sm"
+          data-sidebar-toggle="adm-sidebar"
+          aria-controls="adm-sidebar"
+          aria-label="Toggle sidebar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        </button>
+        <hr role="separator" aria-orientation="vertical" />
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="#">Courses</a></li>
+            <li aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></li>
+            <li><a href="#">Brand Identity Design</a></li>
+            <li aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></li>
+            <li><span aria-current="page">Curriculum</span></li>
+          </ol>
+        </nav>
+        <div class="adm-header-end"></div>
+      </header>
+      <div class="adm-body">
+        <div class="adm-title">
+          <div>
+            <h1>Brand Identity Design from Scratch</h1>
+            <p>
+              <span class="badge adm-status" data-variant="outline" data-status="published">
+                Published
+              </span>
+              <span data-curr-summary></span>
+            </p>
+          </div>
+          <div>
+            <a href="#" class="btn" data-variant="outline">
+              <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696a10.75 10.75 0 0 1 19.876 0a1 1 0 0 1 0 .696a10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+              Preview
+            </a>
+            <button type="button" class="btn">Save changes</button>
+          </div>
+        </div>
+        <nav class="adm-coursenav" aria-label="Course settings">
+          <a href="#">Details</a>
+          <a href="#" aria-current="page">Curriculum</a>
+          <a href="#">Pricing</a>
+          <a href="#">Students</a>
+          <a href="#">Settings</a>
+        </nav>
+        <div class="stack" data-gap="4" data-curriculum>
+          <section class="card adm-sec" data-section>
+            <header class="adm-sec-head">
+              <span class="adm-sec-num">
+                Section
+                <span data-sec-n>1</span>
+              </span>
+              <label class="sr-only" for="a2-s0">Section title</label>
+              <input class="input adm-sec-title" id="a2-s0" value="Introduction" />
+              <span class="adm-muted adm-sec-count" data-sec-count></span>
+              <button
+                type="button"
+                class="btn"
+                data-variant="ghost"
+                data-size="icon-sm"
+                aria-label="Collapse section"
+                aria-expanded="true"
+                data-sec-toggle>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+            </header>
+            <ol class="adm-lessons" data-lessons>
+              <li class="adm-lesson" draggable="true" data-lesson data-kind="video">
+                <button
+                  type="button"
+                  class="adm-grip"
+                  aria-label="Move Welcome to the course. Use arrow keys">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                </button>
+                <span class="adm-lesson-ic" title="Video"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"/><circle cx="12" cy="12" r="10"/></svg></span>
+                <span class="adm-lesson-name">
+                  <strong>Welcome to the course</strong>
+                  <small>Video · 2:14</small>
+                </span>
+                <span class="badge" data-variant="secondary">Free preview</span>
+                <span class="adm-lesson-tools">
+                  <a
+                    href="#"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Edit Welcome to the course">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497zM15 5l4 4"/></svg>
+                  </a>
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Delete Welcome to the course"
+                    data-del-lesson>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                  </button>
+                </span>
+              </li>
+              <li class="adm-lesson" draggable="true" data-lesson data-kind="video">
+                <button
+                  type="button"
+                  class="adm-grip"
+                  aria-label="Move What you'll need. Use arrow keys">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                </button>
+                <span class="adm-lesson-ic" title="Video"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"/><circle cx="12" cy="12" r="10"/></svg></span>
+                <span class="adm-lesson-name">
+                  <strong>What you'll need</strong>
+                  <small>Video · 4:05</small>
+                </span>
+                <span class="badge" data-variant="secondary">Free preview</span>
+                <span class="adm-lesson-tools">
+                  <a
+                    href="#"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Edit What you'll need">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497zM15 5l4 4"/></svg>
+                  </a>
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Delete What you'll need"
+                    data-del-lesson>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                  </button>
+                </span>
+              </li>
+              <li class="adm-lesson" draggable="true" data-lesson data-kind="article">
+                <button
+                  type="button"
+                  class="adm-grip"
+                  aria-label="Move How to get the most out of it. Use arrow keys">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                </button>
+                <span class="adm-lesson-ic" title="Article"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 9H8"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/></svg></span>
+                <span class="adm-lesson-name">
+                  <strong>How to get the most out of it</strong>
+                  <small>Article · 3 min</small>
+                </span>
+
+                <span class="adm-lesson-tools">
+                  <a
+                    href="#"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Edit How to get the most out of it">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497zM15 5l4 4"/></svg>
+                  </a>
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Delete How to get the most out of it"
+                    data-del-lesson>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                  </button>
+                </span>
+              </li>
+            </ol>
+            <footer class="adm-sec-foot">
+              <div class="dropdown-menu">
+                <button
+                  type="button"
+                  class="btn"
+                  data-variant="ghost"
+                  data-size="sm"
+                  popovertarget="a2-add0"
+                  aria-haspopup="menu">
+                  <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                  Add lesson
+                </button>
+                <div id="a2-add0" data-popover popover data-side="bottom" data-align="start">
+                  <div role="menu" aria-label="Lesson type">
+                    <button type="button" role="menuitem" data-add-kind="video">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"/><circle cx="12" cy="12" r="10"/></svg>
+                      <span>Video</span>
+                    </button>
+                    <button type="button" role="menuitem" data-add-kind="article">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 9H8"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/></svg>
+                      <span>Article</span>
+                    </button>
+                    <button type="button" role="menuitem" data-add-kind="quiz">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 5h8m-8 7h8m-8 7h8M3 17l2 2 4-4M3 7l2 2 4-4"/></svg>
+                      <span>Quiz</span>
+                    </button>
+                    <button type="button" role="menuitem" data-add-kind="assignment">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4M2 6h4m-4 4h4m-4 4h4m-4 4h4"/><path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/></svg>
+                      <span>Assignment</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </footer>
+          </section>
+          <section class="card adm-sec" data-section>
+            <header class="adm-sec-head">
+              <span class="adm-sec-num">
+                Section
+                <span data-sec-n>2</span>
+              </span>
+              <label class="sr-only" for="a2-s1">Section title</label>
+              <input
+                class="input adm-sec-title"
+                id="a2-s1"
+                value="Research and the creative brief" />
+              <span class="adm-muted adm-sec-count" data-sec-count></span>
+              <button
+                type="button"
+                class="btn"
+                data-variant="ghost"
+                data-size="icon-sm"
+                aria-label="Collapse section"
+                aria-expanded="true"
+                data-sec-toggle>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+            </header>
+            <ol class="adm-lessons" data-lessons>
+              <li class="adm-lesson" draggable="true" data-lesson data-kind="video">
+                <button
+                  type="button"
+                  class="adm-grip"
+                  aria-label="Move Interviewing the client. Use arrow keys">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                </button>
+                <span class="adm-lesson-ic" title="Video"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"/><circle cx="12" cy="12" r="10"/></svg></span>
+                <span class="adm-lesson-name">
+                  <strong>Interviewing the client</strong>
+                  <small>Video · 11:20</small>
+                </span>
+
+                <span class="adm-lesson-tools">
+                  <a
+                    href="#"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Edit Interviewing the client">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497zM15 5l4 4"/></svg>
+                  </a>
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Delete Interviewing the client"
+                    data-del-lesson>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                  </button>
+                </span>
+              </li>
+              <li class="adm-lesson" draggable="true" data-lesson data-kind="video">
+                <button
+                  type="button"
+                  class="adm-grip"
+                  aria-label="Move Mood boards that guide decisions. Use arrow keys">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                </button>
+                <span class="adm-lesson-ic" title="Video"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"/><circle cx="12" cy="12" r="10"/></svg></span>
+                <span class="adm-lesson-name">
+                  <strong>Mood boards that guide decisions</strong>
+                  <small>Video · 9:48</small>
+                </span>
+
+                <span class="adm-lesson-tools">
+                  <a
+                    href="#"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Edit Mood boards that guide decisions">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497zM15 5l4 4"/></svg>
+                  </a>
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Delete Mood boards that guide decisions"
+                    data-del-lesson>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                  </button>
+                </span>
+              </li>
+              <li class="adm-lesson" draggable="true" data-lesson data-kind="assignment">
+                <button
+                  type="button"
+                  class="adm-grip"
+                  aria-label="Move Write your first brief. Use arrow keys">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                </button>
+                <span class="adm-lesson-ic" title="Assignment"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4M2 6h4m-4 4h4m-4 4h4m-4 4h4"/><path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/></svg></span>
+                <span class="adm-lesson-name">
+                  <strong>Write your first brief</strong>
+                  <small>Assignment</small>
+                </span>
+
+                <span class="adm-lesson-tools">
+                  <a
+                    href="#"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Edit Write your first brief">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497zM15 5l4 4"/></svg>
+                  </a>
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Delete Write your first brief"
+                    data-del-lesson>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                  </button>
+                </span>
+              </li>
+              <li class="adm-lesson" draggable="true" data-lesson data-kind="quiz">
+                <button
+                  type="button"
+                  class="adm-grip"
+                  aria-label="Move Check your understanding. Use arrow keys">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                </button>
+                <span class="adm-lesson-ic" title="Quiz"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 5h8m-8 7h8m-8 7h8M3 17l2 2 4-4M3 7l2 2 4-4"/></svg></span>
+                <span class="adm-lesson-name">
+                  <strong>Check your understanding</strong>
+                  <small>Quiz · 5 questions</small>
+                </span>
+
+                <span class="adm-lesson-tools">
+                  <a
+                    href="#"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Edit Check your understanding">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497zM15 5l4 4"/></svg>
+                  </a>
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Delete Check your understanding"
+                    data-del-lesson>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                  </button>
+                </span>
+              </li>
+            </ol>
+            <footer class="adm-sec-foot">
+              <div class="dropdown-menu">
+                <button
+                  type="button"
+                  class="btn"
+                  data-variant="ghost"
+                  data-size="sm"
+                  popovertarget="a2-add1"
+                  aria-haspopup="menu">
+                  <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                  Add lesson
+                </button>
+                <div id="a2-add1" data-popover popover data-side="bottom" data-align="start">
+                  <div role="menu" aria-label="Lesson type">
+                    <button type="button" role="menuitem" data-add-kind="video">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"/><circle cx="12" cy="12" r="10"/></svg>
+                      <span>Video</span>
+                    </button>
+                    <button type="button" role="menuitem" data-add-kind="article">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 9H8"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/></svg>
+                      <span>Article</span>
+                    </button>
+                    <button type="button" role="menuitem" data-add-kind="quiz">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 5h8m-8 7h8m-8 7h8M3 17l2 2 4-4M3 7l2 2 4-4"/></svg>
+                      <span>Quiz</span>
+                    </button>
+                    <button type="button" role="menuitem" data-add-kind="assignment">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4M2 6h4m-4 4h4m-4 4h4m-4 4h4"/><path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/></svg>
+                      <span>Assignment</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </footer>
+          </section>
+          <section class="card adm-sec" data-section>
+            <header class="adm-sec-head">
+              <span class="adm-sec-num">
+                Section
+                <span data-sec-n>3</span>
+              </span>
+              <label class="sr-only" for="a2-s2">Section title</label>
+              <input class="input adm-sec-title" id="a2-s2" value="Designing the logo" />
+              <span class="adm-muted adm-sec-count" data-sec-count></span>
+              <button
+                type="button"
+                class="btn"
+                data-variant="ghost"
+                data-size="icon-sm"
+                aria-label="Collapse section"
+                aria-expanded="true"
+                data-sec-toggle>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+            </header>
+            <ol class="adm-lessons" data-lessons>
+              <li class="adm-lesson" draggable="true" data-lesson data-kind="video">
+                <button
+                  type="button"
+                  class="adm-grip"
+                  aria-label="Move From words to sketches. Use arrow keys">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                </button>
+                <span class="adm-lesson-ic" title="Video"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"/><circle cx="12" cy="12" r="10"/></svg></span>
+                <span class="adm-lesson-name">
+                  <strong>From words to sketches</strong>
+                  <small>Video · 14:02</small>
+                </span>
+
+                <span class="adm-lesson-tools">
+                  <a
+                    href="#"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Edit From words to sketches">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497zM15 5l4 4"/></svg>
+                  </a>
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Delete From words to sketches"
+                    data-del-lesson>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                  </button>
+                </span>
+              </li>
+              <li class="adm-lesson" draggable="true" data-lesson data-kind="video">
+                <button
+                  type="button"
+                  class="adm-grip"
+                  aria-label="Move Refining in Illustrator. Use arrow keys">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                </button>
+                <span class="adm-lesson-ic" title="Video"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"/><circle cx="12" cy="12" r="10"/></svg></span>
+                <span class="adm-lesson-name">
+                  <strong>Refining in Illustrator</strong>
+                  <small>Video · 22:31</small>
+                </span>
+
+                <span class="adm-lesson-tools">
+                  <a
+                    href="#"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Edit Refining in Illustrator">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497zM15 5l4 4"/></svg>
+                  </a>
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Delete Refining in Illustrator"
+                    data-del-lesson>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                  </button>
+                </span>
+              </li>
+            </ol>
+            <footer class="adm-sec-foot">
+              <div class="dropdown-menu">
+                <button
+                  type="button"
+                  class="btn"
+                  data-variant="ghost"
+                  data-size="sm"
+                  popovertarget="a2-add2"
+                  aria-haspopup="menu">
+                  <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                  Add lesson
+                </button>
+                <div id="a2-add2" data-popover popover data-side="bottom" data-align="start">
+                  <div role="menu" aria-label="Lesson type">
+                    <button type="button" role="menuitem" data-add-kind="video">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"/><circle cx="12" cy="12" r="10"/></svg>
+                      <span>Video</span>
+                    </button>
+                    <button type="button" role="menuitem" data-add-kind="article">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 9H8"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/></svg>
+                      <span>Article</span>
+                    </button>
+                    <button type="button" role="menuitem" data-add-kind="quiz">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 5h8m-8 7h8m-8 7h8M3 17l2 2 4-4M3 7l2 2 4-4"/></svg>
+                      <span>Quiz</span>
+                    </button>
+                    <button type="button" role="menuitem" data-add-kind="assignment">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4M2 6h4m-4 4h4m-4 4h4m-4 4h4"/><path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/></svg>
+                      <span>Assignment</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </footer>
+          </section>
+          <button type="button" class="adm-add-section" data-add-section>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+            Add section
+          </button>
+          <p class="sr-only" aria-live="polite" data-curr-live></p>
+        </div>
+      </div>
+    </main>
+    <script>
+      // Dropdown row menus close after a choice.
+      document
+        .querySelectorAll("[data-popover] [role=menuitem]")
+        .forEach((m) => m.addEventListener("click", () => m.closest("[popover]")?.hidePopover?.()));
+      // Tables: status tabs, search, row selection with a bulk bar.
+      document.querySelectorAll("[data-adm-table]").forEach((root) => {
+        const tbody = root.querySelector("tbody");
+        const rows = () => [...tbody.querySelectorAll("tr[data-row]")];
+        const tabs = [...root.querySelectorAll("[data-tab]")];
+        const search = root.querySelector("[data-search]");
+        const select = root.querySelector("[data-filter-select]");
+        const all = root.querySelector("[data-select-all]");
+        const bulk = root.querySelector("[data-bulk]");
+        const empty = root.querySelector("[data-empty]");
+        let tab = "all";
+        const counts = () =>
+          tabs.forEach((t) => {
+            const k = t.dataset.tab;
+            t.querySelector(".badge").textContent = rows().filter(
+              (r) => k === "all" || r.dataset.status === k,
+            ).length;
+          });
+        const apply = () => {
+          const q = (search?.value || "").trim().toLowerCase();
+          const f = select?.value || "all";
+          let shown = 0;
+          rows().forEach((r) => {
+            const ok =
+              (tab === "all" || r.dataset.status === tab) &&
+              (!q || r.textContent.toLowerCase().includes(q)) &&
+              (f === "all" || r.dataset.filter === f);
+            r.hidden = !ok;
+            if (!ok) r.querySelector("[data-select]").checked = false;
+            shown += ok;
+          });
+          if (empty) empty.hidden = shown > 0;
+          sync();
+        };
+        const sync = () => {
+          const vis = rows().filter((r) => !r.hidden);
+          const sel = vis.filter((r) => r.querySelector("[data-select]").checked);
+          vis.forEach((r) =>
+            r.toggleAttribute("data-selected", r.querySelector("[data-select]").checked),
+          );
+          if (all) {
+            all.checked = vis.length > 0 && sel.length === vis.length;
+            all.indeterminate = sel.length > 0 && sel.length < vis.length;
+          }
+          if (bulk) {
+            bulk.hidden = !sel.length;
+            bulk.querySelector("[data-bulk-count]").textContent = `${sel.length} selected`;
+          }
+        };
+        tabs.forEach((t) =>
+          t.addEventListener("click", () => {
+            tab = t.dataset.tab;
+            tabs.forEach((x) => x.setAttribute("aria-pressed", String(x === t)));
+            apply();
+          }),
+        );
+        search?.addEventListener("input", apply);
+        select?.addEventListener("change", apply);
+        all?.addEventListener("change", () => {
+          rows()
+            .filter((r) => !r.hidden)
+            .forEach((r) => {
+              r.querySelector("[data-select]").checked = all.checked;
+            });
+          sync();
+        });
+        tbody.addEventListener("change", (e) => {
+          if (e.target.matches("[data-select]")) sync();
+        });
+        const selected = () =>
+          rows().filter((r) => !r.hidden && r.querySelector("[data-select]").checked);
+        root.querySelectorAll("[data-bulk-status]").forEach((b) =>
+          b.addEventListener("click", () => {
+            selected().forEach((r) => {
+              r.dataset.status = b.dataset.bulkStatus;
+              const s = r.querySelector(".adm-status");
+              s.dataset.status = b.dataset.bulkStatus;
+              s.textContent = b.dataset.label;
+              r.querySelector("[data-select]").checked = false;
+            });
+            counts();
+            apply();
+          }),
+        );
+        root.querySelector("[data-bulk-delete]")?.addEventListener("click", () => {
+          selected().forEach((r) => r.remove());
+          counts();
+          apply();
+        });
+        root.querySelector("[data-bulk-clear]")?.addEventListener("click", () => {
+          rows().forEach((r) => {
+            r.querySelector("[data-select]").checked = false;
+          });
+          sync();
+        });
+        root.addEventListener("click", (e) => {
+          const del = e.target.closest("[data-row-delete]");
+          if (del) {
+            del.closest("tr").remove();
+            counts();
+            apply();
+          }
+        });
+        root.admRefresh = () => {
+          counts();
+          apply();
+        };
+        counts();
+        apply();
+      });
+
+      (() => {
+        const root = document.querySelector("[data-curriculum]");
+        const live = root.querySelector("[data-curr-live]");
+        const KINDS = {
+          video: ["Video", "circle-play"],
+          article: ["Article", "file-text"],
+          quiz: ["Quiz", "list-checks"],
+          assignment: ["Assignment", "notebook-pen"],
+        };
+        const icon = (k) => root.querySelector(`[data-add-kind="${k}"] svg`).outerHTML;
+        const sync = () => {
+          const secs = [...root.querySelectorAll("[data-section]")];
+          let total = 0;
+          secs.forEach((s, i) => {
+            const n = s.querySelectorAll("[data-lesson]").length;
+            total += n;
+            s.querySelector("[data-sec-n]").textContent = i + 1;
+            s.querySelector("[data-sec-count]").textContent =
+              `${n} ${n === 1 ? "lesson" : "lessons"}`;
+          });
+          document.querySelector("[data-curr-summary]").textContent =
+            `${secs.length} sections · ${total} lessons`;
+        };
+        // Drag and drop between and within sections.
+        let dragged = null;
+        root.addEventListener("dragstart", (e) => {
+          dragged = e.target.closest("[data-lesson]");
+          if (!dragged) return;
+          dragged.setAttribute("data-dragging", "");
+          e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/plain", "");
+        });
+        root.addEventListener("dragend", () => {
+          dragged?.removeAttribute("data-dragging");
+          root.querySelectorAll("[data-over]").forEach((x) => x.removeAttribute("data-over"));
+          dragged = null;
+          sync();
+        });
+        root.addEventListener("dragover", (e) => {
+          const list = e.target.closest("[data-lessons]");
+          if (!dragged || !list) return;
+          e.preventDefault();
+          root
+            .querySelectorAll("[data-over]")
+            .forEach((x) => x !== list && x.removeAttribute("data-over"));
+          list.setAttribute("data-over", "");
+          const after = [...list.querySelectorAll("[data-lesson]:not([data-dragging])")].find(
+            (li) => e.clientY < li.getBoundingClientRect().top + li.offsetHeight / 2,
+          );
+          list.insertBefore(dragged, after || null);
+        });
+        root.addEventListener("drop", (e) => e.preventDefault());
+        // Keyboard: arrow keys on the handle move the lesson, across sections too.
+        root.addEventListener("keydown", (e) => {
+          const grip = e.target.closest(".adm-grip");
+          if (!grip || !["ArrowUp", "ArrowDown"].includes(e.key)) return;
+          e.preventDefault();
+          const li = grip.closest("[data-lesson]");
+          const lists = [...root.querySelectorAll("[data-lessons]")];
+          const list = li.parentElement;
+          if (e.key === "ArrowUp") {
+            if (li.previousElementSibling) list.insertBefore(li, li.previousElementSibling);
+            else if (lists.indexOf(list) > 0) lists[lists.indexOf(list) - 1].append(li);
+          } else if (li.nextElementSibling) list.insertBefore(li.nextElementSibling, li);
+          else if (lists.indexOf(list) < lists.length - 1)
+            lists[lists.indexOf(list) + 1].prepend(li);
+          grip.focus();
+          sync();
+          const sec = li.closest("[data-section]");
+          live.textContent = `${li.querySelector("strong").textContent}: section ${sec.querySelector("[data-sec-n]").textContent}, position ${[...li.parentElement.children].indexOf(li) + 1}`;
+        });
+        root.addEventListener("click", (e) => {
+          const del = e.target.closest("[data-del-lesson]");
+          if (del) {
+            const li = del.closest("[data-lesson]");
+            live.textContent = `${li.querySelector("strong").textContent} deleted`;
+            li.remove();
+            sync();
+            return;
+          }
+          const tog = e.target.closest("[data-sec-toggle]");
+          if (tog) {
+            const sec = tog.closest("[data-section]");
+            const collapsed = sec.toggleAttribute("data-collapsed");
+            tog.setAttribute("aria-expanded", String(!collapsed));
+            tog.setAttribute("aria-label", collapsed ? "Expand section" : "Collapse section");
+            return;
+          }
+          const kind = e.target.closest("[data-add-kind]")?.dataset.addKind;
+          if (kind) {
+            const list = e.target.closest("[data-section]").querySelector("[data-lessons]");
+            const [label] = KINDS[kind];
+            const li = document.createElement("li");
+            li.className = "adm-lesson";
+            li.draggable = true;
+            li.dataset.lesson = "";
+            li.dataset.kind = kind;
+            li.innerHTML = `<button type="button" class="adm-grip" aria-label="Move lesson. Use arrow keys">${root.querySelector(".adm-grip svg").outerHTML}</button><span class="adm-lesson-ic" title="${label}">${icon(kind)}</span><span class="adm-lesson-name"><input class="input" aria-label="${label} title" placeholder="New ${label.toLowerCase()} title"><small>${label}</small></span><span class="adm-lesson-tools"><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Delete lesson" data-del-lesson>${root.querySelector("[data-del-lesson] svg").outerHTML}</button></span>`;
+            list.append(li);
+            const input = li.querySelector("input");
+            let done = false;
+            const commit = () => {
+              if (done) return;
+              done = true;
+              const v = input.value.trim() || `Untitled ${label.toLowerCase()}`;
+              const strong = document.createElement("strong");
+              strong.textContent = v;
+              input.replaceWith(strong);
+              li.querySelector(".adm-grip").setAttribute("aria-label", `Move ${v}. Use arrow keys`);
+            };
+            input.addEventListener("keydown", (ev) => {
+              if (ev.key === "Enter") {
+                ev.preventDefault();
+                commit();
+                li.querySelector(".adm-grip").focus();
+              }
+            });
+            // The menu hands focus back to its button as it closes; take it after that.
+            requestAnimationFrame(() => {
+              input.focus();
+              input.addEventListener("blur", commit, { once: true });
+            });
+            sync();
+            return;
+          }
+          if (e.target.closest("[data-add-section]")) {
+            const tpl = root.querySelector("[data-section]");
+            const sec = tpl.cloneNode(true);
+            sec.removeAttribute("data-collapsed");
+            sec.querySelector("[data-lessons]").innerHTML = "";
+            const n = root.querySelectorAll("[data-section]").length;
+            const input = sec.querySelector(".adm-sec-title");
+            input.id = `a2-s${n}`;
+            input.value = "";
+            input.placeholder = "Section title";
+            sec.querySelector("label[for]").htmlFor = input.id;
+            const menu = sec.querySelector("[popover]");
+            menu.id = `a2-add${n}`;
+            sec.querySelector("[popovertarget]").setAttribute("popovertarget", menu.id);
+            e.target.closest("[data-add-section]").before(sec);
+            sync();
+            input.focus();
+          }
+        });
+        sync();
+      })();
+    </script>
+  </body>
+</html>

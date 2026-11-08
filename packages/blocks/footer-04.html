@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Footer 04 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-line-meta {
+        margin: 0;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .shop-section-title {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+
+      .block-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: inherit;
+        text-decoration: none;
+      }
+      .block-logo-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .block-logo-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+
+      @keyframes shop-pop {
+        from {
+          transform: scale(0.96);
+          opacity: 0.6;
+        }
+        to {
+          transform: none;
+          opacity: 1;
+        }
+      }
+      /* Reduced motion: the hover states still apply, without movement. !important so it wins over every card's transition rules. */
+
+      .hf-demo {
+        min-block-size: 24rem;
+        padding: 3rem 1rem;
+        display: grid;
+        place-items: center;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+        background: repeating-linear-gradient(
+          -45deg,
+          var(--muted),
+          var(--muted) 10px,
+          transparent 10px,
+          transparent 20px
+        );
+      }
+      .hf-demo p {
+        margin: 0;
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        background: var(--background);
+      }
+      .hf-foot {
+        background: var(--foot-bg, var(--muted));
+        color: var(--foot-fg, var(--foreground));
+      }
+      .hf-foot a:not(.btn, .badge) {
+        color: inherit;
+        text-decoration: none;
+      }
+      .hf-foot-cols {
+        display: grid;
+        gap: 2rem;
+        padding-block: 3rem 2rem;
+      }
+      @media (width >= 48rem) {
+        .hf-foot-cols {
+          grid-template-columns: minmax(0, 1.4fr) repeat(var(--cols, 4), minmax(0, 1fr));
+        }
+      }
+      .hf-foot-brand {
+        display: grid;
+        gap: 1rem;
+        align-content: start;
+        max-inline-size: 22rem;
+      }
+      .hf-foot-brand p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: var(--foot-muted, var(--muted-foreground));
+        line-height: 1.6;
+      }
+      .hf-foot details {
+        border-block-end: 1px solid var(--foot-line, var(--border));
+      }
+      .hf-foot summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-block: 0.875rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        list-style: none;
+      }
+      .hf-foot summary::-webkit-details-marker {
+        display: none;
+      }
+      .hf-foot summary svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+        transition: transform 150ms ease;
+      }
+      .hf-foot details[open] > summary svg {
+        transform: rotate(180deg);
+      }
+      .hf-foot details ul {
+        display: grid;
+        gap: 0.625rem;
+        margin: 0;
+        padding: 0 0 1rem;
+        list-style: none;
+        font-size: 0.875rem;
+        color: var(--foot-muted, var(--muted-foreground));
+      }
+      .hf-foot details li a:hover {
+        color: var(--foot-fg, var(--foreground));
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      @media (width >= 48rem) {
+        .hf-foot details {
+          border: 0;
+        }
+        .hf-foot summary {
+          pointer-events: none;
+          padding-block: 0 1rem;
+        }
+        .hf-foot summary svg {
+          display: none;
+        }
+      }
+      .hf-social {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .hf-social a {
+        display: grid;
+        place-items: center;
+        inline-size: 2.25rem;
+        block-size: 2.25rem;
+        border: 1px solid var(--foot-line, var(--border));
+        border-radius: 999px;
+        transition:
+          background-color 150ms ease,
+          transform 150ms ease;
+        corner-shape: round;
+      }
+      .hf-social a:hover {
+        background: var(--foot-fg, var(--foreground));
+        color: var(--foot-bg, var(--background));
+        transform: translateY(-2px);
+      }
+      .hf-social a:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+      .hf-social svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .hf-bottom {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding-block: 1.25rem;
+        border-block-start: 1px solid var(--foot-line, var(--border));
+        font-size: 0.8125rem;
+        color: var(--foot-muted, var(--muted-foreground));
+      }
+      .hf-bottom nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .hf-bottom a:hover {
+        color: var(--foot-fg, var(--foreground));
+      }
+      .hf-hours {
+        display: grid;
+        gap: 0.375rem;
+        margin: 0;
+        font-size: 0.875rem;
+      }
+      .hf-hours div {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .hf-hours dt {
+        color: var(--foot-muted, var(--muted-foreground));
+      }
+      .hf-hours dd {
+        margin: 0;
+        font-variant-numeric: tabular-nums;
+      }
+      .hf-hours [data-today] {
+        font-weight: 600;
+        color: var(--foot-fg, var(--foreground));
+      }
+      .hf-hours [data-today] dt {
+        color: inherit;
+      }
+      .hf-contact {
+        display: grid;
+        gap: 0.625rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-size: 0.875rem;
+      }
+      .hf-contact li {
+        display: flex;
+        gap: 0.625rem;
+        align-items: flex-start;
+      }
+      .hf-contact svg {
+        flex: none;
+        inline-size: 1rem;
+        block-size: 1rem;
+        margin-block-start: 0.125rem;
+        color: var(--biz, var(--primary));
+      }
+      .hf-map {
+        position: relative;
+        overflow: hidden;
+        min-block-size: 12rem;
+        border-radius: var(--radius);
+        background: color-mix(in oklab, var(--biz, var(--primary)) 10%, var(--background));
+      }
+      .hf-map svg.hf-map-bg {
+        position: absolute;
+        inset: 0;
+        inline-size: 100%;
+        block-size: 100%;
+        color: color-mix(in oklab, var(--biz, var(--primary)) 25%, transparent);
+      }
+      .hf-map-pin {
+        position: absolute;
+        inset-block-start: 45%;
+        inset-inline-start: 50%;
+        display: grid;
+        place-items: center;
+        inline-size: 2.5rem;
+        block-size: 2.5rem;
+        translate: -50% -50%;
+        border-radius: 999px;
+        background: var(--biz, var(--primary));
+        color: #fff;
+        box-shadow: 0 0 0 8px color-mix(in oklab, var(--biz, var(--primary)) 25%, transparent);
+        corner-shape: round;
+      }
+      .hf-map-pin svg {
+        inline-size: 1.25rem;
+        block-size: 1.25rem;
+      }
+      .hf-map .btn {
+        position: absolute;
+        inset-inline-end: 0.75rem;
+        inset-block-end: 0.75rem;
+        background: var(--background);
+      }
+      @media (width < 48rem) {
+        .hf-foot-cols:has(> details) {
+          gap: 0;
+        }
+        .hf-foot-cols:has(> details) > .hf-foot-brand {
+          margin-block-end: 1.5rem;
+        }
+      }
+
+      .hf-foot .hf-book {
+        background: var(--biz);
+        color: var(--biz-fg);
+      }
+      .hf-foot .hf-book:hover {
+        background: color-mix(in oklab, var(--biz) 85%, black);
+        color: var(--biz-fg);
+      }
+      .hf-foot .block-logo-mark {
+        background: var(--biz);
+      }
+      html.dark .hf-foot {
+        --foot-bg: oklch(0.2 0.015 150);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hf-demo"><p>Page content</p></div>
+    <footer
+      class="hf-foot"
+      style="--biz: oklch(0.52 0.06 150); --biz-fg: #fff; --foot-bg: oklch(0.97 0.012 150)">
+      <div class="wrapper" data-size="xl">
+        <div
+          class="hf-foot-cols"
+          style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr))">
+          <div class="hf-foot-brand">
+            <a href="#" class="block-logo">
+              <span class="block-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20a10 10 0 0 0 10-10a25.9 25.9 0 0 0-1.04-7.281a1 1 0 0 0-1.755-.325C15.833 5.5 13 5.5 9.8 6.1A7 7 0 0 0 11 20"/><path d="M2 21a5 5 0 0 1 2.911-4.544C7.613 15.212 8.351 15.24 11 13"/></svg></span>
+              Still Water Spa
+            </a>
+            <p>
+              A quiet garden house for massage, facials and rituals. Come as you are; leave a little
+              lighter.
+            </p>
+            <div class="cluster" data-gap="2">
+              <a href="#" class="btn hf-book">
+                <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 2v4"/><path d="M3 10h18"/><path d="M8 2v4"/><rect height="18" rx="2" width="18" x="3" y="4"/></svg>
+                Book a treatment
+              </a>
+              <a href="#" class="btn" data-variant="outline">
+                <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14m8-10v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8m3.5-4a1 1 0 0 1 0-5A4.8 8 0 0 1 12 7a4.8 8 0 0 1 4.5-5a1 1 0 0 1 0 5"/><rect width="18" height="4" x="3" y="7" rx="1"/></svg>
+                Gift cards
+              </a>
+            </div>
+          </div>
+          <div class="stack" data-gap="3">
+            <h3 class="shop-section-title">Visit</h3>
+            <ul class="hf-contact">
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>
+                  12 Garden Lane
+                  <br />
+                  Portland, OR 97201
+                </span>
+              </li>
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233a14 14 0 0 0 6.392 6.384"/></svg>
+                <a href="#">(555) 014-2290</a>
+              </li>
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/></svg>
+                <a href="#">hello@stillwater.spa</a>
+              </li>
+            </ul>
+            <div class="hf-social">
+              <a href="#" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8A4 4 0 0 1 16 11.37m1.5-4.87h.01"/></svg></a>
+              <a href="#" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+            </div>
+          </div>
+          <div class="stack" data-gap="3">
+            <h3 class="shop-section-title">Opening hours</h3>
+            <dl class="hf-hours">
+              <div>
+                <dt>Monday</dt>
+                <dd>Closed</dd>
+              </div>
+              <div data-today>
+                <dt>Tue – Fri</dt>
+                <dd>9:00 – 20:00</dd>
+              </div>
+              <div>
+                <dt>Saturday</dt>
+                <dd>9:00 – 18:00</dd>
+              </div>
+              <div>
+                <dt>Sunday</dt>
+                <dd>10:00 – 16:00</dd>
+              </div>
+            </dl>
+            <p class="shop-line-meta">Holiday hours may vary.</p>
+          </div>
+          <div class="hf-map" role="img" aria-label="Map showing 12 Garden Lane">
+            <svg class="hf-map-bg" viewBox="0 0 200 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M0 40h200M0 95h200M60 0v140M140 0v140" stroke="currentColor" stroke-width="6" fill="none"/><path d="M0 120 C60 100 120 130 200 90" stroke="currentColor" stroke-width="10" fill="none" opacity=".6"/></svg>
+            <span class="hf-map-pin"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20a10 10 0 0 0 10-10a25.9 25.9 0 0 0-1.04-7.281a1 1 0 0 0-1.755-.325C15.833 5.5 13 5.5 9.8 6.1A7 7 0 0 0 11 20"/><path d="M2 21a5 5 0 0 1 2.911-4.544C7.613 15.212 8.351 15.24 11 13"/></svg></span>
+            <a href="#" class="btn" data-variant="outline" data-size="sm">
+              <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+              Directions
+            </a>
+          </div>
+        </div>
+        <div class="hf-bottom">
+          <span>© 2026 Still Water Spa</span>
+          <nav aria-label="Legal">
+            <a href="#">Cancellation policy</a>
+            <a href="#">Privacy</a>
+            <a href="#">Careers</a>
+          </nav>
+        </div>
+      </div>
+    </footer>
+    <script>
+      // Announcement bar: previous/next messages, dismiss.
+      document.querySelectorAll("[data-bar]").forEach((bar) => {
+        const msgs = [...bar.querySelectorAll(".hf-bar-msgs > span")];
+        let i = 0;
+        const show = (n) => {
+          i = (n + msgs.length) % msgs.length;
+          msgs.forEach((m, k) => m.toggleAttribute("data-on", k === i));
+        };
+        bar.querySelector("[data-bar-prev]")?.addEventListener("click", () => show(i - 1));
+        bar.querySelector("[data-bar-next]")?.addEventListener("click", () => show(i + 1));
+        bar.querySelector("[data-bar-close]")?.addEventListener("click", () => {
+          bar.hidden = true;
+        });
+      });
+      // Search that opens under the header.
+      document.querySelectorAll("[data-search-toggle]").forEach((b) =>
+        b.addEventListener("click", () => {
+          const head = b.closest(".hf-head");
+          const open = !head.hasAttribute("data-search");
+          head.toggleAttribute("data-search", open);
+          b.setAttribute("aria-expanded", String(open));
+          if (open) head.querySelector(".hf-searchbox input").focus();
+        }),
+      );
+      // Header over a hero: solid once the page scrolls.
+      document.querySelectorAll("[data-overlay]").forEach((h) => {
+        const sync = () => h.toggleAttribute("data-scrolled", window.scrollY > 40);
+        window.addEventListener("scroll", sync, { passive: true });
+        sync();
+      });
+      // Newsletter forms: validate the email, then thank.
+      document.querySelectorAll("[data-newsletter]").forEach((form) => {
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const input = form.querySelector("input[type=email]");
+          const ok = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(input.value.trim());
+          input.toggleAttribute("aria-invalid", !ok);
+          form.querySelector("[data-news-error]").hidden = ok;
+          if (!ok) {
+            input.focus();
+            return;
+          }
+          form.querySelector("[data-news-fields]").hidden = true;
+          form.querySelector("[data-news-done]").hidden = false;
+        });
+      });
+      // Footer link columns: open on wide screens, collapsible on small ones.
+      (() => {
+        const groups = document.querySelectorAll("[data-foot-group]");
+        if (!groups.length) return;
+        const mq = window.matchMedia("(width >= 48rem)");
+        const apply = () =>
+          groups.forEach((d) => {
+            d.open = mq.matches;
+          });
+        mq.addEventListener("change", apply);
+        apply();
+      })();
+      // Bottom tab bar: the tapped tab becomes current.
+      document.querySelectorAll(".hf-bnav").forEach((nav) =>
+        nav.addEventListener("click", (e) => {
+          const a = e.target.closest("a");
+          if (!a) return;
+          e.preventDefault();
+          nav.querySelectorAll("a[aria-current]").forEach((x) => x.removeAttribute("aria-current"));
+          a.setAttribute("aria-current", "page");
+        }),
+      );
+      // Back to top.
+      document.querySelectorAll("[data-to-top]").forEach((b) => {
+        const sync = () => b.toggleAttribute("data-show", window.scrollY > 300);
+        window.addEventListener("scroll", sync, { passive: true });
+        sync();
+        b.addEventListener("click", () =>
+          window.scrollTo({
+            top: 0,
+            behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+          }),
+        );
+      });
+    </script>
+  </body>
+</html>

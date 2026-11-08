@@ -4,10 +4,34 @@
 
 ### Added
 
+- Online course blocks (Udemy / Domestika style), 10 in a new Courses category: `course-01` catalog with topic pills, filters (rating, level, length, price), sort and a hover preview with Add to cart; `course-02` list rows and Domestika-style cards; `course-03` learning home with a search hero, continue learning, a course carousel and teachers; `course-04` course page with a sticky purchase card, video preview dialog, what you'll learn, expandable curriculum with previews, description, teacher and reviews; `course-05` course player with a progress ring, completion checkboxes, next and previous lesson, collapsible sections with Expand all / Collapse all, a sidebar you can hide for a wider video, Q&A and notes; `course-06` my learning with a weekly goal and status filters; `course-07` teacher profile; `course-08` subscription plans with a monthly or yearly switch; `course-09` certificate of completion; `course-10` course cart with a coupon (`LEARN20`) and payment choice.
+- LMS admin blocks (instructor dashboard, in the style of Teachable, Thinkific and Udemy's instructor tools), 8 in a new LMS Admin category, all in a sidebar shell:
+  - `admin-01` courses: status tabs with counts, search, category filter, select all with a bulk bar (publish, unpublish, delete), row menus, a New course dialog.
+  - `admin-02` curriculum builder: sections and lessons you drag to reorder (or move with arrow keys on the handle, across sections, announced to screen readers), add lessons by type (video, article, quiz, assignment) and name them inline, rename, collapse and add sections, live totals.
+  - `admin-03` lesson editor: video upload by drag and drop or file picker with progress, processing and a ready state with replace and remove; a rich text description with a toolbar and word count; resources; publish settings; saved / unsaved state.
+  - `admin-04` media library: drop zone and upload queue with progress, type filters, search, grid or list view, a details panel with copy link, multi-select delete.
+  - `admin-05` students: KPIs, status tabs, search, course filter, progress bars, bulk actions, CSV export of the visible rows, an invite dialog that validates addresses.
+  - `admin-06` analytics: a 7 days / 30 days / 12 months range that updates the KPIs and a revenue bar chart with tooltips, traffic sources, top courses, recent activity.
+  - `admin-07` pricing and coupons: free, one-time, subscription or payment plan with the fields each needs and a live preview of the price students see; coupons to create (with a code generator and validation), copy, pause and delete.
+  - `admin-08` review moderation: rating summary, filters (needs reply, flagged, 1–2 stars) with counts, inline public replies, flag and hide.
+  - New icons mapped for every library: cloud-upload, copy-plus, flag, grip-vertical, heading-2, link, list-checks, list-ordered, paperclip, quote, refresh-cw, reply, tag, ticket-percent, video.
+- React blocks: `contenteditable` elements get `suppressContentEditableWarning`, so an editable area converts without a warning.
+- Header and footer blocks for six kinds of business, in new Header and Footer categories. On phones every header switches to a bottom tab bar, the usual mobile pattern; its menu tab opens the header's sheet.
+  - `header-01` ecommerce: rotating announcement bar, utility bar with currency and language, search by category, account, wishlist and cart, mega menus.
+  - `header-02` online courses: categories menu, rounded search, Plus / Teach links, log in and sign up.
+  - `header-03` blog or magazine: masthead with the date, section row, search that opens under the header, dark mode toggle, subscribe.
+  - `header-04` spa or wellness: contact and hours bar over a hero; the header turns solid on scroll and has a Book now button.
+  - `header-05` beauty: centered logo, mega menu with a featured product, search under the header.
+  - `header-06` kids and toys: colorful logo, rounded search, age and category chips.
+  - `footer-01` to `footer-06` for the same businesses: newsletter signup with validation and a success state, link columns that collapse on phones, social links, payment methods, language and currency, back to top, a teacher call to action and app badges (courses), recent posts and topics (blog), contact details, opening hours with today highlighted and a map (spa), brand values (beauty), a wave edge and safety badges (kids).
+  - New icons mapped for every library: baby, facebook, headphones, instagram, leaf, linkedin, puzzle, rabbit, recycle, rss, store, twitter (X), youtube.
 - Create: font weight controls. A Font Weight slider next to Font Size shifts regular, medium, semibold and bold together (`--font-weight-normal|medium|semibold|bold`, which every component reads), and Customize theme → Typography sets each one. The Google Fonts link now loads each family's whole weight axis, so any chosen weight renders with real glyphs.
 
 ### Fixed
 
+- `course-09`: the copy button sat flush against the certificate number in the React version, which drops the space between them; the row now spaces its items with a gap.
+- Bottom navigation badges overlapped the bar's top border.
+- Rating filters in `filter-01`, `filter-03` and `search-02` pushed the stars to the far edge of the row. Some blocks used `data-gap` values outside the layout scale (5, 10), which fell back to the default gap; they now use 4 and 12.
 - Create: importing tweakcn's full CSS export (the one that starts with `@import "tailwindcss"` and `@custom-variant dark (&:is(.dark *))`) read the `:root` block as dark, so the light colors, radius and fonts were dropped. The import box also grew with a long paste until Apply was off screen; it now keeps a fixed height and scrolls.
 - Docs: choosing a style on Create replaced nothing; the style's stylesheet loaded on top of the Vega bundle inside `docs.css`, so whatever the style does not set kept Vega's value (the header's small buttons kept Vega's radius under Maia while the preview, which loads the style alone, did not). The site and block pages now load one component stylesheet, `dist/auvyx.min.css` or the chosen style's bundle in its place, and `docs.css` holds only the docs utilities (41 kB → 5 kB gzip).
 

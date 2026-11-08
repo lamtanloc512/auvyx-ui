@@ -1,0 +1,1124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin 03 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+
+      body {
+        min-block-size: 100svh;
+      }
+      .adm-mark {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        inline-size: 2rem;
+        block-size: 2rem;
+        border-radius: calc(var(--radius) + 2px);
+        background: var(--sidebar-primary);
+        color: var(--sidebar-primary-foreground);
+      }
+      .adm-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .adm-main {
+        container-type: inline-size;
+        min-inline-size: 0;
+      }
+      .adm-header {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        block-size: 3.5rem;
+        padding-inline: 1rem;
+        border-block-end: 1px solid var(--border);
+        background: var(--background);
+      }
+      .adm-header > hr {
+        align-self: center;
+        block-size: 1rem;
+        margin-inline-end: 0.25rem;
+      }
+      .adm-header .breadcrumb {
+        min-inline-size: 0;
+      }
+      .adm-header-end {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-inline-start: auto;
+      }
+      .adm-body {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem;
+        padding: 1rem;
+      }
+      .adm-split > * {
+        min-inline-size: 0;
+      }
+      .adm-body > * {
+        min-inline-size: 0;
+      }
+      .adm-main .card {
+        min-inline-size: 0;
+      }
+      .adm-main .card > section {
+        min-inline-size: 0;
+      }
+      .adm-main .stack > * {
+        min-inline-size: 0;
+      }
+      .adm-main .card > section > * {
+        min-inline-size: 0;
+      }
+      @container (width >= 48rem) {
+        .adm-body {
+          padding: 1.5rem;
+        }
+      }
+      .adm-title {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .adm-title h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .adm-title p {
+        margin: 0.25rem 0 0;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
+      .adm-title > div:last-child {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .adm-split {
+        display: grid;
+        gap: 1.5rem;
+        align-items: start;
+      }
+      @container (width >= 64rem) {
+        .adm-split {
+          grid-template-columns: minmax(0, 1fr) 20rem;
+        }
+        .adm-split > aside {
+          position: sticky;
+          inset-block-start: 5rem;
+        }
+      }
+      .adm-split > aside {
+        display: grid;
+        gap: 1rem;
+      }
+      .adm-section-title {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .adm-muted {
+        color: var(--muted-foreground);
+      }
+      .adm-saved {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .adm-saved::before {
+        content: "";
+        inline-size: 0.5rem;
+        block-size: 0.5rem;
+        border-radius: 999px;
+        background: oklch(0.65 0.17 150);
+      }
+      .adm-saved[data-dirty]::before {
+        background: oklch(0.75 0.15 75);
+      }
+
+      .adm-upload {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      .adm-upload > [data-uploading],
+      .adm-upload > [data-ready] {
+        display: none;
+      }
+      .adm-upload[data-state="uploading"] > [data-drop],
+      .adm-upload[data-state="ready"] > [data-drop] {
+        display: none;
+      }
+      .adm-upload[data-state="uploading"] > [data-uploading] {
+        display: grid;
+      }
+      .adm-upload[data-state="ready"] > [data-ready] {
+        display: grid;
+      }
+      .adm-drop {
+        display: grid;
+        justify-items: center;
+        gap: 0.5rem;
+        padding: 2.5rem 1rem;
+        border: 2px dashed transparent;
+        border-radius: var(--radius);
+        background: color-mix(in oklab, var(--muted) 50%, transparent);
+        text-align: center;
+        cursor: pointer;
+        transition:
+          border-color 150ms ease,
+          background-color 150ms ease;
+      }
+      .adm-drop:hover,
+      .adm-drop[data-over] {
+        border-color: var(--ring);
+        background: color-mix(in oklab, var(--primary) 6%, transparent);
+      }
+      .adm-drop:focus-within {
+        outline: 2px solid var(--ring);
+        outline-offset: -2px;
+      }
+      .adm-drop strong {
+        font-size: 0.9375rem;
+        font-weight: 500;
+      }
+      .adm-drop small {
+        color: var(--muted-foreground);
+        font-size: 0.8125rem;
+      }
+      .adm-link {
+        color: var(--primary);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      .adm-drop-ic {
+        display: grid;
+        place-items: center;
+        inline-size: 3rem;
+        block-size: 3rem;
+        border-radius: 999px;
+        background: var(--background);
+        box-shadow: 0 0 0 1px var(--border);
+        color: var(--muted-foreground);
+      }
+      .adm-drop-ic svg {
+        inline-size: 1.25rem;
+        block-size: 1.25rem;
+      }
+      .adm-uploading {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.25rem;
+      }
+      .adm-uploading strong,
+      .adm-ready strong {
+        font-size: 0.875rem;
+        font-weight: 500;
+        overflow-wrap: anywhere;
+      }
+      .adm-ready {
+        grid-template-columns: 12rem minmax(0, 1fr);
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem;
+      }
+      @container (width < 36rem) {
+        .adm-ready {
+          grid-template-columns: 1fr;
+        }
+      }
+      .adm-ready-thumb {
+        position: relative;
+        display: grid;
+        place-items: center;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        border-radius: calc(var(--radius) - 2px);
+      }
+      .adm-ready-thumb img {
+        position: absolute;
+        inset: 0;
+        inline-size: 100%;
+        block-size: 100%;
+        object-fit: cover;
+      }
+      .adm-ready-thumb > span {
+        position: relative;
+        display: grid;
+        place-items: center;
+        inline-size: 2.5rem;
+        block-size: 2.5rem;
+        border-radius: 999px;
+        background: rgb(255 255 255 / 0.9);
+        color: #111;
+      }
+      .adm-ready-thumb > span svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+        fill: currentColor;
+      }
+      .adm-ready-thumb small {
+        position: absolute;
+        inset-inline-end: 0.375rem;
+        inset-block-end: 0.375rem;
+        padding: 0 0.375rem;
+        border-radius: 4px;
+        background: rgb(0 0 0 / 0.7);
+        color: #fff;
+        font-size: 0.6875rem;
+      }
+      .adm-sample {
+        align-self: flex-start;
+        padding-inline: 0;
+      }
+      .adm-upload[data-state="ready"] + .adm-sample {
+        display: none;
+      }
+      .adm-editor {
+        border: 1px solid var(--input);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      .adm-editor:focus-within {
+        border-color: var(--ring);
+        box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 40%, transparent);
+      }
+      .adm-editor-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.125rem;
+        padding: 0.25rem;
+        border-block-end: 1px solid var(--border);
+        background: color-mix(in oklab, var(--muted) 50%, transparent);
+      }
+      .adm-editor-bar hr {
+        align-self: stretch;
+        block-size: auto;
+        margin: 0.25rem;
+      }
+      .adm-editor-bar .btn[aria-pressed="true"] {
+        background: var(--accent);
+        color: var(--accent-foreground);
+      }
+      .adm-editor-body {
+        min-block-size: 10rem;
+        padding: 0.75rem 1rem;
+        font-size: 0.9375rem;
+        line-height: 1.6;
+        outline: none;
+      }
+      .adm-editor-body > :first-child {
+        margin-block-start: 0;
+      }
+      .adm-editor-body p {
+        margin: 0 0 0.75rem;
+      }
+      .adm-editor-body ul {
+        margin: 0 0 0.75rem;
+        padding-inline-start: 1.25rem;
+        list-style: disc;
+      }
+      .adm-editor-body ol {
+        margin: 0 0 0.75rem;
+        padding-inline-start: 1.25rem;
+        list-style: decimal;
+      }
+      .adm-editor-body h3 {
+        margin: 1rem 0 0.25rem;
+        font-size: 1.0625rem;
+      }
+      .adm-editor-body blockquote {
+        margin: 0.5rem 0;
+        padding-inline-start: 1rem;
+        border-inline-start: 3px solid var(--border);
+        color: var(--muted-foreground);
+      }
+      .adm-editor-body pre {
+        padding: 0.5rem 0.75rem;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--muted);
+        font-size: 0.8125rem;
+        white-space: pre-wrap;
+      }
+      .adm-editor-body a {
+        color: var(--primary);
+      }
+      .adm-editor-foot {
+        display: flex;
+        justify-content: flex-end;
+        padding: 0.375rem 0.75rem;
+        border-block-start: 1px solid var(--border);
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+        font-variant-numeric: tabular-nums;
+      }
+      .adm-res {
+        display: grid;
+        gap: 0.5rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .adm-res li {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 0.5rem 0.5rem 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+      }
+      .adm-res li > svg {
+        flex: none;
+        inline-size: 1rem;
+        block-size: 1rem;
+        color: var(--muted-foreground);
+      }
+      .adm-res li > span {
+        flex: 1;
+        min-inline-size: 0;
+        display: grid;
+      }
+      .adm-res strong {
+        font-size: 0.875rem;
+        font-weight: 500;
+        overflow-wrap: anywhere;
+      }
+      .adm-res small {
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+      }
+    </style>
+  </head>
+  <body>
+    <aside id="adm-sidebar" class="sidebar" data-collapsible="icon">
+      <nav aria-label="Instructor">
+        <header>
+          <ul>
+            <li>
+              <a href="#" data-size="lg">
+                <span class="adm-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0zM22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span>
+                <span>
+                  <strong>Acme Learn</strong>
+                  <small>Instructor</small>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </header>
+        <section>
+          <div role="group" aria-labelledby="adm-g0">
+            <h3 id="adm-g0">Overview</h3>
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Dashboard" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17V5"/><path d="M18 17V9"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 17v-3"/></svg>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" aria-current="page" data-tooltip="Courses" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                  <span>Courses</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Media library" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                  <span>Media library</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div role="group" aria-labelledby="adm-g1">
+            <h3 id="adm-g1">Students</h3>
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Students" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
+                  <span>Students</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Reviews" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                  <span>Reviews</span>
+                  <span data-badge>4</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Q&A" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  <span>Q&A</span>
+                  <span data-badge>12</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div role="group" aria-labelledby="adm-g2">
+            <h3 id="adm-g2">Business</h3>
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Pricing" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+                  <span>Pricing</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Coupons" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9a3 3 0 1 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 1 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M9 9h.01"/><path d="m15 9-6 6"/><path d="M15 15h.01"/></svg>
+                  <span>Coupons</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Settings" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <span>Settings</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </section>
+        <footer>
+          <ul>
+            <li>
+              <a href="#" data-size="lg">
+                <span class="avatar" data-size="sm"><span>LO</span></span>
+                <span>
+                  <strong>Lena Ortiz</strong>
+                  <small>lena@acme.learn</small>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </footer>
+      </nav>
+    </aside>
+    <main class="adm-main">
+      <header class="adm-header">
+        <button
+          type="button"
+          class="btn"
+          data-variant="ghost"
+          data-size="icon-sm"
+          data-sidebar-toggle="adm-sidebar"
+          aria-controls="adm-sidebar"
+          aria-label="Toggle sidebar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        </button>
+        <hr role="separator" aria-orientation="vertical" />
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="#">Brand Identity Design</a></li>
+            <li aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></li>
+            <li><a href="#">Curriculum</a></li>
+            <li aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></li>
+            <li><span aria-current="page">Mood boards that guide decisions</span></li>
+          </ol>
+        </nav>
+        <div class="adm-header-end"></div>
+      </header>
+      <div class="adm-body">
+        <form class="adm-split" data-lesson-form onsubmit="event.preventDefault()">
+          <div class="stack" data-gap="6">
+            <div class="adm-title">
+              <div>
+                <p class="adm-muted" style="margin: 0">Section 2 · Lesson 5</p>
+                <h1>Edit lesson</h1>
+              </div>
+              <div><span class="adm-saved" data-saved role="status">All changes saved</span></div>
+            </div>
+            <div role="group" class="field">
+              <label for="a3-title">Lesson title</label>
+              <input
+                class="input"
+                id="a3-title"
+                value="Mood boards that guide decisions"
+                maxlength="80"
+                required />
+            </div>
+            <section class="stack" data-gap="2" aria-labelledby="a3-video-l">
+              <h2 class="adm-section-title" id="a3-video-l">Video</h2>
+              <div class="adm-upload" data-upload data-state="empty">
+                <label class="adm-drop" for="a3-file" data-drop>
+                  <span class="adm-drop-ic"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 13v8m-8-6.101A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="m8 17 4-4 4 4"/></svg></span>
+                  <strong>
+                    Drag and drop a video, or
+                    <span class="adm-link">browse</span>
+                  </strong>
+                  <small>MP4, MOV or WebM, up to 4 GB. 1080p or higher recommended.</small>
+                  <input type="file" id="a3-file" accept="video/*" class="sr-only" data-file />
+                </label>
+                <div class="adm-uploading" data-uploading>
+                  <span class="adm-drop-ic"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect width="14" height="12" x="2" y="6" rx="2"/></svg></span>
+                  <div class="stack" data-gap="2">
+                    <div class="cluster" data-justify="between">
+                      <strong data-file-name>mood-boards-final.mp4</strong>
+                      <span class="adm-muted" data-pct>0%</span>
+                    </div>
+                    <div
+                      class="progress"
+                      role="progressbar"
+                      aria-label="Upload progress"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      aria-valuenow="0"
+                      data-bar>
+                      <span style="width: 0%"></span>
+                    </div>
+                    <small class="adm-muted" data-up-label>Uploading · 412 MB</small>
+                  </div>
+                  <button type="button" class="btn" data-variant="ghost" data-size="sm" data-cancel>
+                    Cancel
+                  </button>
+                </div>
+                <div class="adm-ready" data-ready>
+                  <div class="adm-ready-thumb">
+                    <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="2" />
+                    <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg></span>
+                    <small>9:48</small>
+                  </div>
+                  <div class="stack" data-gap="1">
+                    <strong data-file-name>mood-boards-final.mp4</strong>
+                    <small class="adm-muted">
+                      1080p · 9:48 · 412 MB · Captions: auto-generated
+                    </small>
+                    <div class="cluster" data-gap="2">
+                      <label class="btn" data-variant="outline" data-size="sm" for="a3-file">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9a9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5m5 4a9 9 0 0 1-9 9a9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                        Replace
+                      </label>
+                      <button
+                        type="button"
+                        class="btn"
+                        data-variant="ghost"
+                        data-size="sm"
+                        data-remove-video>
+                        <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                class="btn adm-sample"
+                data-variant="link"
+                data-size="sm"
+                data-sample>
+                Use a sample video
+              </button>
+            </section>
+            <section class="stack" data-gap="2" aria-labelledby="a3-desc-l">
+              <h2 class="adm-section-title" id="a3-desc-l">Description</h2>
+              <div class="adm-editor">
+                <div
+                  class="adm-editor-bar"
+                  role="toolbar"
+                  aria-label="Formatting"
+                  aria-controls="a3-desc">
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Bold"
+                    title="Bold"
+                    data-cmd="bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12h9a4 4 0 0 1 0 8H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h7a4 4 0 0 1 0 8"/></svg>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Italic"
+                    title="Italic"
+                    data-cmd="italic">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" x2="10" y1="4" y2="4"/><line x1="14" x2="5" y1="20" y2="20"/><line x1="15" x2="9" y1="4" y2="20"/></svg>
+                  </button>
+                  <hr role="separator" aria-orientation="vertical" />
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Heading"
+                    title="Heading"
+                    data-cmd="formatBlock:h3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h8m-8 6V6m8 12V6m9 12h-4c0-4 4-3 4-6c0-1.5-2-2.5-4-1"/></svg>
+                  </button>
+                  <hr role="separator" aria-orientation="vertical" />
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Bulleted list"
+                    title="Bulleted list"
+                    data-cmd="insertUnorderedList">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h.01"/><path d="M3 12h.01"/><path d="M3 19h.01"/><path d="M8 5h13"/><path d="M8 12h13"/><path d="M8 19h13"/></svg>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Numbered list"
+                    title="Numbered list"
+                    data-cmd="insertOrderedList">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5h10m-10 7h10m-10 7h10M4 4h1v5M4 9h2m.5 11H3.4c0-1 2.6-1.925 2.6-3.5a1.5 1.5 0 0 0-2.6-1.02"/></svg>
+                  </button>
+                  <hr role="separator" aria-orientation="vertical" />
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Quote"
+                    title="Quote"
+                    data-cmd="formatBlock:blockquote">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2zM5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/></svg>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Code"
+                    title="Code"
+                    data-cmd="formatBlock:pre">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Link"
+                    title="Link"
+                    data-cmd="createLink">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                  </button>
+                </div>
+                <div
+                  class="adm-editor-body"
+                  id="a3-desc"
+                  contenteditable="true"
+                  role="textbox"
+                  aria-multiline="true"
+                  aria-labelledby="a3-desc-l"
+                  data-editor>
+                  <p>
+                    Turn your research into two or three
+                    <strong>mood boards</strong>
+                    that each tell a different story, then use them to steer the client toward a
+                    direction before you draw anything.
+                  </p>
+                  <ul>
+                    <li>Collect 20 to 30 references per board</li>
+                    <li>Name each board after a feeling, not a style</li>
+                  </ul>
+                </div>
+                <div class="adm-editor-foot"><span data-words>0 words</span></div>
+              </div>
+            </section>
+            <section class="stack" data-gap="2" aria-labelledby="a3-res-l">
+              <div class="cluster" data-justify="between">
+                <h2 class="adm-section-title" id="a3-res-l">Resources</h2>
+                <label class="btn" data-variant="outline" data-size="sm" for="a3-res-file">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                  Add file
+                </label>
+                <input type="file" id="a3-res-file" class="sr-only" multiple data-res-file />
+              </div>
+              <ul class="adm-res" data-res-list>
+                <li data-res>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 6-8.414 8.586a2 2 0 0 0 2.829 2.829l8.414-8.586a4 4 0 1 0-5.657-5.657l-8.379 8.551a6 6 0 1 0 8.485 8.485l8.379-8.551"/></svg>
+                  <span>
+                    <strong>Brief template.docx</strong>
+                    <small>48 KB</small>
+                  </span>
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Remove Brief template.docx"
+                    data-res-remove>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                  </button>
+                </li>
+                <li data-res>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 6-8.414 8.586a2 2 0 0 0 2.829 2.829l8.414-8.586a4 4 0 1 0-5.657-5.657l-8.379 8.551a6 6 0 1 0 8.485 8.485l8.379-8.551"/></svg>
+                  <span>
+                    <strong>Mood board examples.pdf</strong>
+                    <small>3.2 MB</small>
+                  </span>
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Remove Mood board examples.pdf"
+                    data-res-remove>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                  </button>
+                </li>
+              </ul>
+            </section>
+          </div>
+          <aside>
+            <div class="card">
+              <header><h2>Publish</h2></header>
+              <section class="stack" data-gap="4">
+                <div role="group" class="field">
+                  <label for="a3-status">Status</label>
+                  <select class="select" id="a3-status">
+                    <option value="published">Published</option>
+                    <option value="draft" selected>Draft</option>
+                    <option value="scheduled">Scheduled</option>
+                  </select>
+                </div>
+                <div role="group" class="field" data-orientation="horizontal">
+                  <input type="checkbox" role="switch" class="input" id="a3-free" />
+                  <label for="a3-free">Free preview for everyone</label>
+                </div>
+                <div role="group" class="field" data-orientation="horizontal">
+                  <input type="checkbox" role="switch" class="input" id="a3-dl" checked />
+                  <label for="a3-dl">Allow resource downloads</label>
+                </div>
+              </section>
+              <footer class="stack" data-gap="2">
+                <button type="submit" class="btn" style="inline-size: 100%" data-save>
+                  Save lesson
+                </button>
+                <button type="button" class="btn" data-variant="ghost" style="inline-size: 100%">
+                  <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696a10.75 10.75 0 0 1 19.876 0a1 1 0 0 1 0 .696a10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+                  Preview as student
+                </button>
+              </footer>
+            </div>
+            <nav class="cluster" data-justify="between" aria-label="Lessons">
+              <a href="#" class="btn" data-variant="ghost" data-size="sm">
+                <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+                Previous
+              </a>
+              <a href="#" class="btn" data-variant="ghost" data-size="sm">
+                Next
+                <svg data-icon="inline-end" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+              </a>
+            </nav>
+          </aside>
+        </form>
+      </div>
+    </main>
+    <script>
+      // Dropdown row menus close after a choice.
+      document
+        .querySelectorAll("[data-popover] [role=menuitem]")
+        .forEach((m) => m.addEventListener("click", () => m.closest("[popover]")?.hidePopover?.()));
+      // Tables: status tabs, search, row selection with a bulk bar.
+      document.querySelectorAll("[data-adm-table]").forEach((root) => {
+        const tbody = root.querySelector("tbody");
+        const rows = () => [...tbody.querySelectorAll("tr[data-row]")];
+        const tabs = [...root.querySelectorAll("[data-tab]")];
+        const search = root.querySelector("[data-search]");
+        const select = root.querySelector("[data-filter-select]");
+        const all = root.querySelector("[data-select-all]");
+        const bulk = root.querySelector("[data-bulk]");
+        const empty = root.querySelector("[data-empty]");
+        let tab = "all";
+        const counts = () =>
+          tabs.forEach((t) => {
+            const k = t.dataset.tab;
+            t.querySelector(".badge").textContent = rows().filter(
+              (r) => k === "all" || r.dataset.status === k,
+            ).length;
+          });
+        const apply = () => {
+          const q = (search?.value || "").trim().toLowerCase();
+          const f = select?.value || "all";
+          let shown = 0;
+          rows().forEach((r) => {
+            const ok =
+              (tab === "all" || r.dataset.status === tab) &&
+              (!q || r.textContent.toLowerCase().includes(q)) &&
+              (f === "all" || r.dataset.filter === f);
+            r.hidden = !ok;
+            if (!ok) r.querySelector("[data-select]").checked = false;
+            shown += ok;
+          });
+          if (empty) empty.hidden = shown > 0;
+          sync();
+        };
+        const sync = () => {
+          const vis = rows().filter((r) => !r.hidden);
+          const sel = vis.filter((r) => r.querySelector("[data-select]").checked);
+          vis.forEach((r) =>
+            r.toggleAttribute("data-selected", r.querySelector("[data-select]").checked),
+          );
+          if (all) {
+            all.checked = vis.length > 0 && sel.length === vis.length;
+            all.indeterminate = sel.length > 0 && sel.length < vis.length;
+          }
+          if (bulk) {
+            bulk.hidden = !sel.length;
+            bulk.querySelector("[data-bulk-count]").textContent = `${sel.length} selected`;
+          }
+        };
+        tabs.forEach((t) =>
+          t.addEventListener("click", () => {
+            tab = t.dataset.tab;
+            tabs.forEach((x) => x.setAttribute("aria-pressed", String(x === t)));
+            apply();
+          }),
+        );
+        search?.addEventListener("input", apply);
+        select?.addEventListener("change", apply);
+        all?.addEventListener("change", () => {
+          rows()
+            .filter((r) => !r.hidden)
+            .forEach((r) => {
+              r.querySelector("[data-select]").checked = all.checked;
+            });
+          sync();
+        });
+        tbody.addEventListener("change", (e) => {
+          if (e.target.matches("[data-select]")) sync();
+        });
+        const selected = () =>
+          rows().filter((r) => !r.hidden && r.querySelector("[data-select]").checked);
+        root.querySelectorAll("[data-bulk-status]").forEach((b) =>
+          b.addEventListener("click", () => {
+            selected().forEach((r) => {
+              r.dataset.status = b.dataset.bulkStatus;
+              const s = r.querySelector(".adm-status");
+              s.dataset.status = b.dataset.bulkStatus;
+              s.textContent = b.dataset.label;
+              r.querySelector("[data-select]").checked = false;
+            });
+            counts();
+            apply();
+          }),
+        );
+        root.querySelector("[data-bulk-delete]")?.addEventListener("click", () => {
+          selected().forEach((r) => r.remove());
+          counts();
+          apply();
+        });
+        root.querySelector("[data-bulk-clear]")?.addEventListener("click", () => {
+          rows().forEach((r) => {
+            r.querySelector("[data-select]").checked = false;
+          });
+          sync();
+        });
+        root.addEventListener("click", (e) => {
+          const del = e.target.closest("[data-row-delete]");
+          if (del) {
+            del.closest("tr").remove();
+            counts();
+            apply();
+          }
+        });
+        root.admRefresh = () => {
+          counts();
+          apply();
+        };
+        counts();
+        apply();
+      });
+
+      (() => {
+        const form = document.querySelector("[data-lesson-form]");
+        const saved = form.querySelector("[data-saved]");
+        const dirty = () => {
+          saved.setAttribute("data-dirty", "");
+          saved.textContent = "Unsaved changes";
+        };
+        form.addEventListener("input", dirty);
+        form.addEventListener("change", (e) => {
+          if (!e.target.matches("[type=file]")) dirty();
+        });
+        form.addEventListener("submit", () => {
+          saved.removeAttribute("data-dirty");
+          saved.textContent = `Saved at ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+        });
+        // Video: choose or drop a file, watch it upload, then it is ready.
+        const up = form.querySelector("[data-upload]");
+        const drop = up.querySelector("[data-drop]");
+        const bar = up.querySelector("[data-bar]");
+        let timer;
+        const setPct = (p) => {
+          bar.setAttribute("aria-valuenow", String(p));
+          bar.firstElementChild.style.width = `${p}%`;
+          up.querySelector("[data-pct]").textContent = `${p}%`;
+        };
+        const start = (name, size) => {
+          clearInterval(timer);
+          up.querySelectorAll("[data-file-name]").forEach((x) => {
+            x.textContent = name;
+          });
+          up.dataset.state = "uploading";
+          up.querySelector("[data-up-label]").textContent = `Uploading · ${size}`;
+          let p = 0;
+          setPct(0);
+          timer = setInterval(() => {
+            p = Math.min(100, p + 7 + Math.round(Math.random() * 8));
+            setPct(p);
+            if (p === 100) {
+              clearInterval(timer);
+              up.querySelector("[data-up-label]").textContent = "Processing video…";
+              setTimeout(() => {
+                up.dataset.state = "ready";
+                dirty();
+              }, 900);
+            }
+          }, 180);
+        };
+        const mb = (b) =>
+          b > 1e9 ? `${(b / 1e9).toFixed(1)} GB` : `${Math.max(1, Math.round(b / 1e6))} MB`;
+        form.querySelector("[data-file]").addEventListener("change", (e) => {
+          const f = e.target.files[0];
+          if (f) start(f.name, mb(f.size));
+          e.target.value = "";
+        });
+        form
+          .querySelector("[data-sample]")
+          .addEventListener("click", () => start("mood-boards-final.mp4", "412 MB"));
+        ["dragenter", "dragover"].forEach((t) =>
+          drop.addEventListener(t, (e) => {
+            e.preventDefault();
+            drop.setAttribute("data-over", "");
+          }),
+        );
+        ["dragleave", "drop"].forEach((t) =>
+          drop.addEventListener(t, (e) => {
+            e.preventDefault();
+            drop.removeAttribute("data-over");
+          }),
+        );
+        drop.addEventListener("drop", (e) => {
+          const f = [...e.dataTransfer.files].find((x) => x.type.startsWith("video/"));
+          if (f) start(f.name, mb(f.size));
+        });
+        up.querySelector("[data-cancel]").addEventListener("click", () => {
+          clearInterval(timer);
+          up.dataset.state = "empty";
+        });
+        up.querySelector("[data-remove-video]").addEventListener("click", () => {
+          up.dataset.state = "empty";
+          dirty();
+        });
+        // Rich text: toolbar commands, active states, word count.
+        const ed = form.querySelector("[data-editor]");
+        const words = form.querySelector("[data-words]");
+        const count = () => {
+          const n = ed.innerText.trim().split(/\s+/).filter(Boolean).length;
+          words.textContent = `${n} ${n === 1 ? "word" : "words"}`;
+        };
+        const states = () =>
+          form.querySelectorAll("[data-cmd]").forEach((b) => {
+            const [cmd, arg] = b.dataset.cmd.split(":");
+            let on = false;
+            try {
+              on = arg
+                ? document.queryCommandValue("formatBlock").toLowerCase() === arg
+                : ["bold", "italic", "insertUnorderedList", "insertOrderedList"].includes(cmd) &&
+                  document.queryCommandState(cmd);
+            } catch {}
+            b.setAttribute(
+              "aria-pressed",
+              String(on && ed.contains(document.getSelection().anchorNode)),
+            );
+          });
+        form.querySelectorAll("[data-cmd]").forEach((b) => {
+          b.addEventListener("mousedown", (e) => e.preventDefault());
+          b.addEventListener("click", () => {
+            ed.focus();
+            const [cmd, arg] = b.dataset.cmd.split(":");
+            if (cmd === "createLink") {
+              const url = prompt("Link URL", "https://");
+              if (url) document.execCommand("createLink", false, url);
+            } else if (arg)
+              document.execCommand(
+                "formatBlock",
+                false,
+                document.queryCommandValue("formatBlock").toLowerCase() === arg ? "p" : arg,
+              );
+            else document.execCommand(cmd);
+            states();
+            count();
+            dirty();
+          });
+        });
+        ed.addEventListener("input", count);
+        document.addEventListener("selectionchange", states);
+        count();
+        // Resources.
+        const list = form.querySelector("[data-res-list]");
+        const tpl = list.querySelector("[data-res]");
+        form.querySelector("[data-res-file]").addEventListener("change", (e) => {
+          [...e.target.files].forEach((f) => {
+            const li = tpl.cloneNode(true);
+            li.querySelector("strong").textContent = f.name;
+            li.querySelector("small").textContent =
+              f.size > 1e6
+                ? `${(f.size / 1e6).toFixed(1)} MB`
+                : `${Math.max(1, Math.round(f.size / 1e3))} KB`;
+            li.querySelector("[data-res-remove]").setAttribute("aria-label", `Remove ${f.name}`);
+            list.append(li);
+          });
+          e.target.value = "";
+          dirty();
+        });
+        list.addEventListener("click", (e) => {
+          const b = e.target.closest("[data-res-remove]");
+          if (b) {
+            b.closest("li").remove();
+            dirty();
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

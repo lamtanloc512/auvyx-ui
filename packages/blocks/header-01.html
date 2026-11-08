@@ -1,0 +1,1107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Header 01 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-cart-btn {
+        position: relative;
+      }
+      .shop-count {
+        position: absolute;
+        inset-block-start: -0.25rem;
+        inset-inline-end: -0.25rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-inline-size: 1.125rem;
+        block-size: 1.125rem;
+        padding-inline: 0.25rem;
+        border-radius: 999px;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+      .shop-count:empty,
+      .shop-count[data-count="0"] {
+        display: none;
+      }
+      .shop-bottom-nav {
+        position: fixed;
+        inset-block-end: 0;
+        inset-inline: 0;
+        z-index: 20;
+        max-inline-size: 28rem;
+        margin-inline: auto;
+        padding-block-end: env(safe-area-inset-bottom, 0px);
+        border-block-start: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 92%, transparent);
+        backdrop-filter: blur(8px);
+      }
+      .shop-bottom-nav ul {
+        display: grid;
+        grid-auto-columns: 1fr;
+        grid-auto-flow: column;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .shop-bottom-nav a {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        padding-block: 0.625rem 0.5rem;
+        color: var(--muted-foreground);
+        font-size: 0.6875rem;
+        font-weight: 500;
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .shop-bottom-nav a svg {
+        inline-size: 1.375rem;
+        block-size: 1.375rem;
+      }
+      .shop-bottom-nav a[aria-current="page"] {
+        color: var(--foreground);
+      }
+      .shop-bottom-nav a[aria-current="page"]::before {
+        content: "";
+        position: absolute;
+        inset-block-start: 0;
+        inline-size: 2rem;
+        block-size: 2px;
+        border-radius: 0 0 2px 2px;
+        background: var(--primary);
+      }
+      .shop-bottom-nav a:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: -2px;
+      }
+      .shop-nav-icon {
+        position: relative;
+        display: inline-flex;
+      }
+      .shop-nav-icon > .shop-count {
+        inset-block-start: -0.25rem;
+        inset-inline-end: -0.625rem;
+      }
+      .shop-bottom-nav[data-variant="floating"] {
+        inset-block-end: calc(1rem + env(safe-area-inset-bottom, 0px));
+        inset-inline: 1rem;
+        max-inline-size: 26rem;
+        padding: 0.375rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.25);
+      }
+      .shop-bottom-nav[data-variant="floating"] a {
+        padding-block: 0.5rem;
+        border-radius: 999px;
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"] {
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"]::before {
+        display: none;
+      }
+      .shop-bottom-nav[data-variant="floating"] a > span:not(.shop-nav-icon) {
+        display: none;
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"] {
+        flex-direction: row;
+        justify-content: center;
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"] > span:not(.shop-nav-icon) {
+        display: inline;
+        font-size: 0.75rem;
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+      .shop-count {
+        corner-shape: round;
+      }
+      .shop-bottom-nav {
+        corner-shape: round;
+      }
+      .shop-bottom-nav a {
+        corner-shape: round;
+      }
+
+      .block-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: inherit;
+        text-decoration: none;
+      }
+      .block-logo-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .block-logo-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .shop-shot {
+        display: block;
+        aspect-ratio: 4 / 5;
+        inline-size: 100%;
+        object-fit: cover;
+        background: var(--muted);
+      }
+      .shop-shot[data-shot="2"] {
+        transform: scaleX(-1);
+        filter: hue-rotate(160deg) saturate(1.6);
+      }
+      .shop-shot[data-shot="3"] {
+        filter: sepia(0.6) saturate(1.4);
+      }
+      .shop-shot[data-shot="4"] {
+        transform: scaleX(-1);
+        filter: grayscale(1) contrast(1.2);
+      }
+      html.dark .shop-shot {
+        opacity: 0.6;
+      }
+
+      @keyframes shop-pop {
+        from {
+          transform: scale(0.96);
+          opacity: 0.6;
+        }
+        to {
+          transform: none;
+          opacity: 1;
+        }
+      }
+      /* Reduced motion: the hover states still apply, without movement. !important so it wins over every card's transition rules. */
+
+      .hf-demo {
+        min-block-size: 24rem;
+        padding: 3rem 1rem;
+        display: grid;
+        place-items: center;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+        background: repeating-linear-gradient(
+          -45deg,
+          var(--muted),
+          var(--muted) 10px,
+          transparent 10px,
+          transparent 20px
+        );
+      }
+      .hf-demo p {
+        margin: 0;
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        background: var(--background);
+      }
+      .hf-bar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        min-block-size: 2.25rem;
+        padding: 0.375rem 2.75rem;
+        position: relative;
+        background: var(--biz, var(--primary));
+        color: var(--biz-fg, var(--primary-foreground));
+        font-size: 0.8125rem;
+        text-align: center;
+      }
+      .hf-bar[hidden] {
+        display: none;
+      }
+      .hf-bar a {
+        color: inherit;
+        font-weight: 600;
+        text-underline-offset: 3px;
+      }
+      .hf-bar .btn {
+        color: inherit;
+      }
+      .hf-bar .btn:hover {
+        background: color-mix(in oklab, currentColor 15%, transparent);
+        color: inherit;
+      }
+      .hf-bar-close {
+        position: absolute;
+        inset-inline-end: 0.5rem;
+      }
+      .hf-bar-msgs {
+        display: grid;
+      }
+      .hf-bar-msgs > span {
+        grid-area: 1 / 1;
+        transition: opacity 250ms ease;
+      }
+      .hf-bar-msgs > span:not([data-on]) {
+        opacity: 0;
+        visibility: hidden;
+      }
+      .hf-util {
+        border-block-end: 1px solid var(--border);
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+      }
+      .hf-util-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        min-block-size: 2.25rem;
+      }
+      .hf-util a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .hf-util a:hover {
+        color: var(--foreground);
+      }
+      .hf-util-links {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .hf-util-links span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+      }
+      .hf-util svg {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+      }
+      .hf-util select {
+        block-size: 1.75rem;
+        padding-block: 0;
+        border: 0;
+        background-color: transparent;
+        font-size: 0.75rem;
+        box-shadow: none;
+      }
+      .hf-head {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 20;
+        border-block-end: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 94%, transparent);
+        backdrop-filter: blur(10px);
+      }
+      .hf-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        block-size: 4rem;
+      }
+      .hf-row[data-size="lg"] {
+        block-size: 5rem;
+      }
+      .hf-nav {
+        display: flex;
+        align-items: center;
+        gap: 0.125rem;
+      }
+      .hf-nav > a {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.5rem 0.75rem;
+        border: 0;
+        border-radius: var(--radius);
+        background: none;
+        color: var(--muted-foreground);
+        font: inherit;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .hf-nav > .popover > button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.5rem 0.75rem;
+        border: 0;
+        border-radius: var(--radius);
+        background: none;
+        color: var(--muted-foreground);
+        font: inherit;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .hf-nav > a:hover {
+        color: var(--foreground);
+        background: var(--accent);
+      }
+      .hf-nav > .popover > button:hover {
+        color: var(--foreground);
+        background: var(--accent);
+      }
+      .hf-nav > .popover > button[aria-expanded="true"] {
+        color: var(--foreground);
+        background: var(--accent);
+      }
+      .hf-nav > a[aria-current] {
+        color: var(--foreground);
+      }
+      .hf-nav > .popover > button svg {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+        transition: transform 150ms ease;
+      }
+      .hf-nav > a:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+      .hf-nav > .popover > button:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+      .hf-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        margin-inline-start: auto;
+      }
+      .hf-burger {
+        display: none;
+      }
+      .hf-mega {
+        inline-size: min(52rem, calc(100vw - 2rem));
+        padding: 1.25rem;
+      }
+      .hf-mega-grid {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) 14rem;
+      }
+      .hf-mega h3 {
+        margin: 0 0 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted-foreground);
+      }
+      .hf-mega ul {
+        display: grid;
+        gap: 0.125rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .hf-mega li a {
+        display: block;
+        padding: 0.375rem 0.5rem;
+        margin-inline: -0.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        color: inherit;
+        font-size: 0.875rem;
+        text-decoration: none;
+      }
+      .hf-mega li a:hover {
+        background: var(--accent);
+      }
+      .hf-mega-promo {
+        position: relative;
+        display: grid;
+        align-content: end;
+        gap: 0.25rem;
+        min-block-size: 12rem;
+        padding: 1rem;
+        overflow: hidden;
+        border-radius: var(--radius);
+        color: #fff;
+        text-decoration: none;
+      }
+      .hf-mega-promo img {
+        position: absolute;
+        inset: 0;
+        inline-size: 100%;
+        block-size: 100%;
+        object-fit: cover;
+      }
+      .hf-mega-promo::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(transparent 30%, rgb(0 0 0 / 0.65));
+      }
+      .hf-mega-promo > :not(img) {
+        position: relative;
+        z-index: 1;
+      }
+      .hf-mega-promo strong {
+        font-size: 1rem;
+      }
+      .hf-mega-promo span {
+        font-size: 0.8125rem;
+        opacity: 0.9;
+      }
+      .hf-search {
+        flex: 1;
+        max-inline-size: 36rem;
+      }
+      .hf-msearch {
+        padding-block-end: 0.75rem;
+      }
+      @media (width >= 64rem) {
+        .hf-msearch {
+          display: none;
+        }
+      }
+      .hf-search select {
+        flex: none;
+        inline-size: auto;
+        border: 0;
+        border-inline-end: 1px solid var(--border);
+        border-radius: 0;
+        background-color: transparent;
+        box-shadow: none;
+        font-size: 0.8125rem;
+      }
+      .hf-search-combo {
+        display: flex;
+        align-items: center;
+        border: 1px solid var(--input);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      .hf-search-combo:focus-within {
+        border-color: var(--ring);
+        box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 40%, transparent);
+      }
+      .hf-search-combo input {
+        flex: 1;
+        min-inline-size: 0;
+        block-size: 2.5rem;
+        padding-inline: 0.75rem;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        font-size: 0.875rem;
+      }
+      .hf-search-combo input:focus {
+        outline: none;
+      }
+      .hf-search-combo .btn {
+        border-radius: 0;
+        block-size: 2.5rem;
+      }
+      .hf-account {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: var(--radius);
+        color: inherit;
+        font-size: 0.75rem;
+        line-height: 1.2;
+        text-decoration: none;
+      }
+      .hf-account:hover {
+        background: var(--accent);
+      }
+      .hf-account svg {
+        inline-size: 1.25rem;
+        block-size: 1.25rem;
+      }
+      .hf-account strong {
+        display: block;
+        font-size: 0.8125rem;
+      }
+      .hf-sheet nav {
+        display: grid;
+        gap: 0.125rem;
+      }
+      .hf-sheet nav > a {
+        padding: 0.625rem 0.75rem;
+        border-radius: var(--radius);
+        color: inherit;
+        font-weight: 500;
+        text-decoration: none;
+      }
+      .hf-sheet nav > a:hover {
+        background: var(--accent);
+      }
+      .hf-sheet .accordion summary {
+        padding-inline: 0.75rem;
+        font-weight: 500;
+      }
+      .hf-sheet .accordion ul {
+        display: grid;
+        gap: 0.125rem;
+        margin: 0;
+        padding: 0 0 0.5rem 0.75rem;
+        list-style: none;
+      }
+      .hf-sheet .accordion li a {
+        display: block;
+        padding: 0.5rem 0.75rem;
+        border-radius: var(--radius);
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+        text-decoration: none;
+      }
+      .hf-sheet .accordion li a:hover {
+        background: var(--accent);
+        color: var(--foreground);
+      }
+      .hf-sheet > section {
+        display: grid;
+        gap: 1rem;
+        align-content: start;
+      }
+      html.dark .hf-mega-promo img {
+        filter: brightness(0.6);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .hf-bar-msgs > span {
+          transition: none;
+        }
+      }
+      .hf-head .block-logo {
+        flex: none;
+        white-space: nowrap;
+      }
+      @media (width < 64rem) {
+        .hf-nav {
+          display: none;
+        }
+        .hf-hide-sm {
+          display: none;
+        }
+        .hf-burger {
+          display: inline-flex;
+        }
+      }
+      .hf-bnav button {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        inline-size: 100%;
+        padding-block: 0.625rem 0.5rem;
+        border: 0;
+        background: none;
+        color: var(--muted-foreground);
+        font: inherit;
+        font-size: 0.6875rem;
+        font-weight: 500;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .hf-bnav button svg {
+        inline-size: 1.375rem;
+        block-size: 1.375rem;
+      }
+      .hf-bnav button:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: -2px;
+      }
+      .hf-bnav {
+        max-inline-size: none;
+      }
+      .hf-bnav a {
+        padding-block-start: 0.875rem;
+      }
+      .hf-bnav button {
+        padding-block-start: 0.875rem;
+      }
+      .hf-actions .shop-count {
+        inset-block-start: -0.125rem;
+        inset-inline-end: -0.125rem;
+      }
+      @media (width >= 48rem) {
+        .hf-bnav {
+          display: none;
+        }
+      }
+      @media (width < 48rem) {
+        .hf-burger.hf-burger {
+          display: none;
+        }
+        body:has(.hf-bnav) {
+          padding-block-end: calc(4rem + env(safe-area-inset-bottom, 0px));
+        }
+      }
+
+      .hf-head > .wrapper:last-child {
+        border-block-start: 1px solid var(--border);
+        padding-block: 0.25rem;
+      }
+      @media (width < 64rem) {
+        .hf-head > .wrapper:last-child {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hf-bar" role="region" aria-label="Announcement" data-bar>
+      <button
+        type="button"
+        class="btn"
+        data-variant="ghost"
+        data-size="icon-xs"
+        aria-label="Previous message"
+        data-bar-prev>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <div class="hf-bar-msgs" aria-live="polite">
+        <span data-on>Free shipping on orders over $150</span>
+        <span>
+          New season: up to 30% off knitwear ·
+          <a href="#">Shop now</a>
+        </span>
+        <span>Free returns within 30 days</span>
+      </div>
+      <button
+        type="button"
+        class="btn"
+        data-variant="ghost"
+        data-size="icon-xs"
+        aria-label="Next message"
+        data-bar-next>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+      <button
+        type="button"
+        class="btn hf-bar-close"
+        data-variant="ghost"
+        data-size="icon-xs"
+        aria-label="Dismiss"
+        data-bar-close>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+    <div class="hf-util hf-hide-sm">
+      <div class="wrapper hf-util-row" data-size="xl">
+        <div class="hf-util-links">
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2m10 0H9m10 0h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+            <a href="#">Track order</a>
+          </span>
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg>
+            <a href="#">Help</a>
+          </span>
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63a.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63a.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63a.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63a.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg>
+            <a href="#">Find a store</a>
+          </span>
+        </div>
+        <div class="hf-util-links">
+          <label class="sr-only" for="h1-cur">Currency</label>
+          <select class="select" id="h1-cur">
+            <option>USD $</option>
+            <option>EUR €</option>
+            <option>VND ₫</option>
+          </select>
+          <label class="sr-only" for="h1-lang">Language</label>
+          <select class="select" id="h1-lang">
+            <option>English</option>
+            <option>Tiếng Việt</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <header class="hf-head">
+      <div class="wrapper hf-row" data-size="xl" data-row="main">
+        <button
+          type="button"
+          class="btn hf-burger"
+          data-variant="ghost"
+          data-size="icon"
+          aria-label="Open menu"
+          commandfor="h1-menu"
+          command="show-modal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        </button>
+        <a href="#" class="block-logo">
+          <span class="block-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+          Acme Store
+        </a>
+        <form class="hf-search hf-hide-sm" role="search" onsubmit="event.preventDefault()">
+          <div class="hf-search-combo">
+            <label class="sr-only" for="h1-cat">Category</label>
+            <select class="select" id="h1-cat">
+              <option>All</option>
+              <option>Women</option>
+              <option>Men</option>
+              <option>Home</option>
+            </select>
+            <input type="search" placeholder="Search products, brands..." aria-label="Search" />
+            <button type="submit" class="btn" aria-label="Search">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </button>
+          </div>
+        </form>
+        <div class="hf-actions">
+          <a href="#" class="hf-account hf-hide-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>
+              Hello, sign in
+              <strong>Account</strong>
+            </span>
+          </a>
+          <a href="#" class="btn" data-variant="ghost" data-size="icon" aria-label="Wishlist">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </a>
+          <a
+            href="#"
+            class="btn shop-cart-btn"
+            data-variant="ghost"
+            data-size="icon"
+            aria-label="Cart, 3 items">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+            <span class="shop-count" data-count="3">3</span>
+          </a>
+        </div>
+      </div>
+      <form class="wrapper hf-msearch" role="search" onsubmit="event.preventDefault()">
+        <div class="input-group">
+          <input
+            type="search"
+            placeholder="Search products, brands..."
+            aria-label="Search"
+            id="h1-msearch" />
+          <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        </div>
+      </form>
+      <div class="wrapper" data-size="xl">
+        <nav class="hf-nav" aria-label="Main">
+          <div class="popover">
+            <button type="button" popovertarget="h1-women">
+              Women
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div
+              id="h1-women"
+              class="hf-mega"
+              data-popover
+              popover
+              data-side="bottom"
+              data-align="start">
+              <div class="hf-mega-grid">
+                <div>
+                  <h3>Women</h3>
+                  <ul>
+                    <li><a href="#">New arrivals</a></li>
+                    <li><a href="#">Dresses</a></li>
+                    <li><a href="#">Knitwear</a></li>
+                    <li><a href="#">Coats and jackets</a></li>
+                    <li><a href="#">Shoes</a></li>
+                    <li><a href="#">Sale</a></li>
+                  </ul>
+                </div>
+                <div>
+                  <h3>Men</h3>
+                  <ul>
+                    <li><a href="#">New arrivals</a></li>
+                    <li><a href="#">Shirts</a></li>
+                    <li><a href="#">Knitwear</a></li>
+                    <li><a href="#">Trousers</a></li>
+                    <li><a href="#">Shoes</a></li>
+                    <li><a href="#">Sale</a></li>
+                  </ul>
+                </div>
+                <div>
+                  <h3>Home</h3>
+                  <ul>
+                    <li><a href="#">Bedding</a></li>
+                    <li><a href="#">Kitchen</a></li>
+                    <li><a href="#">Lighting</a></li>
+                    <li><a href="#">Decor</a></li>
+                    <li><a href="#">Gifts</a></li>
+                  </ul>
+                </div>
+                <a href="#" class="hf-mega-promo">
+                  <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="3" />
+                  <strong>The knit edit</strong>
+                  <span>Soft layers for cool days</span>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="popover">
+            <button type="button" popovertarget="h1-men">
+              Men
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div
+              id="h1-men"
+              class="hf-mega"
+              data-popover
+              popover
+              data-side="bottom"
+              data-align="start">
+              <div class="hf-mega-grid">
+                <div>
+                  <h3>Home</h3>
+                  <ul>
+                    <li><a href="#">Bedding</a></li>
+                    <li><a href="#">Kitchen</a></li>
+                    <li><a href="#">Lighting</a></li>
+                    <li><a href="#">Decor</a></li>
+                    <li><a href="#">Gifts</a></li>
+                  </ul>
+                </div>
+                <div>
+                  <h3>Men</h3>
+                  <ul>
+                    <li><a href="#">New arrivals</a></li>
+                    <li><a href="#">Shirts</a></li>
+                    <li><a href="#">Knitwear</a></li>
+                    <li><a href="#">Trousers</a></li>
+                    <li><a href="#">Shoes</a></li>
+                    <li><a href="#">Sale</a></li>
+                  </ul>
+                </div>
+                <div>
+                  <h3>Women</h3>
+                  <ul>
+                    <li><a href="#">New arrivals</a></li>
+                    <li><a href="#">Dresses</a></li>
+                    <li><a href="#">Knitwear</a></li>
+                    <li><a href="#">Coats and jackets</a></li>
+                    <li><a href="#">Shoes</a></li>
+                    <li><a href="#">Sale</a></li>
+                  </ul>
+                </div>
+                <a href="#" class="hf-mega-promo">
+                  <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="2" />
+                  <strong>Weekend shirts</strong>
+                  <span>Linen and cotton, new colors</span>
+                </a>
+              </div>
+            </div>
+          </div>
+          <a href="#">Home</a>
+          <a href="#">Beauty</a>
+          <a href="#">Gifts</a>
+          <a href="#" style="color: var(--destructive)">Sale</a>
+        </nav>
+      </div>
+    </header>
+    <dialog
+      id="h1-menu"
+      class="sheet hf-sheet"
+      data-side="left"
+      closedby="any"
+      aria-labelledby="h1-menu-t">
+      <header><h2 id="h1-menu-t">Menu</h2></header>
+      <section>
+        <nav aria-label="Mobile">
+          <div class="accordion">
+            <details>
+              <summary>Women</summary>
+              <ul>
+                <li><a href="#">New arrivals</a></li>
+                <li><a href="#">Dresses</a></li>
+                <li><a href="#">Knitwear</a></li>
+                <li><a href="#">Coats and jackets</a></li>
+                <li><a href="#">Shoes</a></li>
+                <li><a href="#">Sale</a></li>
+              </ul>
+            </details>
+            <details>
+              <summary>Men</summary>
+              <ul>
+                <li><a href="#">New arrivals</a></li>
+                <li><a href="#">Shirts</a></li>
+                <li><a href="#">Knitwear</a></li>
+                <li><a href="#">Trousers</a></li>
+                <li><a href="#">Shoes</a></li>
+                <li><a href="#">Sale</a></li>
+              </ul>
+            </details>
+            <details>
+              <summary>Home</summary>
+              <ul>
+                <li><a href="#">Bedding</a></li>
+                <li><a href="#">Kitchen</a></li>
+                <li><a href="#">Lighting</a></li>
+                <li><a href="#">Decor</a></li>
+                <li><a href="#">Gifts</a></li>
+              </ul>
+            </details>
+          </div>
+          <a href="#">Beauty</a>
+          <a href="#">Gifts</a>
+          <a href="#">Sale</a>
+          <a href="#">Track order</a>
+          <a href="#">Help</a>
+        </nav>
+        <div class="stack" data-gap="2">
+          <a href="#" class="btn">Sign in</a>
+          <a href="#" class="btn" data-variant="outline">Create account</a>
+        </div>
+      </section>
+      <button type="button" aria-label="Close menu" commandfor="h1-menu" command="close">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </dialog>
+    <nav class="shop-bottom-nav hf-bnav" aria-label="Primary">
+      <ul>
+        <li>
+          <a href="#" aria-current="page">
+            <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+            <span>Home</span>
+          </a>
+        </li>
+        <li>
+          <button type="button" commandfor="h1-menu" command="show-modal">
+            <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span>
+            <span>Categories</span>
+          </button>
+        </li>
+        <li>
+          <a href="#">
+            <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+            <span>Wishlist</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <span class="shop-nav-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+              <span class="shop-count" data-count="3">3</span>
+            </span>
+            <span>Cart</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+            <span>Account</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <div class="hf-demo"><p>Page content</p></div>
+    <script>
+      // Announcement bar: previous/next messages, dismiss.
+      document.querySelectorAll("[data-bar]").forEach((bar) => {
+        const msgs = [...bar.querySelectorAll(".hf-bar-msgs > span")];
+        let i = 0;
+        const show = (n) => {
+          i = (n + msgs.length) % msgs.length;
+          msgs.forEach((m, k) => m.toggleAttribute("data-on", k === i));
+        };
+        bar.querySelector("[data-bar-prev]")?.addEventListener("click", () => show(i - 1));
+        bar.querySelector("[data-bar-next]")?.addEventListener("click", () => show(i + 1));
+        bar.querySelector("[data-bar-close]")?.addEventListener("click", () => {
+          bar.hidden = true;
+        });
+      });
+      // Search that opens under the header.
+      document.querySelectorAll("[data-search-toggle]").forEach((b) =>
+        b.addEventListener("click", () => {
+          const head = b.closest(".hf-head");
+          const open = !head.hasAttribute("data-search");
+          head.toggleAttribute("data-search", open);
+          b.setAttribute("aria-expanded", String(open));
+          if (open) head.querySelector(".hf-searchbox input").focus();
+        }),
+      );
+      // Header over a hero: solid once the page scrolls.
+      document.querySelectorAll("[data-overlay]").forEach((h) => {
+        const sync = () => h.toggleAttribute("data-scrolled", window.scrollY > 40);
+        window.addEventListener("scroll", sync, { passive: true });
+        sync();
+      });
+      // Newsletter forms: validate the email, then thank.
+      document.querySelectorAll("[data-newsletter]").forEach((form) => {
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const input = form.querySelector("input[type=email]");
+          const ok = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(input.value.trim());
+          input.toggleAttribute("aria-invalid", !ok);
+          form.querySelector("[data-news-error]").hidden = ok;
+          if (!ok) {
+            input.focus();
+            return;
+          }
+          form.querySelector("[data-news-fields]").hidden = true;
+          form.querySelector("[data-news-done]").hidden = false;
+        });
+      });
+      // Footer link columns: open on wide screens, collapsible on small ones.
+      (() => {
+        const groups = document.querySelectorAll("[data-foot-group]");
+        if (!groups.length) return;
+        const mq = window.matchMedia("(width >= 48rem)");
+        const apply = () =>
+          groups.forEach((d) => {
+            d.open = mq.matches;
+          });
+        mq.addEventListener("change", apply);
+        apply();
+      })();
+      // Bottom tab bar: the tapped tab becomes current.
+      document.querySelectorAll(".hf-bnav").forEach((nav) =>
+        nav.addEventListener("click", (e) => {
+          const a = e.target.closest("a");
+          if (!a) return;
+          e.preventDefault();
+          nav.querySelectorAll("a[aria-current]").forEach((x) => x.removeAttribute("aria-current"));
+          a.setAttribute("aria-current", "page");
+        }),
+      );
+      // Back to top.
+      document.querySelectorAll("[data-to-top]").forEach((b) => {
+        const sync = () => b.toggleAttribute("data-show", window.scrollY > 300);
+        window.addEventListener("scroll", sync, { passive: true });
+        sync();
+        b.addEventListener("click", () =>
+          window.scrollTo({
+            top: 0,
+            behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+          }),
+        );
+      });
+    </script>
+  </body>
+</html>
