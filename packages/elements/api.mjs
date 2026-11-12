@@ -92,6 +92,17 @@ export const ELEMENTS = [
       { name: 'cellchange', detail: '{ row: HTMLTableRowElement; rowKey: string; column: string; value: string; previous: string }', description: 'Cancelable: an inline edit was committed' },
     ],
     methods: [{ name: 'refresh', signature: '() => void', description: 'Re-read rows after replacing tbody content' }] },
+  { tag: 'auvyx-prompt-input', className: 'AuvyxPromptInputElement', module: 'js/prompt-input.min.js', key: 'prompt-input', description: 'Chat composer behavior for a .prompt-input form: Enter to send, files, suggestions, stop. Not in auvyx.min.js.',
+    attributes: [{ name: 'streaming', type: 'boolean', description: 'A reply is streaming: Stop replaces Send' }],
+    properties: [
+      { name: 'value', type: 'string', description: 'The prompt text' },
+      { name: 'streaming', type: 'boolean', description: 'Mirrors the streaming attribute' },
+      { name: 'files', type: 'File[]', description: 'Files waiting to be sent', readonly: true },
+    ],
+    events: [
+      { name: 'prompt', detail: '{ text: string; files: File[] }', description: 'Cancelable: the user sent a prompt; preventDefault() keeps the text and files' },
+      { name: 'stop', detail: 'null', description: 'The user pressed Stop while streaming' },
+    ] },
   { tag: 'auvyx-sortable', className: 'AuvyxSortableElement', module: 'js/sortable.min.js', key: 'sortable', description: 'Drag and drop between the lists inside it, by pointer or keyboard. Not in auvyx.min.js.',
     properties: [],
     events: [{ name: 'sort', detail: '{ item: HTMLLIElement; from: HTMLElement; to: HTMLElement; index: number; previousIndex: number }', description: 'Cancelable: an item was dropped in a new place; preventDefault() puts it back' }],

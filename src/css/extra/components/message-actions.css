@@ -1,0 +1,27 @@
+/* Message Actions (fork addition), CSS only: the toolbar under a message
+ * (copy, retry, feedback). Ratings are .toggle checkboxes, copy uses
+ * [data-copy] from copy.js. Inside a .message the bar stays quiet until the
+ * message is hovered or focused, and on touch screens it is always shown.
+ *
+ *   <div class="message-actions" role="toolbar" aria-label="Message actions">
+ *     <button type="button" class="btn" data-variant="ghost" data-size="icon-sm" data-copy="#m1" aria-label="Copy">…</button>
+ *     <label class="toggle" data-size="sm" aria-label="Good response"><input type="checkbox">…</label>
+ *   </div>
+ *
+ * data-visible keeps it shown (the latest reply).
+ */
+@layer components {
+  .message-actions {
+    @apply flex min-w-0 flex-wrap items-center;
+  }
+
+  @media (hover: hover) {
+    .message .message-actions:not([data-visible]) {
+      @apply opacity-0 transition-opacity;
+    }
+
+    .message:is(:hover, :focus-within) .message-actions {
+      @apply opacity-100;
+    }
+  }
+}

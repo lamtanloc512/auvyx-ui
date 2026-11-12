@@ -713,6 +713,12 @@
   "pause",
   "pause-line"
  ],
+ "pen-line": [
+  "pencil",
+  "pencil-edit-01",
+  "pencil-line",
+  "edit-line"
+ ],
  "pencil": [
   "pencil",
   "pencil-edit-01",
@@ -833,6 +839,12 @@
   "shapes",
   "shapes-line"
  ],
+ "share": [
+  "share-3",
+  "share-08",
+  "export",
+  "share-box-line"
+ ],
  "share-2": [
   "share",
   "share-08",
@@ -952,6 +964,18 @@
   "command-line",
   "terminal",
   "terminal-line"
+ ],
+ "thumbs-down": [
+  "thumb-down",
+  "thumbs-down",
+  "thumbs-down",
+  "thumb-down-line"
+ ],
+ "thumbs-up": [
+  "thumb-up",
+  "thumbs-up",
+  "thumbs-up",
+  "thumb-up-line"
  ],
  "ticket-percent": [
   "ticket",

@@ -8,6 +8,9 @@
 @import "./components/input-otp.css";
 @import "./components/carousel.css";
 @import "./components/chat.css";
+@import "./components/prompt-input.css";
+@import "./components/suggestions.css";
+@import "./components/message-actions.css";
 @import "./components/attachment.css";
 @import "./components/code-block.css";
 @import "./components/trace.css";

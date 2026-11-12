@@ -294,6 +294,11 @@
     "description": "A category listing: subcategory tree, pills, sort and a load-more button with progress.",
     "category": "category"
   },
+  "chat-01": {
+    "title": "Chat 01",
+    "description": "An AI chat page: a history sidebar, a conversation with a tool-call trace, an answer with sources and message actions, and a Prompt Input with suggestions that streams a demo reply.",
+    "category": "chat"
+  },
   "checkout-01": {
     "title": "Checkout 01",
     "description": "A one-page checkout: contact, shipping, delivery, payment and the order summary.",

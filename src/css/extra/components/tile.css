@@ -12,6 +12,11 @@
  *   </div>
  *
  * data-ratio="square | video | wide | auto" sets the preview shape (default 16:10).
+ *
+ * [data-actions] holds controls that show on hover or keyboard focus: inside
+ * the preview it overlays it (e.g. View site, Duplicate); at the end of the
+ * caption it holds a menu trigger, which stays visible while its menu is open
+ * and on devices without hover.
  */
 @layer components {
   .tile {
@@ -51,6 +56,42 @@
 
     > figcaption a {
       @apply outline-none;
+    }
+
+    /* Actions sit above the caption link's hit area. */
+    > :first-child:not(figcaption) > [data-actions] {
+      @apply pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center;
+    }
+
+    > figcaption > [data-actions] {
+      @apply relative z-10 ms-auto flex shrink-0 items-center;
+    }
+
+    [data-actions] {
+      @apply opacity-0 transition-opacity;
+
+      > * {
+        @apply pointer-events-none;
+      }
+    }
+
+    &:is(:hover, :focus-within) [data-actions],
+    [data-actions]:has([aria-expanded='true']) {
+      @apply opacity-100;
+
+      > * {
+        @apply pointer-events-auto;
+      }
+    }
+
+    @media (hover: none) {
+      > figcaption > [data-actions] {
+        @apply opacity-100;
+
+        > * {
+          @apply pointer-events-auto;
+        }
+      }
     }
   }
 }

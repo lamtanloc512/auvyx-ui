@@ -9,6 +9,11 @@
 
 ### Added
 
+- Create page: a Mono Font option (Geist Mono, JetBrains Mono, IBM Plex Mono, Fira Code, Roboto Mono, Source Code Pro, Space Mono, DM Mono) that sets `--font-mono`, and a Letter Spacing slider that sets `--tracking-normal`. Preset codes gain a 12th digit for the mono font; 11-digit codes still open. Imported tweakcn themes' `--letter-spacing` now applies.
+- AI chat primitives:
+  - `.prompt-input` with `<auvyx-prompt-input>` (`js/prompt-input.min.js`, not in `auvyx.min.js`): a growing textarea, files by picker, drop or paste, Enter to send, suggestions, and a stop state while `streaming`; cancelable `prompt` and `stop` events.
+  - `.suggestions` (prompt chips), `.message-actions` (copy, retry, feedback toggles), `.typing` dots and a streaming caret on `.bubble[data-streaming]`, all CSS only.
+- `chat-01` (new Chat category): an AI chat page built on those primitives with a demo streamed reply.
 - Create page theme presets Vercel and Clean Slate, taken as-is from tweakcn (Apache-2.0): neutral themes with white cards and hairline borders. Pair them with Maia for pill-shaped controls.
 - `studio-01` (new Studio category): an image studio Create page with a prompt composer built from a vertical Input Group (pickers, textarea, toolbar) over a hero, and Spotlight / Liked carousels.
 
@@ -23,7 +28,7 @@
   - `.table[data-variant="grid"]`: a spreadsheet-style table with cell lines, column icons, CSS-counter row numbers and a sticky header and footer.
   - `.kanban`: a board of columns and cards (pair with `<auvyx-sortable>` for drag and drop).
   - `.properties`: label and value rows for record pages; rows stack when the list is narrow.
-  - `.tile`: a preview with a caption for project thumbnails, galleries and showcases; a caption link makes the whole tile clickable. Lay tiles out with `.auto-grid`.
+  - `.tile`: a preview with a caption for project thumbnails, galleries and showcases; a caption link makes the whole tile clickable. Lay tiles out with `.auto-grid`. `[data-actions]` adds controls shown on hover or focus: inside the preview it overlays buttons (View site, Duplicate); at the end of the caption it holds a menu trigger. Hovered tiles change background.
 - Agent blocks in a new Agent category:
   - `agent-01` context window panel: tokens used with a health level, prompt cache savings, a waffle chart by source with a hover-to-isolate legend, contents by tab, and a working Compact history action.
   - `agent-02` agent runs table built on the new Data Table interactions.

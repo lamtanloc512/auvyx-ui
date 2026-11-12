@@ -1,0 +1,51 @@
+<p class="d-note">Without JavaScript the form submits like any form. Load <code>js/prompt-input.min.js</code> (not part of <code>auvyx.min.js</code>) for the chat behavior; rendering replies and streaming them stay with your app.</p>
+
+<h3 class="d-h3">HTML structure</h3>
+<dl>
+  <dt><code>&lt;auvyx-prompt-input&gt;</code> around <code>&lt;form class="prompt-input"&gt;</code></dt>
+  <dd>
+    Add the <code>streaming</code> attribute while a reply streams: Stop replaces Send.
+    <dl>
+      <dt><code>&lt;textarea&gt;</code></dt>
+      <dd>Grows with its content (CSS <code>field-sizing</code>). Enter sends, Shift+Enter adds a line.</dd>
+      <dt><code>&lt;div class="attachment-group" data-files hidden&gt;</code></dt>
+      <dd>Optional. Files from the picker, a drop or a paste are listed here as <code>.attachment</code> items with a remove button.</dd>
+      <dt><code>&lt;footer&gt;</code></dt>
+      <dd>Toolbar. <code>[data-attach]</code> opens the <code>&lt;input type="file" hidden&gt;</code>; <code>[type="submit"]</code> sends and is disabled while empty; <code>[data-stop]</code> shows while streaming.</dd>
+      <dt><code>.suggestions</code> inside the element</dt>
+      <dd>A click fills the prompt with the chip's <code>data-prompt</code> or text; <code>data-send</code> sends it straight away.</dd>
+    </dl>
+  </dd>
+</dl>
+
+<h3 class="d-h3">JavaScript API</h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>API</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>prompt</code></td>
+<td>Event</td>
+<td>Cancelable. <code>detail: { text, files }</code> when the user sends. The field clears unless you call <code>preventDefault()</code>.</td>
+</tr>
+<tr>
+<td><code>stop</code></td>
+<td>Event</td>
+<td>The user pressed Stop while streaming.</td>
+</tr>
+<tr>
+<td><code>el.streaming</code></td>
+<td>Property</td>
+<td>Mirrors the <code>streaming</code> attribute.</td>
+</tr>
+<tr>
+<td><code>el.value</code></td>
+<td>Property</td>
+<td>The prompt text.</td>
+</tr>
+</tbody></table>
+</div>

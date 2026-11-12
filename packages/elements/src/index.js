@@ -8,3 +8,4 @@ import './data-table.js';
 import './calendar.js';
 import './date-picker.js';
 import './sortable.js';
+import './prompt-input.js';

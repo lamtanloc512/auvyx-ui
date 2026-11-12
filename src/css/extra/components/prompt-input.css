@@ -1,0 +1,57 @@
+/* Prompt Input (fork addition): the composer of a chat. Works as a plain form;
+ * <auvyx-prompt-input> (js/prompt-input.min.js) adds Enter to send, files by
+ * picker, drop or paste, suggestion chips and a stop state while streaming.
+ *
+ *   <auvyx-prompt-input>
+ *     <form class="prompt-input">
+ *       <div class="attachment-group" data-files hidden></div>
+ *       <textarea name="prompt" aria-label="Message" placeholder="Ask anything…"></textarea>
+ *       <footer>
+ *         <button type="button" class="btn" data-variant="ghost" data-size="icon-sm" data-attach aria-label="Attach files">…</button>
+ *         <input type="file" multiple hidden>
+ *         <button type="submit" class="btn" data-size="icon-sm" aria-label="Send">…</button>
+ *         <button type="button" class="btn" data-size="icon-sm" data-stop aria-label="Stop">…</button>
+ *       </footer>
+ *     </form>
+ *   </auvyx-prompt-input>
+ *
+ * data-state="streaming" on the form swaps Send for Stop; data-dragover marks a file drag.
+ */
+@layer components {
+  :where(auvyx-prompt-input) {
+    @apply block;
+  }
+
+  .prompt-input {
+    @apply flex w-full min-w-0 flex-col;
+
+    > textarea {
+      @apply field-sizing-content block max-h-52 min-h-12 w-full resize-none border-0 bg-transparent shadow-none outline-none;
+    }
+
+    > [data-files] {
+      @apply flex flex-wrap;
+    }
+
+    > [data-files][hidden] {
+      @apply hidden;
+    }
+
+    > footer {
+      @apply flex min-w-0 flex-wrap items-center;
+    }
+
+    > footer > :is([type='submit'], [data-stop]) {
+      @apply ms-auto;
+    }
+
+    [data-stop],
+    &[data-state='streaming'] [type='submit'] {
+      @apply hidden;
+    }
+
+    &[data-state='streaming'] [data-stop] {
+      @apply inline-flex;
+    }
+  }
+}

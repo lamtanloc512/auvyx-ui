@@ -119,6 +119,10 @@
     > :is(a, button):last-child {
       @apply absolute start-1/2 z-10 -translate-x-1/2 rtl:translate-x-1/2;
       bottom: 1rem;
+      /* Hidden until the timeline runs: a log too short to scroll has no
+         active timeline, and nothing is out of view. */
+      opacity: 0;
+      visibility: hidden;
       animation: bc-message-scroller-jump linear both;
       animation-timeline: --bc-message-log;
       /* Fully visible after 4rem of scrolling away from the newest message. */
@@ -143,8 +147,47 @@
   /* Without scroll-driven animations the link stays visible and still works. */
   @supports not (animation-timeline: scroll()) {
     .message-scroller > :is(a, button):last-child {
+      opacity: 1;
+      visibility: visible;
       animation: none;
     }
+  }
+
+  /* Bubble: typing dots and a streaming caret.
+     <span class="typing" role="status" aria-label="Assistant is typing"><i></i><i></i><i></i></span>
+     <div class="bubble" data-streaming>…</div> draws a caret after the last text. */
+  .typing {
+    @apply inline-flex items-center;
+
+    > i {
+      @apply block rounded-full;
+      animation: bc-typing 1.2s ease-in-out infinite;
+    }
+
+    > i:nth-child(2) { animation-delay: 0.15s; }
+    > i:nth-child(3) { animation-delay: 0.3s; }
+  }
+
+  @keyframes bc-typing {
+    0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+    30% { opacity: 1; transform: translateY(-0.2em); }
+  }
+
+  .bubble[data-streaming] > :last-child::after {
+    @apply ms-0.5 inline-block align-[-0.15em] content-[''];
+    inline-size: 0.5em;
+    block-size: 1em;
+    background: currentColor;
+    animation: bc-caret 1s steps(1) infinite;
+  }
+
+  @keyframes bc-caret {
+    50% { opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .typing > i,
+    .bubble[data-streaming] > :last-child::after { animation: none; }
   }
 
   /* Shimmer for in-progress text (trace running, attachment uploading) */

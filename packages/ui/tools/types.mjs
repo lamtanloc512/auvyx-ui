@@ -68,9 +68,10 @@ function domTypes() {
 }
 
 // Writable properties a framework may set (attributes-only ones are strings).
+// An attribute mirrored by a property of the same name is listed once.
 const inputProps = (el) => [
   ...el.properties.filter((p) => !p.readonly && p.name !== 'renderDay').map((p) => ({ name: p.name, type: p.name === 'value' && p.type.includes('null') ? p.type.replace(' | null', '') : p.type, description: p.description })),
-  ...(el.attributes || []).map((a) => ({ name: a.name, type: a.type === 'boolean' ? 'boolean' : a.type, description: a.description })),
+  ...(el.attributes || []).filter((a) => !el.properties.some((p) => p.name === a.name)).map((a) => ({ name: a.name, type: a.type === 'boolean' ? 'boolean' : a.type, description: a.description })),
 ];
 
 // ---- React 19 JSX

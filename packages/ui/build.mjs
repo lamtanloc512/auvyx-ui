@@ -23,10 +23,11 @@ const jsComponents = ['basecoat', 'accordion', 'carousel', 'combobox', 'command'
 
 // Size budgets (gzip bytes). CI fails when a change blows past them.
 // CSS budget sized for the full shadcn component set (~61 components); tighten once complete.
-const budgets = { 'auvyx.min.css': 41_000, 'auvyx.min.js': 24_000 };
+// CSS raised 41 → 42 kB for the AI chat primitives (prompt input, suggestions, message actions).
+const budgets = { 'auvyx.min.css': 42_000, 'auvyx.min.js': 24_000 };
 
 // Elements in auvyx.min.js. Larger, page-specific ones ship only as their own
-// module (dist/js/<name>.min.js): data-table, sortable.
+// module (dist/js/<name>.min.js): data-table, sortable, prompt-input.
 const bundledElements = ['menu', 'context-menu', 'resizable', 'calendar', 'date-picker'];
 
 
@@ -156,6 +157,7 @@ const JS_MODULES = {
   'data-table': { src: 'packages/elements/src/data-table.js', element: true, detect: 'auvyx-data-table', note: 'Not in auvyx.min.js: load this module on pages with a data table.' },
   'date-picker': { src: 'packages/elements/src/date-picker.js', element: true, detect: 'auvyx-date-picker' },
   resizable: { src: 'packages/elements/src/resizable.js', element: true, detect: 'auvyx-resizable' },
+  'prompt-input': { src: 'packages/elements/src/prompt-input.js', element: true, kind: 'enhance', detect: 'auvyx-prompt-input', note: 'Not in auvyx.min.js. Enter to send, files, suggestions and a stop state; the form submits without it.' },
   sortable: { src: 'packages/elements/src/sortable.js', element: true, kind: 'enhance', detect: 'auvyx-sortable', note: 'Not in auvyx.min.js. Drag and drop between lists (kanban columns); the lists render without it.' },
   menu: { src: 'packages/elements/src/menu.js', element: true, kind: 'enhance', detect: '[data-popover][popover]:has([role="menu"]), .navigation-menu', note: 'Adds arrow-key navigation and focus handling to native menus; they open and close without it.' },
 };
@@ -234,7 +236,7 @@ await writeTypes(dist, version);
   const names = [...Object.keys(docs), 'chart'];
   const sizes = await splitCss(root, dist, names, linkShadows);
   // Behavior per component, from the same sources as dist/js/ (not minified).
-  const UI_JS = { 'code-block': ['copy'], menubar: ['menu'], 'navigation-menu': ['menu'], 'range-calendar': ['calendar'], kanban: ['sortable'] };
+  const UI_JS = { 'code-block': ['copy'], menubar: ['menu'], 'navigation-menu': ['menu'], 'range-calendar': ['calendar'], kanban: ['sortable'], 'message-actions': ['copy'] };
   const jsFor = (name) => UI_JS[name] ?? (JS_MODULES[name] ? [name] : []);
   const core = await fs.readFile(path.join(root, 'src/js/basecoat.js'), 'utf8');
   for (const mod of new Set(names.flatMap(jsFor))) {

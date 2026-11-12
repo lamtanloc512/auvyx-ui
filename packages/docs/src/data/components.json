@@ -215,6 +215,10 @@
    {
     "title": "Variants",
     "html": "<div class=\"stack\" data-gap=\"2\" style=\"inline-size: min(26rem, 100%)\">\n  <div class=\"bubble\"><p>Default bubble</p></div>\n  <div class=\"bubble\" data-variant=\"secondary\"><p>Secondary</p></div>\n  <div class=\"bubble\" data-variant=\"muted\"><p>Muted</p></div>\n  <div class=\"bubble\" data-variant=\"tinted\"><p>Tinted from --primary</p></div>\n  <div class=\"bubble\" data-variant=\"outline\"><p>Outline</p></div>\n  <div class=\"bubble\" data-variant=\"destructive\"><p>Message failed to send.</p></div>\n  <div class=\"bubble\" data-align=\"end\">\n    <p>Aligned to the end</p>\n    <aside>👍 2</aside>\n  </div>\n</div>"
+   },
+   {
+    "title": "Typing and streaming",
+    "html": "<div class=\"stack\" data-gap=\"3\" style=\"max-width: 24rem\">\n  <article class=\"message\">\n    <section>\n      <div class=\"bubble\" data-variant=\"muted\"><span class=\"typing\" role=\"status\" aria-label=\"Assistant is typing\"><i></i><i></i><i></i></span></div>\n    </section>\n  </article>\n  <article class=\"message\">\n    <section>\n      <div class=\"bubble\" data-variant=\"muted\" data-streaming><p>Checking your three most recent invoices</p></div>\n    </section>\n  </article>\n</div>"
    }
   ],
   "source": "auvyx"
@@ -909,6 +913,17 @@
   ],
   "source": "auvyx"
  },
+ "message-actions": {
+  "title": "Message Actions",
+  "description": "The toolbar under a message: copy, retry and feedback. CSS only; copy uses data-copy and ratings are toggles.",
+  "examples": [
+   {
+    "title": "Default",
+    "html": "<article class=\"message\" style=\"max-width: 28rem\">\n  <section>\n    <div class=\"bubble\" data-variant=\"muted\" id=\"ma-reply\"><p>Your plan renews on Dec 1. You can switch to yearly billing any time before then.</p></div>\n    <div class=\"message-actions\" data-visible role=\"toolbar\" aria-label=\"Message actions\">\n      <button type=\"button\" class=\"btn\" data-variant=\"ghost\" data-size=\"icon-sm\" data-copy=\"#ma-reply\" aria-label=\"Copy\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect width=\"14\" height=\"14\" x=\"8\" y=\"8\" rx=\"2\" ry=\"2\"></rect><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"></path></svg></button>\n      <button type=\"button\" class=\"btn\" data-variant=\"ghost\" data-size=\"icon-sm\" aria-label=\"Retry\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8\"></path><path d=\"M21 3v5h-5\"></path><path d=\"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16\"></path><path d=\"M8 16H3v5\"></path></svg></button>\n      <label class=\"toggle\" data-size=\"sm\" aria-label=\"Good response\"><input type=\"checkbox\" name=\"rating\" /><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M7 10v12\"></path><path d=\"M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z\"></path></svg></label>\n      <label class=\"toggle\" data-size=\"sm\" aria-label=\"Bad response\"><input type=\"checkbox\" name=\"rating-bad\" /><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M17 14V2\"></path><path d=\"M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z\"></path></svg></label>\n    </div>\n  </section>\n</article>"
+   }
+  ],
+  "source": "auvyx"
+ },
  "message-scroller": {
   "title": "Message Scroller",
   "description": "A chat scroll container that anchors turns, opens saved transcripts, follows streamed responses, loads history without jumping, and jumps to any message.",
@@ -1015,6 +1030,25 @@
    }
   ],
   "source": "basecoat"
+ },
+ "prompt-input": {
+  "title": "Prompt Input",
+  "description": "The composer of a chat: a growing textarea, attachments and a toolbar. Works as a plain form; the element adds Enter to send, files, suggestions and a stop state.",
+  "examples": [
+   {
+    "title": "Default",
+    "html": "<auvyx-prompt-input style=\"width: min(36rem, 100%)\">\n  <form class=\"prompt-input\">\n    <div class=\"attachment-group\" data-files hidden></div>\n    <textarea name=\"prompt\" aria-label=\"Message\" placeholder=\"Ask anything…\"></textarea>\n    <footer>\n      <button type=\"button\" class=\"btn\" data-variant=\"ghost\" data-size=\"icon-sm\" data-attach aria-label=\"Attach files\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"></path><path d=\"M12 5v14\"></path></svg></button>\n      <input type=\"file\" multiple hidden />\n      <select class=\"select\" data-size=\"sm\" aria-label=\"Model\">\n        <option>Fast</option>\n        <option>Thinking</option>\n      </select>\n      <button type=\"submit\" class=\"btn\" data-size=\"icon-sm\" aria-label=\"Send\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m5 12 7-7 7 7\"></path><path d=\"M12 19V5\"></path></svg></button>\n      <button type=\"button\" class=\"btn\" data-size=\"icon-sm\" data-stop aria-label=\"Stop\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect width=\"12\" height=\"12\" x=\"6\" y=\"6\" rx=\"1\"></rect></svg></button>\n    </footer>\n  </form>\n</auvyx-prompt-input>"
+   },
+   {
+    "title": "With suggestions",
+    "html": "<auvyx-prompt-input style=\"width: min(36rem, 100%)\">\n  <div class=\"suggestions\" role=\"group\" aria-label=\"Suggestions\" style=\"margin-block-end: 0.75rem\">\n    <button type=\"button\">Summarize this thread</button>\n    <button type=\"button\">Draft a reply</button>\n    <button type=\"button\" data-send>What changed since Monday?</button>\n  </div>\n  <form class=\"prompt-input\">\n    <div class=\"attachment-group\" data-files hidden></div>\n    <textarea name=\"prompt\" aria-label=\"Message\" placeholder=\"Ask anything…\"></textarea>\n    <footer>\n      <button type=\"button\" class=\"btn\" data-variant=\"ghost\" data-size=\"icon-sm\" data-attach aria-label=\"Attach files\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"></path><path d=\"M12 5v14\"></path></svg></button>\n      <input type=\"file\" multiple hidden />\n      <select class=\"select\" data-size=\"sm\" aria-label=\"Model\">\n        <option>Fast</option>\n        <option>Thinking</option>\n      </select>\n      <button type=\"submit\" class=\"btn\" data-size=\"icon-sm\" aria-label=\"Send\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m5 12 7-7 7 7\"></path><path d=\"M12 19V5\"></path></svg></button>\n      <button type=\"button\" class=\"btn\" data-size=\"icon-sm\" data-stop aria-label=\"Stop\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect width=\"12\" height=\"12\" x=\"6\" y=\"6\" rx=\"1\"></rect></svg></button>\n    </footer>\n  </form>\n</auvyx-prompt-input>"
+   },
+   {
+    "title": "Streaming",
+    "html": "<auvyx-prompt-input streaming style=\"width: min(36rem, 100%)\">\n  <form class=\"prompt-input\">\n    <div class=\"attachment-group\" data-files hidden></div>\n    <textarea name=\"prompt\" aria-label=\"Message\" placeholder=\"Ask a follow-up…\"></textarea>\n    <footer>\n      <button type=\"button\" class=\"btn\" data-variant=\"ghost\" data-size=\"icon-sm\" data-attach aria-label=\"Attach files\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"></path><path d=\"M12 5v14\"></path></svg></button>\n      <input type=\"file\" multiple hidden />\n      <select class=\"select\" data-size=\"sm\" aria-label=\"Model\">\n        <option>Fast</option>\n        <option>Thinking</option>\n      </select>\n      <button type=\"submit\" class=\"btn\" data-size=\"icon-sm\" aria-label=\"Send\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m5 12 7-7 7 7\"></path><path d=\"M12 19V5\"></path></svg></button>\n      <button type=\"button\" class=\"btn\" data-size=\"icon-sm\" data-stop aria-label=\"Stop\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect width=\"12\" height=\"12\" x=\"6\" y=\"6\" rx=\"1\"></rect></svg></button>\n    </footer>\n  </form>\n</auvyx-prompt-input>"
+   }
+  ],
+  "source": "auvyx"
  },
  "properties": {
   "title": "Properties",
@@ -1275,6 +1309,21 @@
   ],
   "source": "basecoat"
  },
+ "suggestions": {
+  "title": "Suggestions",
+  "description": "A row of prompt chips that scrolls sideways when it overflows, CSS only. Inside a Prompt Input a click fills the prompt.",
+  "examples": [
+   {
+    "title": "Default",
+    "html": "<div class=\"suggestions\" role=\"group\" aria-label=\"Suggestions\" style=\"max-width: 32rem\">\n  <button type=\"button\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z\"></path></svg>Plan a trip to Lisbon</button>\n  <button type=\"button\">Explain this error</button>\n  <button type=\"button\">Write a SQL query</button>\n  <button type=\"button\">Compare two contracts</button>\n  <button type=\"button\">Summarize a PDF</button>\n</div>"
+   },
+   {
+    "title": "Wrapping",
+    "html": "<div class=\"suggestions\" data-wrap role=\"group\" aria-label=\"Suggestions\" style=\"max-width: 24rem\">\n  <button type=\"button\">Plan a trip to Lisbon</button>\n  <button type=\"button\">Explain this error</button>\n  <button type=\"button\">Write a SQL query</button>\n  <button type=\"button\">Compare two contracts</button>\n</div>"
+   }
+  ],
+  "source": "auvyx"
+ },
  "switch": {
   "title": "Switch",
   "description": "A control that allows the user to toggle between checked and not checked.",
@@ -1389,11 +1438,15 @@
  },
  "tile": {
   "title": "Tile",
-  "description": "A preview with a caption for project thumbnails, galleries and showcases, CSS only. A link in the caption makes the whole tile clickable.",
+  "description": "A preview with a caption for project thumbnails, galleries and showcases, CSS only. A link in the caption makes the whole tile clickable; [data-actions] adds controls that show on hover or focus.",
   "examples": [
    {
     "title": "Default",
     "html": "<div class=\"auto-grid\" data-min=\"sm\" style=\"width: 100%\">\n  <figure class=\"tile\">\n    <div style=\"background: linear-gradient(135deg, oklch(0.75 0.15 300), oklch(0.6 0.2 260))\"></div>\n    <figcaption><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20\"></path><path d=\"M2 12h20\"></path></svg><a href=\"#\">Aura Studio</a><small>Just now</small></figcaption>\n  </figure>\n  <figure class=\"tile\">\n    <div style=\"background: linear-gradient(135deg, oklch(0.8 0.12 170), oklch(0.62 0.14 220))\"></div>\n    <figcaption><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20\"></path><path d=\"M2 12h20\"></path></svg><a href=\"#\">Northwind Labs</a><small>5 minutes ago</small></figcaption>\n  </figure>\n  <figure class=\"tile\">\n    <div></div>\n    <figcaption><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20\"></path><path d=\"M2 12h20\"></path></svg><a href=\"#\">Untitled</a><small>3 weeks ago</small></figcaption>\n  </figure>\n</div>"
+   },
+   {
+    "title": "Actions",
+    "html": "<div class=\"auto-grid\" data-min=\"sm\" style=\"width: 100%\">\n  <figure class=\"tile\">\n    <div style=\"background: linear-gradient(135deg, oklch(0.75 0.15 300), oklch(0.6 0.2 260))\">\n      <div data-actions>\n        <a href=\"#\" class=\"btn\" data-variant=\"outline\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M10 14 21 3\"></path><path d=\"M15 3h6v6\"></path><path d=\"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6\"></path></svg>View site</a>\n        <button type=\"button\" class=\"btn\" data-variant=\"outline\">Duplicate</button>\n      </div>\n    </div>\n    <figcaption><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20\"></path><path d=\"M2 12h20\"></path></svg><a href=\"#\">Aura Studio</a></figcaption>\n  </figure>\n  <figure class=\"tile\">\n    <div style=\"background: linear-gradient(135deg, oklch(0.8 0.12 170), oklch(0.62 0.14 220))\"></div>\n    <figcaption>\n      <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20\"></path><path d=\"M2 12h20\"></path></svg><a href=\"#\">Northwind Labs</a><small>5 minutes ago</small>\n      <div data-actions>\n        <div class=\"dropdown-menu\">\n          <button type=\"button\" class=\"btn\" data-variant=\"ghost\" data-size=\"icon-sm\" popovertarget=\"tile-menu\" aria-haspopup=\"menu\" aria-label=\"More for Northwind Labs\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"1\"></circle><circle cx=\"19\" cy=\"12\" r=\"1\"></circle><circle cx=\"5\" cy=\"12\" r=\"1\"></circle></svg></button>\n          <div id=\"tile-menu\" data-popover popover data-align=\"end\">\n            <div role=\"menu\" aria-label=\"Northwind Labs\">\n              <button type=\"button\" role=\"menuitem\">Share</button>\n              <button type=\"button\" role=\"menuitem\">Rename</button>\n              <hr role=\"separator\">\n              <button type=\"button\" role=\"menuitem\" data-variant=\"destructive\">Delete</button>\n            </div>\n          </div>\n        </div>\n      </div>\n    </figcaption>\n  </figure>\n</div>"
    },
    {
     "title": "Square",

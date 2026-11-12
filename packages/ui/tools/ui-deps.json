@@ -20,7 +20,10 @@
     "dropdown-menu",
     "popover"
   ],
-  "bubble": [],
+  "bubble": [
+    "message",
+    "message-scroller"
+  ],
   "button": [],
   "button-group": [
     "button",
@@ -151,6 +154,12 @@
     "avatar",
     "bubble"
   ],
+  "message-actions": [
+    "bubble",
+    "button",
+    "message",
+    "toggle"
+  ],
   "message-scroller": [
     "bubble",
     "button",
@@ -173,6 +182,12 @@
   ],
   "progress": [
     "field"
+  ],
+  "prompt-input": [
+    "attachment",
+    "button",
+    "native-select",
+    "suggestions"
   ],
   "properties": [],
   "questionnaire": [
@@ -214,6 +229,7 @@
     "input-group",
     "item"
   ],
+  "suggestions": [],
   "switch": [
     "field",
     "label"

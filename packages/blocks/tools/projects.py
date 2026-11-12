@@ -23,6 +23,15 @@ def site_mark(brand):
     return f'<span class="pj-mark" style="--mark:{brand}">{CUBE}</span>' if brand else f'<span class="pj-mark pj-mark-empty">{GLOBE}</span>'
 
 
+def tile_menu(title):
+    pid = sb.uid("pj-menu")
+    items = (sb.mi("Share") + sb.mi("Analytics") + sb.mi("Settings") + sb.mi("Duplicate")
+             + '<hr role="separator">' + sb.mi("Transfer ownership") + sb.mi("Rename") + sb.mi("Delete", variant="destructive"))
+    return (f'<div data-actions><div class="dropdown-menu">'
+            f'<button type="button" class="btn" data-variant="ghost" data-size="icon-sm" popovertarget="{pid}" aria-haspopup="menu" aria-label="More for {title}">{ic("more")}</button>'
+            f'{sb.menu(items, pid, align="end", width="12rem", label=title)}</div></div>')
+
+
 def project_tile(title, when, brand, font, family, palette, logo):
     fg, bg = palette
     aa_style = f'background:{brand};color:white' if brand else 'background:var(--background);color:color-mix(in oklab, var(--foreground) 25%, transparent)'
@@ -34,7 +43,7 @@ def project_tile(title, when, brand, font, family, palette, logo):
                f'</div>')
     icon = f'<span class="pj-mini" style="--mark:{brand}">{CUBE}</span>' if brand else GLOBE
     return (f'<figure class="tile" data-ratio="auto">{preview}'
-            f'<figcaption>{icon}<a href="#">{title}</a><small>{when}</small></figcaption></figure>')
+            f'<figcaption>{icon}<a href="#">{title}</a><small>{when}</small>{tile_menu(title)}</figcaption></figure>')
 
 
 # Showcase: small site mockups drawn with HTML and CSS (no images needed).
@@ -48,7 +57,9 @@ SHOWCASE = [
 
 def shot_tile(title, cls, inner, icon):
     nav = '<div class="pj-shot-nav"><b></b><i></i><i></i><i></i><i></i><em></em></div>'
-    return (f'<figure class="tile" data-ratio="video"><div class="pj-shot {cls}" aria-hidden="true">{nav}{inner}</div>'
+    actions = (f'<div data-actions><a href="#" class="btn" data-variant="outline">{ic("external-link")}View site</a>'
+               f'<button type="button" class="btn" data-variant="outline">Duplicate</button></div>')
+    return (f'<figure class="tile" data-ratio="video"><div class="pj-shot {cls}"><div aria-hidden="true">{nav}{inner}</div>{actions}</div>'
             f'<figcaption>{icon}<a href="#">{title}</a></figcaption></figure>')
 
 
@@ -135,6 +146,7 @@ CSS = sb.SB_CSS + f"""
   .pj-letter[data-tone="sage"] {{ background: oklch(0.85 0.05 140); color: oklch(0.35 0.05 140); }}
   .pj-letter[data-tone="ink"] {{ background: oklch(0.2 0 0); color: white; }}
   /* Site mockups */
+  .pj-shot > [aria-hidden] {{ display: contents; }}
   .pj-shot {{ display: flex; flex-direction: column; gap: 0.5rem; padding: 0.625rem 0.75rem; font-family: var(--font-sans); }}
   .pj-shot-nav {{ display: flex; align-items: center; gap: 0.375rem; }}
   .pj-shot-nav b {{ inline-size: 1.75rem; block-size: 0.3rem; border-radius: 1px; background: currentColor; opacity: 0.9; margin-inline-end: auto; }}

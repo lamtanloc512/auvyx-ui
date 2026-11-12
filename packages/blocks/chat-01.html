@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chat 01 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <script src="../ui/dist/js/prompt-input.min.js" defer></script>
+    <style>
+      body {
+        min-block-size: 100svh;
+      }
+      .sb-mark {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        inline-size: 2rem;
+        block-size: 2rem;
+        border-radius: calc(var(--radius) + 2px);
+        background: var(--sidebar-primary);
+        color: var(--sidebar-primary-foreground);
+      }
+      .sb-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .sb-user-head {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.375rem 0.5rem;
+        font-size: 0.875rem;
+      }
+      .sb-user-head > span:last-child {
+        display: grid;
+        line-height: 1.25;
+      }
+      .sb-user-head small {
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+      }
+      .app-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        block-size: 4rem;
+        padding-inline: 1rem;
+        border-block-end: 1px solid var(--border);
+        background: var(--background);
+      }
+      .app-header > hr[aria-orientation="vertical"] {
+        align-self: center;
+        block-size: 1rem;
+        margin-inline-end: 0.5rem;
+      }
+      .sidebar > nav > header .dropdown-menu,
+      .sidebar > nav > footer .dropdown-menu {
+        display: flex;
+        inline-size: 100%;
+      }
+
+      .ch-main {
+        container-type: inline-size;
+        min-inline-size: 0;
+        display: flex;
+        flex-direction: column;
+        block-size: 100dvh;
+      }
+      .ch-header {
+        block-size: 3.25rem;
+        gap: 0.5rem;
+        flex-shrink: 0;
+      }
+      .ch-header h1 {
+        margin: 0;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .ch-push {
+        margin-inline-start: auto;
+      }
+      .ch-header .btn svg,
+      .ch-new svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .ch-new {
+        inline-size: 100%;
+        justify-content: flex-start;
+        gap: 0.5rem;
+        margin-block-start: 0.5rem;
+      }
+      .sidebar[data-collapsible="icon"] .ch-new span {
+        white-space: nowrap;
+      }
+      .sidebar > nav > section h3 {
+        margin: 0;
+        padding: 0.5rem 0.5rem 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--muted-foreground);
+      }
+      .ch-scroller {
+        flex: 1;
+        min-block-size: 0;
+      }
+      .ch-thread {
+        display: flex;
+        flex-direction: column;
+        gap: 1.75rem;
+        inline-size: min(46rem, 100%);
+        margin-inline: auto;
+        padding: 1.5rem 1rem 2rem;
+      }
+      .ch-reply > section {
+        gap: 0.75rem;
+      }
+      .ch-reply .trace {
+        font-size: 0.8125rem;
+      }
+      .ch-answer {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        font-size: 0.9375rem;
+        line-height: 1.65;
+      }
+      .ch-answer p,
+      .ch-answer ul {
+        margin: 0;
+      }
+      .ch-answer ul {
+        padding-inline-start: 1.25rem;
+        list-style: disc;
+      }
+      .ch-sources {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+      }
+      .ch-sources a {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.125rem 0.5rem 0.125rem 0.25rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+        text-decoration: none;
+        background: var(--muted);
+      }
+      .ch-sources a:hover {
+        color: var(--foreground);
+      }
+      .ch-sources span {
+        display: inline-grid;
+        place-items: center;
+        inline-size: 1.125rem;
+        block-size: 1.125rem;
+        border-radius: 999px;
+        font-size: 0.625rem;
+        font-weight: 600;
+        background: var(--background);
+        color: var(--foreground);
+      }
+      .ch-bottom {
+        flex-shrink: 0;
+        padding: 0 1rem 1rem;
+      }
+      .ch-composer {
+        inline-size: min(46rem, 100%);
+        margin-inline: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .ch-composer .select {
+        inline-size: auto;
+      }
+      .ch-fine {
+        margin: 0;
+        text-align: center;
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+      }
+    </style>
+  </head>
+  <body>
+    <aside id="app-sidebar" class="sidebar" data-collapsible="icon">
+      <nav aria-label="Sidebar">
+        <header>
+          <ul>
+            <li>
+              <a href="#" data-size="lg">
+                <span class="sb-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></span>
+                <span>
+                  <strong>Acme Assistant</strong>
+                  <small>Workspace</small>
+                </span>
+              </a>
+            </li>
+          </ul>
+          <a href="#" class="btn ch-new" data-variant="outline">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>
+            <span>New chat</span>
+          </a>
+        </header>
+        <section>
+          <div role="group" aria-labelledby="ch-h-Tod" data-sidebar-hide-collapsed>
+            <h3 id="ch-h-Tod">Today</h3>
+            <ul>
+              <li>
+                <a href="#" aria-current="page"><span>Kestrel renewal plan</span></a>
+              </li>
+              <li>
+                <a href="#"><span>Q4 invoice summary</span></a>
+              </li>
+            </ul>
+          </div>
+          <div role="group" aria-labelledby="ch-h-Yes" data-sidebar-hide-collapsed>
+            <h3 id="ch-h-Yes">Yesterday</h3>
+            <ul>
+              <li>
+                <a href="#"><span>Postgres index for postings</span></a>
+              </li>
+              <li>
+                <a href="#"><span>Draft onboarding email</span></a>
+              </li>
+            </ul>
+          </div>
+          <div role="group" aria-labelledby="ch-h-Pre" data-sidebar-hide-collapsed>
+            <h3 id="ch-h-Pre">Previous 7 days</h3>
+            <ul>
+              <li>
+                <a href="#"><span>Compare two vendor quotes</span></a>
+              </li>
+              <li>
+                <a href="#"><span>Rollback runbook outline</span></a>
+              </li>
+              <li>
+                <a href="#"><span>Translate help article</span></a>
+              </li>
+            </ul>
+          </div>
+        </section>
+        <footer>
+          <div class="dropdown-menu">
+            <button
+              type="button"
+              data-sidebar-item
+              data-size="lg"
+              popovertarget="user52"
+              aria-haspopup="menu">
+              <span class="avatar" data-size="sm"><span>CN</span></span>
+              <span>
+                <strong>shadcn</strong>
+                <small>m@example.com</small>
+              </span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+            </button>
+            <div
+              id="user52"
+              data-popover
+              popover
+              data-side="right"
+              data-align="end"
+              style="min-width: 14rem">
+              <div role="menu" aria-label="Account">
+                <div class="sb-user-head">
+                  <span class="avatar" data-size="sm"><span>CN</span></span>
+                  <span>
+                    <strong>shadcn</strong>
+                    <small>m@example.com</small>
+                  </span>
+                </div>
+                <hr role="separator" />
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+                  <span>Upgrade to Pro</span>
+                </button>
+                <hr role="separator" />
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <span>Account</span>
+                </button>
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                  <span>Billing</span>
+                </button>
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>
+                  <span>Notifications</span>
+                </button>
+                <hr role="separator" />
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                  <span>Log out</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </nav>
+    </aside>
+    <main class="ch-main">
+      <header class="app-header ch-header">
+        <button
+          type="button"
+          class="btn"
+          data-variant="ghost"
+          data-size="icon-sm"
+          data-sidebar-toggle="app-sidebar"
+          aria-controls="app-sidebar"
+          aria-label="Toggle sidebar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></svg>
+        </button>
+        <hr role="separator" aria-orientation="vertical" />
+        <h1>Kestrel renewal plan</h1>
+        <button type="button" class="btn ch-push" data-variant="ghost" data-size="sm">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+          Share
+        </button>
+      </header>
+      <div class="message-scroller ch-scroller">
+        <div role="log" aria-label="Conversation" tabindex="0" aria-live="polite">
+          <div class="ch-thread" data-thread>
+            <article class="message" data-align="end">
+              <section>
+                <div class="bubble">
+                  <p>
+                    Kestrel renews Dec 1. What should we offer them, and can you pull their current
+                    plan?
+                  </p>
+                </div>
+              </section>
+            </article>
+            <article class="message ch-reply">
+              <section>
+                <ol class="trace">
+                  <li data-status="done">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                    <span>Read 3 contracts</span>
+                    <small>1.4s</small>
+                  </li>
+                  <li data-status="done">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                    <span>Checked 4 invoices</span>
+                    <small>0.6s</small>
+                  </li>
+                  <li>
+                    <details>
+                      <summary data-status="done">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                        <span>Reasoning</span>
+                        <small>2.1s</small>
+                      </summary>
+                      <div>
+                        The current term ends Dec 1. Usage grew 18% this quarter, so the annual plan
+                        with a two-year term at the same price is the strongest offer.
+                      </div>
+                    </details>
+                  </li>
+                </ol>
+                <div class="ch-answer" id="ch-a1">
+                  <p>
+                    Offer the annual plan with a two-year term at today’s price. Their usage grew
+                    18% this quarter and all four invoices were paid on time, so a longer term at a
+                    fixed price is the strongest renewal case.
+                  </p>
+                  <ul>
+                    <li>Current plan: Growth, 40 seats, renews Dec 1</li>
+                    <li>Ask: two-year term, same price per seat</li>
+                    <li>Risk: procurement wants the security review first</li>
+                  </ul>
+                </div>
+                <ul class="ch-sources" aria-label="Sources">
+                  <li>
+                    <a href="#">
+                      <span>1</span>
+                      Kestrel MSA 2025.pdf
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <span>2</span>
+                      Invoice INV-2041
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <span>3</span>
+                      Usage report · Q4
+                    </a>
+                  </li>
+                </ul>
+                <div
+                  class="message-actions"
+                  data-visible
+                  role="toolbar"
+                  aria-label="Message actions">
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    data-copy="#ch-a1"
+                    aria-label="Copy">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn"
+                    data-variant="ghost"
+                    data-size="icon-sm"
+                    aria-label="Retry">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                  </button>
+                  <label class="toggle" data-size="sm" aria-label="Good response">
+                    <input type="checkbox" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>
+                  </label>
+                  <label class="toggle" data-size="sm" aria-label="Bad response">
+                    <input type="checkbox" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/></svg>
+                  </label>
+                </div>
+              </section>
+            </article>
+            <span id="ch-end"></span>
+          </div>
+        </div>
+        <a
+          href="#ch-end"
+          class="btn"
+          data-size="icon"
+          data-variant="outline"
+          aria-label="Jump to latest">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+        </a>
+      </div>
+      <div class="ch-bottom">
+        <auvyx-prompt-input class="ch-composer">
+          <div class="suggestions" role="group" aria-label="Suggestions">
+            <button type="button">Draft the renewal email</button>
+            <button type="button">List the risks</button>
+            <button type="button">Compare with last year</button>
+          </div>
+          <form class="prompt-input">
+            <div class="attachment-group" data-files hidden></div>
+            <textarea name="prompt" aria-label="Message" placeholder="Ask a follow-up…"></textarea>
+            <footer>
+              <button
+                type="button"
+                class="btn"
+                data-variant="ghost"
+                data-size="icon-sm"
+                data-attach
+                aria-label="Attach files">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+              </button>
+              <input type="file" multiple hidden />
+              <select class="select" data-size="sm" aria-label="Model">
+                <option>Fast</option>
+                <option selected>Thinking</option>
+              </select>
+              <button type="submit" class="btn" data-size="icon-sm" aria-label="Send">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
+              </button>
+              <button type="button" class="btn" data-size="icon-sm" data-stop aria-label="Stop">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="12" height="12" x="6" y="6" rx="1"/></svg>
+              </button>
+            </footer>
+          </form>
+          <p class="ch-fine">Answers can be wrong. Check sources before you send anything.</p>
+        </auvyx-prompt-input>
+      </div>
+    </main>
+    <script>
+      (() => {
+        // Demo only: echo the prompt and fake a streamed reply. A real app sends
+        // the prompt to its model and streams the answer into the bubble.
+        const input = document.querySelector(".ch-composer");
+        const thread = document.querySelector("[data-thread]");
+        const end = document.getElementById("ch-end");
+        if (!input || !thread) return;
+        const reply =
+          "Here is a first pass. I kept it short and put the two-year offer first, then the security review, then a call to book a time this week.";
+        let timer = null;
+        const el = (html) => {
+          const t = document.createElement("template");
+          t.innerHTML = html.trim();
+          return t.content.firstChild;
+        };
+        const finish = (bubble) => {
+          clearInterval(timer);
+          timer = null;
+          bubble.removeAttribute("data-streaming");
+          input.streaming = false;
+        };
+        input.addEventListener("prompt", (e) => {
+          const user = el(
+            '<article class="message" data-align="end"><section><div class="bubble"><p></p></div></section></article>',
+          );
+          user.querySelector("p").textContent =
+            e.detail.text || e.detail.files.map((f) => f.name).join(", ");
+          thread.insertBefore(user, end);
+          const answer = el(
+            '<article class="message ch-reply"><section><div class="bubble" data-variant="muted"><span class="typing" role="status" aria-label="Assistant is typing"><i></i><i></i><i></i></span></div></section></article>',
+          );
+          thread.insertBefore(answer, end);
+          input.streaming = true;
+          setTimeout(() => {
+            const bubble = answer.querySelector(".bubble");
+            bubble.innerHTML = "<p></p>";
+            bubble.setAttribute("data-streaming", "");
+            const p = bubble.firstChild;
+            const words = reply.split(" ");
+            let i = 0;
+            timer = setInterval(() => {
+              p.textContent += (i ? " " : "") + words[i++];
+              if (i >= words.length) finish(bubble);
+            }, 60);
+            input.addEventListener("stop", () => finish(bubble), { once: true });
+          }, 700);
+        });
+      })();
+    </script>
+  </body>
+</html>
