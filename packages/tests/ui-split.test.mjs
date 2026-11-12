@@ -67,9 +67,12 @@ test('components installed with the CLI render like the bundle', async () => {
   const dir = await freshDir('split-components');
   const docs = await componentDocs();
   const template = path.join(registry, '{framework}/{icons}/{name}.json');
-  const bundle = `<link rel="stylesheet" href="/packages/ui/dist/auvyx.min.css"><script src="/packages/ui/dist/auvyx.min.js" defer></script>`;
+  const modules = JSON.parse(await fs.readFile(path.join(root, 'packages/ui/dist/js/manifest.json'), 'utf8'));
   const failures = [];
   for (const [name, c] of Object.entries(docs)) {
+    // Modules outside auvyx.min.js (data-table, sortable) load next to the bundle, as on a real page.
+    const extra = Object.values(modules).filter((m) => !m.bundled && c.examples.some((e) => e.html.includes(m.detect))).map((m) => `<script src="/packages/ui/dist/${m.file}" defer></script>`).join('');
+    const bundle = `<link rel="stylesheet" href="/packages/ui/dist/auvyx.min.css"><script src="/packages/ui/dist/auvyx.min.js" defer></script>${extra}`;
     const project = path.join(dir, name);
     await fs.mkdir(project);
     run('node', [cli, 'init', '--registry', template], { cwd: project });

@@ -7,3 +7,4 @@ import './resizable.js';
 import './data-table.js';
 import './calendar.js';
 import './date-picker.js';
+import './sortable.js';

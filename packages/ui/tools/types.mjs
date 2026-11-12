@@ -7,6 +7,10 @@ import { ELEMENTS, EXTRA_TYPES } from '../../elements/api.mjs';
 const camel = (s) => s.replace(/-(\w)/g, (_, c) => c.toUpperCase());
 const pascal = (s) => camel(s)[0].toUpperCase() + camel(s).slice(1);
 const doc = (text, indent = '  ') => `${indent}/** ${text} */\n`;
+// Shared types (EXTRA_TYPES) that element events or properties refer to; react.d.ts and vue.d.ts import them.
+const SHARED = [...EXTRA_TYPES.matchAll(/export (?:interface|type) (\w+)/g)].map((m) => m[1])
+  .filter((name) => JSON.stringify(ELEMENTS).includes(name));
+const IMPORTS = [...ELEMENTS.map((e) => e.className), ...SHARED].join(', ');
 
 // ---- Custom Elements Manifest (schema 2.1.0)
 function manifest(version) {
@@ -80,7 +84,7 @@ function reactTypes() {
     `// Generated from packages/elements/api.mjs by packages/ui/tools/types.mjs. Do not edit.`,
     `// React 19 JSX types for <auvyx-*> elements: add  import type {} from "@auvyx/ui/types/react";  once.`,
     `import type { HTMLAttributes, Ref, ReactNode, SyntheticEvent } from 'react';`,
-    `import type { ${ELEMENTS.map((e) => e.className).join(', ')} } from './elements';`,
+    `import type { ${IMPORTS} } from './elements';`,
     '',
     `type AuvyxBase<E> = Omit<HTMLAttributes<E>, 'onChange' | 'onInput' | 'onToggle' | 'onSelect'> & {`,
     `  ref?: Ref<E>;`,
@@ -117,7 +121,7 @@ function vueTypes() {
     `// Vue 3 template types for <auvyx-*> elements: add  import type {} from "@auvyx/ui/types/vue";  once,`,
     `// and set app.config.compilerOptions.isCustomElement = (tag) => tag.startsWith('auvyx-').`,
     `import type { DefineComponent } from 'vue';`,
-    `import type { ${ELEMENTS.map((e) => e.className).join(', ')} } from './elements';`,
+    `import type { ${IMPORTS} } from './elements';`,
     '',
   ];
   for (const el of ELEMENTS) {

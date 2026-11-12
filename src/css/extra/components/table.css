@@ -1,0 +1,50 @@
+/* Table extensions (fork addition), CSS only.
+ *
+ * data-variant="grid" draws a spreadsheet-style table: cell lines, a sticky
+ * header and footer inside a height-limited .table-container, and optional
+ * row numbers that follow the visible row order (sorting, filtering, pages).
+ *
+ *   <div class="table-container" style="max-height: 24rem">
+ *     <table class="table" data-variant="grid">
+ *       <thead><tr><th data-row-number><span class="sr-only">Row</span></th><th><svg …/>Company</th>…</tr></thead>
+ *       <tbody><tr><td data-row-number></td><td>Acme</td>…</tr></tbody>
+ *       <tfoot><tr><td data-row-number></td><td>Total</td>…</tr></tfoot>
+ *     </table>
+ *   </div>
+ */
+@layer components {
+  .table[data-variant='grid'] {
+    @apply border-separate border-spacing-0;
+
+    > thead th {
+      @apply sticky top-0 z-10;
+    }
+
+    > tfoot td,
+    > tfoot th {
+      @apply sticky bottom-0 z-10;
+    }
+
+    > tbody {
+      counter-reset: table-row;
+    }
+
+    > tbody > tr:not([hidden], [data-detail], [data-empty]) {
+      counter-increment: table-row;
+    }
+
+    > tbody > tr > td[data-row-number]::before {
+      content: counter(table-row);
+    }
+
+    :is(th, td)[data-row-number] {
+      @apply w-0 text-end tabular-nums;
+    }
+
+    /* Leading column icons: <th><svg …/>Label</th> or inside the sort button. */
+    > thead th > svg,
+    > thead th > button > svg:first-child {
+      @apply inline-block shrink-0 align-[-0.125em];
+    }
+  }
+}

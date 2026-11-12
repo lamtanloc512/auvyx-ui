@@ -1,0 +1,42 @@
+<p class="d-note">The board is CSS only. For drag and drop, wrap it in <code>&lt;auvyx-sortable&gt;</code> and load <code>js/sortable.min.js</code>; that module is not part of <code>auvyx.min.js</code>.</p>
+
+<h3 class="d-h3">HTML structure</h3>
+<dl>
+  <dt><code>&lt;div class="kanban"&gt;</code> or <code>&lt;auvyx-sortable class="kanban"&gt;</code></dt>
+  <dd>
+    Board. Columns scroll horizontally; set <code>--kanban-column</code> for the minimum column width.
+    <dl>
+      <dt><code>&lt;section aria-labelledby="…"&gt;</code></dt>
+      <dd>A column: a <code>&lt;header&gt;</code> with its heading, then an <code>&lt;ol&gt;</code> of cards. <code>[data-drag-count]</code> in the header shows the number of cards and updates after a drop.</dd>
+      <dt><code>&lt;li&gt;</code></dt>
+      <dd>A card. Wrap its content in one <code>&lt;a&gt;</code> to make the whole card a link. Add <code>[data-drag-handle]</code> inside to drag only by the handle, <code>data-drag-disabled</code> to pin it.</dd>
+    </dl>
+  </dd>
+</dl>
+
+<h3 class="d-h3">JavaScript API</h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>API</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>sort</code></td>
+<td>Event</td>
+<td>Cancelable. <code>detail: { item, from, to, index, previousIndex }</code> after a drop; <code>preventDefault()</code> puts the card back (for example when the server rejects the move).</td>
+</tr>
+<tr>
+<td><code>sortable.refresh()</code></td>
+<td>Method</td>
+<td>Re-scan after adding columns or cards.</td>
+</tr>
+<tr>
+<td>Keyboard</td>
+<td>Behavior</td>
+<td>Space picks up the focused card, Up/Down move it, Left/Right move it to the next column, Space or Enter drops, Escape cancels. Moves are announced to screen readers.</td>
+</tr>
+</tbody></table>
+</div>

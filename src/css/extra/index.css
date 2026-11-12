@@ -15,6 +15,11 @@
 @import "./components/menus.css";
 @import "./components/resizable.css";
 @import "./components/data-table.css";
+@import "./components/table.css";
+@import "./components/kanban.css";
+@import "./components/sortable.css";
+@import "./components/properties.css";
+@import "./components/tile.css";
 @import "./components/calendar.css";
 @import "./components/sidebar.css";
 @import "./components/web-components.css";

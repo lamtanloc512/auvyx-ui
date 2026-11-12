@@ -78,7 +78,24 @@ export const ELEMENTS = [
     properties: [{ name: 'value', type: 'string', description: '"YYYY-MM-DD", or "start/end" in range mode', readonly: true }],
     events: [change('A date was picked', '{ value: string }')] },
   { tag: 'auvyx-data-table', className: 'AuvyxDataTableElement', module: 'js/data-table.min.js', key: 'data-table', description: 'Sorting, filtering, selection, column visibility and pagination over a server-rendered table.',
-    properties: [], events: [{ name: 'selectionchange', detail: '{ rows: HTMLTableRowElement[] }', description: 'Row selection changed' }] },
+    attributes: [
+      { name: 'data-page-size', type: 'string', description: 'Rows per page (0 or absent shows all)' },
+      { name: 'data-grid', type: 'boolean', description: 'Grid keyboard model: one tab stop, arrow keys between cells' },
+      { name: 'data-sticky', type: 'boolean', description: 'Sticky header inside a height-limited wrapper' },
+      { name: 'data-mode', type: "'client' | 'server'", description: 'server: keep rows in place and emit statechange' },
+      { name: 'data-total', type: 'string', description: 'Total row count in server mode' },
+    ],
+    properties: [{ name: 'state', type: 'AuvyxDataTableState', description: 'Query, sort, facet filters, page, page size, hidden columns and selected row keys; assign a partial object to change it' }],
+    events: [
+      { name: 'selectionchange', detail: '{ rows: HTMLTableRowElement[] }', description: 'Row selection changed' },
+      { name: 'statechange', detail: 'AuvyxDataTableState', description: 'Sort, filters, page or columns changed' },
+      { name: 'cellchange', detail: '{ row: HTMLTableRowElement; rowKey: string; column: string; value: string; previous: string }', description: 'Cancelable: an inline edit was committed' },
+    ],
+    methods: [{ name: 'refresh', signature: '() => void', description: 'Re-read rows after replacing tbody content' }] },
+  { tag: 'auvyx-sortable', className: 'AuvyxSortableElement', module: 'js/sortable.min.js', key: 'sortable', description: 'Drag and drop between the lists inside it, by pointer or keyboard. Not in auvyx.min.js.',
+    properties: [],
+    events: [{ name: 'sort', detail: '{ item: HTMLLIElement; from: HTMLElement; to: HTMLElement; index: number; previousIndex: number }', description: 'Cancelable: an item was dropped in a new place; preventDefault() puts it back' }],
+    methods: [{ name: 'refresh', signature: '() => void', description: 'Re-scan lists and items after adding them' }] },
   { tag: 'auvyx-resizable', className: 'AuvyxResizableElement', module: 'js/resizable.min.js', key: 'resizable', description: 'Drag or arrow-key the separators between panels.',
     properties: [], events: [{ name: 'resize', detail: '{ sizes: number[] }', description: 'Panel sizes changed (percent)' }] },
   { tag: 'auvyx-context-menu', className: 'AuvyxContextMenuElement', module: 'js/context-menu.min.js', key: 'context-menu', description: 'Opens a native menu popover at the pointer.',
@@ -88,7 +105,16 @@ export const ELEMENTS = [
 
 // Toast options accepted by toaster.toast() in both editions, and the
 // window.auvyx API (src/js/basecoat.js; window.basecoat is an alias).
-export const EXTRA_TYPES = `export interface AuvyxCore {
+export const EXTRA_TYPES = `export interface AuvyxDataTableState {
+  query: string;
+  sort: { column: string; direction: 'ascending' | 'descending' } | null;
+  filters: Record<string, string[]>;
+  page: number;
+  pageSize: number;
+  hiddenColumns: string[];
+  selected: string[];
+}
+export interface AuvyxCore {
   /** Register a behavior: name, a selector and an init function (or { selector, init, refresh }). */
   register(name: string, selectorOrOptions: string | { selector: string; init: (el: Element) => void; refresh?: (el: Element) => void }, init?: (el: Element) => void): void;
   /** Initialize one registered component type in the page. */

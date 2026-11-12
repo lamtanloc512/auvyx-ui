@@ -18,6 +18,7 @@ const FILES = {
   'components/range.css': 'slider',
   'components/scrollbar.css': 'scroll-area',
   'extra/components/web-components.css': 'base',
+  'extra/components/sortable.css': 'kanban', // <auvyx-sortable> states; the kanban is its documented use
   'base/base.css': 'base',
   'motion/index.css': 'base',
   'layout/index.css': 'base',
@@ -32,7 +33,7 @@ const SECTIONS = {
   'styles/vega.css': { Radio: 'radio-group', Slider: 'slider' },
   'extra/styles/vega.css': {
     'Toggle Group': 'toggle-group', 'Copy feedback': 'code-block', 'Native menu items': 'base',
-    'Sidebar extensions': 'sidebar', Typography: 'typography',
+    'Sidebar extensions': 'sidebar', Typography: 'typography', Sortable: 'kanban',
   },
   'extra/components/chat.css': { 'Shimmer for in-progress text (trace running, attachment uploading)': 'base' },
   'extra/components/menus.css': { 'Native menus': 'base' },

@@ -1,0 +1,56 @@
+/* Tile (fork addition), CSS only: a preview with a caption, for project
+ * thumbnails, galleries and showcases. Lay tiles out with .auto-grid.
+ * The preview is the first child (an <img> or any element); the caption is a
+ * <figcaption>. A link in the caption covers the whole tile, so the title is
+ * the link text and other caption content stays readable.
+ *
+ *   <div class="auto-grid">
+ *     <figure class="tile">
+ *       <img src="…" alt="">
+ *       <figcaption><svg …/><a href="#">Aura Studio</a><small>5 minutes ago</small></figcaption>
+ *     </figure>
+ *   </div>
+ *
+ * data-ratio="square | video | wide | auto" sets the preview shape (default 16:10).
+ */
+@layer components {
+  .tile {
+    @apply relative m-0 flex min-w-0 flex-col;
+
+    > :first-child:not(figcaption) {
+      @apply relative w-full overflow-hidden;
+      aspect-ratio: var(--tile-ratio, 16 / 10);
+    }
+
+    > img:first-child {
+      @apply block h-auto object-cover;
+    }
+
+    &[data-ratio='square'] { --tile-ratio: 1; }
+    &[data-ratio='video'] { --tile-ratio: 16 / 9; }
+    &[data-ratio='wide'] { --tile-ratio: 2 / 1; }
+    &[data-ratio='auto'] > :first-child:not(figcaption) { aspect-ratio: auto; }
+
+    > figcaption {
+      @apply flex min-w-0 items-center;
+
+      > :is(a, strong) {
+        @apply min-w-0 truncate;
+      }
+
+      > svg,
+      > img,
+      > .avatar {
+        @apply shrink-0;
+      }
+    }
+
+    > figcaption a::after {
+      @apply absolute inset-0 content-[''];
+    }
+
+    > figcaption a {
+      @apply outline-none;
+    }
+  }
+}

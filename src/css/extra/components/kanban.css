@@ -1,0 +1,53 @@
+/* Kanban (fork addition), CSS only: a horizontally scrolling board of columns.
+ * Each column is a <section> with a <header> and an <ol> of cards; the <li>
+ * is the card. Moving cards is the app's job (no JS here).
+ *
+ *   <div class="kanban">
+ *     <section aria-labelledby="k-lead">
+ *       <header><h3 id="k-lead">Lead</h3><span class="badge" data-variant="secondary">3</span></header>
+ *       <ol>
+ *         <li><strong>Acme Corp</strong><p>Berlin · 200–500</p><footer><span>$12k</span><span>Nov 20</span></footer></li>
+ *       </ol>
+ *     </section>
+ *   </div>
+ */
+@layer components {
+  .kanban {
+    @apply grid grid-flow-col items-start overflow-x-auto overscroll-x-contain;
+    grid-auto-columns: minmax(var(--kanban-column, 17rem), 1fr);
+    scroll-snap-type: x proximity;
+
+    > section {
+      @apply flex max-h-full min-h-0 min-w-0 flex-col;
+      scroll-snap-align: start;
+    }
+
+    > section > header {
+      @apply flex items-center;
+
+      > :is(h2, h3, h4) {
+        @apply m-0 truncate;
+      }
+
+      > :last-child:not(:first-child, .badge) {
+        @apply ms-auto;
+      }
+    }
+
+    > section > ol {
+      @apply m-0 flex min-h-0 list-none flex-col overflow-y-auto p-0;
+    }
+
+    > section > ol > li {
+      @apply flex min-w-0 flex-col;
+
+      > footer {
+        @apply flex flex-wrap items-center justify-between;
+      }
+    }
+
+    > section > ol > li:has(> a:only-child) > a {
+      @apply contents;
+    }
+  }
+}

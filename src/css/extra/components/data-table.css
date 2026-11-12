@@ -27,6 +27,17 @@
  *     </footer>
  *   </auvyx-data-table>
  * Column toggles anywhere inside: <input type="checkbox" data-column="2" checked>.
+ *
+ * Interaction hooks (all optional):
+ *   data-grid on the root          one tab stop, arrow/Home/End/PageUp/PageDown between cells
+ *   data-sticky on the root        sticky header inside a height-limited scroll area
+ *   data-mode="server" data-total  keep rows, emit statechange for the server to re-render
+ *   <th data-key="price">          name a column for state, facets and toggles
+ *   <td data-editable>             double-click, Enter or F2 to edit; emits cancelable cellchange
+ *   <button data-expand aria-expanded="false"> + next <tr data-detail hidden>   expandable row
+ *   <input type="checkbox" data-facet="status" value="Paid">   faceted filter (OR within a column)
+ *   <span data-facet-count="status"></span>   number of active values for a facet
+ *   <select data-page-size>, data-page="first|last", <button data-reset>
  */
 @layer components {
   .data-table {
@@ -73,6 +84,42 @@
 
     [data-selected-count] {
       @apply flex-1;
+    }
+
+    &[data-sticky] > div:has(> table) {
+      @apply overflow-auto;
+    }
+
+    &[data-sticky] thead th {
+      @apply sticky top-0 z-10;
+    }
+
+    td[data-editable] {
+      @apply cursor-text;
+    }
+
+    td[data-editing] > input {
+      @apply w-full min-w-24;
+    }
+
+    tr[data-detail] > td {
+      @apply whitespace-normal;
+    }
+
+    [data-expand] > svg {
+      @apply transition-transform;
+    }
+
+    &:dir(rtl) [data-expand][aria-expanded='false'] > svg {
+      @apply -scale-x-100;
+    }
+
+    [data-expand][aria-expanded='true'] > svg {
+      @apply rotate-90;
+    }
+
+    [data-facet-count] {
+      @apply tabular-nums;
     }
   }
 }

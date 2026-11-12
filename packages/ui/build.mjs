@@ -25,6 +25,10 @@ const jsComponents = ['basecoat', 'accordion', 'carousel', 'combobox', 'command'
 // CSS budget sized for the full shadcn component set (~61 components); tighten once complete.
 const budgets = { 'auvyx.min.css': 41_000, 'auvyx.min.js': 24_000 };
 
+// Elements in auvyx.min.js. Larger, page-specific ones ship only as their own
+// module (dist/js/<name>.min.js): data-table, sortable.
+const bundledElements = ['menu', 'context-menu', 'resizable', 'calendar', 'date-picker'];
+
 
 // Tailwind inlines shadow values; route them through --shadow-* so themes from
 // tweakcn / the shadcn generator (which define --shadow-2xs … --shadow-2xl) apply.
@@ -55,7 +59,10 @@ await fs.writeFile(path.join(dist, 'auvyx.min.css'), banner + minCss);
 // JS: concatenate the IIFE sources, then minify as one script.
 const basecoatJs = (await Promise.all(jsComponents.map((c) => fs.readFile(path.join(root, 'src/js', `${c}.js`), 'utf8')))).join('\n');
 // Light-DOM custom elements (@auvyx/elements), bundled as one IIFE.
-const elements = await build({ entryPoints: [path.join(root, 'packages/elements/src/index.js')], bundle: true, format: 'iife', write: false, target: 'es2022' });
+const elements = await build({
+  stdin: { contents: bundledElements.map((e) => `import './${e}.js';`).join('\n'), resolveDir: path.join(root, 'packages/elements/src') },
+  bundle: true, format: 'iife', write: false, target: 'es2022',
+});
 const jsSrc = `${basecoatJs}\n${elements.outputFiles[0].text}`;
 await fs.writeFile(path.join(dist, 'auvyx.js'), banner + jsSrc);
 const { code: minJs } = await transform(jsSrc, { loader: 'js', minify: true, target: 'es2022' });
@@ -146,9 +153,10 @@ const JS_MODULES = {
   copy: { src: 'src/js/copy.js', detect: '[data-copy]' },
   calendar: { src: 'packages/elements/src/calendar.js', element: true, detect: 'auvyx-calendar' },
   'context-menu': { src: 'packages/elements/src/context-menu.js', element: true, detect: 'auvyx-context-menu' },
-  'data-table': { src: 'packages/elements/src/data-table.js', element: true, detect: 'auvyx-data-table' },
+  'data-table': { src: 'packages/elements/src/data-table.js', element: true, detect: 'auvyx-data-table', note: 'Not in auvyx.min.js: load this module on pages with a data table.' },
   'date-picker': { src: 'packages/elements/src/date-picker.js', element: true, detect: 'auvyx-date-picker' },
   resizable: { src: 'packages/elements/src/resizable.js', element: true, detect: 'auvyx-resizable' },
+  sortable: { src: 'packages/elements/src/sortable.js', element: true, kind: 'enhance', detect: 'auvyx-sortable', note: 'Not in auvyx.min.js. Drag and drop between lists (kanban columns); the lists render without it.' },
   menu: { src: 'packages/elements/src/menu.js', element: true, kind: 'enhance', detect: '[data-popover][popover]:has([role="menu"]), .navigation-menu', note: 'Adds arrow-key navigation and focus handling to native menus; they open and close without it.' },
 };
 {
@@ -170,7 +178,8 @@ if (document.readyState !== 'loading') { window.auvyx.initAll(); window.auvyx.st
     const { code } = await transform(src, { loader: 'js', minify: true, target: 'es2022' });
     const file = `js/${name}.min.js`;
     await fs.writeFile(path.join(dist, file), banner + code);
-    manifest[name] = { file, kind: mod.kind || 'required', detect: mod.detect, gzip: gzipSync(banner + code, { level: 9 }).length, ...(mod.note && { note: mod.note }) };
+    const bundled = !mod.element || bundledElements.includes(path.basename(mod.src, '.js'));
+    manifest[name] = { file, kind: mod.kind || 'required', bundled, detect: mod.detect, gzip: gzipSync(banner + code, { level: 9 }).length, ...(mod.note && { note: mod.note }) };
   }
   await fs.writeFile(path.join(dist, 'js/manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
 }
@@ -225,7 +234,7 @@ await writeTypes(dist, version);
   const names = [...Object.keys(docs), 'chart'];
   const sizes = await splitCss(root, dist, names, linkShadows);
   // Behavior per component, from the same sources as dist/js/ (not minified).
-  const UI_JS = { 'code-block': ['copy'], menubar: ['menu'], 'navigation-menu': ['menu'], 'range-calendar': ['calendar'] };
+  const UI_JS = { 'code-block': ['copy'], menubar: ['menu'], 'navigation-menu': ['menu'], 'range-calendar': ['calendar'], kanban: ['sortable'] };
   const jsFor = (name) => UI_JS[name] ?? (JS_MODULES[name] ? [name] : []);
   const core = await fs.readFile(path.join(root, 'src/js/basecoat.js'), 'utf8');
   for (const mod of new Set(names.flatMap(jsFor))) {

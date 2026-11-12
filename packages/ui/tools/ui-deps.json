@@ -65,10 +65,12 @@
     "popover"
   ],
   "data-table": [
+    "badge",
     "button",
     "checkbox",
     "dropdown-menu",
     "input",
+    "native-select",
     "popover",
     "table"
   ],
@@ -129,6 +131,10 @@
     "avatar",
     "button"
   ],
+  "kanban": [
+    "badge",
+    "button"
+  ],
   "kbd": [
     "button",
     "input-group"
@@ -168,6 +174,7 @@
   "progress": [
     "field"
   ],
+  "properties": [],
   "questionnaire": [
     "button",
     "radio-group"
@@ -226,6 +233,7 @@
     "field",
     "label"
   ],
+  "tile": [],
   "toast": [
     "button"
   ],

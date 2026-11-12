@@ -393,6 +393,64 @@
   .data-table th:is([aria-sort='ascending'], [aria-sort='descending']) { --data-table-sort-icon: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>'); }
   .data-table tbody tr[aria-selected='true'] { @apply bg-muted; }
   .data-table > footer { @apply text-muted-foreground gap-2 text-sm; }
+  .data-table[data-sticky] thead th { @apply bg-background shadow-[inset_0_-1px_0_var(--border)]; }
+  .data-table [role='grid'] :is(th, td):focus-visible { @apply ring-ring/50 outline-none ring-2 ring-inset; }
+  .data-table td[data-editable]:hover { @apply bg-muted/50; }
+  .data-table td[data-editing] { @apply py-0.5; }
+  .data-table td[data-editing] > input { @apply h-8; }
+  .data-table tr[data-detail] { @apply bg-muted/30 hover:bg-muted/30; }
+  .data-table tr[data-detail] > td { @apply text-muted-foreground px-4 py-3; }
+  .data-table [data-expand] { @apply text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring/50 inline-flex size-7 items-center justify-center rounded-(--auvyx-r-control) outline-none focus-visible:ring-3 [&>svg]:size-4; }
+  .data-table [data-facet-count] { @apply bg-secondary text-secondary-foreground ms-1 rounded-(--auvyx-r-control) px-1.5 text-xs font-normal; }
+
+  /* Table: grid variant */
+  .table[data-variant='grid'] { @apply text-sm; }
+  .table[data-variant='grid'] :is(th, td) { @apply border-e border-b px-3; }
+  .table[data-variant='grid'] :is(th, td):last-child { @apply border-e-0; }
+  .table[data-variant='grid'] > thead th { @apply bg-background text-muted-foreground h-9 font-normal; }
+  .table[data-variant='grid'] > thead th > svg,
+  .table[data-variant='grid'] > thead th > button > svg:first-child { @apply me-1.5 size-3.5 opacity-70; }
+  .table[data-variant='grid'] > tbody td { @apply h-10 py-0; }
+  .table[data-variant='grid'] > tbody tr { @apply border-0; }
+  .table[data-variant='grid'] > tfoot { @apply bg-transparent; }
+  .table[data-variant='grid'] > tfoot :is(td, th) { @apply bg-background text-muted-foreground h-9 border-t border-b-0 font-normal; }
+  .table[data-variant='grid'] :is(th, td)[data-row-number] { @apply text-muted-foreground/70 px-2 text-xs; }
+  .table[data-variant='grid'] td:focus-visible { @apply outline-ring -outline-offset-2 outline-2 outline-solid ring-0; }
+  .table[data-variant='grid'] td:focus-within:has(:focus-visible) { @apply bg-muted/50; }
+
+  /* Kanban */
+  .kanban { @apply gap-3 pb-2; }
+  .kanban > section { @apply bg-muted/50 gap-2 rounded-(--auvyx-r-surface) p-2; }
+  .kanban > section > header { @apply text-muted-foreground gap-2 px-1.5 py-1 text-sm; }
+  .kanban > section > header > :is(h2, h3, h4) { @apply text-foreground text-sm font-medium; }
+  .kanban > section > ol { @apply gap-2; }
+  .kanban > section > ol > li { @apply bg-card text-card-foreground gap-1 rounded-(--auvyx-r-field) border p-3 text-sm shadow-xs; }
+  .kanban > section > ol > li:has(> a:only-child) { @apply hover:border-ring/50 focus-within:ring-ring/50 focus-within:ring-3; }
+  .kanban > section > ol > li:has(> a:only-child) > a { @apply outline-none; }
+  .kanban > section > ol > li :is(strong, h4) { @apply font-medium; }
+  .kanban > section > ol > li p { @apply text-muted-foreground m-0 text-xs; }
+  .kanban > section > ol > li > footer { @apply text-muted-foreground mt-2 gap-2 text-xs; }
+
+  /* Sortable: drag and drop states */
+  auvyx-sortable li[data-dragging] { @apply opacity-40; }
+  auvyx-sortable li[data-grabbed] { @apply ring-ring ring-2 opacity-100; }
+  auvyx-sortable [data-drag-ghost] { @apply rotate-1 opacity-95 shadow-lg; }
+
+  /* Tile */
+  .tile { @apply bg-card text-card-foreground gap-1 rounded-(--auvyx-r-surface) border p-1.5 shadow-xs transition-[border-color,box-shadow]; }
+  .tile > :first-child:not(figcaption) { @apply bg-muted rounded-(--auvyx-r-field); }
+  .tile > figcaption { @apply gap-2 px-1.5 py-1.5 text-sm; }
+  .tile > figcaption > svg { @apply text-muted-foreground size-4; }
+  .tile > figcaption > :is(a, strong) { @apply text-foreground font-medium no-underline; }
+  .tile > figcaption > small { @apply text-muted-foreground text-xs whitespace-nowrap; }
+  .tile:has(figcaption a) { @apply hover:border-ring/40 hover:shadow-sm; }
+  .tile:has(figcaption a:focus-visible) { @apply ring-ring/50 ring-3; }
+
+  /* Properties */
+  .properties { @apply gap-0.5 text-sm; }
+  .properties > div { @apply min-h-9 gap-x-3 gap-y-0.5 py-1; }
+  .properties dt { @apply text-muted-foreground gap-2 [&>svg]:size-4; }
+  .properties dd { @apply text-foreground; }
 
   /* Calendar */
   .calendar { @apply p-3; }

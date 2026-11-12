@@ -1,0 +1,30 @@
+/* Sortable (fork addition): states for <auvyx-sortable> drag and drop
+ * (packages/elements/src/sortable.js, loaded on its own as js/sortable.min.js).
+ * Without the script the lists render as they are.
+ */
+@layer components {
+  auvyx-sortable:not([class]) {
+    @apply block;
+  }
+
+  auvyx-sortable li:not([data-drag-disabled], [aria-disabled='true']):not(:has([data-drag-handle])),
+  auvyx-sortable [data-drag-handle] {
+    @apply cursor-grab;
+  }
+
+  auvyx-sortable [data-drag-handle] {
+    touch-action: none;
+  }
+
+  auvyx-sortable[data-sorting] {
+    @apply cursor-grabbing select-none;
+  }
+
+  /* The ghost follows the pointer by viewport coordinates, so it is pinned
+     to the physical top-left corner in both LTR and RTL. */
+  auvyx-sortable [data-drag-ghost] {
+    @apply pointer-events-none fixed z-50 m-0;
+    top: 0;
+    left: 0;
+  }
+}

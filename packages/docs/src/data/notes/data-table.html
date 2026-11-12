@@ -1,0 +1,75 @@
+<p class="d-note">Upstream builds this with TanStack Table in React. Auvyx keeps the rows as server-rendered <code>&lt;tr&gt;</code> elements and the <code>&lt;auvyx-data-table&gt;</code> element only reorders, hides and annotates them. Without JavaScript it is a plain table.</p>
+
+<h3 class="d-h3">HTML structure</h3>
+<dl>
+  <dt><code>&lt;auvyx-data-table class="data-table"&gt;</code></dt>
+  <dd>
+    Root. Optional attributes: <code>data-page-size</code> (rows per page), <code>data-grid</code> (one tab stop; arrow keys, Home/End, Ctrl+Home/End and PageUp/PageDown move between cells; Space toggles the row), <code>data-sticky</code> (sticky header when the table wrapper has a max height), <code>data-mode="server"</code> with <code>data-total</code> (see below).
+    <dl>
+      <dt><code>&lt;input type="search" data-filter&gt;</code></dt>
+      <dd>Text filter. <code>data-filter="name,email"</code> limits it to those columns (keys or indexes).</dd>
+      <dt><code>&lt;input type="checkbox" data-facet="status" value="Paid"&gt;</code></dt>
+      <dd>Faceted filter: values in the same column are OR'ed, columns are AND'ed. Matches the cell's <code>data-value</code> or text. <code>&lt;span data-facet-count="status"&gt;</code> shows how many are active.</dd>
+      <dt><code>&lt;input type="checkbox" data-column="email" checked&gt;</code></dt>
+      <dd>Column visibility toggle.</dd>
+      <dt><code>&lt;th aria-sort="none" data-key="amount" data-type="number"&gt;&lt;button&gt;</code></dt>
+      <dd>Sortable header. <code>data-key</code> names the column for state, facets and toggles; <code>data-type="number"</code> sorts numerically. Start with <code>aria-sort="ascending"</code> for an initial sort.</dd>
+      <dt><code>&lt;tr data-key="INV001"&gt;</code></dt>
+      <dd>Data row. <code>data-key</code> (or <code>id</code>) identifies it in <code>state.selected</code> and events. <code>&lt;td data-value&gt;</code> overrides the text for sorting and facets.</dd>
+      <dt><code>&lt;td data-editable&gt;</code></dt>
+      <dd>Inline editing: double-click, Enter or F2 opens an input; Enter or blur commits, Escape cancels. Fires <code>cellchange</code>.</dd>
+      <dt><code>&lt;button data-expand aria-expanded="false"&gt;</code> + <code>&lt;tr data-detail hidden&gt;</code></dt>
+      <dd>Expandable row. The detail row directly follows its row and moves with it when sorted.</dd>
+      <dt><code>input[data-select-all]</code>, <code>input[data-select]</code></dt>
+      <dd>Row selection. Shift-click selects a range.</dd>
+      <dt><code>[data-selected-count]</code>, <code>[data-page-status]</code>, <code>select[data-page-size]</code>, <code>[data-page="first|prev|next|last"]</code>, <code>[data-reset]</code></dt>
+      <dd>Footer and toolbar hooks. Counters accept <code>data-template</code> with <code>{selected}</code>, <code>{total}</code>, <code>{page}</code>, <code>{pages}</code>. <code>[data-reset]</code> is hidden while there is nothing to reset.</dd>
+    </dl>
+  </dd>
+</dl>
+
+<h3 class="d-h3">Server-side data</h3>
+<p>With <code>data-mode="server"</code> the element leaves rows in place and emits <code>statechange</code>; render the requested page, replace the <code>&lt;tbody&gt;</code> rows, set <code>data-total</code> and call <code>refresh()</code>.</p>
+<pre><code>table.addEventListener('statechange', async (e) =&gt; {
+  const html = await fetch('/invoices?' + new URLSearchParams({ state: JSON.stringify(e.detail) })).then((r) =&gt; r.text());
+  table.querySelector('tbody').innerHTML = html;
+  table.dataset.total = '128';
+  table.refresh();
+});</code></pre>
+
+<h3 class="d-h3">JavaScript API</h3>
+<div class="d-tablewrap"><table>
+<thead>
+<tr>
+<th>API</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>table.state</code></td>
+<td>Property</td>
+<td>Read or write <code>{ query, sort: { column, direction } | null, filters: { [column]: string[] }, page, pageSize, hiddenColumns, selected }</code>. Writes merge, update the controls and emit <code>statechange</code>.</td>
+</tr>
+<tr>
+<td><code>table.refresh()</code></td>
+<td>Method</td>
+<td>Re-read rows after replacing <code>&lt;tbody&gt;</code> content.</td>
+</tr>
+<tr>
+<td><code>statechange</code></td>
+<td>Event</td>
+<td>Sort, filter, facet, page, page size or column visibility changed; <code>detail</code> is the state.</td>
+</tr>
+<tr>
+<td><code>selectionchange</code></td>
+<td>Event</td>
+<td><code>detail.rows</code> lists the selected rows.</td>
+</tr>
+<tr>
+<td><code>cellchange</code></td>
+<td>Event</td>
+<td>Cancelable. <code>detail: { row, rowKey, column, value, previous }</code>. Call <code>preventDefault()</code> to reject the edit or to render the value yourself.</td>
+</tr>
+</tbody></table>
+</div>
