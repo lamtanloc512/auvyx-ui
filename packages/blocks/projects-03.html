@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Projects 03 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--muted);
+      }
+      .pj-topbar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: stretch;
+        gap: 1rem;
+        block-size: 3.25rem;
+        padding-inline: 1rem;
+        background: color-mix(in oklab, var(--muted) 85%, transparent);
+        backdrop-filter: blur(8px);
+        border-block-end: 1px solid var(--border);
+      }
+      .pj-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        color: inherit;
+        text-decoration: none;
+      }
+      .pj-brand .pj-mini {
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border-radius: 0.4rem;
+      }
+      .pj-brand .pj-mini svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .pj-mini {
+        display: inline-grid;
+        place-items: center;
+        inline-size: 1.125rem;
+        block-size: 1.125rem;
+        border-radius: 0.3rem;
+        background: var(--mark);
+        color: oklch(0.2 0 0);
+        flex-shrink: 0;
+      }
+      .pj-mini svg {
+        inline-size: 0.75rem;
+        block-size: 0.75rem;
+      }
+      .pj-tabs {
+        margin-inline-start: auto;
+        display: flex;
+        align-items: stretch;
+        gap: 0.25rem;
+        overflow-x: auto;
+      }
+      .pj-tabs a {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding-inline: 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--muted-foreground);
+        text-decoration: none;
+        border-block-end: 2px solid transparent;
+        white-space: nowrap;
+      }
+      .pj-tabs a svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .pj-tabs a:hover {
+        color: var(--foreground);
+      }
+      .pj-tabs a[aria-current="page"] {
+        color: var(--foreground);
+        border-color: var(--foreground);
+      }
+      .pj-page {
+        padding-block: 2.5rem 4rem;
+      }
+      .pj-intro {
+        text-align: center;
+        margin-block-end: 2rem;
+      }
+      .pj-intro h1 {
+        margin: 0 0 0.5rem;
+        font-size: clamp(1.5rem, 3vw, 1.875rem);
+        font-weight: 500;
+        letter-spacing: -0.02em;
+      }
+      .pj-intro p {
+        margin: 0 auto;
+        max-inline-size: 38rem;
+        color: var(--muted-foreground);
+      }
+      .pj-primary {
+        background: oklch(0.58 0.24 292);
+        color: white;
+      }
+      .pj-primary:hover {
+        background: color-mix(in oklab, oklch(0.58 0.24 292) 88%, black);
+      }
+      .pj-letter {
+        display: inline-grid;
+        place-items: center;
+        inline-size: 2.5rem;
+        block-size: 2.5rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        color: white;
+        background: var(--tone);
+        flex-shrink: 0;
+      }
+      .pj-copy[data-copied] {
+        color: oklch(0.6 0.15 150);
+      }
+      @media (max-width: 40rem) {
+        .pj-brand {
+          font-size: 0;
+          gap: 0;
+        }
+        .pj-tabs a {
+          padding-inline: 0.5rem;
+        }
+      }
+      .pj-mcp {
+        padding-block-start: 0;
+        gap: 0;
+        overflow: hidden;
+      }
+      .pj-art {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.25rem;
+        padding-block-start: 1.75rem;
+        block-size: 15rem;
+        overflow: hidden;
+        background:
+          linear-gradient(
+              color-mix(in oklab, oklch(0.58 0.24 292) 10%, transparent) 1px,
+              transparent 1px
+            )
+            0 0 / 2.5rem 2.5rem,
+          linear-gradient(
+              90deg,
+              color-mix(in oklab, oklch(0.58 0.24 292) 10%, transparent) 1px,
+              transparent 1px
+            )
+            0 0 / 2.5rem 2.5rem,
+          color-mix(in oklab, oklch(0.58 0.24 292) 14%, var(--card));
+      }
+      .pj-tools {
+        display: flex;
+        gap: 0.625rem;
+      }
+      .pj-tool {
+        display: inline-grid;
+        place-items: center;
+        inline-size: 3.25rem;
+        block-size: 3.25rem;
+        border-radius: 0.875rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--tone);
+        background: white;
+        box-shadow: 0 6px 16px -8px rgb(0 0 0 / 0.3);
+      }
+      .pj-tool-sm {
+        inline-size: 2.25rem;
+        block-size: 2.25rem;
+        font-size: 0.875rem;
+        border-radius: 0.625rem;
+      }
+      .pj-wires {
+        display: flex;
+        gap: 0.5rem;
+        margin-inline: -1rem;
+      }
+      .pj-wire {
+        display: flex;
+        flex-direction: column;
+        gap: 0.375rem;
+        inline-size: 8rem;
+        block-size: 7rem;
+        padding: 0.75rem;
+        border-radius: 0.375rem;
+        background: white;
+      }
+      .pj-wire[data-tone="dark"] {
+        background: oklch(0.42 0 0);
+      }
+      .pj-wire b {
+        block-size: 0.5rem;
+        inline-size: 75%;
+        background: oklch(0.25 0 0);
+      }
+      .pj-wire[data-tone="dark"] b {
+        background: white;
+      }
+      .pj-wire i {
+        block-size: 0.25rem;
+        background: currentColor;
+        opacity: 0.25;
+      }
+      .pj-wire[data-tone="dark"] i {
+        color: white;
+      }
+      .pj-wire em {
+        margin-block-start: auto;
+        inline-size: 2.5rem;
+        block-size: 0.75rem;
+        background: oklch(0.25 0 0);
+      }
+      .pj-wire[data-tone="dark"] em {
+        background: white;
+      }
+      .pj-flow {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .pj-line {
+        inline-size: 2rem;
+        block-size: 2px;
+        background: oklch(0.58 0.24 292);
+      }
+      .pj-hub {
+        display: grid;
+        place-items: center;
+        inline-size: 3.75rem;
+        block-size: 3.75rem;
+        border-radius: 1rem;
+        background: var(--mark);
+        color: oklch(0.2 0 0);
+        box-shadow: 0 8px 20px -8px var(--mark);
+      }
+      .pj-hub svg {
+        inline-size: 2.25rem;
+        block-size: 2.25rem;
+      }
+      .pj-site {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        inline-size: 85%;
+        flex: 1;
+        padding: 0.75rem;
+        border-radius: 0.375rem 0.375rem 0 0;
+        background: white;
+        color: oklch(0.25 0.02 60);
+      }
+      .pj-mcp .pj-site p {
+        margin: 0;
+        color: inherit;
+        font-family: Georgia, serif;
+        font-size: 1.375rem;
+        line-height: 1.05;
+      }
+      .pj-site span {
+        border-radius: 0.25rem;
+        background:
+          radial-gradient(circle at 50% 70%, oklch(0.75 0.07 60) 0 30%, transparent 31%),
+          oklch(0.82 0.12 125);
+      }
+      .pj-mcp > section {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1.25rem 1.5rem 1.5rem;
+      }
+      .pj-mcp h2 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 500;
+      }
+      .pj-mcp p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: var(--muted-foreground);
+      }
+      .pj-more {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        align-self: flex-start;
+        font-size: 0.875rem;
+        color: inherit;
+      }
+      .pj-more svg {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+      }
+      .pj-mcp ul {
+        list-style: none;
+        margin: 0.5rem 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+      }
+      .pj-mcp li {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .pj-mcp li svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+        color: var(--muted-foreground);
+      }
+      .pj-mcp .pj-primary {
+        inline-size: 100%;
+      }
+      .pj-url input {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+      }
+      .pj-clients {
+        margin-block-start: 1.5rem;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1.25rem 1.5rem;
+      }
+      .pj-clients p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: var(--muted-foreground);
+      }
+      .pj-clients ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+      }
+      .pj-clients li {
+        font-size: 1.0625rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="pj-topbar">
+      <a href="projects-01.html" class="pj-brand">
+        <span class="pj-mini" style="--mark: oklch(0.58 0.24 292)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2 3 7v10l9 5 9-5V7zm0 3.2 5.9 3.3L12 11.8 6.1 8.5zM5.5 10.3l5.25 2.9v5.9L5.5 16.2zm7.75 8.8v-5.9l5.25-2.9v5.9z"/></svg></span>
+        Acme Studio
+      </a>
+      <nav class="pj-tabs" aria-label="Workspace">
+        <a href="projects-01.html">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
+          Publish
+        </a>
+        <a href="projects-02.html">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+          Export
+        </a>
+        <a href="studio-01.html">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+          Studio
+        </a>
+        <a href="projects-03.html" aria-current="page">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+          MCP
+        </a>
+      </nav>
+    </header>
+    <main class="wrapper pj-page" data-size="lg">
+      <div class="pj-intro">
+        <h1>Build with Acme, right inside your AI tools</h1>
+        <p>
+          Two MCP servers, one workflow. Generate and publish full websites, or pull real Acme
+          components into anything you build.
+        </p>
+      </div>
+      <div class="auto-grid" data-min="lg">
+        <article class="card pj-mcp" aria-labelledby="pj-library">
+          <div class="pj-art" aria-hidden="true">
+            <div class="pj-tools">
+              <span class="pj-tool" style="--tone: oklch(0.7 0.16 40)">A</span>
+              <span class="pj-tool" style="--tone: oklch(0.3 0 0)">G</span>
+              <span class="pj-tool" style="--tone: oklch(0.65 0.2 15)">L</span>
+            </div>
+            <div class="pj-wires">
+              <span class="pj-wire" data-tone="light">
+                <b></b>
+                <i></i>
+                <i></i>
+                <em></em>
+              </span>
+              <span class="pj-wire" data-tone="dark">
+                <b></b>
+                <i></i>
+                <i></i>
+                <em></em>
+              </span>
+              <span class="pj-wire" data-tone="light">
+                <b></b>
+                <i></i>
+                <i></i>
+                <em></em>
+              </span>
+              <span class="pj-wire" data-tone="dark">
+                <b></b>
+                <i></i>
+                <i></i>
+                <em></em>
+              </span>
+            </div>
+          </div>
+          <section>
+            <h2 id="pj-library">Library MCP</h2>
+            <p>
+              Bring the Acme component library into your AI editor. Build with real, editable
+              components and a full design system, not guessed-at UI.
+            </p>
+            <a href="#" class="pj-more">
+              Learn more
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+            </a>
+            <ul>
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></svg>
+                The complete component library in your AI editor
+              </li>
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+                Design system out of the box
+              </li>
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" x2="2" y1="6" y2="6"/><line x1="22" x2="2" y1="18" y2="18"/><line x1="6" x2="6" y1="2" y2="22"/><line x1="18" x2="18" y1="2" y2="22"/></svg>
+                Consistent across every page
+              </li>
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+                Works in any MCP-capable editor
+              </li>
+            </ul>
+            <button type="button" class="btn pj-primary">Connect Library MCP</button>
+            <div class="input-group pj-url">
+              <input
+                type="text"
+                readonly
+                value="https://library-mcp.acme.dev/mcp"
+                aria-label="Library MCP server URL" />
+              <button
+                type="button"
+                class="btn pj-copy"
+                data-variant="ghost"
+                data-size="icon-sm"
+                data-align="inline-end"
+                data-copy-text="https://library-mcp.acme.dev/mcp"
+                aria-label="Copy URL"
+                data-copied-label="Copied">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              </button>
+            </div>
+          </section>
+        </article>
+        <article class="card pj-mcp" aria-labelledby="pj-publish">
+          <div class="pj-art" aria-hidden="true">
+            <div class="pj-flow">
+              <span class="pj-tool pj-tool-sm" style="--tone: oklch(0.7 0.16 40)">A</span>
+              <span class="pj-line"></span>
+              <span class="pj-hub" style="--mark: oklch(0.58 0.24 292)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2 3 7v10l9 5 9-5V7zm0 3.2 5.9 3.3L12 11.8 6.1 8.5zM5.5 10.3l5.25 2.9v5.9L5.5 16.2zm7.75 8.8v-5.9l5.25-2.9v5.9z"/></svg>
+              </span>
+              <span class="pj-line"></span>
+              <span class="pj-tool" style="--tone: oklch(0.55 0.2 262)">W</span>
+            </div>
+            <div class="pj-site">
+              <p>Practice rooted in alignment</p>
+              <span></span>
+            </div>
+          </div>
+          <section>
+            <h2 id="pj-publish">Publish MCP</h2>
+            <p>
+              Build a complete website from a single prompt in your AI assistant, then publish it or
+              send it to your site builder.
+            </p>
+            <a href="#" class="pj-more">Watch video</a>
+            <ul>
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+                Build your prompt from your docs and notes
+              </li>
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+                On-brand from the first draft
+              </li>
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
+                Publish to your own domain
+              </li>
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                Hand off fully editable
+              </li>
+            </ul>
+            <button type="button" class="btn pj-primary">Connect Publish MCP</button>
+            <div class="input-group pj-url">
+              <input
+                type="text"
+                readonly
+                value="https://publish-mcp.acme.dev/mcp"
+                aria-label="Publish MCP server URL" />
+              <button
+                type="button"
+                class="btn pj-copy"
+                data-variant="ghost"
+                data-size="icon-sm"
+                data-align="inline-end"
+                data-copy-text="https://publish-mcp.acme.dev/mcp"
+                aria-label="Copy URL"
+                data-copied-label="Copied">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              </button>
+            </div>
+          </section>
+        </article>
+      </div>
+      <div class="card pj-clients">
+        <p>Drops into any MCP client you already build with</p>
+        <ul>
+          <li>ChatGPT</li>
+          <li>Claude</li>
+          <li>Cursor</li>
+          <li>Lovable</li>
+          <li>Cline</li>
+        </ul>
+      </div>
+    </main>
+  </body>
+</html>

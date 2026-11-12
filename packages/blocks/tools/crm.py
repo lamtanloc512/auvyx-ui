@@ -104,7 +104,7 @@ SHELL_CSS = sb.SB_CSS + """
 # =================================================================== crm-01
 th = lambda key, label, icon_name, sort=True, num=False: (
     f'<th data-key="{key}"' + (' aria-sort="none"' if sort else "") + (' data-type="number" class="crm-num"' if num else "") + ">"
-    + (f'<button type="button">{ci(icon_name)}{label}</button>' if sort else f"{ci(icon_name)}{label}") + "</th>"
+    + (f'<button type="button">{ci(icon_name)}{label}</button>' if sort else f'<span class="crm-th">{ci(icon_name)}{label}</span>') + "</th>"
 )
 
 rows = "\n".join(
@@ -210,6 +210,8 @@ CSS01 = SHELL_CSS + """
   .crm-table > header { gap: 0.5rem; }
   .crm-table .crm-push, .crm-header .crm-push { margin-inline-start: auto; }
   .crm-search { max-inline-size: 16rem; }
+  .crm-th { display: inline-flex; align-items: center; gap: 0.375rem; }
+  .crm-th svg { inline-size: 0.875rem; block-size: 0.875rem; opacity: 0.7; }
   .crm-table > header .btn svg { inline-size: 0.875rem; block-size: 0.875rem; }
   .crm-table > div:has(> table) { max-block-size: max(20rem, calc(100dvh - 13rem)); border-radius: var(--radius); }
   .crm-pop { padding: 0.5rem; min-inline-size: 11rem; font-size: 0.875rem; }

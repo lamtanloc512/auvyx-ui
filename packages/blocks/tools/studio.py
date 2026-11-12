@@ -43,7 +43,7 @@ NAV = (
     f'<footer>{sb.nav_user()}</footer>'
 )
 
-TABS = [("Publish", "send", False), ("Export", "file", False), ("Studio", "sparkles", True), ("MCP", "terminal", False)]
+TABS = [("Publish", "send", False, "projects-01.html"), ("Export", "file", False, "projects-02.html"), ("Studio", "sparkles", True, "studio-01.html"), ("MCP", "terminal", False, "projects-03.html")]
 
 
 def select(label, icon_html, options):
@@ -95,7 +95,7 @@ body = (
     + '<main class="st-main">'
     + f'<header class="app-header st-header">{sb.toggle_button()}<hr role="separator" aria-orientation="vertical"><h1>Create</h1>'
       '<nav class="st-tabs" aria-label="Workspace">'
-      + "".join(f'<a href="#"{" aria-current=\"page\"" if on else ""}>{ic(i)}{t}</a>' for t, i, on in TABS)
+      + "".join(f'<a href="{href}"{" aria-current=\"page\"" if on else ""}>{ic(i)}{t}</a>' for t, i, on, href in TABS)
       + '</nav><button type="button" class="btn" data-variant="outline" data-size="sm">Feedback</button></header>'
     + '<div class="st-body">'
       '<section class="st-hero" aria-labelledby="st-hero-title">'

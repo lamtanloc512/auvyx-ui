@@ -41,6 +41,7 @@ class AuvyxDataTable extends HTMLElement {
 
     this.querySelectorAll('input[data-column]').forEach((t) => { if (!t.checked) this.hiddenCols.add(this.colIndex(t.dataset.column)); });
     this.querySelectorAll('input[data-facet]:checked').forEach((t) => this.facetSet(this.colIndex(t.dataset.facet)).add(t.value));
+    if (this.pageSize) this.syncControls(); // the page size select follows data-page-size
     this.grid = this.hasAttribute('data-grid');
     if (this.grid) this.setupGrid();
     else this.tbody.querySelectorAll('td[data-editable]').forEach((c) => { c.tabIndex = 0; });

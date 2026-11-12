@@ -27,6 +27,7 @@
 - Agent blocks in a new Agent category:
   - `agent-01` context window panel: tokens used with a health level, prompt cache savings, a waffle chart by source with a hover-to-isolate legend, contents by tab, and a working Compact history action.
   - `agent-02` agent runs table built on the new Data Table interactions.
+- `projects-02` (Export: export targets as cards and recent exports in a grid table) and `projects-03` (MCP: server cards with a connect button and a copyable URL). The Publish / Export / Studio / MCP tabs link `projects-01`, `projects-02`, `studio-01` and `projects-03`.
 - `projects-01` (new Projects category): a workspace of sites with project tiles showing a style preview (logo, typeface, palette), a showcase of site mockups and a What's new card that closes without JavaScript (`<dialog open>` + `<form method="dialog">`).
 - CRM blocks in a new CRM category (Application group), built on the foundation primitives:
   - `crm-01` customers in two synced views: a grid data table (row numbers, stage and owner facets, editable ARR, grid keys, totals row) and a kanban board where dragging a card changes the stage.

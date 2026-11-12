@@ -195,5 +195,6 @@
  "line(x1=4,x2=4,y1=22,y2=15)path(d=M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z)": "flag",
  "line(x1=12,x2=12,y1=2,y2=22)path(d=M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6)": "dollar-sign",
  "path(d=m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7)rect(height=16,rx=2,width=20,x=2,y=4)": "mail",
- "circle(cx=12,cy=12,r=10)path(d=M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20)path(d=M2 12h20)": "globe"
+ "circle(cx=12,cy=12,r=10)path(d=M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20)path(d=M2 12h20)": "globe",
+ "line(x1=12,x2=12,y1=15,y2=3)path(d=M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4)polyline(points=7 10 12 15 17 10)": "download"
 }

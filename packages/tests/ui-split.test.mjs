@@ -60,6 +60,15 @@ test('blocks render identically with the split files', async () => {
   assert.deepEqual(failures, []);
 });
 
+// The bundle, plus the modules outside auvyx.min.js (data-table, sortable) a
+// component's examples use: they load next to the bundle on a real page.
+async function bundleFor(component) {
+  const modules = JSON.parse(await fs.readFile(path.join(root, 'packages/ui/dist/js/manifest.json'), 'utf8'));
+  const extra = Object.values(modules).filter((m) => !m.bundled && component.examples.some((e) => e.html.includes(m.detect)))
+    .map((m) => `<script src="/packages/ui/dist/${m.file}" defer></script>`).join('');
+  return `<link rel="stylesheet" href="/packages/ui/dist/auvyx.min.css"><script src="/packages/ui/dist/auvyx.min.js" defer></script>${extra}`;
+}
+
 const TRIGGER = '[aria-haspopup]:not([disabled]), [popovertarget], [commandfor], [role=tab][aria-selected=false], details > summary, [data-sidebar-toggle]';
 const PAGE_STYLE = '<style>.t-ex{padding:2rem;display:flex;flex-wrap:wrap;gap:1rem;align-items:center;justify-content:center;border-bottom:1px dashed #ccc}</style>';
 
@@ -67,12 +76,9 @@ test('components installed with the CLI render like the bundle', async () => {
   const dir = await freshDir('split-components');
   const docs = await componentDocs();
   const template = path.join(registry, '{framework}/{icons}/{name}.json');
-  const modules = JSON.parse(await fs.readFile(path.join(root, 'packages/ui/dist/js/manifest.json'), 'utf8'));
   const failures = [];
   for (const [name, c] of Object.entries(docs)) {
-    // Modules outside auvyx.min.js (data-table, sortable) load next to the bundle, as on a real page.
-    const extra = Object.values(modules).filter((m) => !m.bundled && c.examples.some((e) => e.html.includes(m.detect))).map((m) => `<script src="/packages/ui/dist/${m.file}" defer></script>`).join('');
-    const bundle = `<link rel="stylesheet" href="/packages/ui/dist/auvyx.min.css"><script src="/packages/ui/dist/auvyx.min.js" defer></script>${extra}`;
+    const bundle = await bundleFor(c);
     const project = path.join(dir, name);
     await fs.mkdir(project);
     run('node', [cli, 'init', '--registry', template], { cwd: project });
@@ -120,12 +126,11 @@ test('components installed as Tailwind source render like the bundle', async () 
   // The project's own build; source(none) so it emits no utilities, like auvyx.min.css.
   await fs.writeFile(path.join(dir, 'app.css'), '@import "tailwindcss" source(none);\n@import "./auvyx/ui/index.css";\n');
   run(bin('tailwindcss'), ['-i', path.join(dir, 'app.css'), '-o', path.join(dir, 'app.out.css')]);
-  const bundle = `<link rel="stylesheet" href="/packages/ui/dist/auvyx.min.css"><script src="/packages/ui/dist/auvyx.min.js" defer></script>`;
   const failures = [];
   for (const [name, c] of Object.entries(docs)) {
     const examples = c.examples.map((e) => `<section class="t-ex">${e.html}</section>`).join('\n');
     const page = (head) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">${head}${PAGE_STYLE}</head><body>${examples}</body></html>`;
-    await fs.writeFile(path.join(dir, `${name}.full.html`), page(bundle));
+    await fs.writeFile(path.join(dir, `${name}.full.html`), page(await bundleFor(c)));
     await fs.writeFile(path.join(dir, `${name}.source.html`), page(`<link rel="stylesheet" href="app.out.css">${scripts}`));
     const errors = [];
     const capture = (act) => async () => {

@@ -594,6 +594,16 @@
     "description": "A workspace of sites: project tiles with a style preview (logo, typeface, palette), a showcase of site mockups and a dismissible What’s new card, with no JavaScript of its own.",
     "category": "projects"
   },
+  "projects-02": {
+    "title": "Projects 02",
+    "description": "Export a site: export targets as cards (design tool, site builder, React, HTML) and recent exports in a grid table.",
+    "category": "projects"
+  },
+  "projects-03": {
+    "title": "Projects 03",
+    "description": "Connect MCP servers: two server cards with an illustration, features, a connect button and a copyable URL, then the clients it works with.",
+    "category": "projects"
+  },
   "reviews-01": {
     "title": "Reviews 01",
     "description": "Product reviews: rating summary with clickable star bars, fit and feel scales, photo filter, sort, helpful votes and store replies.",
