@@ -9,11 +9,15 @@
 
 ### Fixed
 
+- Corner shapes in Maia and Luma: buttons, fields, badges, tab lists, chips and progress bars are pills there, and Notch or Scoop squared them off into rectangles. They now stay round, as switches and radios already did; corner shapes apply to cards, dialogs and menus, and the Create page says so for those styles. The global `corner-shape` rule moved into `@layer base` so a style pack's component rules can override it.
+- Tile: the caption's menu button is clickable before hover (only the preview overlay lets clicks through until it shows).
+- React blocks: `chat-01` model select and `projects-02` column headers now render like the HTML blocks.
 - Create page: importing a theme or choosing a preset that sets its own letter spacing now uses it; before, an earlier Letter Spacing slider value overrode it.
 - Create page: themes with bare HSL channel colors (`222.2 84% 4.9%`, as in tweakcn's Tailwind v3 export and older shadcn registry JSON) are wrapped in `hsl()`, so their colors apply.
 
 ### Added
 
+- `auvyx.ai.json` on the docs site (linked from `llms.txt`): component contracts for agents. Per component: the root selector, owned classes, the data-* and aria-* attributes its examples use with their values, the root's children, the script it needs, its custom element API and a canonical snippet. Top level: design rules, theme tokens and intent groups, so a caller can route a request and send only the relevant contracts. Generated from the same sources as the docs and checked by `packages/tests/ai-contract.test.mjs`.
 - `.flyout-menu`, CSS only: a vertical category menu whose panels fly out to the side on hover or keyboard focus, with a short hide delay for diagonal pointer moves; works inside a popover.
 - Create page: a Mono Font option (Geist Mono, JetBrains Mono, IBM Plex Mono, Fira Code, Roboto Mono, Source Code Pro, Space Mono, DM Mono) that sets `--font-mono`, and a Letter Spacing slider that sets `--tracking-normal`. Preset codes gain a 12th digit for the mono font; 11-digit codes still open. Imported tweakcn themes' `--letter-spacing` now applies.
 - AI chat primitives:

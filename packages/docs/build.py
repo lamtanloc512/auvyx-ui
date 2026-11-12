@@ -6,7 +6,7 @@ Steps: run packages/ui build, compile docs.css (bundle + the Tailwind
 utilities the upstream examples use), assemble index.html with embedded data,
 copy dist files and blocks (paths rewritten for the site layout).
 """
-import json, pathlib, re, shutil, subprocess, gzip
+import json, pathlib, re, shutil, subprocess, gzip, sys
 from html import escape as html_escape
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -42,7 +42,8 @@ def write_llms(guides_list, comps, blocks):
             parts += ["## Usage", "", c["notes"].strip(), ""]
         (md / "components" / f"{key}.md").write_text("\n".join(parts))
         lines.append(f"- [{c['title']}]({SITE}/md/components/{key}.md): {c['description']}")
-    lines += ["", "## Blocks", "", f"- [Registry index, HTML]({SITE}/r/html/lucide/index.json): every block and component as a registry item ({len(blocks)} blocks)",
+    lines += ["", "## For agents", "", f"- [Component contracts]({SITE}/auvyx.ai.json): per component the root class, owned classes, data-* and aria-* attributes with their values, children, script, custom element API and a canonical snippet; plus design rules, theme tokens and intent groups for routing", ""]
+    lines += ["## Blocks", "", f"- [Registry index, HTML]({SITE}/r/html/lucide/index.json): every block and component as a registry item ({len(blocks)} blocks)",
               f"- [Registry index, React]({SITE}/r/react/lucide/index.json): the same items as React 19 components", ""]
     (OUT / "llms.txt").write_text("\n".join(lines))
     # Every export in one file, guides first.
@@ -392,6 +393,11 @@ def main():
     run("node", str(BLOCKS / "tools/build_registry.mjs"), "--out", str(OUT / "r"))
 
     write_llms(gd, comps, blocks)
+    # Component contracts for agents, from the same sources as the docs.
+    sys.path.insert(0, str(DOCS / "tools"))
+    import ai_contract
+    ai = ai_contract.build(comps, UI / "dist", VERSION, CDN, SITE)
+    (OUT / "auvyx.ai.json").write_text(json.dumps(ai, indent=1, ensure_ascii=False) + "\n")
 
     files = sorted(p.relative_to(OUT).as_posix() for p in OUT.rglob("*") if p.is_file())
     total = sum((OUT / f).stat().st_size for f in files)
