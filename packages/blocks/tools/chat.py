@@ -94,7 +94,7 @@ composer = (
     '<footer>'
     f'<button type="button" class="btn" data-variant="ghost" data-size="icon-sm" data-attach aria-label="Attach files">{ic("plus")}</button>'
     '<input type="file" multiple hidden>'
-    '<select class="select" data-size="sm" aria-label="Model"><option>Fast</option><option selected>Thinking</option></select>'
+    '<select class="select" data-size="sm" aria-label="Model"><option>Thinking</option><option>Fast</option></select>'
     f'<button type="submit" class="btn" data-size="icon-sm" aria-label="Send">{ci("up")}</button>'
     f'<button type="button" class="btn" data-size="icon-sm" data-stop aria-label="Stop">{ci("stop")}</button>'
     '</footer></form>'

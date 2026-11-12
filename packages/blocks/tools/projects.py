@@ -258,12 +258,14 @@ body02 = (
       f'<div class="auto-grid" data-min="md">{"".join(target_card(*t) for t in TARGETS)}</div>'
       '<section class="pj-recent" aria-labelledby="pj-recent"><h2 id="pj-recent">Recent exports</h2>'
       '<div class="table-container"><table class="table" data-variant="grid"><thead><tr>'
-      f'<th>{ic("file")}Target</th><th>{ic("frame")}Site</th><th class="pj-num">Pages</th><th>{ic("user")}By</th><th>{ic("clock")}When</th><th>Status</th><th><span class="sr-only">Action</span></th>'
+      f'<th><span class="pj-th">{ic("file")}Target</span></th><th><span class="pj-th">{ic("frame")}Site</span></th><th class="pj-num">Pages</th><th><span class="pj-th">{ic("user")}By</span></th><th><span class="pj-th">{ic("clock")}When</span></th><th>Status</th><th><span class="sr-only">Action</span></th>'
       f'</tr></thead><tbody>{export_rows}</tbody></table></div></section>'
     + '</main>'
 )
 
 CSS02 = TOP_CSS + """
+  .pj-th { display: inline-flex; align-items: center; gap: 0.375rem; }
+  .pj-th svg { inline-size: 0.875rem; block-size: 0.875rem; opacity: 0.7; }
   .pj-export-bar { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0.75rem; margin-block-end: 1.5rem; }
   .pj-muted { font-size: 0.8125rem; color: var(--muted-foreground); }
   .pj-target > header { display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; }

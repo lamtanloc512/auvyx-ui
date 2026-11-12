@@ -69,28 +69,25 @@
 
     [data-actions] {
       @apply opacity-0 transition-opacity;
+    }
 
-      > * {
-        @apply pointer-events-none;
-      }
+    /* The preview overlay lets clicks through to the tile link until shown. */
+    > :first-child:not(figcaption) > [data-actions] > * {
+      @apply pointer-events-none;
     }
 
     &:is(:hover, :focus-within) [data-actions],
     [data-actions]:has([aria-expanded='true']) {
       @apply opacity-100;
+    }
 
-      > * {
-        @apply pointer-events-auto;
-      }
+    &:is(:hover, :focus-within) > :first-child:not(figcaption) > [data-actions] > * {
+      @apply pointer-events-auto;
     }
 
     @media (hover: none) {
       > figcaption > [data-actions] {
         @apply opacity-100;
-
-        > * {
-          @apply pointer-events-auto;
-        }
       }
     }
   }
