@@ -562,10 +562,10 @@
         padding-block-end: 0.5rem;
       }
       .hf-beauty-nav .hf-mega {
-        --primary: var(--biz);
+        --primary: var(--biz, var(--primary));
       }
       .hf-bar {
-        background: color-mix(in oklab, var(--biz) 14%, var(--background));
+        background: color-mix(in oklab, var(--biz, var(--primary)) 14%, var(--background));
         color: var(--foreground);
       }
     </style>

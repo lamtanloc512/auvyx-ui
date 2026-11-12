@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Blog 03 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-page {
+        padding-block: 2rem 4rem;
+      }
+      .shop-h1 {
+        margin: 0;
+        font-size: 1.875rem;
+        font-weight: 600;
+        letter-spacing: -0.025em;
+      }
+      .shop-lead {
+        margin: 0;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+
+      .blog-topics {
+        display: flex;
+        gap: 0.5rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .blog-topics a {
+        flex: none;
+        padding: 0.375rem 0.875rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        color: inherit;
+        font-size: 0.875rem;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .blog-topics a:hover {
+        background: var(--accent);
+      }
+      .blog-topics a[aria-current] {
+        border-color: var(--primary);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .blog-media {
+        display: block;
+        overflow: hidden;
+        aspect-ratio: 16 / 10;
+        border-radius: var(--radius);
+        background: var(--muted);
+      }
+      .blog-media img {
+        display: block;
+        inline-size: 100%;
+        block-size: 100%;
+        object-fit: cover;
+        transition: transform 300ms;
+      }
+      .blog-card:hover .blog-media img,
+      .blog-feature:hover .blog-media img {
+        transform: scale(1.03);
+      }
+      .blog-topic {
+        margin: 0;
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--muted-foreground);
+      }
+      .blog-topic a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .blog-title {
+        margin: 0;
+        font-size: 1.125rem;
+        font-weight: 600;
+        line-height: 1.35;
+        letter-spacing: -0.01em;
+        text-wrap: balance;
+      }
+      .blog-title a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .blog-title a:hover {
+        text-decoration: underline;
+        text-underline-offset: 4px;
+      }
+      .blog-excerpt {
+        margin: 0;
+        color: var(--muted-foreground);
+        font-size: 0.9375rem;
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .blog-meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.375rem 0.5rem;
+        margin: 0;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .blog-card {
+        display: grid;
+        gap: 1rem;
+        align-content: start;
+      }
+      .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+        gap: 2.5rem 1.5rem;
+      }
+      .blog-feature {
+        display: grid;
+        gap: 1.5rem;
+        align-items: center;
+      }
+      .blog-feature .blog-title {
+        font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+      }
+      .blog-feature .blog-excerpt {
+        font-size: 1.0625rem;
+        -webkit-line-clamp: 4;
+      }
+      @media (width >= 48rem) {
+        .blog-feature {
+          grid-template-columns: 1.3fr 1fr;
+          gap: 2.5rem;
+        }
+      }
+      .blog-list {
+        display: grid;
+        gap: 1.5rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .blog-list > li {
+        display: grid;
+        grid-template-columns: 9rem minmax(0, 1fr);
+        gap: 1.25rem;
+        align-items: start;
+        padding-block-end: 1.5rem;
+        border-block-end: 1px solid var(--border);
+      }
+      .blog-list > li:last-child {
+        border: 0;
+      }
+      .blog-list .blog-media {
+        aspect-ratio: 4 / 3;
+      }
+      @media (width < 36rem) {
+        .blog-list > li {
+          grid-template-columns: 6rem minmax(0, 1fr);
+          gap: 1rem;
+        }
+        .blog-list .blog-excerpt {
+          display: none;
+        }
+      }
+      .blog-list mark {
+        background: color-mix(in oklab, var(--primary) 18%, transparent);
+        color: inherit;
+        border-radius: 0.125rem;
+      }
+      .blog-article {
+        display: grid;
+        gap: 2rem;
+      }
+      .blog-article > header {
+        display: grid;
+        gap: 1rem;
+        max-inline-size: 48rem;
+      }
+      .blog-article > header h1 {
+        margin: 0;
+        font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+        font-weight: 600;
+        line-height: 1.1;
+        letter-spacing: -0.025em;
+        text-wrap: balance;
+      }
+      .blog-article > header .blog-lead {
+        margin: 0;
+        font-size: 1.1875rem;
+        line-height: 1.55;
+        color: var(--muted-foreground);
+      }
+      .blog-cover {
+        margin: 0;
+        overflow: hidden;
+        aspect-ratio: 2 / 1;
+        border-radius: var(--radius);
+        background: var(--muted);
+      }
+      .blog-cover img {
+        display: block;
+        inline-size: 100%;
+        block-size: 100%;
+        object-fit: cover;
+      }
+      .blog-body {
+        inline-size: 100%;
+        max-inline-size: 42rem;
+        margin-inline: auto;
+      }
+      .blog-body > * + * {
+        margin-block-start: 1.25em;
+      }
+      .blog-body img {
+        max-inline-size: 100%;
+        block-size: auto;
+        border-radius: var(--radius);
+      }
+      .blog-body figure {
+        margin-inline: 0;
+      }
+      .blog-body figcaption {
+        margin-block-start: 0.5rem;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .blog-foot {
+        display: grid;
+        gap: 2rem;
+        inline-size: 100%;
+        max-inline-size: 42rem;
+        margin-inline: auto;
+      }
+      .blog-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .blog-share {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding-block: 1rem;
+        border-block: 1px solid var(--border);
+      }
+      .blog-author-card {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 1rem;
+        align-items: start;
+      }
+      .blog-author-card p {
+        margin: 0;
+      }
+      .blog-comments {
+        display: grid;
+        gap: 1.5rem;
+      }
+      .blog-comment-list {
+        display: grid;
+        gap: 1.25rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .blog-comment-list li {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 0.75rem;
+      }
+      .blog-comment-list li p {
+        margin: 0;
+      }
+      .blog-comment-head {
+        display: flex;
+        gap: 0.5rem;
+        align-items: baseline;
+        flex-wrap: wrap;
+        font-size: 0.875rem;
+      }
+      .blog-comment-head time {
+        color: var(--muted-foreground);
+        font-size: 0.8125rem;
+      }
+      .blog-comment-list ol {
+        grid-column: 2;
+        display: grid;
+        gap: 1rem;
+        list-style: none;
+        margin: 0.75rem 0 0;
+        padding: 0 0 0 1rem;
+        border-inline-start: 2px solid var(--border);
+      }
+      .blog-code {
+        margin: 0;
+        font-size: clamp(4rem, 3rem + 6vw, 7rem);
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -0.05em;
+        color: var(--muted-foreground);
+        opacity: 0.35;
+      }
+      .blog-notfound {
+        display: grid;
+        justify-items: center;
+        gap: 1.5rem;
+        text-align: center;
+        inline-size: 100%;
+        max-inline-size: 32rem;
+        margin-inline: auto;
+      }
+      .blog-notfound form {
+        inline-size: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrapper shop-page">
+      <div class="stack" data-gap="8">
+        <div class="stack" data-gap="4">
+          <div class="stack" data-gap="1">
+            <p class="shop-lead">Search results for</p>
+            <h1 class="shop-h1">“design”</h1>
+          </div>
+          <form role="search" onsubmit="event.preventDefault()">
+            <div class="input-group">
+              <input type="search" value="design" aria-label="Search the journal" />
+              <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+            </div>
+          </form>
+          <p class="shop-lead">3 posts</p>
+        </div>
+        <ol class="blog-list">
+          <li>
+            <a href="#" class="blog-media" tabindex="-1" aria-hidden="true">
+              <img src="assets/placeholder.svg" alt />
+            </a>
+            <div class="stack" data-gap="2">
+              <p class="blog-topic"><a href="#">Design</a></p>
+              <h2 class="blog-title">
+                <a href="#">The quiet return of the hand-drawn interface</a>
+              </h2>
+              <p class="blog-excerpt">
+                After a decade of flat grids, product teams are reaching for texture, imperfection
+                and the marks a person leaves.
+              </p>
+              <p class="blog-meta">
+                <time datetime="2026-11-08">Nov 8, 2026</time>
+                <span aria-hidden="true">·</span>
+                <span>6 min read</span>
+              </p>
+            </div>
+          </li>
+          <li>
+            <a href="#" class="blog-media" tabindex="-1" aria-hidden="true">
+              <img src="assets/placeholder.svg" alt />
+            </a>
+            <div class="stack" data-gap="2">
+              <p class="blog-topic"><a href="#">Design</a></p>
+              <h2 class="blog-title"><a href="#">The case for boring typefaces</a></h2>
+              <p class="blog-excerpt">
+                Neutral type is not a lack of opinion. It is an opinion about where the reader
+                should look.
+              </p>
+              <p class="blog-meta">
+                <time datetime="2026-10-27">Oct 27, 2026</time>
+                <span aria-hidden="true">·</span>
+                <span>4 min read</span>
+              </p>
+            </div>
+          </li>
+          <li>
+            <a href="#" class="blog-media" tabindex="-1" aria-hidden="true">
+              <img src="assets/placeholder.svg" alt />
+            </a>
+            <div class="stack" data-gap="2">
+              <p class="blog-topic"><a href="#">Culture</a></p>
+              <h2 class="blog-title"><a href="#">What a year of four-day weeks taught us</a></h2>
+              <p class="blog-excerpt">
+                Fewer meetings, longer focus and a calendar that finally has room to think. The
+                numbers, and what surprised us.
+              </p>
+              <p class="blog-meta">
+                <time datetime="2026-11-05">Nov 5, 2026</time>
+                <span aria-hidden="true">·</span>
+                <span>8 min read</span>
+              </p>
+            </div>
+          </li>
+        </ol>
+        <section class="empty" data-search-empty hidden>
+          <header>
+            <figure data-variant="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></figure>
+            <h3>Nothing matched “design”</h3>
+            <p>Try fewer or different words, or browse the topics.</p>
+          </header>
+          <footer><a href="#" class="btn" data-variant="outline">Browse the journal</a></footer>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

@@ -54,6 +54,21 @@
     "description": "Review moderation: rating summary, filters for needs reply, flagged and low ratings, inline public replies, flag and hide.",
     "category": "admin"
   },
+  "blog-01": {
+    "title": "Blog 01",
+    "description": "A blog's posts: the title and topics, a featured post, a grid of post cards (picture, topic, title, excerpt, author, date and reading time) and pages.",
+    "category": "blog"
+  },
+  "blog-02": {
+    "title": "Blog 02",
+    "description": "A blog post: its topic, title, lead, author and date, the cover, the article in Auvyx UI's typography, tags and share, the author, comments with a reply form and related posts.",
+    "category": "blog"
+  },
+  "blog-03": {
+    "title": "Blog 03",
+    "description": "A blog's search results: the search field, how many posts matched, a list of posts with the words marked, and an empty state when nothing matched.",
+    "category": "blog"
+  },
   "bottom-nav-01": {
     "title": "Bottom Navigation 01",
     "description": "A mobile app shell with a bottom tab bar and a cart badge.",
@@ -358,6 +373,11 @@
     "title": "Dashboard 01",
     "description": "A dashboard with sidebar, charts and data table.",
     "category": "dashboard"
+  },
+  "error-01": {
+    "title": "Error 01",
+    "description": "A page not found: the code, what happened, a search field and the ways back (home, the journal).",
+    "category": "error"
   },
   "filter-01": {
     "title": "Filter 01",

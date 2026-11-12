@@ -307,8 +307,8 @@
         font-style: italic;
       }
       .hf-news .btn[type="submit"] {
-        background: var(--biz);
-        color: var(--biz-fg);
+        background: var(--biz, var(--primary));
+        color: var(--biz-fg, var(--primary-foreground));
       }
       html.dark .hf-foot {
         --foot-bg: oklch(0.2 0.02 10);

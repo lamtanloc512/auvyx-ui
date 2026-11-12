@@ -5784,10 +5784,10 @@ add("header-04", "Header 04", "A spa or wellness header over a hero: contact and
   {demo("Scroll to see the header turn solid")}
 </div>
 """, HF + """
-  .hf-book { background: var(--biz); color: var(--biz-fg); }
-  .hf-book:hover { background: color-mix(in oklab, var(--biz) 85%, black); color: var(--biz-fg); }
+  .hf-book { background: var(--biz, var(--primary)); color: var(--biz-fg, var(--primary-foreground)); }
+  .hf-book:hover { background: color-mix(in oklab, var(--biz, var(--primary)) 85%, black); color: var(--biz-fg, var(--primary-foreground)); }
   .hf-overlay .hf-row { block-size: 4.5rem; }
-  .hf-overlay .block-logo-mark { background: var(--biz); }""", scripts=script(HF_JS))
+  .hf-overlay .block-logo-mark { background: var(--biz, var(--primary)); }""", scripts=script(HF_JS))
 
 # ---------------------------------------------------------------- header-05: cosmetics / beauty
 BEAUTY = "--biz: oklch(0.62 0.12 10); --biz-fg: #fff;"
@@ -5815,8 +5815,8 @@ add("header-05", "Header 05", "A beauty and cosmetics header: soft announcement 
   @media (width >= 64rem) { .hf-beauty-row .hf-burger { display: none; } }
   .hf-beauty-logo { color: inherit; font-family: var(--font-serif, Georgia, serif); font-size: 1.75rem; font-style: italic; letter-spacing: 0.02em; text-decoration: none; }
   .hf-beauty-nav { justify-content: center; padding-block-end: 0.5rem; }
-  .hf-beauty-nav .hf-mega { --primary: var(--biz); }
-  .hf-bar { background: color-mix(in oklab, var(--biz) 14%, var(--background)); color: var(--foreground); }""", scripts=script(HF_JS))
+  .hf-beauty-nav .hf-mega { --primary: var(--biz, var(--primary)); }
+  .hf-bar { background: color-mix(in oklab, var(--biz, var(--primary)) 14%, var(--background)); color: var(--foreground); }""", scripts=script(HF_JS))
 
 # ---------------------------------------------------------------- header-06: kids / toys
 KID_CHIPS = [("0–2 years", "baby", "oklch(0.93 0.06 85)", "oklch(0.35 0.08 70)"), ("3–5 years", "puzzle", "oklch(0.92 0.06 160)", "oklch(0.35 0.08 160)"), ("6–8 years", "sparkles", "oklch(0.92 0.05 250)", "oklch(0.38 0.1 255)"), ("Outdoor play", "sun", "oklch(0.93 0.06 40)", "oklch(0.42 0.12 40)"), ("Books", "book-open", "oklch(0.92 0.05 320)", "oklch(0.4 0.1 320)"), ("Gifts", "gift", "oklch(0.92 0.06 20)", "oklch(0.45 0.14 20)")]
@@ -5848,7 +5848,7 @@ add("header-06", "Header 06", "A playful kids and toys header: free shipping bar
   .hf-kids-logo span:nth-child(5) { color: oklch(0.6 0.17 320); }
   .hf-kids-logo span:nth-child(6) { color: oklch(0.65 0.18 30); }
   .hf-kids .shop-count { background: oklch(0.65 0.18 30); }
-  .hf-bar { background: var(--biz); color: var(--biz-fg); font-weight: 600; }
+  .hf-bar { background: var(--biz, var(--primary)); color: var(--biz-fg, var(--primary-foreground)); font-weight: 600; }
   @media (width < 64rem) { .hf-chips { justify-content: flex-start; padding-inline: 1rem; } }""", scripts=script(HF_JS))
 
 
@@ -5919,9 +5919,9 @@ add("footer-04", "Footer 04", "A spa or local business footer: contact details, 
   </div>
 </footer>
 """, HF + """
-  .hf-foot .hf-book { background: var(--biz); color: var(--biz-fg); }
-  .hf-foot .hf-book:hover { background: color-mix(in oklab, var(--biz) 85%, black); color: var(--biz-fg); }
-  .hf-foot .block-logo-mark { background: var(--biz); }
+  .hf-foot .hf-book { background: var(--biz, var(--primary)); color: var(--biz-fg, var(--primary-foreground)); }
+  .hf-foot .hf-book:hover { background: color-mix(in oklab, var(--biz, var(--primary)) 85%, black); color: var(--biz-fg, var(--primary-foreground)); }
+  .hf-foot .block-logo-mark { background: var(--biz, var(--primary)); }
   html.dark .hf-foot { --foot-bg: oklch(0.2 0.015 150); }""", scripts=script(HF_JS))
 
 VALUES = [("rabbit", "Cruelty-free", "Never tested on animals"), ("leaf", "Clean formulas", "No parabens or sulfates"), ("recycle", "Recyclable", "Glass and refills"), ("truck", "Free shipping", "On orders over $40")]
@@ -5940,7 +5940,7 @@ add("footer-05", "Footer 05", "A beauty footer: brand values strip, newsletter w
 </footer>
 """, HF + """
   .hf-beauty-logo { font-family: var(--font-serif, Georgia, serif); font-size: 1.75rem; font-style: italic; }
-  .hf-news .btn[type=submit] { background: var(--biz); color: var(--biz-fg); }
+  .hf-news .btn[type=submit] { background: var(--biz, var(--primary)); color: var(--biz-fg, var(--primary-foreground)); }
   html.dark .hf-foot { --foot-bg: oklch(0.2 0.02 10); }""", scripts=script(HF_JS))
 
 add("footer-06", "Footer 06", "A playful kids footer: wave edge, club newsletter, colorful columns, safety badges and social links.", "footer", f"""
@@ -5968,7 +5968,7 @@ add("footer-06", "Footer 06", "A playful kids footer: wave edge, club newsletter
   .hf-kids-logo span:nth-child(4) { color: oklch(0.75 0.14 230); }
   .hf-kids-logo span:nth-child(5) { color: oklch(0.75 0.15 320); }
   .hf-kids-logo span:nth-child(6) { color: oklch(0.75 0.17 30); }
-  .hf-kids-foot .hf-news .btn[type=submit] { background: var(--biz); color: oklch(0.25 0.06 85); }
+  .hf-kids-foot .hf-news .btn[type=submit] { background: var(--biz, var(--primary)); color: oklch(0.25 0.06 85); }
   .hf-kids-foot .badge svg { inline-size: 0.75rem; block-size: 0.75rem; }""", scripts=script(HF_JS))
 
 
@@ -7332,6 +7332,274 @@ add("admin-08", "Admin 08", "Review moderation: rating summary, filters for need
 })();
 """))
 
+
+
+# ================================================================== blog: the posts, an article, search results, not found
+# A blog's pages (a WordPress site's posts index, a post, its search and its 404): the same page column, type and tokens as the
+# shop's, so a site drawn with these blocks reads as one. Headers and footers: header-03, footer-03.
+SHOP_ICONS.update({
+    "link": '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+})
+POSTS = [
+    {"title": "The quiet return of the hand-drawn interface", "cat": "Design", "excerpt": "After a decade of flat grids, product teams are reaching for texture, imperfection and the marks a person leaves.", "author": "Maya Alvarez", "date": "Nov 8, 2026", "iso": "2026-11-08", "read": 6},
+    {"title": "What a year of four-day weeks taught us", "cat": "Culture", "excerpt": "Fewer meetings, longer focus and a calendar that finally has room to think. The numbers, and what surprised us.", "author": "Jonah Reyes", "date": "Nov 5, 2026", "iso": "2026-11-05", "read": 8},
+    {"title": "A field guide to slow travel in the Dolomites", "cat": "Travel", "excerpt": "Trains, huts and three valleys you can walk between in a week, with nothing booked further than tomorrow.", "author": "Lena Okafor", "date": "Nov 2, 2026", "iso": "2026-11-02", "read": 11},
+    {"title": "Small models, big kitchens", "cat": "Technology", "excerpt": "How a family restaurant uses a laptop-sized model to plan menus, order stock and waste less.", "author": "Sam Park", "date": "Oct 30, 2026", "iso": "2026-10-30", "read": 5},
+    {"title": "The case for boring typefaces", "cat": "Design", "excerpt": "Neutral type is not a lack of opinion. It is an opinion about where the reader should look.", "author": "Maya Alvarez", "date": "Oct 27, 2026", "iso": "2026-10-27", "read": 4},
+    {"title": "Sourdough, patience and the art of the second attempt", "cat": "Food", "excerpt": "Every loaf that failed taught us something the recipe did not. Notes from a year of baking badly, then better.", "author": "Ines Duarte", "date": "Oct 24, 2026", "iso": "2026-10-24", "read": 7},
+    {"title": "Notes from a city without cars", "cat": "Culture", "excerpt": "Pontevedra closed its centre to traffic twenty years ago. We spent a week asking what changed and what did not.", "author": "Jonah Reyes", "date": "Oct 20, 2026", "iso": "2026-10-20", "read": 9},
+]
+BLOG_TOPICS = ["All", "Design", "Technology", "Culture", "Travel", "Food"]
+CURRENT = ' aria-current="page"'
+
+
+def initials(name):
+    return "".join(w[0] for w in name.split())[:2]
+
+
+def post_meta(p, avatar=True):
+    who = (f'<span class="avatar" data-size="sm"><span>{initials(p["author"])}</span></span><span>{p["author"]}</span>'
+           '<span aria-hidden="true">·</span>') if avatar else ""
+    return (f'<p class="blog-meta">{who}<time datetime="{p["iso"]}">{p["date"]}</time>'
+            f'<span aria-hidden="true">·</span><span>{p["read"]} min read</span></p>')
+
+
+def post_card(p):
+    return f"""<article class="blog-card">
+  <a href="#" class="blog-media" tabindex="-1" aria-hidden="true"><img src="{PH}" alt=""></a>
+  <div class="stack" data-gap="2">
+    <p class="blog-topic"><a href="#">{p["cat"]}</a></p>
+    <h3 class="blog-title"><a href="#">{p["title"]}</a></h3>
+    <p class="blog-excerpt">{p["excerpt"]}</p>
+    {post_meta(p)}
+  </div>
+</article>"""
+
+
+def post_row(p, word):
+    title = p["title"].replace(word, f"<mark>{word}</mark>")
+    excerpt = p["excerpt"].replace(word, f"<mark>{word}</mark>")
+    return (f'<li><a href="#" class="blog-media" tabindex="-1" aria-hidden="true"><img src="{PH}" alt=""></a>'
+            f'<div class="stack" data-gap="2"><p class="blog-topic"><a href="#">{p["cat"]}</a></p>'
+            f'<h2 class="blog-title"><a href="#">{title}</a></h2><p class="blog-excerpt">{excerpt}</p>{post_meta(p, avatar=False)}</div></li>')
+
+
+def pages_nav(current=1, last=4):
+    nums = "".join(
+        f'<li><a href="#" class="btn" data-variant="{"outline" if n == current else "ghost"}" data-size="icon"{CURRENT if n == current else ""}>{n}</a></li>'
+        for n in range(1, last + 1))
+    return f"""<nav aria-label="Pagination" class="shop-pages"><ul>
+  <li><a href="#" class="btn" data-variant="ghost">{si("chevron-left")}<span>Previous</span></a></li>
+  {nums}
+  <li><a href="#" class="btn" data-variant="ghost"><span>Next</span>{si("chevron-right")}</a></li>
+</ul></nav>"""
+
+
+BLOG_CSS = SHOP_CSS + """
+  .shop-pages ul { display: flex; justify-content: center; gap: 0.25rem; list-style: none; margin: 0; padding: 0; }
+  .blog-topics { display: flex; gap: 0.5rem; overflow-x: auto; scrollbar-width: none; }
+  .blog-topics a { flex: none; padding: 0.375rem 0.875rem; border: 1px solid var(--border); border-radius: 999px; color: inherit; font-size: 0.875rem; text-decoration: none; white-space: nowrap; }
+  .blog-topics a:hover { background: var(--accent); }
+  .blog-topics a[aria-current] { border-color: var(--primary); background: var(--primary); color: var(--primary-foreground); }
+  .blog-media { display: block; overflow: hidden; aspect-ratio: 16 / 10; border-radius: var(--radius); background: var(--muted); }
+  .blog-media img { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; transition: transform 300ms; }
+  .blog-card:hover .blog-media img, .blog-feature:hover .blog-media img { transform: scale(1.03); }
+  .blog-topic { margin: 0; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted-foreground); }
+  .blog-topic a { color: inherit; text-decoration: none; }
+  .blog-title { margin: 0; font-size: 1.125rem; font-weight: 600; line-height: 1.35; letter-spacing: -0.01em; text-wrap: balance; }
+  .blog-title a { color: inherit; text-decoration: none; }
+  .blog-title a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .blog-excerpt { margin: 0; color: var(--muted-foreground); font-size: 0.9375rem; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .blog-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.375rem 0.5rem; margin: 0; font-size: 0.8125rem; color: var(--muted-foreground); }
+  .blog-card { display: grid; gap: 1rem; align-content: start; }
+  .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: 2.5rem 1.5rem; }
+  .blog-feature { display: grid; gap: 1.5rem; align-items: center; }
+  .blog-feature .blog-title { font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem); line-height: 1.15; letter-spacing: -0.02em; }
+  .blog-feature .blog-excerpt { font-size: 1.0625rem; -webkit-line-clamp: 4; }
+  @media (width >= 48rem) { .blog-feature { grid-template-columns: 1.3fr 1fr; gap: 2.5rem; } }
+  .blog-list { display: grid; gap: 1.5rem; list-style: none; margin: 0; padding: 0; }
+  .blog-list > li { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 1.25rem; align-items: start; padding-block-end: 1.5rem; border-block-end: 1px solid var(--border); }
+  .blog-list > li:last-child { border: 0; }
+  .blog-list .blog-media { aspect-ratio: 4 / 3; }
+  @media (width < 36rem) { .blog-list > li { grid-template-columns: 6rem minmax(0, 1fr); gap: 1rem; } .blog-list .blog-excerpt { display: none; } }
+  .blog-list mark { background: color-mix(in oklab, var(--primary) 18%, transparent); color: inherit; border-radius: 0.125rem; }
+  .blog-article { display: grid; gap: 2rem; }
+  .blog-article > header { display: grid; gap: 1rem; max-inline-size: 48rem; }
+  .blog-article > header h1 { margin: 0; font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.025em; text-wrap: balance; }
+  .blog-article > header .blog-lead { margin: 0; font-size: 1.1875rem; line-height: 1.55; color: var(--muted-foreground); }
+  .blog-cover { margin: 0; overflow: hidden; aspect-ratio: 2 / 1; border-radius: var(--radius); background: var(--muted); }
+  .blog-cover img { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; }
+  .blog-body { inline-size: 100%; max-inline-size: 42rem; margin-inline: auto; }
+  .blog-body > * + * { margin-block-start: 1.25em; }
+  .blog-body img { max-inline-size: 100%; block-size: auto; border-radius: var(--radius); }
+  .blog-body figure { margin-inline: 0; }
+  .blog-body figcaption { margin-block-start: 0.5rem; font-size: 0.8125rem; color: var(--muted-foreground); }
+  .blog-foot { display: grid; gap: 2rem; inline-size: 100%; max-inline-size: 42rem; margin-inline: auto; }
+  .blog-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .blog-share { display: flex; align-items: center; gap: 0.5rem; justify-content: space-between; flex-wrap: wrap; padding-block: 1rem; border-block: 1px solid var(--border); }
+  .blog-author-card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1rem; align-items: start; }
+  .blog-author-card p { margin: 0; }
+  .blog-comments { display: grid; gap: 1.5rem; }
+  .blog-comment-list { display: grid; gap: 1.25rem; list-style: none; margin: 0; padding: 0; }
+  .blog-comment-list li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.75rem; }
+  .blog-comment-list li p { margin: 0; }
+  .blog-comment-head { display: flex; gap: 0.5rem; align-items: baseline; flex-wrap: wrap; font-size: 0.875rem; }
+  .blog-comment-head time { color: var(--muted-foreground); font-size: 0.8125rem; }
+  .blog-comment-list ol { grid-column: 2; display: grid; gap: 1rem; list-style: none; margin: 0.75rem 0 0; padding: 0 0 0 1rem; border-inline-start: 2px solid var(--border); }
+  .blog-code { margin: 0; font-size: clamp(4rem, 3rem + 6vw, 7rem); font-weight: 700; line-height: 1; letter-spacing: -0.05em; color: var(--muted-foreground); opacity: 0.35; }
+  .blog-notfound { display: grid; justify-items: center; gap: 1.5rem; text-align: center; inline-size: 100%; max-inline-size: 32rem; margin-inline: auto; }
+  .blog-notfound form { inline-size: 100%; }
+  .shop-form-grid { display: grid; gap: 1rem; }
+  @media (width >= 40rem) { .shop-form-grid { grid-template-columns: 1fr 1fr; } }
+"""
+
+featured, rest = POSTS[0], POSTS[1:]
+topics = "".join(f'<a href="#"{CURRENT if t == "All" else ""}>{t}</a>' for t in BLOG_TOPICS)
+add("blog-01", "Blog 01", "A blog's posts: the title and topics, a featured post, a grid of post cards (picture, topic, title, excerpt, author, date and reading time) and pages.", "blog", f"""
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="10">
+    <div class="stack" data-gap="4">
+      <div class="stack" data-gap="2">
+        <h1 class="shop-h1">Journal</h1>
+        <p class="shop-lead">Ideas, design and the people behind them.</p>
+      </div>
+      <nav class="blog-topics" aria-label="Topics">{topics}</nav>
+    </div>
+    <article class="blog-feature">
+      <a href="#" class="blog-media" tabindex="-1" aria-hidden="true"><img src="{PH}" alt=""></a>
+      <div class="stack" data-gap="3">
+        <p class="blog-topic"><a href="#">{featured["cat"]}</a></p>
+        <h2 class="blog-title"><a href="#">{featured["title"]}</a></h2>
+        <p class="blog-excerpt">{featured["excerpt"]}</p>
+        {post_meta(featured)}
+      </div>
+    </article>
+    <div class="blog-grid">{"".join(post_card(p) for p in rest)}</div>
+    {pages_nav()}
+  </div>
+</main>
+""", BLOG_CSS)
+
+a = POSTS[0]
+COMMENTS = [
+    ("Ines Duarte", "Nov 8, 2026", "The part about leaving the pencil marks in was exactly the argument I lost last month. Sending this to the team.",
+     [("Maya Alvarez", "Nov 8, 2026", "Good luck. Start with one screen, not the whole product.")]),
+    ("Sam Park", "Nov 9, 2026", "Does this survive a design system? Texture tends to be the first thing a token pipeline flattens.", []),
+]
+
+
+def comment(name, when, text):
+    return (f'<span class="avatar" data-size="sm"><span>{initials(name)}</span></span><div>'
+            f'<div class="blog-comment-head"><strong>{name}</strong><time>{when}</time></div><p>{text}</p>'
+            '<button type="button" class="btn" data-variant="link" data-size="sm">Reply</button></div>')
+
+
+def thread(c):
+    name, when, text, replies = c
+    inner = "".join(f"<li>{comment(*r)}</li>" for r in replies)
+    return f"<li>{comment(name, when, text)}" + (f"<ol>{inner}</ol>" if inner else "") + "</li>"
+
+
+tags = "".join(f'<a href="#" class="badge" data-variant="outline">{t}</a>' for t in ["Interface", "Craft", "Illustration"])
+add("blog-02", "Blog 02", "A blog post: its topic, title, lead, author and date, the cover, the article in Auvyx UI's typography, tags and share, the author, comments with a reply form and related posts.", "blog", f"""
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="12">
+    <article class="blog-article">
+      <header>
+        <nav class="breadcrumb shop-crumbs" aria-label="Breadcrumb"><ol><li><a href="#">Journal</a></li>{crumb_sep}<li><a href="#">{a["cat"]}</a></li></ol></nav>
+        <h1>{a["title"]}</h1>
+        <p class="blog-lead">{a["excerpt"]}</p>
+        {post_meta(a)}
+      </header>
+      <figure class="blog-cover"><img src="{PH}" alt=""></figure>
+      <div class="typography blog-body">
+        <p>For most of the last decade, the safest thing a product team could ship was a grid of rounded rectangles in a neutral palette. It tested well, it scaled, and nobody was ever fired for it.</p>
+        <h2>The marks a person leaves</h2>
+        <p>What changed was not taste but tools. When every interface can be generated in seconds, the ones that feel made by someone stand out. Texture, a slightly uneven line, a margin note that was never cleaned up: these are signals of attention.</p>
+        <blockquote>The goal is not to look handmade. It is to look like someone cared which way the line went.</blockquote>
+        <ul>
+          <li>Keep one hand-drawn element per screen, not ten.</li>
+          <li>Let it carry meaning: an underline that marks what changed.</li>
+          <li>Draw it at the size it ships; scaled sketches look like clip art.</li>
+        </ul>
+        <h2>Where it goes wrong</h2>
+        <p>The failure mode is costume: a sketchy font on a form that is otherwise unchanged. If the structure is still the same grid, the texture reads as a filter.</p>
+      </div>
+    </article>
+    <div class="blog-foot">
+      <div class="blog-share">
+        <div class="blog-tags">{tags}</div>
+        <div class="cluster" data-gap="1">
+          <button type="button" class="btn" data-variant="ghost" data-size="sm">{si("link")}Copy link</button>
+          <button type="button" class="btn" data-variant="ghost" data-size="sm">{si("share-2")}Share</button>
+        </div>
+      </div>
+      <section class="blog-author-card" aria-label="About the author">
+        <span class="avatar" data-size="lg"><span>{initials(a["author"])}</span></span>
+        <div class="stack" data-gap="1">
+          <p><strong>{a["author"]}</strong></p>
+          <p class="shop-lead">Design editor. Writes about interfaces, type and the tools we make them with.</p>
+        </div>
+      </section>
+      <section class="blog-comments" aria-labelledby="b2-comments">
+        <h2 class="shop-h2" id="b2-comments">3 comments</h2>
+        <ol class="blog-comment-list">{"".join(thread(c) for c in COMMENTS)}</ol>
+        <form class="fieldset" onsubmit="event.preventDefault()">
+          <legend>Leave a comment</legend>
+          <p>Your email address will not be published.</p>
+          <div role="group" class="field"><label for="b2-text">Comment</label><textarea id="b2-text" class="textarea" rows="4" required></textarea></div>
+          <div class="shop-form-grid">
+            <div role="group" class="field"><label for="b2-name">Name</label><input id="b2-name" class="input" type="text" autocomplete="name" required></div>
+            <div role="group" class="field"><label for="b2-email">Email</label><input id="b2-email" class="input" type="email" autocomplete="email" required></div>
+          </div>
+          <div role="group" class="field"><button type="submit" class="btn">Post comment</button></div>
+        </form>
+      </section>
+    </div>
+    <section class="stack" data-gap="6" aria-labelledby="b2-related">
+      <h2 class="shop-h2" id="b2-related">Keep reading</h2>
+      <div class="blog-grid">{"".join(post_card(p) for p in POSTS[1:4])}</div>
+    </section>
+  </div>
+</main>
+""", BLOG_CSS)
+
+add("blog-03", "Blog 03", "A blog's search results: the search field, how many posts matched, a list of posts with the words marked, and an empty state when nothing matched.", "blog", f"""
+<main class="wrapper shop-page">
+  <div class="stack" data-gap="8">
+    <div class="stack" data-gap="4">
+      <div class="stack" data-gap="1">
+        <p class="shop-lead">Search results for</p>
+        <h1 class="shop-h1">“design”</h1>
+      </div>
+      <form role="search" onsubmit="event.preventDefault()"><div class="input-group"><input type="search" value="design" aria-label="Search the journal"><span data-align="start" aria-hidden="true">{si("search")}</span></div></form>
+      <p class="shop-lead">3 posts</p>
+    </div>
+    <ol class="blog-list">{"".join(post_row(p, "design") for p in [POSTS[0], POSTS[4], POSTS[1]])}</ol>
+    <section class="empty" data-search-empty hidden>
+      <header><figure data-variant="icon">{si("search")}</figure><h3>Nothing matched “design”</h3><p>Try fewer or different words, or browse the topics.</p></header>
+      <footer><a href="#" class="btn" data-variant="outline">Browse the journal</a></footer>
+    </section>
+  </div>
+</main>
+""", BLOG_CSS)
+
+add("error-01", "Error 01", "A page not found: the code, what happened, a search field and the ways back (home, the journal).", "error", f"""
+<main class="cover" data-pad="lg">
+  <div class="blog-notfound">
+    <p class="blog-code" aria-hidden="true">404</p>
+    <div class="stack" data-gap="2">
+      <h1 class="shop-h1">Page not found</h1>
+      <p class="shop-lead">The page you were looking for has moved or never existed. Search for it, or head back home.</p>
+    </div>
+    <form role="search" onsubmit="event.preventDefault()"><div class="input-group"><input type="search" placeholder="Search the site..." aria-label="Search"><span data-align="start" aria-hidden="true">{si("search")}</span></div></form>
+    <div class="cluster" data-gap="2" data-justify="center">
+      <a href="#" class="btn">{si("arrow-left")}Back home</a>
+      <a href="#" class="btn" data-variant="outline">Browse the journal</a>
+    </div>
+  </div>
+</main>
+""", BLOG_CSS)
 
 if __name__ == "__main__":
     from common import register

@@ -462,8 +462,8 @@
         background: oklch(0.65 0.18 30);
       }
       .hf-bar {
-        background: var(--biz);
-        color: var(--biz-fg);
+        background: var(--biz, var(--primary));
+        color: var(--biz-fg, var(--primary-foreground));
         font-weight: 600;
       }
       @media (width < 64rem) {

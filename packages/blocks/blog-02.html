@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Blog 02 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-page {
+        padding-block: 2rem 4rem;
+      }
+      .shop-h2 {
+        margin: 0;
+        font-size: 1.125rem;
+        font-weight: 600;
+      }
+      .shop-lead {
+        margin: 0;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
+      .shop-form-grid {
+        display: grid;
+        gap: 1rem;
+      }
+      @media (width >= 36rem) {
+        .shop-form-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      .shop-form-grid select {
+        inline-size: 100%;
+      }
+      .shop-form-grid > [data-span="full"] {
+        grid-column: 1 / -1;
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+
+      .blog-topics {
+        display: flex;
+        gap: 0.5rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .blog-topics a {
+        flex: none;
+        padding: 0.375rem 0.875rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        color: inherit;
+        font-size: 0.875rem;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .blog-topics a:hover {
+        background: var(--accent);
+      }
+      .blog-topics a[aria-current] {
+        border-color: var(--primary);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .blog-media {
+        display: block;
+        overflow: hidden;
+        aspect-ratio: 16 / 10;
+        border-radius: var(--radius);
+        background: var(--muted);
+      }
+      .blog-media img {
+        display: block;
+        inline-size: 100%;
+        block-size: 100%;
+        object-fit: cover;
+        transition: transform 300ms;
+      }
+      .blog-card:hover .blog-media img,
+      .blog-feature:hover .blog-media img {
+        transform: scale(1.03);
+      }
+      .blog-topic {
+        margin: 0;
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--muted-foreground);
+      }
+      .blog-topic a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .blog-title {
+        margin: 0;
+        font-size: 1.125rem;
+        font-weight: 600;
+        line-height: 1.35;
+        letter-spacing: -0.01em;
+        text-wrap: balance;
+      }
+      .blog-title a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .blog-title a:hover {
+        text-decoration: underline;
+        text-underline-offset: 4px;
+      }
+      .blog-excerpt {
+        margin: 0;
+        color: var(--muted-foreground);
+        font-size: 0.9375rem;
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .blog-meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.375rem 0.5rem;
+        margin: 0;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .blog-card {
+        display: grid;
+        gap: 1rem;
+        align-content: start;
+      }
+      .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+        gap: 2.5rem 1.5rem;
+      }
+      .blog-feature {
+        display: grid;
+        gap: 1.5rem;
+        align-items: center;
+      }
+      .blog-feature .blog-title {
+        font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+      }
+      .blog-feature .blog-excerpt {
+        font-size: 1.0625rem;
+        -webkit-line-clamp: 4;
+      }
+      @media (width >= 48rem) {
+        .blog-feature {
+          grid-template-columns: 1.3fr 1fr;
+          gap: 2.5rem;
+        }
+      }
+      .blog-list {
+        display: grid;
+        gap: 1.5rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .blog-list > li {
+        display: grid;
+        grid-template-columns: 9rem minmax(0, 1fr);
+        gap: 1.25rem;
+        align-items: start;
+        padding-block-end: 1.5rem;
+        border-block-end: 1px solid var(--border);
+      }
+      .blog-list > li:last-child {
+        border: 0;
+      }
+      .blog-list .blog-media {
+        aspect-ratio: 4 / 3;
+      }
+      @media (width < 36rem) {
+        .blog-list > li {
+          grid-template-columns: 6rem minmax(0, 1fr);
+          gap: 1rem;
+        }
+        .blog-list .blog-excerpt {
+          display: none;
+        }
+      }
+      .blog-list mark {
+        background: color-mix(in oklab, var(--primary) 18%, transparent);
+        color: inherit;
+        border-radius: 0.125rem;
+      }
+      .blog-article {
+        display: grid;
+        gap: 2rem;
+      }
+      .blog-article > header {
+        display: grid;
+        gap: 1rem;
+        max-inline-size: 48rem;
+      }
+      .blog-article > header h1 {
+        margin: 0;
+        font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+        font-weight: 600;
+        line-height: 1.1;
+        letter-spacing: -0.025em;
+        text-wrap: balance;
+      }
+      .blog-article > header .blog-lead {
+        margin: 0;
+        font-size: 1.1875rem;
+        line-height: 1.55;
+        color: var(--muted-foreground);
+      }
+      .blog-cover {
+        margin: 0;
+        overflow: hidden;
+        aspect-ratio: 2 / 1;
+        border-radius: var(--radius);
+        background: var(--muted);
+      }
+      .blog-cover img {
+        display: block;
+        inline-size: 100%;
+        block-size: 100%;
+        object-fit: cover;
+      }
+      .blog-body {
+        inline-size: 100%;
+        max-inline-size: 42rem;
+        margin-inline: auto;
+      }
+      .blog-body > * + * {
+        margin-block-start: 1.25em;
+      }
+      .blog-body img {
+        max-inline-size: 100%;
+        block-size: auto;
+        border-radius: var(--radius);
+      }
+      .blog-body figure {
+        margin-inline: 0;
+      }
+      .blog-body figcaption {
+        margin-block-start: 0.5rem;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .blog-foot {
+        display: grid;
+        gap: 2rem;
+        inline-size: 100%;
+        max-inline-size: 42rem;
+        margin-inline: auto;
+      }
+      .blog-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .blog-share {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding-block: 1rem;
+        border-block: 1px solid var(--border);
+      }
+      .blog-author-card {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 1rem;
+        align-items: start;
+      }
+      .blog-author-card p {
+        margin: 0;
+      }
+      .blog-comments {
+        display: grid;
+        gap: 1.5rem;
+      }
+      .blog-comment-list {
+        display: grid;
+        gap: 1.25rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .blog-comment-list li {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 0.75rem;
+      }
+      .blog-comment-list li p {
+        margin: 0;
+      }
+      .blog-comment-head {
+        display: flex;
+        gap: 0.5rem;
+        align-items: baseline;
+        flex-wrap: wrap;
+        font-size: 0.875rem;
+      }
+      .blog-comment-head time {
+        color: var(--muted-foreground);
+        font-size: 0.8125rem;
+      }
+      .blog-comment-list ol {
+        grid-column: 2;
+        display: grid;
+        gap: 1rem;
+        list-style: none;
+        margin: 0.75rem 0 0;
+        padding: 0 0 0 1rem;
+        border-inline-start: 2px solid var(--border);
+      }
+      .blog-code {
+        margin: 0;
+        font-size: clamp(4rem, 3rem + 6vw, 7rem);
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -0.05em;
+        color: var(--muted-foreground);
+        opacity: 0.35;
+      }
+      .blog-notfound {
+        display: grid;
+        justify-items: center;
+        gap: 1.5rem;
+        text-align: center;
+        inline-size: 100%;
+        max-inline-size: 32rem;
+        margin-inline: auto;
+      }
+      .blog-notfound form {
+        inline-size: 100%;
+      }
+      .shop-form-grid {
+        display: grid;
+        gap: 1rem;
+      }
+      @media (width >= 40rem) {
+        .shop-form-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrapper shop-page">
+      <div class="stack" data-gap="12">
+        <article class="blog-article">
+          <header>
+            <nav class="breadcrumb shop-crumbs" aria-label="Breadcrumb">
+              <ol>
+                <li><a href="#">Journal</a></li>
+                <li aria-hidden="true"><svg data-rtl-flip xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></li>
+                <li><a href="#">Design</a></li>
+              </ol>
+            </nav>
+            <h1>The quiet return of the hand-drawn interface</h1>
+            <p class="blog-lead">
+              After a decade of flat grids, product teams are reaching for texture, imperfection and
+              the marks a person leaves.
+            </p>
+            <p class="blog-meta">
+              <span class="avatar" data-size="sm"><span>MA</span></span>
+              <span>Maya Alvarez</span>
+              <span aria-hidden="true">·</span>
+              <time datetime="2026-11-08">Nov 8, 2026</time>
+              <span aria-hidden="true">·</span>
+              <span>6 min read</span>
+            </p>
+          </header>
+          <figure class="blog-cover"><img src="assets/placeholder.svg" alt /></figure>
+          <div class="typography blog-body">
+            <p>
+              For most of the last decade, the safest thing a product team could ship was a grid of
+              rounded rectangles in a neutral palette. It tested well, it scaled, and nobody was
+              ever fired for it.
+            </p>
+            <h2>The marks a person leaves</h2>
+            <p>
+              What changed was not taste but tools. When every interface can be generated in
+              seconds, the ones that feel made by someone stand out. Texture, a slightly uneven
+              line, a margin note that was never cleaned up: these are signals of attention.
+            </p>
+            <blockquote>
+              The goal is not to look handmade. It is to look like someone cared which way the line
+              went.
+            </blockquote>
+            <ul>
+              <li>Keep one hand-drawn element per screen, not ten.</li>
+              <li>Let it carry meaning: an underline that marks what changed.</li>
+              <li>Draw it at the size it ships; scaled sketches look like clip art.</li>
+            </ul>
+            <h2>Where it goes wrong</h2>
+            <p>
+              The failure mode is costume: a sketchy font on a form that is otherwise unchanged. If
+              the structure is still the same grid, the texture reads as a filter.
+            </p>
+          </div>
+        </article>
+        <div class="blog-foot">
+          <div class="blog-share">
+            <div class="blog-tags">
+              <a href="#" class="badge" data-variant="outline">Interface</a>
+              <a href="#" class="badge" data-variant="outline">Craft</a>
+              <a href="#" class="badge" data-variant="outline">Illustration</a>
+            </div>
+            <div class="cluster" data-gap="1">
+              <button type="button" class="btn" data-variant="ghost" data-size="sm">
+                <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                Copy link
+              </button>
+              <button type="button" class="btn" data-variant="ghost" data-size="sm">
+                <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
+                Share
+              </button>
+            </div>
+          </div>
+          <section class="blog-author-card" aria-label="About the author">
+            <span class="avatar" data-size="lg"><span>MA</span></span>
+            <div class="stack" data-gap="1">
+              <p><strong>Maya Alvarez</strong></p>
+              <p class="shop-lead">
+                Design editor. Writes about interfaces, type and the tools we make them with.
+              </p>
+            </div>
+          </section>
+          <section class="blog-comments" aria-labelledby="b2-comments">
+            <h2 class="shop-h2" id="b2-comments">3 comments</h2>
+            <ol class="blog-comment-list">
+              <li>
+                <span class="avatar" data-size="sm"><span>ID</span></span>
+                <div>
+                  <div class="blog-comment-head">
+                    <strong>Ines Duarte</strong>
+                    <time>Nov 8, 2026</time>
+                  </div>
+                  <p>
+                    The part about leaving the pencil marks in was exactly the argument I lost last
+                    month. Sending this to the team.
+                  </p>
+                  <button type="button" class="btn" data-variant="link" data-size="sm">
+                    Reply
+                  </button>
+                </div>
+                <ol>
+                  <li>
+                    <span class="avatar" data-size="sm"><span>MA</span></span>
+                    <div>
+                      <div class="blog-comment-head">
+                        <strong>Maya Alvarez</strong>
+                        <time>Nov 8, 2026</time>
+                      </div>
+                      <p>Good luck. Start with one screen, not the whole product.</p>
+                      <button type="button" class="btn" data-variant="link" data-size="sm">
+                        Reply
+                      </button>
+                    </div>
+                  </li>
+                </ol>
+              </li>
+              <li>
+                <span class="avatar" data-size="sm"><span>SP</span></span>
+                <div>
+                  <div class="blog-comment-head">
+                    <strong>Sam Park</strong>
+                    <time>Nov 9, 2026</time>
+                  </div>
+                  <p>
+                    Does this survive a design system? Texture tends to be the first thing a token
+                    pipeline flattens.
+                  </p>
+                  <button type="button" class="btn" data-variant="link" data-size="sm">
+                    Reply
+                  </button>
+                </div>
+              </li>
+            </ol>
+            <form class="fieldset" onsubmit="event.preventDefault()">
+              <legend>Leave a comment</legend>
+              <p>Your email address will not be published.</p>
+              <div role="group" class="field">
+                <label for="b2-text">Comment</label>
+                <textarea id="b2-text" class="textarea" rows="4" required></textarea>
+              </div>
+              <div class="shop-form-grid">
+                <div role="group" class="field">
+                  <label for="b2-name">Name</label>
+                  <input id="b2-name" class="input" type="text" autocomplete="name" required />
+                </div>
+                <div role="group" class="field">
+                  <label for="b2-email">Email</label>
+                  <input id="b2-email" class="input" type="email" autocomplete="email" required />
+                </div>
+              </div>
+              <div role="group" class="field">
+                <button type="submit" class="btn">Post comment</button>
+              </div>
+            </form>
+          </section>
+        </div>
+        <section class="stack" data-gap="6" aria-labelledby="b2-related">
+          <h2 class="shop-h2" id="b2-related">Keep reading</h2>
+          <div class="blog-grid">
+            <article class="blog-card">
+              <a href="#" class="blog-media" tabindex="-1" aria-hidden="true">
+                <img src="assets/placeholder.svg" alt />
+              </a>
+              <div class="stack" data-gap="2">
+                <p class="blog-topic"><a href="#">Culture</a></p>
+                <h3 class="blog-title"><a href="#">What a year of four-day weeks taught us</a></h3>
+                <p class="blog-excerpt">
+                  Fewer meetings, longer focus and a calendar that finally has room to think. The
+                  numbers, and what surprised us.
+                </p>
+                <p class="blog-meta">
+                  <span class="avatar" data-size="sm"><span>JR</span></span>
+                  <span>Jonah Reyes</span>
+                  <span aria-hidden="true">·</span>
+                  <time datetime="2026-11-05">Nov 5, 2026</time>
+                  <span aria-hidden="true">·</span>
+                  <span>8 min read</span>
+                </p>
+              </div>
+            </article>
+            <article class="blog-card">
+              <a href="#" class="blog-media" tabindex="-1" aria-hidden="true">
+                <img src="assets/placeholder.svg" alt />
+              </a>
+              <div class="stack" data-gap="2">
+                <p class="blog-topic"><a href="#">Travel</a></p>
+                <h3 class="blog-title">
+                  <a href="#">A field guide to slow travel in the Dolomites</a>
+                </h3>
+                <p class="blog-excerpt">
+                  Trains, huts and three valleys you can walk between in a week, with nothing booked
+                  further than tomorrow.
+                </p>
+                <p class="blog-meta">
+                  <span class="avatar" data-size="sm"><span>LO</span></span>
+                  <span>Lena Okafor</span>
+                  <span aria-hidden="true">·</span>
+                  <time datetime="2026-11-02">Nov 2, 2026</time>
+                  <span aria-hidden="true">·</span>
+                  <span>11 min read</span>
+                </p>
+              </div>
+            </article>
+            <article class="blog-card">
+              <a href="#" class="blog-media" tabindex="-1" aria-hidden="true">
+                <img src="assets/placeholder.svg" alt />
+              </a>
+              <div class="stack" data-gap="2">
+                <p class="blog-topic"><a href="#">Technology</a></p>
+                <h3 class="blog-title"><a href="#">Small models, big kitchens</a></h3>
+                <p class="blog-excerpt">
+                  How a family restaurant uses a laptop-sized model to plan menus, order stock and
+                  waste less.
+                </p>
+                <p class="blog-meta">
+                  <span class="avatar" data-size="sm"><span>SP</span></span>
+                  <span>Sam Park</span>
+                  <span aria-hidden="true">·</span>
+                  <time datetime="2026-10-30">Oct 30, 2026</time>
+                  <span aria-hidden="true">·</span>
+                  <span>5 min read</span>
+                </p>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

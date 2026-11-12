@@ -523,18 +523,18 @@
       }
 
       .hf-book {
-        background: var(--biz);
-        color: var(--biz-fg);
+        background: var(--biz, var(--primary));
+        color: var(--biz-fg, var(--primary-foreground));
       }
       .hf-book:hover {
-        background: color-mix(in oklab, var(--biz) 85%, black);
-        color: var(--biz-fg);
+        background: color-mix(in oklab, var(--biz, var(--primary)) 85%, black);
+        color: var(--biz-fg, var(--primary-foreground));
       }
       .hf-overlay .hf-row {
         block-size: 4.5rem;
       }
       .hf-overlay .block-logo-mark {
-        background: var(--biz);
+        background: var(--biz, var(--primary));
       }
     </style>
   </head>

@@ -317,15 +317,15 @@
       }
 
       .hf-foot .hf-book {
-        background: var(--biz);
-        color: var(--biz-fg);
+        background: var(--biz, var(--primary));
+        color: var(--biz-fg, var(--primary-foreground));
       }
       .hf-foot .hf-book:hover {
-        background: color-mix(in oklab, var(--biz) 85%, black);
-        color: var(--biz-fg);
+        background: color-mix(in oklab, var(--biz, var(--primary)) 85%, black);
+        color: var(--biz-fg, var(--primary-foreground));
       }
       .hf-foot .block-logo-mark {
-        background: var(--biz);
+        background: var(--biz, var(--primary));
       }
       html.dark .hf-foot {
         --foot-bg: oklch(0.2 0.015 150);
