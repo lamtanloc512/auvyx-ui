@@ -5852,6 +5852,389 @@ add("header-06", "Header 06", "A playful kids and toys header: free shipping bar
   @media (width < 64rem) { .hf-chips { justify-content: flex-start; padding-inline: 1rem; } }""", scripts=script(HF_JS))
 
 
+# ---------------------------------------------------------------- header-07..10: marketplace, electronics, grocery
+# Patterns common on Vietnamese shop templates: a top bar of store links, a
+# search with a category select, count badges on wishlist and cart, a colored
+# nav bar with an "All categories" menu, and a category menu beside the hero.
+SHOP_ICONS.update({
+    "shirt": '<path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23"/>',
+    "laptop": '<path d="M18 5a2 2 0 0 1 2 2v8.526a2 2 0 0 0 .212.897l1.068 2.127a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45l1.068-2.127A2 2 0 0 0 4 15.526V7a2 2 0 0 1 2-2zm2.054 10.987H3.946"/>',
+    "camera": '<path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"/><circle cx="12" cy="13" r="3"/>',
+    "history": '<path d="M3 12a9 9 0 1 0 9-9a9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5m4-1v5l4 2"/>',
+    "zap": '<path d="M15.914 4a1.5 1.5 0 0 0-2.474-1.561l-9 9A1.5 1.5 0 0 0 5.5 14h4.002a.5.5 0 0 1 .471.666L8.086 20a1.5 1.5 0 0 0 2.475 1.56l9-9A1.5 1.5 0 0 0 18.5 10h-3.997a.5.5 0 0 1-.472-.667z"/>',
+    "carrot": '<path d="M15 16a1 1 0 0 0-7-7q-4 4-5.987 12.385a.5.5 0 0 0 .602.602Q11 20 15 16l-3-3"/><path d="M15 9q4 4 7 0q-3-4-7 0q4-4 0-7q-4 3 0 7m-7 6l-2.58-2.58"/>',
+    "fish": '<path d="M6.5 12c.94-3.46 4.94-6 8.5-6s6.06 2.54 7 6c-.94 3.47-3.44 6-7 6s-7.56-2.53-8.5-6M18 12v.5"/><path d="M16 17.93a9.77 9.77 0 0 1 0-11.86m-9 4.6C7 8 5.58 5.97 2.73 5.5c-1 1.5-1 5 .23 6.5c-1.24 1.5-1.24 5-.23 6.5C5.58 18.03 7 16 7 13.33"/><path d="M10.46 7.26C10.2 5.88 9.17 4.24 8 3h5.8a2 2 0 0 1 1.98 1.67l.23 1.4m0 11.86l-.23 1.4A2 2 0 0 1 13.8 21H9.5a5.96 5.96 0 0 0 1.49-3.98"/>',
+    "milk": '<path d="M8 2h8M9 2v2.789a4 4 0 0 1-.672 2.219l-.656.984A4 4 0 0 0 7 10.212V20a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-9.789a4 4 0 0 0-.672-2.219l-.656-.984A4 4 0 0 1 15 4.788V2"/><path d="M7 15a6.47 6.47 0 0 1 5 0a6.47 6.47 0 0 0 5 0"/>',
+    "sofa": '<path d="M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><path d="M2 16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v1.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5V11a2 2 0 0 0-4 0zm2 2v2m16-2v2M12 4v9"/>',
+    "gamepad-2": '<path d="M6 11h4M8 9v4m7-1h.01M18 10h.01m-.69-5H6.68a4 4 0 0 0-3.978 3.59l-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258q-.01-.075-.017-.151A4 4 0 0 0 17.32 5"/>',
+    "shopping-cart": '<path d="m2.05 2.05l1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18"/><path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25"/><circle cx="18" cy="20" r="2"/><circle cx="8" cy="20" r="2"/>',
+    "tv": '<path d="m17 2l-5 5l-5-5"/><rect width="20" height="15" x="2" y="7" rx="2"/>',
+})
+
+MK_CATS = [
+    ("Electronics", "smartphone", [("Phones", ["iPhone", "Samsung Galaxy", "Xiaomi", "OPPO", "Refurbished"]), ("Tablets", ["iPad", "Galaxy Tab", "E-readers", "Kids tablets"]), ("Wearables", ["Smartwatches", "Fitness bands", "Smart rings"])]),
+    ("Accessories", "headphones", [("Audio", ["Earbuds", "Headphones", "Speakers"]), ("Power", ["Chargers", "Power banks", "Cables"]), ("Protection", ["Cases", "Screen guards", "Sleeves"])]),
+    ("TV & Home Appliances", "tv", None),
+    ("Health & Beauty", "flower-2", None),
+    ("Babies & Toys", "baby", None),
+    ("Fashion & Clothing", "shirt", [("Women", ["Dresses", "Tops", "Knitwear", "Shoes"]), ("Men", ["Shirts", "Trousers", "Jackets", "Shoes"]), ("Kids", ["Baby", "Girls", "Boys"])]),
+    ("Home & Kitchen", "sofa", [("Furniture", ["Sofas", "Tables", "Chairs", "Storage"]), ("Kitchen", ["Cookware", "Small appliances", "Tableware"]), ("Decor", ["Lighting", "Rugs", "Plants"])]),
+    ("Sports & Travel", "trophy", None),
+    ("Books & Audible", "book-open", None),
+    ("Pantry & Pet Supplies", "package", None),
+    ("Garden", "leaf", None),
+    ("Home Audio", "volume-2", None),
+]
+
+
+def mk_flyout(cols, n):
+    body = "".join(f'<div><h3>{t}</h3><ul>{"".join(f"<li><a href=\"#\">{l}</a></li>" for l in ls)}</ul></div>' for t, ls in cols)
+    return f'<div data-flyout><div class="mk-fly">{body}<a href="#" class="mk-fly-promo">{shot(n)}<strong>Up to 40% off</strong><span>This week only</span></a></div></div>'
+
+
+def mk_menu(label="Categories", cats=MK_CATS):
+    items = []
+    for i, (name, ic_, cols) in enumerate(cats):
+        chev = si("chevron-right") if cols else ""
+        fly = mk_flyout(cols, i % 4 + 1) if cols else ""
+        items.append(f'<li><a href="#">{si(ic_)}<span>{name}</span>{chev}</a>{fly}</li>')
+    return f'<nav class="flyout-menu" aria-label="{label}"><ul>{"".join(items)}</ul></nav>'
+
+
+def mk_search(pid, placeholder="Search over 20,000 products...", cats=("All", "Electronics", "Fashion", "Home & Kitchen", "Beauty")):
+    opts = "".join(f"<option>{c}</option>" for c in cats)
+    return (f'<form class="hf-search hf-search-combo mk-search hf-hide-sm" role="search" onsubmit="event.preventDefault()">'
+            f'<label class="sr-only" for="{pid}-cat">Category</label><select class="select" id="{pid}-cat">{opts}</select>'
+            f'<label class="sr-only" for="{pid}-q">Search</label><input type="search" id="{pid}-q" placeholder="{placeholder}" data-hotkey-search>'
+            f'<button type="submit" class="btn" data-size="icon" aria-label="Search">{si("search")}</button></form>')
+
+
+def mk_count_btn(ic_, label, n):
+    return f'<a href="#" class="btn shop-cart-btn" data-variant="ghost" data-size="icon" aria-label="{label}, {n} items">{si(ic_)}<span class="shop-count" data-count="{n}">{n}</span></a>'
+
+
+RECENT = [("Magic Keyboard for iPad Pro", "$299", 1), ("MacBook Air 13-inch, 256GB", "$999", 2), ("Wooden Sofa Aqua", "$640", 3)]
+
+
+def mk_recent(pid):
+    rows = "".join(f'<a href="#">{shot(n)}<span><strong>{t}</strong><small>{p}</small></span></a>' for t, p, n in RECENT)
+    return (f'<div class="popover mk-recent"><button type="button" popovertarget="{pid}">{si("history")}<span>Recently viewed</span>{si("chevron-down")}</button>'
+            f'<div id="{pid}" class="mk-recent-pop" data-popover popover data-side="bottom" data-align="end"><p>Recently viewed</p>{rows}</div></div>')
+
+
+MK_LINKS = ["About", "Products", "Electronics", "Contact", "Limited deals"]
+
+
+def mk_header(p, all_button):
+    links = "".join(f'<a href="#">{l}</a>' for l in MK_LINKS)
+    return f"""<div class="mk-top hf-hide-sm"><div class="wrapper mk-top-row" data-size="xl">
+  <p>Free shipping during <a href="#">Acme Days</a>.</p>
+  <nav aria-label="Store"><a href="#">Sell on Acme</a><a href="#">Track order</a><a href="#">Sign in</a></nav>
+</div></div>
+<header class="hf-head mk-head">
+  <div class="wrapper hf-row" data-size="xl" data-row="lg">
+    {burger(p + "-menu")}
+    {biz_logo("Office Sup", "package")}
+    {mk_search(p)}
+    <div class="hf-actions">{mk_count_btn("heart", "Wishlist", 0)}{mk_count_btn("shopping-cart", "Cart", 2)}</div>
+  </div>
+  <form class="wrapper hf-msearch" role="search" onsubmit="event.preventDefault()"><div class="input-group"><input type="search" placeholder="Search products..." aria-label="Search" id="{p}-msearch"><span data-align="start" aria-hidden="true">{si("search")}</span></div></form>
+  <div class="mk-nav"><div class="wrapper mk-nav-row" data-size="xl">
+    {all_button}
+    <nav class="mk-links" aria-label="Main">{links}</nav>
+    {mk_recent(p + "-recent")}
+  </div></div>
+</header>
+{sheet(p + "-menu", "Categories", [(n, [l for _, ls in cols for l in ls][:6]) for n, _, cols in MK_CATS if cols], [n for n, _, cols in MK_CATS if not cols] + MK_LINKS)}"""
+
+
+SLIDES = [("New", "<strong>The thinnest</strong> Magic Keyboard for iPad Pro", "Floating cantilever design.", 1, 250),
+          ("This week", "<strong>MacBook Air</strong> 13-inch, 256GB", "Retina display, all-day battery.", 2, 40),
+          ("Home", "<strong>Wooden Sofa Aqua</strong> with a 1-year warranty", "Solid oak frame, washable covers.", 3, 200)]
+
+
+def mk_slides():
+    lis = "".join(
+        f'<li aria-roledescription="slide" aria-label="{i + 1} of {len(SLIDES)}"><div class="mk-slide" style="--tone: oklch(0.7 0.12 {h})">'
+        f'<div><span class="badge" data-variant="secondary">{k}</span><h2>{t}</h2><p>{d}</p><a href="#" class="btn mk-cta">Shop now</a></div>{shot(n)}</div></li>'
+        for i, (k, t, d, n, h) in enumerate(SLIDES))
+    return f'<section class="carousel mk-carousel" aria-roledescription="carousel" aria-label="Featured" data-markers><ol>{lis}</ol></section>'
+
+
+PROMOS = [("Apple MacBook Air 256GB", "Retina display", "25% off", 2, 60), ("Wooden Sofa Aqua", "1-year warranty", None, 3, 230)]
+FEATURED = [("Laptops", 1), ("Earbuds", 2), ("Monitors", 3), ("Skincare", 4), ("Desks", 1), ("Chairs", 2), ("Speakers", 3)]
+
+
+def mk_home():
+    promos = "".join(f'<a href="#" class="mk-promo" style="--tone: oklch(0.7 0.12 {h})"><span><strong>{t}</strong><small>{s}</small>{f"<em>{o}</em>" if o else ""}</span>{shot(n)}</a>' for t, s, o, n, h in PROMOS)
+    cats = "".join(f'<a href="#">{shot(n)}<span>{t}</span></a>' for t, n in FEATURED)
+    return f"""<main class="mk-page">
+  <div class="wrapper mk-hero" data-size="xl">
+    <aside class="mk-cats" id="mk-cats">{mk_menu()}</aside>
+    <div class="mk-stage">{mk_slides()}<div class="mk-promos">{promos}</div></div>
+  </div>
+  <section class="wrapper" data-size="xl" aria-labelledby="mk-feat"><div class="mk-featured">
+    <header><h2 id="mk-feat">Featured categories</h2><a href="#">All products</a></header>
+    <div class="mk-catgrid">{cats}</div>
+  </div></section>
+</main>"""
+
+
+MK_CSS = """
+  .mk { --mk: oklch(0.66 0.2 38); --mk-fg: #fff; }
+  .mk-top { border-block-end: 1px solid var(--border); font-size: 0.8125rem; color: var(--muted-foreground); }
+  .mk-top-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-block-size: 2.5rem; }
+  .mk-top p { margin: 0; }
+  .mk-top p a { color: oklch(0.55 0.14 155); font-weight: 600; text-decoration: none; }
+  .mk-top nav { display: flex; gap: 1.25rem; }
+  .mk-top nav a { color: inherit; text-decoration: none; }
+  .mk-top nav a:hover { color: var(--foreground); }
+  .mk-head { background: var(--background); backdrop-filter: none; border-block-end: 0; }
+  .mk-head .hf-row[data-row='lg'] { block-size: 5.5rem; gap: 2rem; }
+  .mk-search { flex: 1; max-inline-size: 44rem; }
+  .mk-search .btn { inline-size: 3.5rem; background: var(--mk); color: var(--mk-fg); }
+  .mk-search .btn:hover { background: color-mix(in oklab, var(--mk) 88%, black); }
+  .mk .shop-count { background: var(--mk); color: var(--mk-fg); }
+  .mk .hf-actions { gap: 0.75rem; }
+  .mk-nav { background: var(--mk); color: var(--mk-fg); }
+  .mk-nav-row { display: flex; align-items: stretch; min-block-size: 3rem; }
+  .mk-all { flex: none; display: flex; align-items: center; gap: 0.75rem; inline-size: 18rem; padding-inline: 1.25rem; border: 0; background: oklch(0.24 0 0); color: #fff; font: inherit; font-size: 0.875rem; font-weight: 600; text-decoration: none; cursor: pointer; }
+  .mk-all svg { inline-size: 1.25rem; block-size: 1.25rem; }
+  .mk-all:focus-visible { outline: 2px solid var(--mk-fg); outline-offset: -4px; }
+  .popover:has(> .mk-all) { display: flex; }
+  .mk-links { display: flex; align-items: center; gap: 0.25rem; padding-inline: 1rem; overflow-x: auto; scrollbar-width: none; }
+  .mk-links a { flex: none; padding: 0.5rem 0.75rem; border-radius: var(--radius); color: inherit; font-size: 0.875rem; font-weight: 700; text-decoration: none; }
+  .mk-links a:hover, .mk-links a:focus-visible { background: rgb(255 255 255 / 0.16); outline: none; }
+  .mk-recent { display: flex; margin-inline-start: auto; }
+  .mk-recent > button { display: flex; align-items: center; gap: 0.375rem; padding-inline: 0.75rem; border: 0; background: none; color: inherit; font: inherit; font-size: 0.875rem; cursor: pointer; }
+  .mk-recent > button svg { inline-size: 1rem; block-size: 1rem; }
+  .mk-recent > button:hover, .mk-recent > button[aria-expanded='true'] { background: rgb(255 255 255 / 0.16); }
+  .mk-recent-pop { inline-size: 20rem; padding: 0.5rem; }
+  .mk-recent-pop > p { margin: 0; padding: 0.25rem 0.5rem 0.5rem; color: var(--muted-foreground); font-size: 0.75rem; font-weight: 600; }
+  .mk-recent-pop a { display: grid; grid-template-columns: 3rem minmax(0, 1fr); align-items: center; gap: 0.75rem; padding: 0.5rem; border-radius: calc(var(--radius) - 2px); color: inherit; font-size: 0.875rem; text-decoration: none; }
+  .mk-recent-pop a:hover { background: var(--accent); }
+  .mk-recent-pop img { inline-size: 3rem; block-size: 3rem; border-radius: calc(var(--radius) - 2px); object-fit: cover; }
+  .mk-recent-pop strong { display: block; overflow: hidden; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+  .mk-recent-pop small { color: var(--mk); font-size: 0.8125rem; font-weight: 600; }
+  .mk-page { padding-block-end: 3rem; background: color-mix(in oklab, var(--muted) 70%, var(--background)); }
+  .mk-hero { display: grid; grid-template-columns: 18rem minmax(0, 1fr); }
+  .mk-cats { position: relative; z-index: 15; background: var(--card); border-inline-end: 1px solid var(--border); }
+  .mk-cats .flyout-menu { --flyout-width: min(46rem, calc(100vw - 24rem)); block-size: 100%; }
+  .mk-cats .flyout-menu > ul { padding-block: 0.5rem; }
+  .mk-cats [data-flyout] { margin-inline-start: 0; border-radius: 0 var(--radius) var(--radius) 0; }
+  .mk-fly { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) 12rem; gap: 1.5rem; }
+  .mk-fly h3 { margin: 0 0 0.5rem; font-size: 0.875rem; font-weight: 600; }
+  .mk-fly ul { display: grid; gap: 0.375rem; margin: 0; padding: 0; list-style: none; font-size: 0.875rem; }
+  .mk-fly ul a { color: var(--muted-foreground); text-decoration: none; }
+  .mk-fly ul a:hover { color: var(--mk); }
+  .mk-fly-promo { position: relative; display: grid; align-content: end; gap: 0.125rem; min-block-size: 14rem; padding: 1rem; overflow: hidden; border-radius: var(--radius); color: #fff; text-decoration: none; }
+  .mk-fly-promo img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
+  .mk-fly-promo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent 35%, rgb(0 0 0 / 0.6)); }
+  .mk-fly-promo > :not(img) { position: relative; z-index: 1; }
+  .mk-fly-promo span { font-size: 0.8125rem; opacity: 0.9; }
+  .mk-stage { display: grid; min-inline-size: 0; }
+  .mk-carousel { --carousel-gap: 0px; }
+  .mk-slide { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 2rem; min-block-size: 24rem; padding: 2.5rem 4.5rem; background: color-mix(in oklab, var(--tone) 14%, var(--card)); }
+  .mk-slide > div { display: grid; justify-items: start; gap: 1rem; }
+  .mk-slide h2 { margin: 0; font-size: clamp(1.5rem, 2.6vw, 2.125rem); font-weight: 400; line-height: 1.25; }
+  .mk-slide h2 strong { display: block; font-weight: 700; }
+  .mk-slide p { margin: 0; color: var(--muted-foreground); font-size: 0.9375rem; }
+  .mk-slide img { inline-size: 100%; aspect-ratio: 4 / 3; border-radius: var(--radius); object-fit: cover; }
+  .mk-cta { border-radius: 999px; background: var(--mk); color: var(--mk-fg); padding-inline: 1.5rem; corner-shape: round; }
+  .mk-cta:hover { background: color-mix(in oklab, var(--mk) 88%, black); }
+  .mk-promos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mk-promo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: center; gap: 1rem; min-block-size: 12rem; padding: 1.5rem 2rem; background: color-mix(in oklab, var(--tone) 12%, var(--card)); color: inherit; text-decoration: none; }
+  .mk-promo > span { display: grid; gap: 0.5rem; }
+  .mk-promo strong { font-size: 1.125rem; font-weight: 500; line-height: 1.3; }
+  .mk-promo small { font-size: 0.8125rem; }
+  .mk-promo em { color: var(--mk); font-size: 1.0625rem; font-style: normal; font-weight: 700; }
+  .mk-promo img { inline-size: 100%; aspect-ratio: 16 / 10; border-radius: var(--radius); object-fit: cover; transition: transform 250ms ease; }
+  .mk-promo:hover img { transform: scale(1.04); }
+  .mk-featured { display: grid; gap: 1.25rem; margin-block-start: 2rem; padding: 1.5rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); }
+  .mk-featured header { display: flex; align-items: baseline; gap: 0.75rem; }
+  .mk-featured h2 { margin: 0; font-size: 1.375rem; font-weight: 500; }
+  .mk-featured header a { color: var(--mk); font-size: 0.875rem; text-decoration: none; }
+  .mk-catgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr)); gap: 1rem; }
+  .mk-catgrid a { display: grid; justify-items: center; gap: 0.5rem; padding: 0.5rem; border-radius: var(--radius); color: inherit; font-size: 0.875rem; text-align: center; text-decoration: none; }
+  .mk-catgrid a:hover { background: var(--accent); }
+  .mk-catgrid img { inline-size: 100%; aspect-ratio: 1; border-radius: var(--radius); object-fit: cover; }
+  .mk-crumbs { display: flex; gap: 0.5rem; padding-block: 1rem; font-size: 0.8125rem; color: var(--muted-foreground); }
+  .mk-crumbs a { color: inherit; text-decoration: none; }
+  @media (width < 64rem) {
+    .mk-hero { grid-template-columns: minmax(0, 1fr); }
+    .mk-cats, .mk-all, .mk-recent { display: none; }
+    .popover:has(> .mk-all) { display: none; }
+    .mk-head .hf-row[data-row='lg'] { block-size: 4rem; gap: 1rem; }
+  }
+  @media (width < 48rem) {
+    .mk-slide { grid-template-columns: minmax(0, 1fr); min-block-size: 0; padding: 1.5rem; }
+    .mk-promos { grid-template-columns: minmax(0, 1fr); }
+    .mk-promo { padding: 1.25rem; }
+  }"""
+
+MK_BNAV = [("Home", "house"), ("Categories", "layout-grid", 1), ("Wishlist", "heart"), ("Cart", "shopping-cart"), ("Account", "user")]
+ALL_LABEL = f'<a href="#mk-cats" class="mk-all">{si("menu")}All categories</a>'
+add("header-07", "Header 07", "A marketplace home header: store links bar, search with a category select, wishlist and cart counts, an accent nav bar with recently viewed, and a category menu with flyout panels beside the hero slider, promo banners and featured categories.", "header", f"""
+<div class="mk">
+{mk_header("h7", ALL_LABEL)}
+{mk_home()}
+{hf_bnav(MK_BNAV, "Home", "h7-menu", {"Cart": 2})}
+</div>
+""", HF + MK_CSS, scripts=script(HF_JS))
+
+ALL_BTN = (f'<div class="popover"><button type="button" class="mk-all" popovertarget="h8-all">{si("menu")}All categories{si("chevron-down")}</button>'
+           f'<div id="h8-all" class="mk-allpop" data-popover popover data-side="bottom" data-align="start">{mk_menu()}</div></div>')
+add("header-08", "Header 08", "The marketplace header on an inner page: All categories opens the category menu, with flyout panels, as a popover.", "header", f"""
+<div class="mk">
+{mk_header("h8", ALL_BTN)}
+<main class="mk-page"><div class="wrapper" data-size="xl"><nav class="mk-crumbs" aria-label="Breadcrumb"><a href="#">Home</a><span aria-hidden="true">/</span><a href="#">Electronics</a><span aria-hidden="true">/</span><span aria-current="page">Phones</span></nav>{demo("Product listing")}</div></main>
+{hf_bnav(MK_BNAV, "Categories", "h8-menu", {"Cart": 2})}
+</div>
+""", HF + MK_CSS + """
+  .mk-allpop { inline-size: 18rem; margin-block-start: 0; padding: 0; border-start-start-radius: 0; border-start-end-radius: 0; }
+  .mk-allpop .flyout-menu { --flyout-width: min(46rem, calc(100vw - 22rem)); }
+  .popover:has(> .mk-all) .mk-all svg:last-child { inline-size: 1rem; block-size: 1rem; margin-inline-start: auto; transition: transform 150ms ease; }
+  .mk-all[aria-expanded='true'] svg:last-child { transform: rotate(180deg); }""", scripts=script(HF_JS))
+
+# header-09: electronics store with hotline, delivery location and an icon nav.
+EL_NAV = [("Phones", "smartphone"), ("Laptops", "laptop"), ("Tablets", "monitor"), ("Audio", "headphones"), ("Watches", "clock"), ("Cameras", "camera"), ("Gaming", "gamepad-2"), ("TV", "tv"), ("Refurbished", "recycle"), ("Deals", "zap")]
+el_nav = "".join(f'<a href="#"{" aria-current=\"page\"" if i == 0 else ""}>{si(ic_)}<span>{t}</span></a>' for i, (t, ic_) in enumerate(EL_NAV))
+add("header-09", "Header 09", "An electronics store header: accent main bar with a categories button, delivery location, rounded search, hotline, order lookup and cart, then an icon nav of product types.", "header", f"""
+<div class="el">
+<header class="hf-head el-head">
+  <div class="el-main"><div class="wrapper hf-row" data-size="xl">
+    {burger("h9-menu")}
+    {biz_logo("Volt", "zap")}
+    <div class="popover hf-hide-sm"><button type="button" class="el-chip" popovertarget="h9-cats">{si("layout-grid")}<span>Categories</span></button><div id="h9-cats" class="mk-allpop" data-popover popover data-side="bottom" data-align="start">{mk_menu(cats=MK_CATS[:8])}</div></div>
+    <button type="button" class="el-chip el-loc hf-hide-sm" commandfor="h9-loc" command="show-modal">{si("map-pin")}<span><small>Deliver to</small>Ho Chi Minh City</span>{si("chevron-down")}</button>
+    <form class="input-group hf-search hf-pill el-search hf-hide-sm" role="search" onsubmit="event.preventDefault()"><input type="search" placeholder="What are you looking for?" aria-label="Search products" data-hotkey-search><span data-align="start" aria-hidden="true">{si("search")}</span></form>
+    <div class="hf-actions">
+      <a href="#" class="el-chip el-tall hf-hide-sm">{si("phone")}<span><small>Hotline, free</small>1800 1234</span></a>
+      <a href="#" class="el-chip el-tall hf-hide-sm">{si("truck")}<span><small>Look up</small>Orders</span></a>
+      <a href="#" class="el-chip el-cart" aria-label="Cart, 3 items">{si("shopping-cart")}<span class="shop-count" data-count="3">3</span><span class="hf-hide-sm">Cart</span></a>
+      <a href="#" class="el-chip hf-hide-sm" aria-label="Account">{si("user")}</a>
+    </div>
+  </div></div>
+  <form class="wrapper hf-msearch el-msearch" role="search" onsubmit="event.preventDefault()"><div class="input-group hf-pill"><input type="search" placeholder="What are you looking for?" aria-label="Search" id="h9-msearch"><span data-align="start" aria-hidden="true">{si("search")}</span></div></form>
+  <nav class="wrapper el-nav" data-size="xl" aria-label="Product types">{el_nav}</nav>
+</header>
+<dialog id="h9-loc" class="dialog" closedby="any" aria-labelledby="h9-loc-t">
+  <div>
+    <header><h2 id="h9-loc-t">Delivery location</h2><p>Prices and stock depend on where we deliver.</p></header>
+    <section class="stack" data-gap="3">
+      <label class="label" for="h9-city">City</label><select class="select" id="h9-city"><option>Ho Chi Minh City</option><option>Hanoi</option><option>Da Nang</option><option>Can Tho</option></select>
+      <label class="label" for="h9-dist">District</label><select class="select" id="h9-dist"><option>District 1</option><option>District 3</option><option>Binh Thanh</option><option>Thu Duc</option></select>
+    </section>
+    <footer><button type="button" class="btn" data-variant="outline" commandfor="h9-loc" command="close">Cancel</button><button type="button" class="btn" commandfor="h9-loc" command="close">Save</button></footer>
+    <button type="button" aria-label="Close" commandfor="h9-loc" command="close">{si("x")}</button>
+  </div>
+</dialog>
+{sheet("h9-menu", "Volt", [(n, [l for _, ls in cols for l in ls][:6]) for n, _, cols in MK_CATS[:7] if cols], [t for t, _ in EL_NAV[1:]])}
+{hf_bnav([("Home", "house"), ("Categories", "layout-grid", 1), ("Deals", "zap"), ("Cart", "shopping-cart"), ("Account", "user")], "Home", "h9-menu", {"Cart": 3})}
+{demo()}
+</div>
+""", HF + MK_CSS + """
+  .el { --el: oklch(0.58 0.22 27); --el-fg: #fff; }
+  .el-head { background: var(--background); backdrop-filter: none; }
+  .el-main { background: var(--el); color: var(--el-fg); }
+  .el-main .hf-row { gap: 0.75rem; }
+  .el-main .block-logo { color: inherit; margin-inline-end: 0.5rem; }
+  .el-main .block-logo-mark { background: var(--el-fg); color: var(--el); }
+  .el-main .hf-burger { color: inherit; }
+  .el-chip { display: inline-flex; flex: none; align-items: center; gap: 0.5rem; block-size: 2.5rem; padding-inline: 0.75rem; border: 0; border-radius: var(--radius); background: rgb(255 255 255 / 0.16); color: inherit; font: inherit; font-size: 0.8125rem; font-weight: 600; line-height: 1.15; text-align: start; text-decoration: none; cursor: pointer; }
+  .el-chip:hover, .el-chip[aria-expanded='true'] { background: rgb(255 255 255 / 0.26); }
+  .el-chip:focus-visible { outline: 2px solid var(--el-fg); outline-offset: 2px; }
+  .el-chip > svg { inline-size: 1.125rem; block-size: 1.125rem; }
+  .el-chip small { display: block; font-size: 0.6875rem; font-weight: 400; opacity: 0.85; }
+  .el-tall, .el-loc { background: none; }
+  .el-loc > svg:last-child { inline-size: 0.875rem; block-size: 0.875rem; }
+  .el-cart { position: relative; }
+  .el-cart .shop-count { position: absolute; inset-block-start: 0.125rem; inset-inline-start: 1.5rem; inset-inline-end: auto; background: oklch(0.85 0.17 90); color: oklch(0.25 0.05 70); }
+  .el-search { max-inline-size: 30rem; }
+  .el-search.input-group { border-color: transparent; background: var(--background); color: var(--foreground); }
+  .el-msearch { padding-block: 0.75rem; background: var(--el); }
+  .el-nav { display: flex; justify-content: space-between; gap: 0.25rem; padding-block: 0.5rem; overflow-x: auto; scrollbar-width: none; }
+  .el-nav a { flex: none; display: grid; justify-items: center; gap: 0.25rem; min-inline-size: 4.5rem; padding: 0.5rem; border-radius: var(--radius); color: var(--muted-foreground); font-size: 0.75rem; font-weight: 500; text-decoration: none; }
+  .el-nav a svg { inline-size: 1.375rem; block-size: 1.375rem; }
+  .el-nav a:hover, .el-nav a[aria-current] { background: color-mix(in oklab, var(--el) 10%, transparent); color: var(--el); }
+  .el-nav a:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
+  .el .mk-allpop { margin-block-start: 0.5rem; padding: 0; }
+  .el .mk-allpop .flyout-menu { --flyout-width: min(44rem, calc(100vw - 22rem)); }
+  @media (width < 64rem) { .el-tall { display: none; } }""", scripts=script(HF_JS))
+
+# header-10: grocery delivery with a location bar, cart total and a category strip.
+GR_CATS = [("Vegetables", "carrot", 145), ("Fruit", "leaf", 95), ("Fish & seafood", "fish", 230), ("Dairy & eggs", "milk", 260), ("Bakery", "package", 70), ("Drinks", "flower-2", 330), ("Snacks", "gift", 20), ("Household", "house", 280), ("Baby", "baby", 300), ("Deals", "zap", 27)]
+gr_cats = "".join(f'<a href="#" style="--tone: oklch(0.72 0.13 {h})"><span>{si(ic_)}</span>{t}</a>' for t, ic_, h in GR_CATS)
+add("header-10", "Header 10", "A grocery delivery header: delivery address and next slot, search with popular terms, a deals link and a cart button with the running total, then a scrolling row of round category icons.", "header", f"""
+<div class="gr">
+<div class="gr-bar"><div class="wrapper gr-bar-row" data-size="xl">
+  <button type="button" class="gr-addr" commandfor="h10-addr" command="show-modal">{si("map-pin")}<span>Deliver to <strong>12 Nguyen Hue, District 1</strong></span>{si("chevron-down")}</button>
+  <span class="gr-slot hf-hide-sm">{si("clock")}Next delivery in <strong>2 hours</strong></span>
+</div></div>
+<header class="hf-head gr-head">
+  <div class="wrapper hf-row" data-size="xl">
+    {burger("h10-menu")}
+    {biz_logo("Fresh Basket", "leaf")}
+    <div class="gr-search hf-hide-sm">
+      <form class="input-group hf-search hf-pill" role="search" onsubmit="event.preventDefault()"><input type="search" placeholder="Search groceries..." aria-label="Search groceries" data-hotkey-search><span data-align="start" aria-hidden="true">{si("search")}</span></form>
+      <p><span>Popular:</span><a href="#">Avocado</a><a href="#">Salmon</a><a href="#">Oat milk</a><a href="#">Eggs</a></p>
+    </div>
+    <div class="hf-actions">
+      <a href="#" class="btn hf-hide-sm" data-variant="ghost">{si("zap")}Deals</a>
+      <a href="#" class="btn hf-hide-sm" data-variant="ghost" data-size="icon" aria-label="Account">{si("user")}</a>
+      <a href="#" class="btn gr-cart" aria-label="Cart, 6 items, $48.20">{si("shopping-cart")}<span class="shop-count" data-count="6">6</span><span>$48.20</span></a>
+    </div>
+  </div>
+  <form class="wrapper hf-msearch" role="search" onsubmit="event.preventDefault()"><div class="input-group hf-pill"><input type="search" placeholder="Search groceries..." aria-label="Search" id="h10-msearch"><span data-align="start" aria-hidden="true">{si("search")}</span></div></form>
+  <nav class="wrapper gr-cats" data-size="xl" aria-label="Aisles">{gr_cats}</nav>
+</header>
+<dialog id="h10-addr" class="dialog" closedby="any" aria-labelledby="h10-addr-t">
+  <div>
+    <header><h2 id="h10-addr-t">Delivery address</h2><p>We show what is in stock near you.</p></header>
+    <section class="stack" data-gap="3">
+      <label class="label" for="h10-street">Street address</label><input class="input" id="h10-street" value="12 Nguyen Hue" autocomplete="street-address">
+      <label class="label" for="h10-dist">District</label><select class="select" id="h10-dist"><option>District 1</option><option>District 3</option><option>Binh Thanh</option><option>Thu Duc</option></select>
+    </section>
+    <footer><button type="button" class="btn" data-variant="outline" commandfor="h10-addr" command="close">Cancel</button><button type="button" class="btn" commandfor="h10-addr" command="close">Save address</button></footer>
+    <button type="button" aria-label="Close" commandfor="h10-addr" command="close">{si("x")}</button>
+  </div>
+</dialog>
+{sheet("h10-menu", "Aisles", [], [t for t, _, _ in GR_CATS] + ["Deals", "Orders", "Help"])}
+{hf_bnav([("Home", "house"), ("Aisles", "layout-grid", 1), ("Deals", "zap"), ("Cart", "shopping-cart"), ("Account", "user")], "Home", "h10-menu", {"Cart": 6})}
+{demo()}
+</div>
+""", HF + """
+  .gr { --gr: oklch(0.55 0.15 150); --gr-fg: #fff; }
+  .gr-bar { background: color-mix(in oklab, var(--gr) 12%, var(--background)); font-size: 0.8125rem; }
+  .gr-bar-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-block-size: 2.5rem; }
+  .gr-addr { display: inline-flex; align-items: center; gap: 0.375rem; min-inline-size: 0; padding: 0.25rem 0.5rem; margin-inline-start: -0.5rem; border: 0; border-radius: var(--radius); background: none; color: inherit; font: inherit; cursor: pointer; }
+  .gr-addr:hover { background: color-mix(in oklab, var(--gr) 14%, transparent); }
+  .gr-addr:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
+  .gr-addr > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .gr-addr svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--gr); }
+  .gr-addr svg:last-child { inline-size: 0.875rem; block-size: 0.875rem; color: inherit; }
+  .gr-slot { display: inline-flex; align-items: center; gap: 0.375rem; color: var(--muted-foreground); }
+  .gr-slot svg { inline-size: 0.875rem; block-size: 0.875rem; }
+  .gr-slot strong { color: var(--gr); }
+  .gr-head .hf-row { block-size: 5rem; }
+  .gr-head .block-logo-mark { background: var(--gr); color: var(--gr-fg); }
+  .gr-search { flex: 1; display: grid; gap: 0.25rem; max-inline-size: 38rem; }
+  .gr-search .hf-search { max-inline-size: none; }
+  .gr-search p { display: flex; gap: 0.75rem; margin: 0; padding-inline: 1rem; font-size: 0.75rem; color: var(--muted-foreground); }
+  .gr-search p a { color: inherit; }
+  .gr-search p a:hover { color: var(--gr); }
+  .gr-cart { position: relative; border-radius: 999px; background: var(--gr); color: var(--gr-fg); padding-inline: 1rem; font-variant-numeric: tabular-nums; corner-shape: round; }
+  .gr-cart:hover { background: color-mix(in oklab, var(--gr) 88%, black); }
+  .gr-cart .shop-count { position: absolute; inset-block-start: -0.25rem; inset-inline-start: 1.75rem; inset-inline-end: auto; background: oklch(0.8 0.16 75); color: oklch(0.25 0.05 70); }
+  .gr-cats { display: flex; gap: 0.5rem; padding-block: 0.25rem 0.75rem; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; }
+  .gr-cats a { flex: none; display: grid; justify-items: center; gap: 0.375rem; inline-size: 5.5rem; padding-block: 0.25rem; color: inherit; font-size: 0.75rem; font-weight: 500; text-align: center; text-decoration: none; scroll-snap-align: start; }
+  .gr-cats a > span { display: grid; place-items: center; inline-size: 3.5rem; block-size: 3.5rem; border-radius: 999px; background: color-mix(in oklab, var(--tone) 22%, var(--background)); color: color-mix(in oklab, var(--tone) 70%, var(--foreground)); transition: transform 150ms ease; corner-shape: round; }
+  .gr-cats a svg { inline-size: 1.5rem; block-size: 1.5rem; }
+  .gr-cats a:hover > span { transform: translateY(-2px); }
+  .gr-cats a:focus-visible { outline: none; }
+  .gr-cats a:focus-visible > span { outline: 2px solid var(--ring); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { .gr-cats a:hover > span { transform: none; } }""", scripts=script(HF_JS))
+
 # ================================================================== footers
 PAY = ["VISA", "Mastercard", "AMEX", "PayPal", "Apple Pay", "MoMo"]
 pay = '<div class="hf-pay" aria-label="Payment methods">' + "".join(f"<span>{p}</span>" for p in PAY) + "</div>"

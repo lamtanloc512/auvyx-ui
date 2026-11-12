@@ -1,0 +1,1535 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Header 07 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-cart-btn {
+        position: relative;
+      }
+      .shop-count {
+        position: absolute;
+        inset-block-start: -0.25rem;
+        inset-inline-end: -0.25rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-inline-size: 1.125rem;
+        block-size: 1.125rem;
+        padding-inline: 0.25rem;
+        border-radius: 999px;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+      .shop-count:empty,
+      .shop-count[data-count="0"] {
+        display: none;
+      }
+      .shop-bottom-nav {
+        position: fixed;
+        inset-block-end: 0;
+        inset-inline: 0;
+        z-index: 20;
+        max-inline-size: 28rem;
+        margin-inline: auto;
+        padding-block-end: env(safe-area-inset-bottom, 0px);
+        border-block-start: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 92%, transparent);
+        backdrop-filter: blur(8px);
+      }
+      .shop-bottom-nav ul {
+        display: grid;
+        grid-auto-columns: 1fr;
+        grid-auto-flow: column;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .shop-bottom-nav a {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        padding-block: 0.625rem 0.5rem;
+        color: var(--muted-foreground);
+        font-size: 0.6875rem;
+        font-weight: 500;
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .shop-bottom-nav a svg {
+        inline-size: 1.375rem;
+        block-size: 1.375rem;
+      }
+      .shop-bottom-nav a[aria-current="page"] {
+        color: var(--foreground);
+      }
+      .shop-bottom-nav a[aria-current="page"]::before {
+        content: "";
+        position: absolute;
+        inset-block-start: 0;
+        inline-size: 2rem;
+        block-size: 2px;
+        border-radius: 0 0 2px 2px;
+        background: var(--primary);
+      }
+      .shop-bottom-nav a:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: -2px;
+      }
+      .shop-nav-icon {
+        position: relative;
+        display: inline-flex;
+      }
+      .shop-nav-icon > .shop-count {
+        inset-block-start: -0.25rem;
+        inset-inline-end: -0.625rem;
+      }
+      .shop-bottom-nav[data-variant="floating"] {
+        inset-block-end: calc(1rem + env(safe-area-inset-bottom, 0px));
+        inset-inline: 1rem;
+        max-inline-size: 26rem;
+        padding: 0.375rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.25);
+      }
+      .shop-bottom-nav[data-variant="floating"] a {
+        padding-block: 0.5rem;
+        border-radius: 999px;
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"] {
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"]::before {
+        display: none;
+      }
+      .shop-bottom-nav[data-variant="floating"] a > span:not(.shop-nav-icon) {
+        display: none;
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"] {
+        flex-direction: row;
+        justify-content: center;
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"] > span:not(.shop-nav-icon) {
+        display: inline;
+        font-size: 0.75rem;
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+      .shop-count {
+        corner-shape: round;
+      }
+      .shop-bottom-nav {
+        corner-shape: round;
+      }
+      .shop-bottom-nav a {
+        corner-shape: round;
+      }
+
+      .block-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: inherit;
+        text-decoration: none;
+      }
+      .block-logo-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .block-logo-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .shop-shot {
+        display: block;
+        aspect-ratio: 4 / 5;
+        inline-size: 100%;
+        object-fit: cover;
+        background: var(--muted);
+      }
+      .shop-shot[data-shot="2"] {
+        transform: scaleX(-1);
+        filter: hue-rotate(160deg) saturate(1.6);
+      }
+      .shop-shot[data-shot="3"] {
+        filter: sepia(0.6) saturate(1.4);
+      }
+      .shop-shot[data-shot="4"] {
+        transform: scaleX(-1);
+        filter: grayscale(1) contrast(1.2);
+      }
+      html.dark .shop-shot {
+        opacity: 0.6;
+      }
+
+      @keyframes shop-pop {
+        from {
+          transform: scale(0.96);
+          opacity: 0.6;
+        }
+        to {
+          transform: none;
+          opacity: 1;
+        }
+      }
+      /* Reduced motion: the hover states still apply, without movement. !important so it wins over every card's transition rules. */
+
+      .hf-head {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 20;
+        border-block-end: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 94%, transparent);
+        backdrop-filter: blur(10px);
+      }
+      .hf-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        block-size: 4rem;
+      }
+      .hf-row[data-size="lg"] {
+        block-size: 5rem;
+      }
+      .hf-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        margin-inline-start: auto;
+      }
+      .hf-burger {
+        display: none;
+      }
+      .hf-search {
+        flex: 1;
+        max-inline-size: 36rem;
+      }
+      .hf-search.input-group {
+        block-size: 2.5rem;
+      }
+      .hf-msearch {
+        padding-block-end: 0.75rem;
+      }
+      @media (width >= 64rem) {
+        .hf-msearch {
+          display: none;
+        }
+      }
+      .hf-search select {
+        flex: none;
+        inline-size: auto;
+        border: 0;
+        border-inline-end: 1px solid var(--border);
+        border-radius: 0;
+        background-color: transparent;
+        box-shadow: none;
+        font-size: 0.8125rem;
+      }
+      .hf-search-combo {
+        display: flex;
+        align-items: center;
+        border: 1px solid var(--input);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      .hf-search-combo:focus-within {
+        border-color: var(--ring);
+        box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 40%, transparent);
+      }
+      .hf-search-combo input {
+        flex: 1;
+        min-inline-size: 0;
+        block-size: 2.5rem;
+        padding-inline: 0.75rem;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        font-size: 0.875rem;
+      }
+      .hf-search-combo input:focus {
+        outline: none;
+      }
+      .hf-search-combo .btn {
+        border-radius: 0;
+        block-size: 2.5rem;
+      }
+      .hf-sheet nav {
+        display: grid;
+        gap: 0.125rem;
+      }
+      .hf-sheet nav > a {
+        padding: 0.625rem 0.75rem;
+        border-radius: var(--radius);
+        color: inherit;
+        font-weight: 500;
+        text-decoration: none;
+      }
+      .hf-sheet nav > a:hover {
+        background: var(--accent);
+      }
+      .hf-sheet .accordion summary {
+        padding-inline: 0.75rem;
+        font-weight: 500;
+      }
+      .hf-sheet .accordion ul {
+        display: grid;
+        gap: 0.125rem;
+        margin: 0;
+        padding: 0 0 0.5rem 0.75rem;
+        list-style: none;
+      }
+      .hf-sheet .accordion li a {
+        display: block;
+        padding: 0.5rem 0.75rem;
+        border-radius: var(--radius);
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+        text-decoration: none;
+      }
+      .hf-sheet .accordion li a:hover {
+        background: var(--accent);
+        color: var(--foreground);
+      }
+      .hf-sheet > section {
+        display: grid;
+        gap: 1rem;
+        align-content: start;
+      }
+      .hf-head .block-logo {
+        flex: none;
+        white-space: nowrap;
+      }
+      @media (width < 64rem) {
+        .hf-hide-sm {
+          display: none;
+        }
+        .hf-burger {
+          display: inline-flex;
+        }
+      }
+      .hf-bnav button {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        inline-size: 100%;
+        padding-block: 0.625rem 0.5rem;
+        border: 0;
+        background: none;
+        color: var(--muted-foreground);
+        font: inherit;
+        font-size: 0.6875rem;
+        font-weight: 500;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .hf-bnav button svg {
+        inline-size: 1.375rem;
+        block-size: 1.375rem;
+      }
+      .hf-bnav button:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: -2px;
+      }
+      .hf-bnav {
+        max-inline-size: none;
+      }
+      .hf-bnav a {
+        padding-block-start: 0.875rem;
+      }
+      .hf-bnav button {
+        padding-block-start: 0.875rem;
+      }
+      .hf-actions .shop-count {
+        inset-block-start: -0.125rem;
+        inset-inline-end: -0.125rem;
+      }
+      @media (width >= 48rem) {
+        .hf-bnav {
+          display: none;
+        }
+      }
+      @media (width < 48rem) {
+        .hf-burger.hf-burger {
+          display: none;
+        }
+        body:has(.hf-bnav) {
+          padding-block-end: calc(4rem + env(safe-area-inset-bottom, 0px));
+        }
+      }
+
+      .mk {
+        --mk: oklch(0.66 0.2 38);
+        --mk-fg: #fff;
+      }
+      .mk-top {
+        border-block-end: 1px solid var(--border);
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .mk-top-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        min-block-size: 2.5rem;
+      }
+      .mk-top p {
+        margin: 0;
+      }
+      .mk-top p a {
+        color: oklch(0.55 0.14 155);
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .mk-top nav {
+        display: flex;
+        gap: 1.25rem;
+      }
+      .mk-top nav a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .mk-top nav a:hover {
+        color: var(--foreground);
+      }
+      .mk-head {
+        background: var(--background);
+        backdrop-filter: none;
+        border-block-end: 0;
+      }
+      .mk-head .hf-row[data-row="lg"] {
+        block-size: 5.5rem;
+        gap: 2rem;
+      }
+      .mk-search {
+        flex: 1;
+        max-inline-size: 44rem;
+      }
+      .mk-search .btn {
+        inline-size: 3.5rem;
+        background: var(--mk);
+        color: var(--mk-fg);
+      }
+      .mk-search .btn:hover {
+        background: color-mix(in oklab, var(--mk) 88%, black);
+      }
+      .mk .shop-count {
+        background: var(--mk);
+        color: var(--mk-fg);
+      }
+      .mk .hf-actions {
+        gap: 0.75rem;
+      }
+      .mk-nav {
+        background: var(--mk);
+        color: var(--mk-fg);
+      }
+      .mk-nav-row {
+        display: flex;
+        align-items: stretch;
+        min-block-size: 3rem;
+      }
+      .mk-all {
+        flex: none;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        inline-size: 18rem;
+        padding-inline: 1.25rem;
+        border: 0;
+        background: oklch(0.24 0 0);
+        color: #fff;
+        font: inherit;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .mk-all svg {
+        inline-size: 1.25rem;
+        block-size: 1.25rem;
+      }
+      .mk-all:focus-visible {
+        outline: 2px solid var(--mk-fg);
+        outline-offset: -4px;
+      }
+      .popover:has(> .mk-all) {
+        display: flex;
+      }
+      .mk-links {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding-inline: 1rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .mk-links a {
+        flex: none;
+        padding: 0.5rem 0.75rem;
+        border-radius: var(--radius);
+        color: inherit;
+        font-size: 0.875rem;
+        font-weight: 700;
+        text-decoration: none;
+      }
+      .mk-links a:hover,
+      .mk-links a:focus-visible {
+        background: rgb(255 255 255 / 0.16);
+        outline: none;
+      }
+      .mk-recent {
+        display: flex;
+        margin-inline-start: auto;
+      }
+      .mk-recent > button {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding-inline: 0.75rem;
+        border: 0;
+        background: none;
+        color: inherit;
+        font: inherit;
+        font-size: 0.875rem;
+        cursor: pointer;
+      }
+      .mk-recent > button svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .mk-recent > button:hover,
+      .mk-recent > button[aria-expanded="true"] {
+        background: rgb(255 255 255 / 0.16);
+      }
+      .mk-recent-pop {
+        inline-size: 20rem;
+        padding: 0.5rem;
+      }
+      .mk-recent-pop > p {
+        margin: 0;
+        padding: 0.25rem 0.5rem 0.5rem;
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .mk-recent-pop a {
+        display: grid;
+        grid-template-columns: 3rem minmax(0, 1fr);
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        color: inherit;
+        font-size: 0.875rem;
+        text-decoration: none;
+      }
+      .mk-recent-pop a:hover {
+        background: var(--accent);
+      }
+      .mk-recent-pop img {
+        inline-size: 3rem;
+        block-size: 3rem;
+        border-radius: calc(var(--radius) - 2px);
+        object-fit: cover;
+      }
+      .mk-recent-pop strong {
+        display: block;
+        overflow: hidden;
+        font-weight: 500;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .mk-recent-pop small {
+        color: var(--mk);
+        font-size: 0.8125rem;
+        font-weight: 600;
+      }
+      .mk-page {
+        padding-block-end: 3rem;
+        background: color-mix(in oklab, var(--muted) 70%, var(--background));
+      }
+      .mk-hero {
+        display: grid;
+        grid-template-columns: 18rem minmax(0, 1fr);
+      }
+      .mk-cats {
+        position: relative;
+        z-index: 15;
+        background: var(--card);
+        border-inline-end: 1px solid var(--border);
+      }
+      .mk-cats .flyout-menu {
+        --flyout-width: min(46rem, calc(100vw - 24rem));
+        block-size: 100%;
+      }
+      .mk-cats .flyout-menu > ul {
+        padding-block: 0.5rem;
+      }
+      .mk-cats [data-flyout] {
+        margin-inline-start: 0;
+        border-radius: 0 var(--radius) var(--radius) 0;
+      }
+      .mk-fly {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) 12rem;
+        gap: 1.5rem;
+      }
+      .mk-fly h3 {
+        margin: 0 0 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+      .mk-fly ul {
+        display: grid;
+        gap: 0.375rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-size: 0.875rem;
+      }
+      .mk-fly ul a {
+        color: var(--muted-foreground);
+        text-decoration: none;
+      }
+      .mk-fly ul a:hover {
+        color: var(--mk);
+      }
+      .mk-fly-promo {
+        position: relative;
+        display: grid;
+        align-content: end;
+        gap: 0.125rem;
+        min-block-size: 14rem;
+        padding: 1rem;
+        overflow: hidden;
+        border-radius: var(--radius);
+        color: #fff;
+        text-decoration: none;
+      }
+      .mk-fly-promo img {
+        position: absolute;
+        inset: 0;
+        inline-size: 100%;
+        block-size: 100%;
+        object-fit: cover;
+      }
+      .mk-fly-promo::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(transparent 35%, rgb(0 0 0 / 0.6));
+      }
+      .mk-fly-promo > :not(img) {
+        position: relative;
+        z-index: 1;
+      }
+      .mk-fly-promo span {
+        font-size: 0.8125rem;
+        opacity: 0.9;
+      }
+      .mk-stage {
+        display: grid;
+        min-inline-size: 0;
+      }
+      .mk-carousel {
+        --carousel-gap: 0px;
+      }
+      .mk-slide {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        align-items: center;
+        gap: 2rem;
+        min-block-size: 24rem;
+        padding: 2.5rem 4.5rem;
+        background: color-mix(in oklab, var(--tone) 14%, var(--card));
+      }
+      .mk-slide > div {
+        display: grid;
+        justify-items: start;
+        gap: 1rem;
+      }
+      .mk-slide h2 {
+        margin: 0;
+        font-size: clamp(1.5rem, 2.6vw, 2.125rem);
+        font-weight: 400;
+        line-height: 1.25;
+      }
+      .mk-slide h2 strong {
+        display: block;
+        font-weight: 700;
+      }
+      .mk-slide p {
+        margin: 0;
+        color: var(--muted-foreground);
+        font-size: 0.9375rem;
+      }
+      .mk-slide img {
+        inline-size: 100%;
+        aspect-ratio: 4 / 3;
+        border-radius: var(--radius);
+        object-fit: cover;
+      }
+      .mk-cta {
+        border-radius: 999px;
+        background: var(--mk);
+        color: var(--mk-fg);
+        padding-inline: 1.5rem;
+        corner-shape: round;
+      }
+      .mk-cta:hover {
+        background: color-mix(in oklab, var(--mk) 88%, black);
+      }
+      .mk-promos {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .mk-promo {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+        align-items: center;
+        gap: 1rem;
+        min-block-size: 12rem;
+        padding: 1.5rem 2rem;
+        background: color-mix(in oklab, var(--tone) 12%, var(--card));
+        color: inherit;
+        text-decoration: none;
+      }
+      .mk-promo > span {
+        display: grid;
+        gap: 0.5rem;
+      }
+      .mk-promo strong {
+        font-size: 1.125rem;
+        font-weight: 500;
+        line-height: 1.3;
+      }
+      .mk-promo small {
+        font-size: 0.8125rem;
+      }
+      .mk-promo em {
+        color: var(--mk);
+        font-size: 1.0625rem;
+        font-style: normal;
+        font-weight: 700;
+      }
+      .mk-promo img {
+        inline-size: 100%;
+        aspect-ratio: 16 / 10;
+        border-radius: var(--radius);
+        object-fit: cover;
+        transition: transform 250ms ease;
+      }
+      .mk-promo:hover img {
+        transform: scale(1.04);
+      }
+      .mk-featured {
+        display: grid;
+        gap: 1.25rem;
+        margin-block-start: 2rem;
+        padding: 1.5rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--card);
+      }
+      .mk-featured header {
+        display: flex;
+        align-items: baseline;
+        gap: 0.75rem;
+      }
+      .mk-featured h2 {
+        margin: 0;
+        font-size: 1.375rem;
+        font-weight: 500;
+      }
+      .mk-featured header a {
+        color: var(--mk);
+        font-size: 0.875rem;
+        text-decoration: none;
+      }
+      .mk-catgrid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+        gap: 1rem;
+      }
+      .mk-catgrid a {
+        display: grid;
+        justify-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem;
+        border-radius: var(--radius);
+        color: inherit;
+        font-size: 0.875rem;
+        text-align: center;
+        text-decoration: none;
+      }
+      .mk-catgrid a:hover {
+        background: var(--accent);
+      }
+      .mk-catgrid img {
+        inline-size: 100%;
+        aspect-ratio: 1;
+        border-radius: var(--radius);
+        object-fit: cover;
+      }
+      .mk-crumbs {
+        display: flex;
+        gap: 0.5rem;
+        padding-block: 1rem;
+        font-size: 0.8125rem;
+        color: var(--muted-foreground);
+      }
+      .mk-crumbs a {
+        color: inherit;
+        text-decoration: none;
+      }
+      @media (width < 64rem) {
+        .mk-hero {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .mk-cats,
+        .mk-all,
+        .mk-recent {
+          display: none;
+        }
+        .popover:has(> .mk-all) {
+          display: none;
+        }
+        .mk-head .hf-row[data-row="lg"] {
+          block-size: 4rem;
+          gap: 1rem;
+        }
+      }
+      @media (width < 48rem) {
+        .mk-slide {
+          grid-template-columns: minmax(0, 1fr);
+          min-block-size: 0;
+          padding: 1.5rem;
+        }
+        .mk-promos {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .mk-promo {
+          padding: 1.25rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="mk">
+      <div class="mk-top hf-hide-sm">
+        <div class="wrapper mk-top-row" data-size="xl">
+          <p>
+            Free shipping during
+            <a href="#">Acme Days</a>
+            .
+          </p>
+          <nav aria-label="Store">
+            <a href="#">Sell on Acme</a>
+            <a href="#">Track order</a>
+            <a href="#">Sign in</a>
+          </nav>
+        </div>
+      </div>
+      <header class="hf-head mk-head">
+        <div class="wrapper hf-row" data-size="xl" data-row="lg">
+          <button
+            type="button"
+            class="btn hf-burger"
+            data-variant="ghost"
+            data-size="icon"
+            aria-label="Open menu"
+            commandfor="h7-menu"
+            command="show-modal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+          </button>
+          <a href="#" class="block-logo">
+            <span class="block-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73zm1 .27V12"/><path d="M3.29 7L12 12l8.71-5M7.5 4.27l9 5.15"/></svg></span>
+            Office Sup
+          </a>
+          <form
+            class="hf-search hf-search-combo mk-search hf-hide-sm"
+            role="search"
+            onsubmit="event.preventDefault()">
+            <label class="sr-only" for="h7-cat">Category</label>
+            <select class="select" id="h7-cat">
+              <option>All</option>
+              <option>Electronics</option>
+              <option>Fashion</option>
+              <option>Home & Kitchen</option>
+              <option>Beauty</option>
+            </select>
+            <label class="sr-only" for="h7-q">Search</label>
+            <input
+              type="search"
+              id="h7-q"
+              placeholder="Search over 20,000 products..."
+              data-hotkey-search />
+            <button type="submit" class="btn" data-size="icon" aria-label="Search">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </button>
+          </form>
+          <div class="hf-actions">
+            <a
+              href="#"
+              class="btn shop-cart-btn"
+              data-variant="ghost"
+              data-size="icon"
+              aria-label="Wishlist, 0 items">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+              <span class="shop-count" data-count="0">0</span>
+            </a>
+            <a
+              href="#"
+              class="btn shop-cart-btn"
+              data-variant="ghost"
+              data-size="icon"
+              aria-label="Cart, 2 items">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.05 2.05l1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18"/><path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25"/><circle cx="18" cy="20" r="2"/><circle cx="8" cy="20" r="2"/></svg>
+              <span class="shop-count" data-count="2">2</span>
+            </a>
+          </div>
+        </div>
+        <form class="wrapper hf-msearch" role="search" onsubmit="event.preventDefault()">
+          <div class="input-group">
+            <input
+              type="search"
+              placeholder="Search products..."
+              aria-label="Search"
+              id="h7-msearch" />
+            <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+          </div>
+        </form>
+        <div class="mk-nav">
+          <div class="wrapper mk-nav-row" data-size="xl">
+            <a href="#mk-cats" class="mk-all">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+              All categories
+            </a>
+            <nav class="mk-links" aria-label="Main">
+              <a href="#">About</a>
+              <a href="#">Products</a>
+              <a href="#">Electronics</a>
+              <a href="#">Contact</a>
+              <a href="#">Limited deals</a>
+            </nav>
+            <div class="popover mk-recent">
+              <button type="button" popovertarget="h7-recent">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9a9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5m4-1v5l4 2"/></svg>
+                <span>Recently viewed</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div
+                id="h7-recent"
+                class="mk-recent-pop"
+                data-popover
+                popover
+                data-side="bottom"
+                data-align="end">
+                <p>Recently viewed</p>
+                <a href="#">
+                  <img class="shop-shot" src="assets/placeholder.svg" alt />
+                  <span>
+                    <strong>Magic Keyboard for iPad Pro</strong>
+                    <small>$299</small>
+                  </span>
+                </a>
+                <a href="#">
+                  <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="2" />
+                  <span>
+                    <strong>MacBook Air 13-inch, 256GB</strong>
+                    <small>$999</small>
+                  </span>
+                </a>
+                <a href="#">
+                  <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="3" />
+                  <span>
+                    <strong>Wooden Sofa Aqua</strong>
+                    <small>$640</small>
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      <dialog
+        id="h7-menu"
+        class="sheet hf-sheet"
+        data-side="left"
+        closedby="any"
+        aria-labelledby="h7-menu-t">
+        <header><h2 id="h7-menu-t">Categories</h2></header>
+        <section>
+          <nav aria-label="Mobile">
+            <div class="accordion">
+              <details>
+                <summary>Electronics</summary>
+                <ul>
+                  <li><a href="#">iPhone</a></li>
+                  <li><a href="#">Samsung Galaxy</a></li>
+                  <li><a href="#">Xiaomi</a></li>
+                  <li><a href="#">OPPO</a></li>
+                  <li><a href="#">Refurbished</a></li>
+                  <li><a href="#">iPad</a></li>
+                </ul>
+              </details>
+              <details>
+                <summary>Accessories</summary>
+                <ul>
+                  <li><a href="#">Earbuds</a></li>
+                  <li><a href="#">Headphones</a></li>
+                  <li><a href="#">Speakers</a></li>
+                  <li><a href="#">Chargers</a></li>
+                  <li><a href="#">Power banks</a></li>
+                  <li><a href="#">Cables</a></li>
+                </ul>
+              </details>
+              <details>
+                <summary>Fashion & Clothing</summary>
+                <ul>
+                  <li><a href="#">Dresses</a></li>
+                  <li><a href="#">Tops</a></li>
+                  <li><a href="#">Knitwear</a></li>
+                  <li><a href="#">Shoes</a></li>
+                  <li><a href="#">Shirts</a></li>
+                  <li><a href="#">Trousers</a></li>
+                </ul>
+              </details>
+              <details>
+                <summary>Home & Kitchen</summary>
+                <ul>
+                  <li><a href="#">Sofas</a></li>
+                  <li><a href="#">Tables</a></li>
+                  <li><a href="#">Chairs</a></li>
+                  <li><a href="#">Storage</a></li>
+                  <li><a href="#">Cookware</a></li>
+                  <li><a href="#">Small appliances</a></li>
+                </ul>
+              </details>
+            </div>
+            <a href="#">TV & Home Appliances</a>
+            <a href="#">Health & Beauty</a>
+            <a href="#">Babies & Toys</a>
+            <a href="#">Sports & Travel</a>
+            <a href="#">Books & Audible</a>
+            <a href="#">Pantry & Pet Supplies</a>
+            <a href="#">Garden</a>
+            <a href="#">Home Audio</a>
+            <a href="#">About</a>
+            <a href="#">Products</a>
+            <a href="#">Electronics</a>
+            <a href="#">Contact</a>
+            <a href="#">Limited deals</a>
+          </nav>
+        </section>
+        <button type="button" aria-label="Close menu" commandfor="h7-menu" command="close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </dialog>
+      <main class="mk-page">
+        <div class="wrapper mk-hero" data-size="xl">
+          <aside class="mk-cats" id="mk-cats">
+            <nav class="flyout-menu" aria-label="Categories">
+              <ul>
+                <li>
+                  <a href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 18h.01"/><rect height="20" rx="2" width="14" x="5" y="2"/></svg>
+                    <span>Electronics</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                  </a>
+                  <div data-flyout>
+                    <div class="mk-fly">
+                      <div>
+                        <h3>Phones</h3>
+                        <ul>
+                          <li><a href="#">iPhone</a></li>
+                          <li><a href="#">Samsung Galaxy</a></li>
+                          <li><a href="#">Xiaomi</a></li>
+                          <li><a href="#">OPPO</a></li>
+                          <li><a href="#">Refurbished</a></li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h3>Tablets</h3>
+                        <ul>
+                          <li><a href="#">iPad</a></li>
+                          <li><a href="#">Galaxy Tab</a></li>
+                          <li><a href="#">E-readers</a></li>
+                          <li><a href="#">Kids tablets</a></li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h3>Wearables</h3>
+                        <ul>
+                          <li><a href="#">Smartwatches</a></li>
+                          <li><a href="#">Fitness bands</a></li>
+                          <li><a href="#">Smart rings</a></li>
+                        </ul>
+                      </div>
+                      <a href="#" class="mk-fly-promo">
+                        <img class="shop-shot" src="assets/placeholder.svg" alt />
+                        <strong>Up to 40% off</strong>
+                        <span>This week only</span>
+                      </a>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <a href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg>
+                    <span>Accessories</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                  </a>
+                  <div data-flyout>
+                    <div class="mk-fly">
+                      <div>
+                        <h3>Audio</h3>
+                        <ul>
+                          <li><a href="#">Earbuds</a></li>
+                          <li><a href="#">Headphones</a></li>
+                          <li><a href="#">Speakers</a></li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h3>Power</h3>
+                        <ul>
+                          <li><a href="#">Chargers</a></li>
+                          <li><a href="#">Power banks</a></li>
+                          <li><a href="#">Cables</a></li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h3>Protection</h3>
+                        <ul>
+                          <li><a href="#">Cases</a></li>
+                          <li><a href="#">Screen guards</a></li>
+                          <li><a href="#">Sleeves</a></li>
+                        </ul>
+                      </div>
+                      <a href="#" class="mk-fly-promo">
+                        <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="2" />
+                        <strong>Up to 40% off</strong>
+                        <span>This week only</span>
+                      </a>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <a href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 2l-5 5l-5-5"/><rect width="20" height="15" x="2" y="7" rx="2"/></svg>
+                    <span>TV & Home Appliances</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5a3 3 0 1 1 3 3m-3-3a3 3 0 1 0-3 3m3-3v1M9 8a3 3 0 1 0 3 3M9 8h1m5 0a3 3 0 1 1-3 3m3-3h-1m-2 3v-1"/><circle cx="12" cy="8" r="2"/><path d="M12 10v12m0 0c4.2 0 7-1.667 7-5c-4.2 0-7 1.667-7 5m0 0c-4.2 0-7-1.667-7-5c4.2 0 7 1.667 7 5"/></svg>
+                    <span>Health & Beauty</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5m1-4h.01"/><path d="M19.38 6.813A9 9 0 0 1 20.8 10.2a2 2 0 0 1 0 3.6a9 9 0 0 1-17.6 0a2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1m-3 5h.01"/></svg>
+                    <span>Babies & Toys</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23"/></svg>
+                    <span>Fashion & Clothing</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                  </a>
+                  <div data-flyout>
+                    <div class="mk-fly">
+                      <div>
+                        <h3>Women</h3>
+                        <ul>
+                          <li><a href="#">Dresses</a></li>
+                          <li><a href="#">Tops</a></li>
+                          <li><a href="#">Knitwear</a></li>
+                          <li><a href="#">Shoes</a></li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h3>Men</h3>
+                        <ul>
+                          <li><a href="#">Shirts</a></li>
+                          <li><a href="#">Trousers</a></li>
+                          <li><a href="#">Jackets</a></li>
+                          <li><a href="#">Shoes</a></li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h3>Kids</h3>
+                        <ul>
+                          <li><a href="#">Baby</a></li>
+                          <li><a href="#">Girls</a></li>
+                          <li><a href="#">Boys</a></li>
+                        </ul>
+                      </div>
+                      <a href="#" class="mk-fly-promo">
+                        <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="2" />
+                        <strong>Up to 40% off</strong>
+                        <span>This week only</span>
+                      </a>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <a href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><path d="M2 16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v1.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5V11a2 2 0 0 0-4 0zm2 2v2m16-2v2M12 4v9"/></svg>
+                    <span>Home & Kitchen</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                  </a>
+                  <div data-flyout>
+                    <div class="mk-fly">
+                      <div>
+                        <h3>Furniture</h3>
+                        <ul>
+                          <li><a href="#">Sofas</a></li>
+                          <li><a href="#">Tables</a></li>
+                          <li><a href="#">Chairs</a></li>
+                          <li><a href="#">Storage</a></li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h3>Kitchen</h3>
+                        <ul>
+                          <li><a href="#">Cookware</a></li>
+                          <li><a href="#">Small appliances</a></li>
+                          <li><a href="#">Tableware</a></li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h3>Decor</h3>
+                        <ul>
+                          <li><a href="#">Lighting</a></li>
+                          <li><a href="#">Rugs</a></li>
+                          <li><a href="#">Plants</a></li>
+                        </ul>
+                      </div>
+                      <a href="#" class="mk-fly-promo">
+                        <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="3" />
+                        <strong>Up to 40% off</strong>
+                        <span>This week only</span>
+                      </a>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <a href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14.66V17a1 1 0 0 1-1 1a2 2 0 0 0-2 2v2m7-7.34V17a1 1 0 0 0 1 1a2 2 0 0 1 2 2v2m.916-12H19.5A2.5 2.5 0 0 0 22 7.5V5a1 1 0 0 0-1-1h-3M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3"/></svg>
+                    <span>Sports & Travel</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    <span>Books & Audible</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73zm1 .27V12"/><path d="M3.29 7L12 12l8.71-5M7.5 4.27l9 5.15"/></svg>
+                    <span>Pantry & Pet Supplies</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20a10 10 0 0 0 10-10a25.9 25.9 0 0 0-1.04-7.281a1 1 0 0 0-1.755-.325C15.833 5.5 13 5.5 9.8 6.1A7 7 0 0 0 11 20"/><path d="M2 21a5 5 0 0 1 2.911-4.544C7.613 15.212 8.351 15.24 11 13"/></svg>
+                    <span>Garden</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298zM16 9a5 5 0 0 1 0 6m3.364 3.364a9 9 0 0 0 0-12.728"/></svg>
+                    <span>Home Audio</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </aside>
+          <div class="mk-stage">
+            <section
+              class="carousel mk-carousel"
+              aria-roledescription="carousel"
+              aria-label="Featured"
+              data-markers>
+              <ol>
+                <li aria-roledescription="slide" aria-label="1 of 3">
+                  <div class="mk-slide" style="--tone: oklch(0.7 0.12 250)">
+                    <div>
+                      <span class="badge" data-variant="secondary">New</span>
+                      <h2>
+                        <strong>The thinnest</strong>
+                        Magic Keyboard for iPad Pro
+                      </h2>
+                      <p>Floating cantilever design.</p>
+                      <a href="#" class="btn mk-cta">Shop now</a>
+                    </div>
+                    <img class="shop-shot" src="assets/placeholder.svg" alt />
+                  </div>
+                </li>
+                <li aria-roledescription="slide" aria-label="2 of 3">
+                  <div class="mk-slide" style="--tone: oklch(0.7 0.12 40)">
+                    <div>
+                      <span class="badge" data-variant="secondary">This week</span>
+                      <h2>
+                        <strong>MacBook Air</strong>
+                        13-inch, 256GB
+                      </h2>
+                      <p>Retina display, all-day battery.</p>
+                      <a href="#" class="btn mk-cta">Shop now</a>
+                    </div>
+                    <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="2" />
+                  </div>
+                </li>
+                <li aria-roledescription="slide" aria-label="3 of 3">
+                  <div class="mk-slide" style="--tone: oklch(0.7 0.12 200)">
+                    <div>
+                      <span class="badge" data-variant="secondary">Home</span>
+                      <h2>
+                        <strong>Wooden Sofa Aqua</strong>
+                        with a 1-year warranty
+                      </h2>
+                      <p>Solid oak frame, washable covers.</p>
+                      <a href="#" class="btn mk-cta">Shop now</a>
+                    </div>
+                    <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="3" />
+                  </div>
+                </li>
+              </ol>
+            </section>
+            <div class="mk-promos">
+              <a href="#" class="mk-promo" style="--tone: oklch(0.7 0.12 60)">
+                <span>
+                  <strong>Apple MacBook Air 256GB</strong>
+                  <small>Retina display</small>
+                  <em>25% off</em>
+                </span>
+                <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="2" />
+              </a>
+              <a href="#" class="mk-promo" style="--tone: oklch(0.7 0.12 230)">
+                <span>
+                  <strong>Wooden Sofa Aqua</strong>
+                  <small>1-year warranty</small>
+                </span>
+                <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="3" />
+              </a>
+            </div>
+          </div>
+        </div>
+        <section class="wrapper" data-size="xl" aria-labelledby="mk-feat">
+          <div class="mk-featured">
+            <header>
+              <h2 id="mk-feat">Featured categories</h2>
+              <a href="#">All products</a>
+            </header>
+            <div class="mk-catgrid">
+              <a href="#">
+                <img class="shop-shot" src="assets/placeholder.svg" alt />
+                <span>Laptops</span>
+              </a>
+              <a href="#">
+                <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="2" />
+                <span>Earbuds</span>
+              </a>
+              <a href="#">
+                <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="3" />
+                <span>Monitors</span>
+              </a>
+              <a href="#">
+                <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="4" />
+                <span>Skincare</span>
+              </a>
+              <a href="#">
+                <img class="shop-shot" src="assets/placeholder.svg" alt />
+                <span>Desks</span>
+              </a>
+              <a href="#">
+                <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="2" />
+                <span>Chairs</span>
+              </a>
+              <a href="#">
+                <img class="shop-shot" src="assets/placeholder.svg" alt data-shot="3" />
+                <span>Speakers</span>
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>
+      <nav class="shop-bottom-nav hf-bnav" aria-label="Primary">
+        <ul>
+          <li>
+            <a href="#" aria-current="page">
+              <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+              <span>Home</span>
+            </a>
+          </li>
+          <li>
+            <button type="button" commandfor="h7-menu" command="show-modal">
+              <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span>
+              <span>Categories</span>
+            </button>
+          </li>
+          <li>
+            <a href="#">
+              <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+              <span>Wishlist</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span class="shop-nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.05 2.05l1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18"/><path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25"/><circle cx="18" cy="20" r="2"/><circle cx="8" cy="20" r="2"/></svg>
+                <span class="shop-count" data-count="2">2</span>
+              </span>
+              <span>Cart</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+              <span>Account</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <script>
+      // Announcement bar: previous/next messages, dismiss.
+      document.querySelectorAll("[data-bar]").forEach((bar) => {
+        const msgs = [...bar.querySelectorAll(".hf-bar-msgs > span")];
+        let i = 0;
+        const show = (n) => {
+          i = (n + msgs.length) % msgs.length;
+          msgs.forEach((m, k) => m.toggleAttribute("data-on", k === i));
+        };
+        bar.querySelector("[data-bar-prev]")?.addEventListener("click", () => show(i - 1));
+        bar.querySelector("[data-bar-next]")?.addEventListener("click", () => show(i + 1));
+        bar.querySelector("[data-bar-close]")?.addEventListener("click", () => {
+          bar.hidden = true;
+        });
+      });
+      // Search that opens under the header.
+      document.querySelectorAll("[data-search-toggle]").forEach((b) =>
+        b.addEventListener("click", () => {
+          const head = b.closest(".hf-head");
+          const open = !head.hasAttribute("data-search");
+          head.toggleAttribute("data-search", open);
+          b.setAttribute("aria-expanded", String(open));
+          if (open) head.querySelector(".hf-searchbox input").focus();
+        }),
+      );
+      // Header over a hero: solid once the page scrolls.
+      document.querySelectorAll("[data-overlay]").forEach((h) => {
+        const sync = () => h.toggleAttribute("data-scrolled", window.scrollY > 40);
+        window.addEventListener("scroll", sync, { passive: true });
+        sync();
+      });
+      // Newsletter forms: validate the email, then thank.
+      document.querySelectorAll("[data-newsletter]").forEach((form) => {
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const input = form.querySelector("input[type=email]");
+          const ok = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(input.value.trim());
+          input.toggleAttribute("aria-invalid", !ok);
+          form.querySelector("[data-news-error]").hidden = ok;
+          if (!ok) {
+            input.focus();
+            return;
+          }
+          form.querySelector("[data-news-fields]").hidden = true;
+          form.querySelector("[data-news-done]").hidden = false;
+        });
+      });
+      // Footer link columns: open on wide screens, collapsible on small ones.
+      (() => {
+        const groups = document.querySelectorAll("[data-foot-group]");
+        if (!groups.length) return;
+        const mq = window.matchMedia("(width >= 48rem)");
+        const apply = () =>
+          groups.forEach((d) => {
+            d.open = mq.matches;
+          });
+        mq.addEventListener("change", apply);
+        apply();
+      })();
+      // Bottom tab bar: the tapped tab becomes current.
+      document.querySelectorAll(".hf-bnav").forEach((nav) =>
+        nav.addEventListener("click", (e) => {
+          const a = e.target.closest("a");
+          if (!a) return;
+          e.preventDefault();
+          nav.querySelectorAll("a[aria-current]").forEach((x) => x.removeAttribute("aria-current"));
+          a.setAttribute("aria-current", "page");
+        }),
+      );
+      // Cmd/Ctrl+K: focus the header search, or open it.
+      document.addEventListener("keydown", (e) => {
+        if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== "k") return;
+        const input = [...document.querySelectorAll("[data-hotkey-search]")].find(
+          (x) => x.offsetParent,
+        );
+        const toggle = document.querySelector("[data-search-toggle]");
+        if (!input && !toggle) return;
+        e.preventDefault();
+        if (input) input.focus();
+        else if (toggle.getAttribute("aria-expanded") !== "true") toggle.click();
+        else toggle.closest(".hf-head").querySelector(".hf-searchbox input").focus();
+      });
+      // Back to top.
+      document.querySelectorAll("[data-to-top]").forEach((b) => {
+        const sync = () => b.toggleAttribute("data-show", window.scrollY > 300);
+        window.addEventListener("scroll", sync, { passive: true });
+        sync();
+        b.addEventListener("click", () =>
+          window.scrollTo({
+            top: 0,
+            behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+          }),
+        );
+      });
+    </script>
+  </body>
+</html>

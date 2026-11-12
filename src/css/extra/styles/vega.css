@@ -466,6 +466,14 @@
   .tile > figcaption > [data-actions] { @apply -my-1 gap-1; }
   .tile:has(figcaption a:focus-visible) { @apply ring-ring/50 ring-3; }
 
+  /* Flyout Menu */
+  .flyout-menu > ul { @apply gap-0.5 p-1; }
+  .flyout-menu li > a { @apply text-foreground gap-3 rounded-(--auvyx-r-control) px-3 py-2.5 text-sm no-underline transition-colors focus-visible:ring-ring/50 focus-visible:ring-3; }
+  .flyout-menu li > a > svg { @apply text-muted-foreground size-4; }
+  .flyout-menu li:is(:hover, :focus-within) > a { @apply bg-accent text-accent-foreground; }
+  .flyout-menu li > a[aria-current] { @apply font-medium; }
+  .flyout-menu [data-flyout] { @apply bg-popover text-popover-foreground ms-1 rounded-(--auvyx-r-surface) border p-5 shadow-lg; }
+
   /* Properties */
   .properties { @apply gap-0.5 text-sm; }
   .properties > div { @apply min-h-9 gap-x-3 gap-y-0.5 py-1; }

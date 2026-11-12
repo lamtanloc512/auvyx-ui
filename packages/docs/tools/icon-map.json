@@ -137,6 +137,12 @@
   "calendar-blank",
   "calendar-line"
  ],
+ "camera": [
+  "camera",
+  "camera-01",
+  "camera",
+  "camera-line"
+ ],
  "captions": [
   "badge-cc",
   "closed-caption",
@@ -148,6 +154,12 @@
   "car-01",
   "car",
   "car-line"
+ ],
+ "carrot": [
+  "carrot",
+  "carrot",
+  "carrot",
+  "leaf-line"
  ],
  "chart-column": [
   "chart-bar",
@@ -377,11 +389,23 @@
   "file-text",
   "file-text-line"
  ],
+ "fish": [
+  "fish",
+  "fish",
+  "fish",
+  "restaurant-line"
+ ],
  "flag": [
   "flag",
   "flag-01",
   "flag",
   "flag-line"
+ ],
+ "flower-2": [
+  "flower",
+  "flower",
+  "flower-tulip",
+  "flower-line"
  ],
  "folder": [
   "folder",
@@ -418,6 +442,12 @@
   "layout-3-column",
   "columns",
   "layout-column-line"
+ ],
+ "gamepad-2": [
+  "device-gamepad-2",
+  "game-controller-03",
+  "game-controller",
+  "gamepad-line"
  ],
  "gift": [
   "gift",
@@ -467,6 +497,12 @@
   "question",
   "question-line"
  ],
+ "history": [
+  "history",
+  "clock-04",
+  "clock-counter-clockwise",
+  "history-line"
+ ],
  "house": [
   "home",
   "home-01",
@@ -514,6 +550,12 @@
   "kanban",
   "kanban",
   "layout-column-line"
+ ],
+ "laptop": [
+  "device-laptop",
+  "laptop",
+  "laptop",
+  "macbook-line"
  ],
  "layout-dashboard": [
   "layout-dashboard",
@@ -646,6 +688,12 @@
   "message-01",
   "chat-centered",
   "message-2-line"
+ ],
+ "milk": [
+  "milk",
+  "milk",
+  "drop",
+  "cup-line"
  ],
  "minimize-2": [
   "arrows-minimize",
@@ -863,6 +911,12 @@
   "shield-check",
   "shield-check-line"
  ],
+ "shirt": [
+  "shirt",
+  "t-shirt",
+  "t-shirt",
+  "shirt-line"
+ ],
  "shopping-bag": [
   "shopping-bag",
   "shopping-bag-01",
@@ -898,6 +952,12 @@
   "smile",
   "smiley",
   "emotion-happy-line"
+ ],
+ "sofa": [
+  "sofa",
+  "sofa-01",
+  "couch",
+  "sofa-line"
  ],
  "sparkles": [
   "sparkles",
@@ -1096,6 +1156,12 @@
   "youtube",
   "youtube-logo",
   "youtube-line"
+ ],
+ "zap": [
+  "bolt",
+  "flash",
+  "lightning",
+  "flashlight-line"
  ],
  "zoom-in": [
   "zoom-in",

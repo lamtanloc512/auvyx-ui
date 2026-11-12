@@ -249,7 +249,15 @@
     "field",
     "label"
   ],
-  "tile": [],
+  "flyout-menu": [
+    "button",
+    "popover"
+  ],
+  "tile": [
+    "button",
+    "dropdown-menu",
+    "popover"
+  ],
   "toast": [
     "button"
   ],

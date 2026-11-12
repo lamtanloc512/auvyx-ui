@@ -7,8 +7,14 @@
 - `auvyx.min.js` no longer includes `<auvyx-data-table>` (21.9 kB gzip, was 23.1 kB). Load `js/data-table.min.js` on pages with a data table; `js/manifest.json` marks such modules `"bundled": false`.
 - Blocks page: categories grouped under Application, Authentication, Commerce and Content, with category chips and counts. The Agent, Blog and Error categories now show (they were missing).
 
+### Fixed
+
+- Create page: importing a theme or choosing a preset that sets its own letter spacing now uses it; before, an earlier Letter Spacing slider value overrode it.
+- Create page: themes with bare HSL channel colors (`222.2 84% 4.9%`, as in tweakcn's Tailwind v3 export and older shadcn registry JSON) are wrapped in `hsl()`, so their colors apply.
+
 ### Added
 
+- `.flyout-menu`, CSS only: a vertical category menu whose panels fly out to the side on hover or keyboard focus, with a short hide delay for diagonal pointer moves; works inside a popover.
 - Create page: a Mono Font option (Geist Mono, JetBrains Mono, IBM Plex Mono, Fira Code, Roboto Mono, Source Code Pro, Space Mono, DM Mono) that sets `--font-mono`, and a Letter Spacing slider that sets `--tracking-normal`. Preset codes gain a 12th digit for the mono font; 11-digit codes still open. Imported tweakcn themes' `--letter-spacing` now applies.
 - AI chat primitives:
   - `.prompt-input` with `<auvyx-prompt-input>` (`js/prompt-input.min.js`, not in `auvyx.min.js`): a growing textarea, files by picker, drop or paste, Enter to send, suggestions, and a stop state while `streaming`; cancelable `prompt` and `stop` events.
@@ -57,6 +63,10 @@
   - `header-04` spa or wellness: contact and hours bar over a hero; the header turns solid on scroll and has a Book now button.
   - `header-05` beauty: centered logo, mega menu with a featured product, search under the header.
   - `header-06` kids and toys: colorful logo, rounded search, age and category chips.
+  - `header-07` marketplace home: store links bar, search with a category select, wishlist and cart counts, an accent nav bar with an All categories label and a Recently viewed popover, then a category menu with flyout panels beside the hero slider, two promo banners and featured categories.
+  - `header-08` the same marketplace header on an inner page: All categories opens the flyout category menu as a popover.
+  - `header-09` electronics: accent main bar with a categories button, a delivery location dialog, rounded search, hotline, order lookup and cart, then an icon nav of product types.
+  - `header-10` grocery delivery: delivery address dialog and next delivery slot, search with popular terms, a cart button with the running total, and a scrolling row of round category icons.
   - `footer-01` to `footer-06` for the same businesses: newsletter signup with validation and a success state, link columns that collapse on phones, social links, payment methods, language and currency, back to top, a teacher call to action and app badges (courses), recent posts and topics (blog), contact details, opening hours with today highlighted and a map (spa), brand values (beauty), a wave edge and safety badges (kids).
   - New icons mapped for every library: baby, facebook, headphones, instagram, leaf, linkedin, puzzle, rabbit, recycle, rss, store, twitter (X), youtube.
 - Create: font weight controls. A Font Weight slider next to Font Size shifts regular, medium, semibold and bold together (`--font-weight-normal|medium|semibold|bold`, which every component reads), and Customize theme → Typography sets each one. The Google Fonts link now loads each family's whole weight axis, so any chosen weight renders with real glyphs.

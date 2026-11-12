@@ -479,6 +479,26 @@
     "description": "A playful kids and toys header: free shipping bar, big rounded search, colorful age and category chips, and a mobile menu.",
     "category": "header"
   },
+  "header-07": {
+    "title": "Header 07",
+    "description": "A marketplace home header: store links bar, search with a category select, wishlist and cart counts, an accent nav bar with recently viewed, and a category menu with flyout panels beside the hero slider, promo banners and featured categories.",
+    "category": "header"
+  },
+  "header-08": {
+    "title": "Header 08",
+    "description": "The marketplace header on an inner page: All categories opens the category menu, with flyout panels, as a popover.",
+    "category": "header"
+  },
+  "header-09": {
+    "title": "Header 09",
+    "description": "An electronics store header: accent main bar with a categories button, delivery location, rounded search, hotline, order lookup and cart, then an icon nav of product types.",
+    "category": "header"
+  },
+  "header-10": {
+    "title": "Header 10",
+    "description": "A grocery delivery header: delivery address and next slot, search with popular terms, a deals link and a cart button with the running total, then a scrolling row of round category icons.",
+    "category": "header"
+  },
   "login-01": {
     "title": "Login 01",
     "description": "A simple login form.",

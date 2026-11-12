@@ -1,0 +1,72 @@
+/* Flyout Menu (fork addition), CSS only: a vertical list of links whose
+ * panels fly out to the side on hover or keyboard focus, for shop category
+ * menus next to a hero or inside an "All categories" popover.
+ *
+ *   <nav class="flyout-menu" aria-label="Categories">
+ *     <ul>
+ *       <li>
+ *         <a href="#"><svg …/><span>Electronics</span><svg …chevron-right/></a>
+ *         <div data-flyout>…columns of links…</div>
+ *       </li>
+ *       <li><a href="#"><svg …/><span>Books</span></a></li>
+ *     </ul>
+ *   </nav>
+ *
+ * The panel covers the menu's full height and is at least as tall; set its
+ * width with --flyout-width. A short delay before hiding lets the pointer
+ * cross diagonally into the panel. Below 48rem panels are not shown, so use
+ * the item's link (or a sheet) there. Inside a [data-popover] the popover
+ * lets the panels overflow it.
+ */
+@layer components {
+  .flyout-menu {
+    @apply relative;
+
+    > ul {
+      @apply m-0 flex list-none flex-col p-0;
+    }
+
+    li > a {
+      @apply flex items-center outline-none;
+
+      > span {
+        @apply min-w-0 flex-1 truncate;
+      }
+
+      > svg {
+        @apply shrink-0;
+      }
+
+      > svg:last-child:not(:first-child) {
+        @apply rtl:rotate-180;
+      }
+    }
+
+    [data-flyout] {
+      @apply invisible absolute start-full top-0 z-50 hidden min-h-full opacity-0;
+      inline-size: var(--flyout-width, 36rem);
+      transition: opacity 120ms ease, visibility 0s linear 150ms;
+    }
+
+    @media (width >= 48rem) {
+      [data-flyout] {
+        @apply block;
+      }
+
+      li:is(:hover, :focus-within) > [data-flyout] {
+        @apply visible opacity-100;
+        transition-delay: 0s;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      [data-flyout] {
+        transition: none;
+      }
+    }
+  }
+
+  [data-popover]:has(> .flyout-menu) {
+    @apply overflow-visible;
+  }
+}

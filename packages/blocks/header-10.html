@@ -1,0 +1,872 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Header 10 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        background: var(--background);
+      }
+      .shop-count {
+        position: absolute;
+        inset-block-start: -0.25rem;
+        inset-inline-end: -0.25rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-inline-size: 1.125rem;
+        block-size: 1.125rem;
+        padding-inline: 0.25rem;
+        border-radius: 999px;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+      .shop-count:empty,
+      .shop-count[data-count="0"] {
+        display: none;
+      }
+      .shop-bottom-nav {
+        position: fixed;
+        inset-block-end: 0;
+        inset-inline: 0;
+        z-index: 20;
+        max-inline-size: 28rem;
+        margin-inline: auto;
+        padding-block-end: env(safe-area-inset-bottom, 0px);
+        border-block-start: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 92%, transparent);
+        backdrop-filter: blur(8px);
+      }
+      .shop-bottom-nav ul {
+        display: grid;
+        grid-auto-columns: 1fr;
+        grid-auto-flow: column;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .shop-bottom-nav a {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        padding-block: 0.625rem 0.5rem;
+        color: var(--muted-foreground);
+        font-size: 0.6875rem;
+        font-weight: 500;
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .shop-bottom-nav a svg {
+        inline-size: 1.375rem;
+        block-size: 1.375rem;
+      }
+      .shop-bottom-nav a[aria-current="page"] {
+        color: var(--foreground);
+      }
+      .shop-bottom-nav a[aria-current="page"]::before {
+        content: "";
+        position: absolute;
+        inset-block-start: 0;
+        inline-size: 2rem;
+        block-size: 2px;
+        border-radius: 0 0 2px 2px;
+        background: var(--primary);
+      }
+      .shop-bottom-nav a:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: -2px;
+      }
+      .shop-nav-icon {
+        position: relative;
+        display: inline-flex;
+      }
+      .shop-nav-icon > .shop-count {
+        inset-block-start: -0.25rem;
+        inset-inline-end: -0.625rem;
+      }
+      .shop-bottom-nav[data-variant="floating"] {
+        inset-block-end: calc(1rem + env(safe-area-inset-bottom, 0px));
+        inset-inline: 1rem;
+        max-inline-size: 26rem;
+        padding: 0.375rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.25);
+      }
+      .shop-bottom-nav[data-variant="floating"] a {
+        padding-block: 0.5rem;
+        border-radius: 999px;
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"] {
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"]::before {
+        display: none;
+      }
+      .shop-bottom-nav[data-variant="floating"] a > span:not(.shop-nav-icon) {
+        display: none;
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"] {
+        flex-direction: row;
+        justify-content: center;
+      }
+      .shop-bottom-nav[data-variant="floating"] a[aria-current="page"] > span:not(.shop-nav-icon) {
+        display: inline;
+        font-size: 0.75rem;
+      }
+
+      /* Circles and pills stay round when a style sets --corner-shape (squircle on a 999px radius draws a rounded square). */
+      .shop-count {
+        corner-shape: round;
+      }
+      .shop-bottom-nav {
+        corner-shape: round;
+      }
+      .shop-bottom-nav a {
+        corner-shape: round;
+      }
+
+      .block-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: inherit;
+        text-decoration: none;
+      }
+      .block-logo-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border-radius: calc(var(--radius) - 2px);
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .block-logo-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+
+      @keyframes shop-pop {
+        from {
+          transform: scale(0.96);
+          opacity: 0.6;
+        }
+        to {
+          transform: none;
+          opacity: 1;
+        }
+      }
+      /* Reduced motion: the hover states still apply, without movement. !important so it wins over every card's transition rules. */
+
+      .hf-demo {
+        min-block-size: 24rem;
+        padding: 3rem 1rem;
+        display: grid;
+        place-items: center;
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+        background: repeating-linear-gradient(
+          -45deg,
+          var(--muted),
+          var(--muted) 10px,
+          transparent 10px,
+          transparent 20px
+        );
+      }
+      .hf-demo p {
+        margin: 0;
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        background: var(--background);
+      }
+      .hf-head {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 20;
+        border-block-end: 1px solid var(--border);
+        background: color-mix(in oklab, var(--background) 94%, transparent);
+        backdrop-filter: blur(10px);
+      }
+      .hf-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        block-size: 4rem;
+      }
+      .hf-row[data-size="lg"] {
+        block-size: 5rem;
+      }
+      .hf-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        margin-inline-start: auto;
+      }
+      .hf-burger {
+        display: none;
+      }
+      .hf-search {
+        flex: 1;
+        max-inline-size: 36rem;
+      }
+      .hf-pill {
+        border-radius: 999px;
+        corner-shape: round;
+      }
+      .hf-search.input-group {
+        block-size: 2.5rem;
+      }
+      .hf-msearch {
+        padding-block-end: 0.75rem;
+      }
+      @media (width >= 64rem) {
+        .hf-msearch {
+          display: none;
+        }
+      }
+      .hf-search select {
+        flex: none;
+        inline-size: auto;
+        border: 0;
+        border-inline-end: 1px solid var(--border);
+        border-radius: 0;
+        background-color: transparent;
+        box-shadow: none;
+        font-size: 0.8125rem;
+      }
+      .hf-sheet nav {
+        display: grid;
+        gap: 0.125rem;
+      }
+      .hf-sheet nav > a {
+        padding: 0.625rem 0.75rem;
+        border-radius: var(--radius);
+        color: inherit;
+        font-weight: 500;
+        text-decoration: none;
+      }
+      .hf-sheet nav > a:hover {
+        background: var(--accent);
+      }
+      .hf-sheet .accordion summary {
+        padding-inline: 0.75rem;
+        font-weight: 500;
+      }
+      .hf-sheet .accordion ul {
+        display: grid;
+        gap: 0.125rem;
+        margin: 0;
+        padding: 0 0 0.5rem 0.75rem;
+        list-style: none;
+      }
+      .hf-sheet .accordion li a {
+        display: block;
+        padding: 0.5rem 0.75rem;
+        border-radius: var(--radius);
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+        text-decoration: none;
+      }
+      .hf-sheet .accordion li a:hover {
+        background: var(--accent);
+        color: var(--foreground);
+      }
+      .hf-sheet > section {
+        display: grid;
+        gap: 1rem;
+        align-content: start;
+      }
+      .hf-head .block-logo {
+        flex: none;
+        white-space: nowrap;
+      }
+      @media (width < 64rem) {
+        .hf-hide-sm {
+          display: none;
+        }
+        .hf-burger {
+          display: inline-flex;
+        }
+      }
+      .hf-bnav button {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        inline-size: 100%;
+        padding-block: 0.625rem 0.5rem;
+        border: 0;
+        background: none;
+        color: var(--muted-foreground);
+        font: inherit;
+        font-size: 0.6875rem;
+        font-weight: 500;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .hf-bnav button svg {
+        inline-size: 1.375rem;
+        block-size: 1.375rem;
+      }
+      .hf-bnav button:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: -2px;
+      }
+      .hf-bnav {
+        max-inline-size: none;
+      }
+      .hf-bnav a {
+        padding-block-start: 0.875rem;
+      }
+      .hf-bnav button {
+        padding-block-start: 0.875rem;
+      }
+      .hf-actions .shop-count {
+        inset-block-start: -0.125rem;
+        inset-inline-end: -0.125rem;
+      }
+      @media (width >= 48rem) {
+        .hf-bnav {
+          display: none;
+        }
+      }
+      @media (width < 48rem) {
+        .hf-burger.hf-burger {
+          display: none;
+        }
+        body:has(.hf-bnav) {
+          padding-block-end: calc(4rem + env(safe-area-inset-bottom, 0px));
+        }
+      }
+
+      .gr {
+        --gr: oklch(0.55 0.15 150);
+        --gr-fg: #fff;
+      }
+      .gr-bar {
+        background: color-mix(in oklab, var(--gr) 12%, var(--background));
+        font-size: 0.8125rem;
+      }
+      .gr-bar-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        min-block-size: 2.5rem;
+      }
+      .gr-addr {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        min-inline-size: 0;
+        padding: 0.25rem 0.5rem;
+        margin-inline-start: -0.5rem;
+        border: 0;
+        border-radius: var(--radius);
+        background: none;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+      }
+      .gr-addr:hover {
+        background: color-mix(in oklab, var(--gr) 14%, transparent);
+      }
+      .gr-addr:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 1px;
+      }
+      .gr-addr > span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .gr-addr svg {
+        flex: none;
+        inline-size: 1rem;
+        block-size: 1rem;
+        color: var(--gr);
+      }
+      .gr-addr svg:last-child {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+        color: inherit;
+      }
+      .gr-slot {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        color: var(--muted-foreground);
+      }
+      .gr-slot svg {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+      }
+      .gr-slot strong {
+        color: var(--gr);
+      }
+      .gr-head .hf-row {
+        block-size: 5rem;
+      }
+      .gr-head .block-logo-mark {
+        background: var(--gr);
+        color: var(--gr-fg);
+      }
+      .gr-search {
+        flex: 1;
+        display: grid;
+        gap: 0.25rem;
+        max-inline-size: 38rem;
+      }
+      .gr-search .hf-search {
+        max-inline-size: none;
+      }
+      .gr-search p {
+        display: flex;
+        gap: 0.75rem;
+        margin: 0;
+        padding-inline: 1rem;
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+      }
+      .gr-search p a {
+        color: inherit;
+      }
+      .gr-search p a:hover {
+        color: var(--gr);
+      }
+      .gr-cart {
+        position: relative;
+        border-radius: 999px;
+        background: var(--gr);
+        color: var(--gr-fg);
+        padding-inline: 1rem;
+        font-variant-numeric: tabular-nums;
+        corner-shape: round;
+      }
+      .gr-cart:hover {
+        background: color-mix(in oklab, var(--gr) 88%, black);
+      }
+      .gr-cart .shop-count {
+        position: absolute;
+        inset-block-start: -0.25rem;
+        inset-inline-start: 1.75rem;
+        inset-inline-end: auto;
+        background: oklch(0.8 0.16 75);
+        color: oklch(0.25 0.05 70);
+      }
+      .gr-cats {
+        display: flex;
+        gap: 0.5rem;
+        padding-block: 0.25rem 0.75rem;
+        overflow-x: auto;
+        scroll-snap-type: x proximity;
+        scrollbar-width: none;
+      }
+      .gr-cats a {
+        flex: none;
+        display: grid;
+        justify-items: center;
+        gap: 0.375rem;
+        inline-size: 5.5rem;
+        padding-block: 0.25rem;
+        color: inherit;
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-align: center;
+        text-decoration: none;
+        scroll-snap-align: start;
+      }
+      .gr-cats a > span {
+        display: grid;
+        place-items: center;
+        inline-size: 3.5rem;
+        block-size: 3.5rem;
+        border-radius: 999px;
+        background: color-mix(in oklab, var(--tone) 22%, var(--background));
+        color: color-mix(in oklab, var(--tone) 70%, var(--foreground));
+        transition: transform 150ms ease;
+        corner-shape: round;
+      }
+      .gr-cats a svg {
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+      }
+      .gr-cats a:hover > span {
+        transform: translateY(-2px);
+      }
+      .gr-cats a:focus-visible {
+        outline: none;
+      }
+      .gr-cats a:focus-visible > span {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .gr-cats a:hover > span {
+          transform: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="gr">
+      <div class="gr-bar">
+        <div class="wrapper gr-bar-row" data-size="xl">
+          <button type="button" class="gr-addr" commandfor="h10-addr" command="show-modal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>
+              Deliver to
+              <strong>12 Nguyen Hue, District 1</strong>
+            </span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <span class="gr-slot hf-hide-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Next delivery in
+            <strong>2 hours</strong>
+          </span>
+        </div>
+      </div>
+      <header class="hf-head gr-head">
+        <div class="wrapper hf-row" data-size="xl">
+          <button
+            type="button"
+            class="btn hf-burger"
+            data-variant="ghost"
+            data-size="icon"
+            aria-label="Open menu"
+            commandfor="h10-menu"
+            command="show-modal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+          </button>
+          <a href="#" class="block-logo">
+            <span class="block-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20a10 10 0 0 0 10-10a25.9 25.9 0 0 0-1.04-7.281a1 1 0 0 0-1.755-.325C15.833 5.5 13 5.5 9.8 6.1A7 7 0 0 0 11 20"/><path d="M2 21a5 5 0 0 1 2.911-4.544C7.613 15.212 8.351 15.24 11 13"/></svg></span>
+            Fresh Basket
+          </a>
+          <div class="gr-search hf-hide-sm">
+            <form
+              class="input-group hf-search hf-pill"
+              role="search"
+              onsubmit="event.preventDefault()">
+              <input
+                type="search"
+                placeholder="Search groceries..."
+                aria-label="Search groceries"
+                data-hotkey-search />
+              <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+            </form>
+            <p>
+              <span>Popular:</span>
+              <a href="#">Avocado</a>
+              <a href="#">Salmon</a>
+              <a href="#">Oat milk</a>
+              <a href="#">Eggs</a>
+            </p>
+          </div>
+          <div class="hf-actions">
+            <a href="#" class="btn hf-hide-sm" data-variant="ghost">
+              <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15.914 4a1.5 1.5 0 0 0-2.474-1.561l-9 9A1.5 1.5 0 0 0 5.5 14h4.002a.5.5 0 0 1 .471.666L8.086 20a1.5 1.5 0 0 0 2.475 1.56l9-9A1.5 1.5 0 0 0 18.5 10h-3.997a.5.5 0 0 1-.472-.667z"/></svg>
+              Deals
+            </a>
+            <a
+              href="#"
+              class="btn hf-hide-sm"
+              data-variant="ghost"
+              data-size="icon"
+              aria-label="Account">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </a>
+            <a href="#" class="btn gr-cart" aria-label="Cart, 6 items, $48.20">
+              <svg data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.05 2.05l1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18"/><path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25"/><circle cx="18" cy="20" r="2"/><circle cx="8" cy="20" r="2"/></svg>
+              <span class="shop-count" data-count="6">6</span>
+              <span>$48.20</span>
+            </a>
+          </div>
+        </div>
+        <form class="wrapper hf-msearch" role="search" onsubmit="event.preventDefault()">
+          <div class="input-group hf-pill">
+            <input
+              type="search"
+              placeholder="Search groceries..."
+              aria-label="Search"
+              id="h10-msearch" />
+            <span data-align="start" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+          </div>
+        </form>
+        <nav class="wrapper gr-cats" data-size="xl" aria-label="Aisles">
+          <a href="#" style="--tone: oklch(0.72 0.13 145)">
+            <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 16a1 1 0 0 0-7-7q-4 4-5.987 12.385a.5.5 0 0 0 .602.602Q11 20 15 16l-3-3"/><path d="M15 9q4 4 7 0q-3-4-7 0q4-4 0-7q-4 3 0 7m-7 6l-2.58-2.58"/></svg></span>
+            Vegetables
+          </a>
+          <a href="#" style="--tone: oklch(0.72 0.13 95)">
+            <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20a10 10 0 0 0 10-10a25.9 25.9 0 0 0-1.04-7.281a1 1 0 0 0-1.755-.325C15.833 5.5 13 5.5 9.8 6.1A7 7 0 0 0 11 20"/><path d="M2 21a5 5 0 0 1 2.911-4.544C7.613 15.212 8.351 15.24 11 13"/></svg></span>
+            Fruit
+          </a>
+          <a href="#" style="--tone: oklch(0.72 0.13 230)">
+            <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 12c.94-3.46 4.94-6 8.5-6s6.06 2.54 7 6c-.94 3.47-3.44 6-7 6s-7.56-2.53-8.5-6M18 12v.5"/><path d="M16 17.93a9.77 9.77 0 0 1 0-11.86m-9 4.6C7 8 5.58 5.97 2.73 5.5c-1 1.5-1 5 .23 6.5c-1.24 1.5-1.24 5-.23 6.5C5.58 18.03 7 16 7 13.33"/><path d="M10.46 7.26C10.2 5.88 9.17 4.24 8 3h5.8a2 2 0 0 1 1.98 1.67l.23 1.4m0 11.86l-.23 1.4A2 2 0 0 1 13.8 21H9.5a5.96 5.96 0 0 0 1.49-3.98"/></svg></span>
+            Fish & seafood
+          </a>
+          <a href="#" style="--tone: oklch(0.72 0.13 260)">
+            <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2h8M9 2v2.789a4 4 0 0 1-.672 2.219l-.656.984A4 4 0 0 0 7 10.212V20a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-9.789a4 4 0 0 0-.672-2.219l-.656-.984A4 4 0 0 1 15 4.788V2"/><path d="M7 15a6.47 6.47 0 0 1 5 0a6.47 6.47 0 0 0 5 0"/></svg></span>
+            Dairy & eggs
+          </a>
+          <a href="#" style="--tone: oklch(0.72 0.13 70)">
+            <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73zm1 .27V12"/><path d="M3.29 7L12 12l8.71-5M7.5 4.27l9 5.15"/></svg></span>
+            Bakery
+          </a>
+          <a href="#" style="--tone: oklch(0.72 0.13 330)">
+            <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5a3 3 0 1 1 3 3m-3-3a3 3 0 1 0-3 3m3-3v1M9 8a3 3 0 1 0 3 3M9 8h1m5 0a3 3 0 1 1-3 3m3-3h-1m-2 3v-1"/><circle cx="12" cy="8" r="2"/><path d="M12 10v12m0 0c4.2 0 7-1.667 7-5c-4.2 0-7 1.667-7 5m0 0c-4.2 0-7-1.667-7-5c4.2 0 7 1.667 7 5"/></svg></span>
+            Drinks
+          </a>
+          <a href="#" style="--tone: oklch(0.72 0.13 20)">
+            <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14m8-10v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8m3.5-4a1 1 0 0 1 0-5A4.8 8 0 0 1 12 7a4.8 8 0 0 1 4.5-5a1 1 0 0 1 0 5"/><rect width="18" height="4" x="3" y="7" rx="1"/></svg></span>
+            Snacks
+          </a>
+          <a href="#" style="--tone: oklch(0.72 0.13 280)">
+            <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+            Household
+          </a>
+          <a href="#" style="--tone: oklch(0.72 0.13 300)">
+            <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5m1-4h.01"/><path d="M19.38 6.813A9 9 0 0 1 20.8 10.2a2 2 0 0 1 0 3.6a9 9 0 0 1-17.6 0a2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1m-3 5h.01"/></svg></span>
+            Baby
+          </a>
+          <a href="#" style="--tone: oklch(0.72 0.13 27)">
+            <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15.914 4a1.5 1.5 0 0 0-2.474-1.561l-9 9A1.5 1.5 0 0 0 5.5 14h4.002a.5.5 0 0 1 .471.666L8.086 20a1.5 1.5 0 0 0 2.475 1.56l9-9A1.5 1.5 0 0 0 18.5 10h-3.997a.5.5 0 0 1-.472-.667z"/></svg></span>
+            Deals
+          </a>
+        </nav>
+      </header>
+      <dialog id="h10-addr" class="dialog" closedby="any" aria-labelledby="h10-addr-t">
+        <div>
+          <header>
+            <h2 id="h10-addr-t">Delivery address</h2>
+            <p>We show what is in stock near you.</p>
+          </header>
+          <section class="stack" data-gap="3">
+            <label class="label" for="h10-street">Street address</label>
+            <input
+              class="input"
+              id="h10-street"
+              value="12 Nguyen Hue"
+              autocomplete="street-address" />
+            <label class="label" for="h10-dist">District</label>
+            <select class="select" id="h10-dist">
+              <option>District 1</option>
+              <option>District 3</option>
+              <option>Binh Thanh</option>
+              <option>Thu Duc</option>
+            </select>
+          </section>
+          <footer>
+            <button
+              type="button"
+              class="btn"
+              data-variant="outline"
+              commandfor="h10-addr"
+              command="close">
+              Cancel
+            </button>
+            <button type="button" class="btn" commandfor="h10-addr" command="close">
+              Save address
+            </button>
+          </footer>
+          <button type="button" aria-label="Close" commandfor="h10-addr" command="close">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+      </dialog>
+      <dialog
+        id="h10-menu"
+        class="sheet hf-sheet"
+        data-side="left"
+        closedby="any"
+        aria-labelledby="h10-menu-t">
+        <header><h2 id="h10-menu-t">Aisles</h2></header>
+        <section>
+          <nav aria-label="Mobile">
+            <div class="accordion"></div>
+            <a href="#">Vegetables</a>
+            <a href="#">Fruit</a>
+            <a href="#">Fish & seafood</a>
+            <a href="#">Dairy & eggs</a>
+            <a href="#">Bakery</a>
+            <a href="#">Drinks</a>
+            <a href="#">Snacks</a>
+            <a href="#">Household</a>
+            <a href="#">Baby</a>
+            <a href="#">Deals</a>
+            <a href="#">Deals</a>
+            <a href="#">Orders</a>
+            <a href="#">Help</a>
+          </nav>
+        </section>
+        <button type="button" aria-label="Close menu" commandfor="h10-menu" command="close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </dialog>
+      <nav class="shop-bottom-nav hf-bnav" aria-label="Primary">
+        <ul>
+          <li>
+            <a href="#" aria-current="page">
+              <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+              <span>Home</span>
+            </a>
+          </li>
+          <li>
+            <button type="button" commandfor="h10-menu" command="show-modal">
+              <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span>
+              <span>Aisles</span>
+            </button>
+          </li>
+          <li>
+            <a href="#">
+              <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15.914 4a1.5 1.5 0 0 0-2.474-1.561l-9 9A1.5 1.5 0 0 0 5.5 14h4.002a.5.5 0 0 1 .471.666L8.086 20a1.5 1.5 0 0 0 2.475 1.56l9-9A1.5 1.5 0 0 0 18.5 10h-3.997a.5.5 0 0 1-.472-.667z"/></svg></span>
+              <span>Deals</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span class="shop-nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.05 2.05l1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18"/><path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25"/><circle cx="18" cy="20" r="2"/><circle cx="8" cy="20" r="2"/></svg>
+                <span class="shop-count" data-count="6">6</span>
+              </span>
+              <span>Cart</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span class="shop-nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+              <span>Account</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div class="hf-demo"><p>Page content</p></div>
+    </div>
+    <script>
+      // Announcement bar: previous/next messages, dismiss.
+      document.querySelectorAll("[data-bar]").forEach((bar) => {
+        const msgs = [...bar.querySelectorAll(".hf-bar-msgs > span")];
+        let i = 0;
+        const show = (n) => {
+          i = (n + msgs.length) % msgs.length;
+          msgs.forEach((m, k) => m.toggleAttribute("data-on", k === i));
+        };
+        bar.querySelector("[data-bar-prev]")?.addEventListener("click", () => show(i - 1));
+        bar.querySelector("[data-bar-next]")?.addEventListener("click", () => show(i + 1));
+        bar.querySelector("[data-bar-close]")?.addEventListener("click", () => {
+          bar.hidden = true;
+        });
+      });
+      // Search that opens under the header.
+      document.querySelectorAll("[data-search-toggle]").forEach((b) =>
+        b.addEventListener("click", () => {
+          const head = b.closest(".hf-head");
+          const open = !head.hasAttribute("data-search");
+          head.toggleAttribute("data-search", open);
+          b.setAttribute("aria-expanded", String(open));
+          if (open) head.querySelector(".hf-searchbox input").focus();
+        }),
+      );
+      // Header over a hero: solid once the page scrolls.
+      document.querySelectorAll("[data-overlay]").forEach((h) => {
+        const sync = () => h.toggleAttribute("data-scrolled", window.scrollY > 40);
+        window.addEventListener("scroll", sync, { passive: true });
+        sync();
+      });
+      // Newsletter forms: validate the email, then thank.
+      document.querySelectorAll("[data-newsletter]").forEach((form) => {
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const input = form.querySelector("input[type=email]");
+          const ok = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(input.value.trim());
+          input.toggleAttribute("aria-invalid", !ok);
+          form.querySelector("[data-news-error]").hidden = ok;
+          if (!ok) {
+            input.focus();
+            return;
+          }
+          form.querySelector("[data-news-fields]").hidden = true;
+          form.querySelector("[data-news-done]").hidden = false;
+        });
+      });
+      // Footer link columns: open on wide screens, collapsible on small ones.
+      (() => {
+        const groups = document.querySelectorAll("[data-foot-group]");
+        if (!groups.length) return;
+        const mq = window.matchMedia("(width >= 48rem)");
+        const apply = () =>
+          groups.forEach((d) => {
+            d.open = mq.matches;
+          });
+        mq.addEventListener("change", apply);
+        apply();
+      })();
+      // Bottom tab bar: the tapped tab becomes current.
+      document.querySelectorAll(".hf-bnav").forEach((nav) =>
+        nav.addEventListener("click", (e) => {
+          const a = e.target.closest("a");
+          if (!a) return;
+          e.preventDefault();
+          nav.querySelectorAll("a[aria-current]").forEach((x) => x.removeAttribute("aria-current"));
+          a.setAttribute("aria-current", "page");
+        }),
+      );
+      // Cmd/Ctrl+K: focus the header search, or open it.
+      document.addEventListener("keydown", (e) => {
+        if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== "k") return;
+        const input = [...document.querySelectorAll("[data-hotkey-search]")].find(
+          (x) => x.offsetParent,
+        );
+        const toggle = document.querySelector("[data-search-toggle]");
+        if (!input && !toggle) return;
+        e.preventDefault();
+        if (input) input.focus();
+        else if (toggle.getAttribute("aria-expanded") !== "true") toggle.click();
+        else toggle.closest(".hf-head").querySelector(".hf-searchbox input").focus();
+      });
+      // Back to top.
+      document.querySelectorAll("[data-to-top]").forEach((b) => {
+        const sync = () => b.toggleAttribute("data-show", window.scrollY > 300);
+        window.addEventListener("scroll", sync, { passive: true });
+        sync();
+        b.addEventListener("click", () =>
+          window.scrollTo({
+            top: 0,
+            behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+          }),
+        );
+      });
+    </script>
+  </body>
+</html>

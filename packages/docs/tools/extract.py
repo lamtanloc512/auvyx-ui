@@ -314,6 +314,7 @@ EXTRA_META = {
     "prompt-input": ("Prompt Input", "The composer of a chat: a growing textarea, attachments and a toolbar. Works as a plain form; the element adds Enter to send, files, suggestions and a stop state.", None),
     "suggestions": ("Suggestions", "A row of prompt chips that scrolls sideways when it overflows, CSS only. Inside a Prompt Input a click fills the prompt.", None),
     "message-actions": ("Message Actions", "The toolbar under a message: copy, retry and feedback. CSS only; copy uses data-copy and ratings are toggles.", None),
+    "flyout-menu": ("Flyout Menu", "A vertical category menu whose panels fly out to the side on hover or keyboard focus, CSS only.", None),
     "tile": ("Tile", "A preview with a caption for project thumbnails, galleries and showcases, CSS only. A link in the caption makes the whole tile clickable.", None),
     "properties": ("Properties", "Label and value rows for a record page, CSS only. Rows stack when the list is narrow.", None),
     "calendar": ("Calendar", "A date field component that allows users to enter and edit date.", "Calendar"),
