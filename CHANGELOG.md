@@ -2,8 +2,35 @@
 
 ## [Unreleased]
 
+### Changed
+
+- `auvyx.min.js` no longer includes `<auvyx-data-table>` (21.9 kB gzip, was 23.1 kB). Load `js/data-table.min.js` on pages with a data table; `js/manifest.json` marks such modules `"bundled": false`.
+- Blocks page: categories grouped under Application, Authentication, Commerce and Content, with category chips and counts. The Agent, Blog and Error categories now show (they were missing).
+
 ### Added
 
+- Create page theme presets Vercel and Clean Slate, taken as-is from tweakcn (Apache-2.0): neutral themes with white cards and hairline borders. Pair them with Maia for pill-shaped controls.
+- `studio-01` (new Studio category): an image studio Create page with a prompt composer built from a vertical Input Group (pickers, textarea, toolbar) over a hero, and Spotlight / Liked carousels.
+
+- Data Table interactions (`<auvyx-data-table>`, all opt-in, backward compatible):
+  - `data-grid` grid keyboard model; `data-sticky` header.
+  - Faceted filters (`data-facet`, `data-facet-count`); a page size select; first/last page buttons; `[data-reset]`.
+  - Expandable rows (`data-expand` + `tr[data-detail]`); shift-click range selection; inline editing (`td[data-editable]`, cancelable `cellchange`).
+  - Columns named by `th[data-key]`; a read/write `state` property with a `statechange` event; server mode (`data-mode="server"`, `data-total`, `refresh()`).
+  - Usage notes in the docs.
+- `<auvyx-sortable>`: drag and drop between the lists inside it (kanban columns), by pointer (touch after a short press) or keyboard, with screen reader announcements and a cancelable `sort` event. Loaded on its own as `js/sortable.min.js`.
+- CSS-only foundation primitives:
+  - `.table[data-variant="grid"]`: a spreadsheet-style table with cell lines, column icons, CSS-counter row numbers and a sticky header and footer.
+  - `.kanban`: a board of columns and cards (pair with `<auvyx-sortable>` for drag and drop).
+  - `.properties`: label and value rows for record pages; rows stack when the list is narrow.
+  - `.tile`: a preview with a caption for project thumbnails, galleries and showcases; a caption link makes the whole tile clickable. Lay tiles out with `.auto-grid`.
+- Agent blocks in a new Agent category:
+  - `agent-01` context window panel: tokens used with a health level, prompt cache savings, a waffle chart by source with a hover-to-isolate legend, contents by tab, and a working Compact history action.
+  - `agent-02` agent runs table built on the new Data Table interactions.
+- `projects-01` (new Projects category): a workspace of sites with project tiles showing a style preview (logo, typeface, palette), a showcase of site mockups and a What's new card that closes without JavaScript (`<dialog open>` + `<form method="dialog">`).
+- CRM blocks in a new CRM category (Application group), built on the foundation primitives:
+  - `crm-01` customers in two synced views: a grid data table (row numbers, stage and owner facets, editable ARR, grid keys, totals row) and a kanban board where dragging a card changes the stage.
+  - `crm-02` customer record: identity and actions, details and custom fields as `.properties`, stat cards, an activity timeline and contracts in a grid table.
 - Online course blocks (Udemy / Domestika style), 10 in a new Courses category: `course-01` catalog with topic pills, filters (rating, level, length, price), sort and a hover preview with Add to cart; `course-02` list rows and Domestika-style cards; `course-03` learning home with a search hero, continue learning, a course carousel and teachers; `course-04` course page with a sticky purchase card, video preview dialog, what you'll learn, expandable curriculum with previews, description, teacher and reviews; `course-05` course player with a progress ring, completion checkboxes, next and previous lesson, collapsible sections with Expand all / Collapse all, a sidebar you can hide for a wider video, Q&A and notes; `course-06` my learning with a weekly goal and status filters; `course-07` teacher profile; `course-08` subscription plans with a monthly or yearly switch; `course-09` certificate of completion; `course-10` course cart with a coupon (`LEARN20`) and payment choice.
 - LMS admin blocks (instructor dashboard, in the style of Teachable, Thinkific and Udemy's instructor tools), 8 in a new LMS Admin category, all in a sidebar shell:
   - `admin-01` courses: status tabs with counts, search, category filter, select all with a bulk bar (publish, unpublish, delete), row menus, a New course dialog.

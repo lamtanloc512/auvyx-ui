@@ -1,0 +1,80 @@
+# Agent-generated UI: what OpenIntelligentUI does and what Auvyx should take
+
+Source: `github.com/CopilotKit/OpenIntelligentUI` (shallow clone, read-only, 2026-11-12).
+Not covered: internals of `@copilotkit/a2ui-renderer` and `OpenGenerativeUIMiddleware`, which are npm packages and not in that repo.
+
+## Facts
+
+### What it is
+A demo chat app, not a component library:
+- Next.js with CopilotKit (`apps/app`)
+- a Python LangGraph agent (`apps/agent`)
+- an optional MCP server (`apps/mcp`)
+- theme CSS (`packages/design-system`)
+
+### How an answer is produced
+1. **Route first.** A small classifier (`apps/agent/src/visualization_router.py`) picks one presentation per turn: text, table, bar_chart, flowchart, calculator, map, …
+2. **Narrow the tools.** Middleware removes the rendering tools that were not picked and appends a short "contract" for the chosen one to the system prompt.
+
+### Three ways components reach the agent
+
+| Channel | Shape | Example | Validation |
+|---|---|---|---|
+| Typed catalog (A2UI) | Schema per component (Zod `props` + `description`), catalog ID | `table-catalog.tsx`: `Table { title, columns ≤12, rows ≤200 of string[], source }` | `safeParse`; on failure, ask the agent to regenerate |
+| Components as tools | `useComponent({ name, description, parameters, render })` | pie and bar charts | Zod |
+| Free-form HTML | `generateSandboxedUi` tool; args stream as `css → html → jsFunctions → jsExpressions` | anything else | None; isolated in a sandbox iframe instead |
+
+### Free-form HTML is steered by a short "design skill"
+`OPEN_GEN_UI_DESIGN_SKILL` in `packages/design-system/src/index.ts` tells the agent:
+- use the theme tokens;
+- native controls are pre-styled, so don't restyle them;
+- use these SVG helper classes;
+- put only widget-specific CSS in `css`.
+
+### Feedback to the agent is thin
+- The only path back is `sendPrompt(text)` from the sandbox, which starts a new turn.
+- Widget state is local; there is no binding to agent state.
+- There is no API to patch an earlier widget.
+
+### Tables are deliberately minimal
+- Cells are strings only; at most 12 columns and 200 rows.
+- A provenance `source` field is required.
+- No sorting, filtering or typed columns.
+
+## What maps onto Auvyx
+
+Auvyx already has most of the hard part:
+- semantic markup with one root class per component;
+- a Custom Elements Manifest (`dist/custom-elements.json`, built from `packages/elements/api.mjs`);
+- `llms.txt`, `llms-full.txt` and per-component Markdown (`out/md/components/*.md`) from the docs build.
+
+What is missing is a *structured* contract the agent can be validated against.
+
+1. **Component contracts for agents (`auvyx.ai.json`)**
+   - Generate it next to `llms.txt`, from `components.json`, `notes/*.html` and `api.mjs`.
+   - Per component: name, when to use it, root class, the child elements it needs, `data-*` and ARIA attributes, limits, and one canonical snippet.
+   - This plays the role of their Zod catalog, but its output is HTML.
+2. **Design skill text**
+   - About 30 lines: tokens, the layout primitives (`stack`, `cluster`, `wrapper`), and "native `button`, `input`, `select` are pre-styled; use `class="btn" data-variant`; don't add inline colors".
+   - Ship it in the same generated bundle.
+3. **JSON → HTML renderer for core components**
+   - The agent emits `{ component: "DataTable", props }` and a server-side renderer (Python or Node) emits correct markup.
+   - Use free-form HTML only for things outside the catalog.
+   - Validate against the contract: root class present, required children present, column count matches.
+4. **Two-way state, which OpenIntelligentUI lacks**
+   - `<auvyx-data-table>` now has a serializable `state` (query, sort, filters, page, page size, hidden columns, selected) and emits `statechange`, `selectionchange` and `cellchange`.
+   - An agent can drive the table: "show failed runs by cost" becomes `table.state = { filters: { status: ["Failed"] }, sort: { column: "cost", direction: "descending" } }`.
+   - The page can send the user's view back as structured context instead of free text.
+   - The same pattern should extend to other stateful components (tabs, select, calendar), which already expose `value` and `change`.
+5. **Route, then inject one contract**
+   - Classify the intent and include only the relevant component contracts in the prompt, as their router does. This keeps prompts small as the catalog grows.
+
+## Proposed next steps (not started)
+1. A generator script for `auvyx.ai.json` in the docs build, next to the existing `llms.txt`.
+2. The design-skill text, reviewed against the Vega pack.
+3. A reference JSON → HTML renderer for Table and Data Table, Card, Badge and Chart, with validation.
+4. A small demo page that drives `agent-02` (Agent runs) through `state` from a chat input.
+
+## Risks
+- **Free-form HTML from an agent is untrusted.** Render it sandboxed (iframe), or render only through the catalog.
+- **Contracts can drift from the markup.** Generate them from the same sources the docs use, and check them in `npm run auvyx:test`.
