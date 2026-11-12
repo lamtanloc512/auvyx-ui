@@ -286,6 +286,19 @@
     const cliSnippet = () => `npx @auvyx/cli init --icons ${iconLib()}\nnpx @auvyx/cli add dashboard-01`;
 
     // ---- tweakcn / shadcn theme import (CSS or registry JSON)
+    // A theme that sets its own letter spacing wins over an earlier slider value.
+    function useTheme(t) {
+      state.imported = t;
+      if (['tracking-normal', 'letter-spacing'].some((k) => k in { ...t.theme, ...t.light })) state.tracking = 0;
+    }
+    // Tailwind v3 themes (tweakcn's "Tailwind v3" export, older shadcn JSON) write colors
+    // as bare HSL channels, "222.2 84% 4.9%"; wrap them so they are valid colors.
+    const COLOR_KEY = /^(background|foreground|card|popover|primary|secondary|muted|accent|destructive|border|input|ring|chart-\d|sidebar)(-|$)/;
+    const HSL_CHANNELS = /^-?[\d.]+(deg)?\s+[\d.]+%\s+[\d.]+%(\s*\/\s*[\d.]+%?)?$/;
+    function colors(vars) {
+      for (const [k, v] of Object.entries(vars)) if (COLOR_KEY.test(k) && HSL_CHANNELS.test(String(v).trim())) vars[k] = `hsl(${String(v).trim()})`;
+      return vars;
+    }
     function parseVars(body) {
       const out = {};
       for (const m of body.matchAll(/--([\w-]+)\s*:\s*([^;]+);?/g)) out[m[1]] = m[2].trim();
@@ -298,7 +311,7 @@
         const j = JSON.parse(src);
         const v = j.cssVars || j;
         if (!v.light && !v.dark) throw new Error('JSON has no cssVars.light / cssVars.dark.');
-        return { name: j.name || j.title || 'Imported', theme: v.theme || {}, light: v.light || {}, dark: v.dark || {} };
+        return { name: j.name || j.title || 'Imported', theme: v.theme || {}, light: colors({ ...v.light }), dark: colors({ ...v.dark }) };
       }
       const clean = src.replace(/\/\*[\s\S]*?\*\//g, '');
       const blocks = { light: {}, dark: {}, theme: {} };
@@ -315,7 +328,7 @@
         if (!Object.keys(loose).length) throw new Error('No CSS variables found. Copy the CSS from tweakcn\'s Code panel.');
         blocks.light = loose;
       }
-      return { name: 'Imported', ...blocks };
+      return { name: 'Imported', theme: blocks.theme, light: colors(blocks.light), dark: colors(blocks.dark) };
     }
 
     // ---- editor helpers: any CSS color -> #rrggbb (via canvas), #rrggbb -> oklch() / hsl channels
@@ -573,7 +586,7 @@
         const opt = e.target.closest('[data-opt]');
         if (opt) { state[opt.dataset.opt] = +opt.dataset.val; refresh(); return; }
         const pre = e.target.closest('[data-preset]');
-        if (pre) { const n = +pre.dataset.preset; state.imported = { ...structuredClone(PRESETS[n]), preset: n }; refresh(); return; }
+        if (pre) { const n = +pre.dataset.preset; useTheme({ ...structuredClone(PRESETS[n]), preset: n }); refresh(); return; }
         const a = e.target.closest('[data-cr]');
         if (!a) return;
         const act = a.dataset.cr;
@@ -594,7 +607,7 @@
           if (v) { for (const k of KEYS) if (!isLocked(k)) state[k] = v[k]; $('#cr-open').close(); refresh(); }
         } else if (act === 'import') {
           const err = $('#cr-theme-err');
-          try { state.imported = parseTheme($('#cr-theme-src').value); err.hidden = true; $('#cr-import').close(); refresh(); }
+          try { useTheme(parseTheme($('#cr-theme-src').value)); err.hidden = true; $('#cr-import').close(); refresh(); }
           catch (x) { err.textContent = x.message; err.hidden = false; }
         }
       });
