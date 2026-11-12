@@ -183,6 +183,6 @@ else window.addEventListener('load', draw, {{ once: true }});
 </script>
 """
 
-page("dashboard-01", "Dashboard 01", body, CSS, scripts=SCRIPT, head_extra=CHART_HEAD)
+page("dashboard-01", "Dashboard 01", body, CSS, scripts=SCRIPT, head_extra=CHART_HEAD + '<script src="../ui/dist/js/data-table.min.js" defer></script>\n')
 register([{"id": "dashboard-01", "title": "Dashboard 01", "description": "A dashboard with sidebar, charts and data table.", "category": "dashboard"}])
 print("wrote dashboard-01")

@@ -7,7 +7,7 @@ import pathlib, runpy, subprocess, sys
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 sys.path.insert(0, str(HERE))
-for mod in ["auth", "sidebar", "calendar", "dashboard", "shop"]:
+for mod in ["auth", "sidebar", "calendar", "dashboard", "shop", "agent", "crm", "projects", "studio"]:
     runpy.run_path(str(HERE / f"{mod}.py"), run_name="__main__")
 
 files = sorted(str(p) for p in (HERE.parent).glob("*.html"))

@@ -20,6 +20,8 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="dist/auvyx.min.js" defer></script>
+<script src="dist/js/data-table.min.js" defer></script>
+<script src="dist/js/sortable.min.js" defer></script>
 <script src="dist/auvyx.chart.min.js" defer></script>
 <!-- Squircle corners: native corner-shape where supported, Monoco elsewhere. -->
 <script src="dist/auvyx.corners.min.js" defer></script>
@@ -169,6 +171,12 @@
   .d-cats { display: flex; gap: 0.25rem; overflow-x: auto; padding-block-end: 0.25rem; border-block-end: 1px solid var(--border); margin-block-end: 1.5rem; }
   .d-cats a { padding: 0.5rem 0.75rem; font-size: 0.875rem; text-decoration: none; color: var(--muted-foreground); white-space: nowrap; border-block-end: 2px solid transparent; margin-block-end: -0.3125rem; }
   .d-cats a[aria-current='page'] { color: var(--foreground); border-color: var(--foreground); font-weight: 500; }
+  .d-subcats { display: flex; flex-wrap: wrap; gap: 0.375rem; margin-block: -0.75rem 1.5rem; }
+  .d-subcats a { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.25rem 0.625rem; border: 1px solid var(--border); border-radius: 999px; font-size: 0.8125rem; text-decoration: none; color: var(--muted-foreground); }
+  .d-subcats a span { font-size: 0.75rem; font-variant-numeric: tabular-nums; opacity: 0.7; }
+  .d-subcats a:hover:not([aria-current]) { color: var(--foreground); background: var(--muted); }
+  .d-subcats a[aria-current='page'] { color: var(--background); background: var(--foreground); border-color: var(--foreground); }
+  .d-subcats a:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
   .d-block { margin-block-end: 3rem; scroll-margin-top: calc(var(--header-h) + 1rem); }
   .d-block-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin-block-end: 0.75rem; }
   .d-block-title { display: grid; gap: 0.125rem; margin-inline-end: auto; min-inline-size: 0; }
@@ -671,10 +679,16 @@
 
   function pageBlocks(cat) {
     const list = cat === 'featured' ? D.featured.map((id) => D.blocks.find((b) => b.id === id)) : D.blocks.filter((b) => b.category === cat);
-    const tabs = [{ id: 'featured', title: 'Featured' }, ...D.blockCats].map((c) => `<a href="#${c.id === 'featured' ? 'blocks' : 'blocks-' + c.id}"${c.id === cat ? ' aria-current="page"' : ''}>${esc(c.title)}</a>`).join('');
+    // Groups on top; the chosen group's categories, with counts, below.
+    const group = D.blockGroups.find((g) => g.cats.includes(cat));
+    const current = (on) => (on ? ' aria-current="page"' : '');
+    const tabs = `<a href="#blocks"${current(cat === 'featured')}>Featured</a>`
+      + D.blockGroups.map((g) => `<a href="#blocks-${g.cats[0]}"${current(g === group)}>${esc(g.title)}</a>`).join('');
+    const count = (c) => D.blocks.filter((b) => b.category === c).length;
+    const subs = group ? `<nav class="d-subcats" aria-label="${esc(group.title)} categories">${group.cats.map((c) => `<a href="#blocks-${c}"${current(c === cat)}>${esc(D.blockCats.find((x) => x.id === c).title)}<span>${count(c)}</span></a>`).join('')}</nav>` : '';
     return `<div class="d-blocks-head"><h1 class="d-h1">Building Blocks for the Web</h1>
       <p class="d-lead">Clean, modern building blocks. Copy and paste into your apps, as plain HTML or React 19 components on <code class="d-inline">auvyx.min.css</code>: no build step, no utility classes.</p></div>
-      <nav class="d-cats" aria-label="Block categories">${tabs}</nav>${list.map(blockCard).join('')}`;
+      <nav class="d-cats" aria-label="Block groups">${tabs}</nav>${subs}${list.map(blockCard).join('')}`;
   }
 
   function pageCharts() {

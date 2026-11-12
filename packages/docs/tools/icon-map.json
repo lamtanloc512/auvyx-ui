@@ -107,6 +107,12 @@
   "package",
   "box-3-line"
  ],
+ "brain": [
+  "brain",
+  "brain",
+  "brain",
+  "brain-line"
+ ],
  "building": [
   "building",
   "building-03",
@@ -173,6 +179,18 @@
   "caret-right",
   "arrow-right-s-line"
  ],
+ "chevrons-left": [
+  "chevrons-left",
+  "arrow-left-double",
+  "caret-double-left",
+  "arrow-left-double-line"
+ ],
+ "chevrons-right": [
+  "chevrons-right",
+  "arrow-right-double",
+  "caret-double-right",
+  "arrow-right-double-line"
+ ],
  "chevrons-up-down": [
   "selector",
   "unfold-more",
@@ -191,6 +209,12 @@
   "check-circle",
   "checkbox-circle-line"
  ],
+ "circle-check-big": [
+  "circle-check",
+  "checkmark-circle-02",
+  "check-circle",
+  "checkbox-circle-line"
+ ],
  "circle-fading-plus": [
   "circle-dashed-plus",
   "add-circle",
@@ -202,6 +226,12 @@
   "play-circle",
   "play-circle",
   "play-circle-line"
+ ],
+ "circle-x": [
+  "circle-x",
+  "cancel-circle",
+  "x-circle",
+  "close-circle-line"
  ],
  "clipboard-paste": [
   "clipboard",
@@ -245,6 +275,12 @@
   "coffee",
   "cup-line"
  ],
+ "columns-2": [
+  "columns-2",
+  "column-insert",
+  "columns",
+  "layout-column-line"
+ ],
  "command": [
   "command",
   "command",
@@ -269,6 +305,12 @@
   "credit-card",
   "bank-card-line"
  ],
+ "dollar-sign": [
+  "currency-dollar",
+  "dollar-02",
+  "currency-dollar",
+  "money-dollar-circle-line"
+ ],
  "dot": [
   "point",
   "circle",
@@ -286,6 +328,12 @@
   "more-horizontal",
   "dots-three",
   "more-line"
+ ],
+ "ellipsis-vertical": [
+  "dots-vertical",
+  "more-vertical",
+  "dots-three-vertical",
+  "more-2-line"
  ],
  "external-link": [
   "external-link",
@@ -358,6 +406,12 @@
   "frame",
   "frame-corners",
   "crop-line"
+ ],
+ "funnel": [
+  "filter",
+  "filter",
+  "funnel",
+  "filter-3-line"
  ],
  "gallery-horizontal": [
   "layout-columns",
@@ -454,6 +508,12 @@
   "text-italic",
   "text-italic",
   "italic"
+ ],
+ "kanban": [
+  "layout-kanban",
+  "kanban",
+  "kanban",
+  "layout-column-line"
  ],
  "layout-dashboard": [
   "layout-dashboard",
@@ -575,11 +635,23 @@
   "list",
   "menu-line"
  ],
+ "message-circle": [
+  "message-circle",
+  "bubble-chat",
+  "chat-circle",
+  "chat-1-line"
+ ],
  "message-square": [
   "message",
   "message-01",
   "chat-centered",
   "message-2-line"
+ ],
+ "minimize-2": [
+  "arrows-minimize",
+  "arrow-shrink",
+  "arrows-in",
+  "collapse-diagonal-line"
  ],
  "minus": [
   "minus",
@@ -850,6 +922,12 @@
   "sun-03",
   "sun",
   "sun-line"
+ ],
+ "table": [
+  "table",
+  "table-01",
+  "table",
+  "table-line"
  ],
  "tablet": [
   "device-tablet",

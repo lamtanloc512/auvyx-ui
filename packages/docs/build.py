@@ -290,16 +290,23 @@ def charts():
     ]
 
 
-BLOCK_CATS = [("dashboard", "Dashboard"), ("sidebar", "Sidebar"), ("login", "Login"), ("signup", "Signup"), ("otp", "OTP"), ("calendar", "Calendar"),
-              ("cart", "Cart"), ("checkout", "Checkout"), ("orders", "Orders"), ("account", "Account"), ("bottom-nav", "Bottom Navigation"),
-              ("product", "Product"), ("product-card", "Product Card"), ("wishlist", "Wishlist"), ("compare", "Compare"), ("search", "Search"),
-              ("filter", "Filter"), ("category", "Category"), ("tracking", "Order Tracking"), ("reviews", "Reviews"), ("course", "Courses"),
-              ("header", "Header"), ("footer", "Footer"), ("admin", "LMS Admin")]
-FEATURED = ["dashboard-01", "sidebar-07", "sidebar-03", "login-03", "login-04", "calendar-20"]
+# Blocks page: a few groups, each with its categories (a flat row of 27 tabs was too many).
+BLOCK_GROUPS = [
+    ("app", "Application", [("dashboard", "Dashboard"), ("projects", "Projects"), ("studio", "Studio"), ("crm", "CRM"), ("agent", "Agent"), ("admin", "LMS Admin"), ("sidebar", "Sidebar"), ("header", "Header"),
+                             ("footer", "Footer"), ("bottom-nav", "Bottom Navigation"), ("calendar", "Calendar")]),
+    ("auth", "Authentication", [("login", "Login"), ("signup", "Signup"), ("otp", "OTP")]),
+    ("commerce", "Commerce", [("product", "Product"), ("product-card", "Product Card"), ("category", "Category"), ("filter", "Filter"),
+                              ("search", "Search"), ("compare", "Compare"), ("wishlist", "Wishlist"), ("cart", "Cart"), ("checkout", "Checkout"),
+                              ("orders", "Orders"), ("tracking", "Order Tracking"), ("reviews", "Reviews"), ("account", "Account")]),
+    ("content", "Content", [("blog", "Blog"), ("course", "Courses"), ("error", "Error")]),
+]
+BLOCK_CATS = [c for _, _, cats in BLOCK_GROUPS for c in cats]
+FEATURED = ["dashboard-01", "crm-01", "agent-01", "agent-02", "sidebar-07", "login-03", "calendar-20"]
 HEIGHTS = {"dashboard": 58, "sidebar": 50, "login": 46, "signup": 50, "otp": 40, "calendar": 34,
            "cart": 52, "checkout": 64, "orders": 64, "account": 60, "bottom-nav": 48,
            "product": 64, "product-card": 56, "wishlist": 56, "compare": 60, "search": 56,
-           "filter": 64, "category": 64, "tracking": 64, "reviews": 64, "course": 66, "header": 40, "footer": 52, "admin": 62}
+           "filter": 64, "category": 64, "tracking": 64, "reviews": 64, "course": 66, "header": 40, "footer": 52, "admin": 62,
+           "agent": 62, "blog": 64, "error": 46, "crm": 62, "projects": 62, "studio": 66}
 TALL = {"calendar-20": 36, "calendar-21": 38, "calendar-27": 38, "calendar-31": 44, "calendar-03": 34, "signup-02": 54, "signup-03": 54, "signup-01": 54}
 
 
@@ -330,6 +337,9 @@ def main():
             raise SystemExit(f"notes for unknown component: {f.name}")
         comps[f.stem]["notes"] = f.read_text()
     reg = json.loads((BLOCKS / "registry.json").read_text())
+    missing = sorted({m["category"] for m in reg.values()} - {c for c, _ in BLOCK_CATS})
+    if missing:
+        raise SystemExit(f"blocks: add categories {missing} to BLOCK_GROUPS")
     blocks = []
     for cat, _ in BLOCK_CATS:
         for bid, meta in sorted(reg.items()):
@@ -341,6 +351,7 @@ def main():
     gd = guides(sizes, js_modules, wc_modules)
     data = {"version": VERSION, "cdn": CDN, "sizes": sizes, "components": comps, "guides": gd,
             "blocks": blocks, "blockCats": [{"id": c, "title": t} for c, t in BLOCK_CATS], "featured": FEATURED,
+            "blockGroups": [{"id": g, "title": t, "cats": [c for c, _ in cats]} for g, t, cats in BLOCK_GROUPS],
             "charts": charts(), "jsModules": js_modules, "wcModules": wc_modules, "uiModules": ui_modules}
     data_json = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 

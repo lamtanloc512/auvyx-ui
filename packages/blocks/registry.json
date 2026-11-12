@@ -54,6 +54,16 @@
     "description": "Review moderation: rating summary, filters for needs reply, flagged and low ratings, inline public replies, flag and hide.",
     "category": "admin"
   },
+  "agent-01": {
+    "title": "Agent 01",
+    "description": "A context window panel for an agent: tokens used with a health level, prompt cache savings, a waffle chart by source with a hover-to-isolate legend, the contents by tab and a working Compact history action.",
+    "category": "agent"
+  },
+  "agent-02": {
+    "title": "Agent 02",
+    "description": "An agent runs table: status and model facets, sortable cost and tokens, expandable tool-call rows, inline rename, grid keyboard navigation and a bulk re-run bar.",
+    "category": "agent"
+  },
   "blog-01": {
     "title": "Blog 01",
     "description": "A blog's posts: the title and topics, a featured post, a grid of post cards (picture, topic, title, excerpt, author, date and reading time) and pages.",
@@ -369,6 +379,16 @@
     "description": "A course cart and checkout: remove courses, apply a coupon (try LEARN20), payment choice and a live total.",
     "category": "course"
   },
+  "crm-01": {
+    "title": "CRM 01",
+    "description": "Customers in two synced views: a spreadsheet-style data table (row numbers, stage and owner facets, editable ARR, grid keys) and a kanban board you drag cards across to change the stage.",
+    "category": "crm"
+  },
+  "crm-02": {
+    "title": "CRM 02",
+    "description": "A customer record: identity and actions, details and custom fields as a properties list, stat cards, an activity timeline and contracts in a grid table.",
+    "category": "crm"
+  },
   "dashboard-01": {
     "title": "Dashboard 01",
     "description": "A dashboard with sidebar, charts and data table.",
@@ -569,6 +589,11 @@
     "description": "Flash sale cards with a discount badge, stock bar and a live countdown.",
     "category": "product-card"
   },
+  "projects-01": {
+    "title": "Projects 01",
+    "description": "A workspace of sites: project tiles with a style preview (logo, typeface, palette), a showcase of site mockups and a dismissible What’s new card, with no JavaScript of its own.",
+    "category": "projects"
+  },
   "reviews-01": {
     "title": "Reviews 01",
     "description": "Product reviews: rating summary with clickable star bars, fit and feel scales, photo filter, sort, helpful votes and store replies.",
@@ -698,6 +723,11 @@
     "title": "Signup 05",
     "description": "A simple email-only signup page.",
     "category": "signup"
+  },
+  "studio-01": {
+    "title": "Studio 01",
+    "description": "An image studio Create page: a hero with a prompt composer (style, character and scene pickers, model and output options) and Spotlight / Liked galleries, built from Input Group, Tabs and Carousel.",
+    "category": "studio"
   },
   "tracking-01": {
     "title": "Tracking 01",

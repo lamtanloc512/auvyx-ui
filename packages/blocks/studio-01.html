@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Studio 01 · Auvyx UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="../ui/dist/auvyx.min.css" />
+    <script src="../ui/dist/auvyx.min.js" defer></script>
+    <script>
+      (function () {
+        var r = document.documentElement,
+          t = null;
+        try {
+          t = new URLSearchParams(location.search).get("theme");
+        } catch (e) {}
+        var d = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.classList.toggle("dark", d);
+      })();
+    </script>
+    <style>
+      body {
+        min-block-size: 100svh;
+      }
+      .sb-mark {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        inline-size: 2rem;
+        block-size: 2rem;
+        border-radius: calc(var(--radius) + 2px);
+        background: var(--sidebar-primary);
+        color: var(--sidebar-primary-foreground);
+      }
+      .sb-mark svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .sb-user-head {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.375rem 0.5rem;
+        font-size: 0.875rem;
+      }
+      .sb-user-head > span:last-child {
+        display: grid;
+        line-height: 1.25;
+      }
+      .sb-user-head small {
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+      }
+      .sb-push {
+        margin-block-start: auto;
+      }
+      .app-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        block-size: 4rem;
+        padding-inline: 1rem;
+        border-block-end: 1px solid var(--border);
+        background: var(--background);
+      }
+      .app-header > hr[aria-orientation="vertical"] {
+        align-self: center;
+        block-size: 1rem;
+        margin-inline-end: 0.5rem;
+      }
+      .sidebar > nav > header .dropdown-menu,
+      .sidebar > nav > footer .dropdown-menu {
+        display: flex;
+        inline-size: 100%;
+      }
+
+      .st-main {
+        container-type: inline-size;
+        min-inline-size: 0;
+      }
+      .st-header {
+        block-size: 3.25rem;
+        gap: 0.5rem;
+      }
+      .st-header h1 {
+        margin: 0;
+        font-size: 0.9375rem;
+        font-weight: 500;
+      }
+      .st-tabs {
+        margin-inline-start: auto;
+        display: flex;
+        align-self: stretch;
+        gap: 0.25rem;
+        overflow-x: auto;
+      }
+      .st-tabs a {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding-inline: 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--muted-foreground);
+        text-decoration: none;
+        border-block-end: 2px solid transparent;
+        white-space: nowrap;
+      }
+      .st-tabs a svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .st-tabs a:hover {
+        color: var(--foreground);
+      }
+      .st-tabs a[aria-current="page"] {
+        color: var(--foreground);
+        border-color: var(--foreground);
+      }
+      .sidebar > nav li > a > [data-badge] svg {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+      }
+      .st-upsell {
+        margin: 0.5rem;
+        font-size: 0.8125rem;
+      }
+      .st-upsell > header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.375rem;
+      }
+      .st-upsell > header svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .st-upsell h2 {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+      .st-upsell p {
+        margin: 0;
+        color: var(--muted-foreground);
+      }
+      .st-upsell .btn {
+        inline-size: 100%;
+      }
+      .st-body {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1rem;
+      }
+      /* Hero: CSS-drawn scene behind the title and the composer */
+      .st-hero {
+        position: relative;
+        isolation: isolate;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.25rem;
+        min-block-size: min(40rem, 72dvh);
+        padding: 4rem 1rem;
+        border-radius: calc(var(--radius) * 2);
+        overflow: hidden;
+      }
+      .st-scene {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: linear-gradient(
+          180deg,
+          oklch(0.62 0.13 235),
+          oklch(0.74 0.11 225) 60%,
+          oklch(0.82 0.07 215)
+        );
+      }
+      .st-scene i {
+        position: absolute;
+        display: block;
+      }
+      .st-sun {
+        inset-block-start: 12%;
+        inset-inline-end: 16%;
+        inline-size: 7rem;
+        block-size: 7rem;
+        border-radius: 999px;
+        background: radial-gradient(
+          circle,
+          oklch(0.97 0.08 95),
+          oklch(0.9 0.12 85) 55%,
+          transparent 70%
+        );
+      }
+      .st-wall {
+        inset-block-end: 0;
+        inset-inline-start: 6%;
+        inline-size: 46%;
+        block-size: 58%;
+        border-radius: 1rem 1rem 0 0;
+        background: linear-gradient(180deg, oklch(0.93 0.03 70), oklch(0.86 0.04 60));
+      }
+      .st-door {
+        inset-block-end: 0;
+        inset-inline-start: 18%;
+        inline-size: 14%;
+        block-size: 34%;
+        border-radius: 0.5rem 0.5rem 0 0;
+        background: linear-gradient(180deg, oklch(0.6 0.22 355), oklch(0.5 0.2 355));
+      }
+      .st-bloom {
+        inset-block-start: 26%;
+        inset-inline-start: -4%;
+        inline-size: 24%;
+        block-size: 50%;
+        border-radius: 45% 55% 50% 50%;
+        background:
+          radial-gradient(circle at 30% 30%, oklch(0.7 0.22 350) 0 6%, transparent 7%) 0 0 / 2.2rem
+            2.2rem,
+          oklch(0.55 0.2 350 / 0.85);
+      }
+      .st-bloom-2 {
+        inset-block-start: auto;
+        inset-block-end: -6%;
+        inset-inline-start: auto;
+        inset-inline-end: -3%;
+        inline-size: 30%;
+        block-size: 36%;
+      }
+      .st-palm {
+        inset-block-start: 30%;
+        inset-inline-end: 6%;
+        inline-size: 14%;
+        block-size: 42%;
+        border-radius: 50% 50% 0 0;
+        background:
+          radial-gradient(ellipse at 50% 0, oklch(0.55 0.14 145) 0 40%, transparent 41%),
+          linear-gradient(oklch(0.5 0.06 60), oklch(0.5 0.06 60)) 50% 100% / 6% 60% no-repeat;
+      }
+      .st-hero h2 {
+        margin: 0;
+        max-inline-size: 30ch;
+        text-align: center;
+        font-size: clamp(1.5rem, 4cqi, 2.25rem);
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        color: white;
+        text-shadow: 0 1px 12px rgb(0 0 0 / 0.25);
+      }
+      .st-composer {
+        inline-size: min(100%, 44rem);
+      }
+      .st-composer .input-group {
+        background: var(--background);
+        box-shadow: 0 20px 50px -20px rgb(0 0 0 / 0.45);
+      }
+      .st-composer header {
+        gap: 0.5rem;
+        padding: 0.5rem 0.5rem 0;
+      }
+      .st-pick {
+        position: relative;
+        flex: 1;
+        min-inline-size: 0;
+      }
+      .st-pick > svg {
+        position: absolute;
+        inset-inline-start: 0.625rem;
+        inset-block-start: 50%;
+        translate: 0 -50%;
+        inline-size: 1rem;
+        block-size: 1rem;
+        color: var(--muted-foreground);
+        pointer-events: none;
+      }
+      .st-pick .select {
+        inline-size: 100%;
+        padding-inline-start: 2rem;
+      }
+      .st-composer textarea {
+        min-block-size: 5rem;
+        padding: 0.75rem 0.875rem;
+      }
+      .st-composer footer {
+        gap: 0.125rem;
+        padding: 0.375rem 0.5rem 0.5rem;
+      }
+      .st-chip {
+        gap: 0.375rem;
+        padding-inline: 0.5rem;
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+      }
+      .st-chip svg {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+      }
+      .st-send {
+        margin-inline-start: auto;
+        border-radius: 0.5rem;
+      }
+      .st-credit {
+        position: absolute;
+        inset-block-end: 0.75rem;
+        inset-inline-end: 0.75rem;
+        margin: 0;
+        padding: 0.25rem 0.625rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        color: white;
+        background: rgb(0 0 0 / 0.3);
+        backdrop-filter: blur(6px);
+      }
+      /* Galleries */
+      .st-gallery {
+        gap: 1rem;
+      }
+      .st-gallery > [role="tablist"] {
+        align-self: flex-start;
+      }
+      .st-art {
+        position: relative;
+        margin: 0;
+        aspect-ratio: 1;
+        border-radius: var(--radius);
+        overflow: hidden;
+        background-color: var(--muted);
+      }
+      .st-art figcaption {
+        position: absolute;
+        inset: auto 0 0 0;
+        padding: 2rem 0.75rem 0.625rem;
+        font-size: 0.8125rem;
+        color: white;
+        background: linear-gradient(transparent, rgb(0 0 0 / 0.45));
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      .st-art .btn {
+        position: absolute;
+        inset-block-start: 0.5rem;
+        inset-inline-end: 0.5rem;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      .st-art:is(:hover, :focus-within) :is(figcaption, .btn) {
+        opacity: 1;
+      }
+      @container (width < 40rem) {
+        .st-composer header {
+          flex-wrap: wrap;
+        }
+        .st-pick {
+          flex-basis: 100%;
+        }
+        .st-chip:nth-of-type(n + 3) {
+          display: none;
+        }
+      }
+      @media (hover: none) {
+        .st-art :is(figcaption, .btn) {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <aside id="app-sidebar" class="sidebar" data-collapsible="icon">
+      <nav aria-label="Sidebar">
+        <header>
+          <ul>
+            <li>
+              <a href="#" data-size="lg">
+                <span class="sb-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+                <span>
+                  <strong>Acme Studio</strong>
+                  <small>Images</small>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </header>
+        <section>
+          <div role="group" aria-label="Studio">
+            <ul>
+              <li>
+                <a href="#" aria-current="page" data-tooltip="Create" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                  <span>Create</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Library" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></svg>
+                  <span>Library</span>
+                  <span data-badge aria-label="Pro only"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div role="group" aria-labelledby="g41">
+            <h3 id="g41">Brand</h3>
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Styles" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                  <span>Styles</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Characters" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/></svg>
+                  <span>Characters</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-tooltip="Scenes" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                  <span>Scenes</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div role="group" aria-labelledby="g42">
+            <h3 id="g42">Tools</h3>
+            <ul>
+              <li>
+                <a href="#" data-tooltip="Upscaler" data-side="right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+                  <span>Upscaler</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="sb-push" data-sidebar-hide-collapsed>
+            <div class="card st-upsell" data-size="sm">
+              <header>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <h2>Unlock Studio with Pro</h2>
+                <p>Make on-brand imagery and publish it to a live site in one workflow.</p>
+              </header>
+              <footer>
+                <button type="button" class="btn" data-size="sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+                  Upgrade to Pro
+                </button>
+              </footer>
+            </div>
+          </div>
+        </section>
+        <footer>
+          <div class="dropdown-menu">
+            <button
+              type="button"
+              data-sidebar-item
+              data-size="lg"
+              popovertarget="user43"
+              aria-haspopup="menu">
+              <span class="avatar" data-size="sm"><span>CN</span></span>
+              <span>
+                <strong>shadcn</strong>
+                <small>m@example.com</small>
+              </span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+            </button>
+            <div
+              id="user43"
+              data-popover
+              popover
+              data-side="right"
+              data-align="end"
+              style="min-width: 14rem">
+              <div role="menu" aria-label="Account">
+                <div class="sb-user-head">
+                  <span class="avatar" data-size="sm"><span>CN</span></span>
+                  <span>
+                    <strong>shadcn</strong>
+                    <small>m@example.com</small>
+                  </span>
+                </div>
+                <hr role="separator" />
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+                  <span>Upgrade to Pro</span>
+                </button>
+                <hr role="separator" />
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <span>Account</span>
+                </button>
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                  <span>Billing</span>
+                </button>
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>
+                  <span>Notifications</span>
+                </button>
+                <hr role="separator" />
+                <button type="button" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                  <span>Log out</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </nav>
+    </aside>
+    <main class="st-main">
+      <header class="app-header st-header">
+        <button
+          type="button"
+          class="btn"
+          data-variant="ghost"
+          data-size="icon-sm"
+          data-sidebar-toggle="app-sidebar"
+          aria-controls="app-sidebar"
+          aria-label="Toggle sidebar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></svg>
+        </button>
+        <hr role="separator" aria-orientation="vertical" />
+        <h1>Create</h1>
+        <nav class="st-tabs" aria-label="Workspace">
+          <a href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
+            Publish
+          </a>
+          <a href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+            Export
+          </a>
+          <a href="#" aria-current="page">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+            Studio
+          </a>
+          <a href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+            MCP
+          </a>
+        </nav>
+        <button type="button" class="btn" data-variant="outline" data-size="sm">Feedback</button>
+      </header>
+      <div class="st-body">
+        <section class="st-hero" aria-labelledby="st-hero-title">
+          <div class="st-scene" aria-hidden="true">
+            <i class="st-sun"></i>
+            <i class="st-wall"></i>
+            <i class="st-door"></i>
+            <i class="st-bloom"></i>
+            <i class="st-bloom st-bloom-2"></i>
+            <i class="st-palm"></i>
+          </div>
+          <h2 id="st-hero-title">Your brand, any image you can imagine</h2>
+          <form class="st-composer" onsubmit="event.preventDefault()" aria-label="Create an image">
+            <div class="input-group" data-orientation="vertical">
+              <header data-align="start">
+                <label class="st-pick">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                  <span class="sr-only">Style</span>
+                  <select class="select" aria-label="Style">
+                    <option value>Style</option>
+                    <option>Sunlit editorial</option>
+                    <option>Soft pastel</option>
+                    <option>Bold graphic</option>
+                  </select>
+                </label>
+                <label class="st-pick">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/></svg>
+                  <span class="sr-only">Characters</span>
+                  <select class="select" aria-label="Characters">
+                    <option value>Characters</option>
+                    <option>Ava</option>
+                    <option>Theo</option>
+                    <option>Mina</option>
+                  </select>
+                </label>
+                <label class="st-pick">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                  <span class="sr-only">Scene</span>
+                  <select class="select" aria-label="Scene">
+                    <option value>Scene</option>
+                    <option>Courtyard</option>
+                    <option>Studio backdrop</option>
+                    <option>Coastline</option>
+                  </select>
+                </label>
+              </header>
+              <textarea
+                rows="3"
+                aria-label="Prompt"
+                placeholder="Describe what you are thinking or add references…"></textarea>
+              <footer data-align="end">
+                <button
+                  type="button"
+                  class="btn"
+                  data-variant="ghost"
+                  data-size="icon-sm"
+                  aria-label="Add a reference image">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                </button>
+                <button type="button" class="btn st-chip" data-variant="ghost" data-size="sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+                  Image model 2
+                </button>
+                <button
+                  type="button"
+                  class="btn st-chip"
+                  data-variant="ghost"
+                  data-size="sm"
+                  aria-label="Aspect ratio 1:1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>
+                  1:1
+                </button>
+                <button
+                  type="button"
+                  class="btn st-chip"
+                  data-variant="ghost"
+                  data-size="sm"
+                  aria-label="1 image">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                  1
+                </button>
+                <button
+                  type="button"
+                  class="btn st-chip"
+                  data-variant="ghost"
+                  data-size="sm"
+                  aria-label="Resolution 1K">
+                  1K
+                </button>
+                <button type="submit" class="btn st-send" data-size="icon-sm" aria-label="Generate">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
+                </button>
+              </footer>
+            </div>
+          </form>
+          <p class="st-credit">Style · Sunlit Courtyard</p>
+        </section>
+        <div class="tabs st-gallery" id="st-gallery">
+          <nav role="tablist" aria-orientation="horizontal" aria-label="Gallery">
+            <button
+              type="button"
+              role="tab"
+              id="st-t-1"
+              aria-controls="st-p-1"
+              aria-selected="true"
+              tabindex="0">
+              Spotlight
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="st-t-2"
+              aria-controls="st-p-2"
+              aria-selected="false"
+              tabindex="-1">
+              Liked
+            </button>
+          </nav>
+          <div role="tabpanel" id="st-p-1" aria-labelledby="st-t-1">
+            <section
+              class="carousel"
+              data-items="4"
+              aria-roledescription="carousel"
+              aria-label="Spotlight">
+              <ol>
+                <li aria-roledescription="slide" aria-label="1 of 6">
+                  <figure
+                    class="st-art"
+                    style="
+                      background:
+                        radial-gradient(
+                          circle at 70% 70%,
+                          oklch(0.86 0.17 95) 0 18%,
+                          transparent 19%
+                        ),
+                        radial-gradient(
+                          circle at 35% 40%,
+                          oklch(0.55 0.12 40) 0 14%,
+                          transparent 15%
+                        ),
+                        linear-gradient(160deg, oklch(0.5 0.2 262), oklch(0.62 0.17 245));
+                    ">
+                    <figcaption>Speedster in citrus knit</figcaption>
+                    <button
+                      type="button"
+                      class="btn"
+                      data-variant="secondary"
+                      data-size="icon-sm"
+                      aria-label="Like Speedster in citrus knit">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+                    </button>
+                  </figure>
+                </li>
+                <li aria-roledescription="slide" aria-label="2 of 6">
+                  <figure
+                    class="st-art"
+                    style="
+                      background:
+                        radial-gradient(
+                          circle at 50% 38%,
+                          oklch(0.93 0.03 60) 0 20%,
+                          transparent 21%
+                        ),
+                        radial-gradient(
+                          circle at 50% 30%,
+                          oklch(0.97 0.01 90) 0 30%,
+                          transparent 31%
+                        ),
+                        linear-gradient(180deg, oklch(0.85 0.08 340), oklch(0.75 0.12 350));
+                    ">
+                    <figcaption>Pastel boxer</figcaption>
+                    <button
+                      type="button"
+                      class="btn"
+                      data-variant="secondary"
+                      data-size="icon-sm"
+                      aria-label="Like Pastel boxer">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+                    </button>
+                  </figure>
+                </li>
+                <li aria-roledescription="slide" aria-label="3 of 6">
+                  <figure
+                    class="st-art"
+                    style="
+                      background:
+                        linear-gradient(white, white) 50% 55% / 62% 50% no-repeat,
+                        linear-gradient(oklch(0.25 0 0), oklch(0.25 0 0)) 50% 52% / 66% 58%
+                          no-repeat,
+                        radial-gradient(circle, oklch(0.8 0.12 350) 0 2px, transparent 3px) 0 0 /
+                          9px 9px,
+                        oklch(0.75 0.15 350);
+                    ">
+                    <figcaption>Launch page on velvet</figcaption>
+                    <button
+                      type="button"
+                      class="btn"
+                      data-variant="secondary"
+                      data-size="icon-sm"
+                      aria-label="Like Launch page on velvet">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+                    </button>
+                  </figure>
+                </li>
+                <li aria-roledescription="slide" aria-label="4 of 6">
+                  <figure
+                    class="st-art"
+                    style="
+                      background:
+                        radial-gradient(
+                          circle at 30% 60%,
+                          oklch(0.62 0.16 45) 0 34%,
+                          transparent 35%
+                        ),
+                        radial-gradient(circle, white 0 1px, transparent 2px) 0 0 / 23px 19px,
+                        linear-gradient(180deg, oklch(0.25 0.05 260), oklch(0.4 0.08 230));
+                    ">
+                    <figcaption>Red planet ascent</figcaption>
+                    <button
+                      type="button"
+                      class="btn"
+                      data-variant="secondary"
+                      data-size="icon-sm"
+                      aria-label="Like Red planet ascent">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+                    </button>
+                  </figure>
+                </li>
+                <li aria-roledescription="slide" aria-label="5 of 6">
+                  <figure
+                    class="st-art"
+                    style="
+                      background:
+                        radial-gradient(
+                          ellipse at 50% 100%,
+                          oklch(0.75 0.12 190) 0 40%,
+                          transparent 41%
+                        ),
+                        linear-gradient(180deg, oklch(0.85 0.08 220), oklch(0.7 0.12 210));
+                    ">
+                    <figcaption>Lagoon at noon</figcaption>
+                    <button
+                      type="button"
+                      class="btn"
+                      data-variant="secondary"
+                      data-size="icon-sm"
+                      aria-label="Like Lagoon at noon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+                    </button>
+                  </figure>
+                </li>
+                <li aria-roledescription="slide" aria-label="6 of 6">
+                  <figure
+                    class="st-art"
+                    style="
+                      background:
+                        radial-gradient(
+                          circle at 35% 55%,
+                          oklch(0.8 0.17 70) 0 16%,
+                          transparent 17%
+                        ),
+                        radial-gradient(
+                          circle at 62% 50%,
+                          oklch(0.72 0.19 40) 0 18%,
+                          transparent 19%
+                        ),
+                        linear-gradient(180deg, oklch(0.94 0.03 90), oklch(0.86 0.05 80));
+                    ">
+                    <figcaption>Citrus still life</figcaption>
+                    <button
+                      type="button"
+                      class="btn"
+                      data-variant="secondary"
+                      data-size="icon-sm"
+                      aria-label="Like Citrus still life">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+                    </button>
+                  </figure>
+                </li>
+              </ol>
+            </section>
+          </div>
+          <div role="tabpanel" id="st-p-2" aria-labelledby="st-t-2" hidden>
+            <section
+              class="carousel"
+              data-items="4"
+              aria-roledescription="carousel"
+              aria-label="Liked">
+              <ol>
+                <li aria-roledescription="slide" aria-label="1 of 2">
+                  <figure
+                    class="st-art"
+                    style="
+                      background:
+                        radial-gradient(
+                          circle at 30% 60%,
+                          oklch(0.62 0.16 45) 0 34%,
+                          transparent 35%
+                        ),
+                        radial-gradient(circle, white 0 1px, transparent 2px) 0 0 / 23px 19px,
+                        linear-gradient(180deg, oklch(0.25 0.05 260), oklch(0.4 0.08 230));
+                    ">
+                    <figcaption>Red planet ascent</figcaption>
+                    <button
+                      type="button"
+                      class="btn"
+                      data-variant="secondary"
+                      data-size="icon-sm"
+                      aria-label="Like Red planet ascent">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+                    </button>
+                  </figure>
+                </li>
+                <li aria-roledescription="slide" aria-label="2 of 2">
+                  <figure
+                    class="st-art"
+                    style="
+                      background:
+                        radial-gradient(
+                          ellipse at 50% 100%,
+                          oklch(0.75 0.12 190) 0 40%,
+                          transparent 41%
+                        ),
+                        linear-gradient(180deg, oklch(0.85 0.08 220), oklch(0.7 0.12 210));
+                    ">
+                    <figcaption>Lagoon at noon</figcaption>
+                    <button
+                      type="button"
+                      class="btn"
+                      data-variant="secondary"
+                      data-size="icon-sm"
+                      aria-label="Like Lagoon at noon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676a.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+                    </button>
+                  </figure>
+                </li>
+              </ol>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
