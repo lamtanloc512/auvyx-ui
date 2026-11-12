@@ -98,14 +98,18 @@ body {
   letter-spacing: var(--tracking-normal, normal);
 }
 
-@supports (corner-shape: squircle) {
-  :where(*, ::before, ::after) {
-    corner-shape: var(--corner-shape);
-  }
+/* In the base layer, so a style pack's component rules (a pill that must stay
+   round) override it. */
+@layer base {
+  @supports (corner-shape: squircle) {
+    :where(*, ::before, ::after) {
+      corner-shape: var(--corner-shape);
+    }
 
-  /* Circles and pills stay round: radios, switches (track and thumb, so the
-     inner and outer curves match), range sliders, avatars, spinners, dots. */
-  :where(input[type='radio'], input[type='radio']::before, [role='switch'], [role='switch']::before, [role='switch']::after, input[type='range'], .avatar, .avatar *, .avatar::after, [data-indicator], .spinner, .calendar-month td > button[aria-current]::after) {
-    corner-shape: round;
+    /* Circles and pills stay round: radios, switches (track and thumb, so the
+       inner and outer curves match), range sliders, avatars, spinners, dots. */
+    :where(input[type='radio'], input[type='radio']::before, [role='switch'], [role='switch']::before, [role='switch']::after, input[type='range'], .avatar, .avatar *, .avatar::after, [data-indicator], .spinner, .calendar-month td > button[aria-current]::after) {
+      corner-shape: round;
+    }
   }
 }

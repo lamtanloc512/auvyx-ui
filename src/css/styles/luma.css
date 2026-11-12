@@ -23,6 +23,8 @@
   /* Button */
   .btn {
     @apply rounded-4xl border border-transparent bg-clip-padding text-sm font-medium focus-visible:border-ring focus-visible:ring-ring/30 focus-visible:ring-[3px] aria-invalid:border-destructive aria-invalid:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 active:not-aria-[haspopup]:translate-y-px [&_svg:not([class*='size-'])]:size-4;
+    /* A pill: corner shapes would square it off. */
+    corner-shape: round;
   }
 
   .btn:not([data-size]),
@@ -112,6 +114,8 @@
 
   .button-group > :is(span, label, output) {
     @apply bg-muted gap-2 rounded-4xl border px-2.5 text-sm font-medium [&_svg:not([class*='size-'])]:size-4;
+    /* A pill: corner shapes would square it off. */
+    corner-shape: round;
   }
 
   .button-group > hr[role='separator'] {
@@ -126,6 +130,8 @@
 
   .tabs > [role='tablist'] {
     @apply rounded-full p-1 h-9;
+    /* A pill: corner shapes would square it off. */
+    corner-shape: round;
   }
 
   .tabs > [role='tablist']:not([data-variant='line']) {
@@ -143,6 +149,8 @@
   .tabs > [role='tablist'] > [role='tab'] {
     @apply text-foreground/60 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:text-muted-foreground dark:hover:text-foreground gap-2 rounded-full border border-transparent! px-3 py-1 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 focus-visible:ring-[3px] focus-visible:outline-1;
     @apply after:absolute after:bg-foreground after:opacity-0 after:transition-opacity;
+    /* A pill: corner shapes would square it off. */
+    corner-shape: round;
   }
 
   .tabs > [role='tablist'][aria-orientation='vertical'] > [role='tab'] {
@@ -212,6 +220,8 @@
   .input[type='time'],
   .input:not([type]) {
     @apply bg-input/50 border-transparent focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 rounded-3xl border px-3 py-1 text-base transition-[color,box-shadow,background-color] file:h-7 file:text-sm file:font-medium focus-visible:ring-3 aria-invalid:ring-3 md:text-sm;
+    /* A pill: corner shapes would square it off. */
+    corner-shape: round;
   }
 
   /* Native Select */
@@ -219,6 +229,8 @@
   select.select {
     @apply bg-input/50 border-transparent placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 w-fit rounded-3xl border py-1 ps-3 pe-8 text-base md:text-sm transition-[color,box-shadow,background-color] focus-visible:ring-3 aria-invalid:ring-3 data-[size=sm]:h-8;
     @apply bg-[image:var(--chevron-down-icon-50)] bg-no-repeat bg-position-[center_right_0.625rem] bg-size-[1rem];
+    /* A pill: corner shapes would square it off. */
+    corner-shape: round;
   }
 
   :is(.field > select, select.select):dir(rtl) {
@@ -303,6 +315,8 @@
   /* Badge */
   .badge {
     @apply h-5 gap-1 rounded-3xl border border-transparent px-2 py-0.5 text-xs font-medium transition-all [&>svg]:size-3!;
+    /* A pill: corner shapes would square it off. */
+    corner-shape: round;
   }
 
   .badge:not([data-variant]),
@@ -416,6 +430,8 @@
   /* Combobox */
   .combobox > input[role='combobox'] {
     @apply bg-input/50 border-transparent focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 rounded-3xl border py-2 ps-3 pe-8 text-base md:text-sm transition-[color,box-shadow,background-color] focus-visible:ring-3 aria-invalid:ring-3;
+    /* A pill: corner shapes would square it off. */
+    corner-shape: round;
   }
 
   .combobox > svg,
@@ -462,6 +478,8 @@
 
   .combobox-chips {
     @apply bg-input/50 border-transparent focus-within:border-ring focus-within:ring-ring/30 has-[[aria-invalid=true]]:ring-destructive/20 dark:has-[[aria-invalid=true]]:ring-destructive/40 has-[[aria-invalid=true]]:border-destructive dark:has-[[aria-invalid=true]]:border-destructive/50 min-h-9 gap-1.5 rounded-3xl border bg-clip-padding px-1.5 py-1.5 text-sm transition-[color,box-shadow,background-color] focus-within:ring-3 has-[[aria-invalid=true]]:ring-3;
+    /* A pill: corner shapes would square it off. */
+    corner-shape: round;
   }
 
   .combobox-chips > input[role='combobox'] {
@@ -470,6 +488,8 @@
 
   .combobox-chip {
     @apply bg-input text-foreground dark:bg-input/60 h-5.5 gap-1 rounded-3xl px-2 text-xs font-medium has-[>.combobox-chip-remove]:pe-0;
+    /* A pill: corner shapes would square it off. */
+    corner-shape: round;
   }
 
   .combobox-chip-remove {
@@ -486,6 +506,8 @@
   /* Select */
   .select:not(select) > button {
     @apply bg-input/50 border-transparent focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 data-[size=sm]:h-8 gap-1.5 rounded-3xl border px-3 py-2 text-sm transition-[color,box-shadow,background-color] focus-visible:ring-3 aria-invalid:ring-3 [&_svg:not([class*='size-'])]:size-4;
+    /* A pill: corner shapes would square it off. */
+    corner-shape: round;
   }
 
   .select:not(select) > button > span {
@@ -951,6 +973,8 @@
   /* Input Group */
   .input-group {
     @apply h-9 has-[>textarea]:h-auto rounded-4xl border border-transparent bg-input/50 transition-[color,box-shadow,background-color] focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/30 has-[[aria-invalid=true]]:border-destructive has-[[aria-invalid=true]]:ring-3 has-[[aria-invalid=true]]:ring-destructive/20 has-[>textarea]:rounded-2xl dark:has-[[aria-invalid=true]]:ring-destructive/40;
+    /* A pill: corner shapes would square it off. */
+    corner-shape: round;
   }
 
 
@@ -1043,6 +1067,8 @@
 
   .input-group > :is(kbd, span > kbd, [role='group'] > kbd, header > kbd, footer > kbd) {
     @apply rounded-3xl bg-muted-foreground/10 px-1.5;
+    /* A pill: corner shapes would square it off. */
+    corner-shape: round;
   }
 
   .input-group > :is(button, [role='group'] > button, header > button, footer > button) {
@@ -1286,6 +1312,8 @@
   /* Progress */
   .progress {
     @apply bg-muted h-3 rounded-full;
+    /* A pill: corner shapes would square it off. */
+    corner-shape: round;
   }
 
   .progress > span {

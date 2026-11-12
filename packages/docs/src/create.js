@@ -421,7 +421,11 @@
         </button>
         <div id="cr-${k}" data-popover popover data-side="bottom" data-align="start" class="d-cr-pop"><div role="menu" aria-label="${esc(o.label)}">${items}</div></div>
         ${lockBtn}
-      </div>`;
+      </div>${k === 'corners' && pill() && state.corners ? `<p class="d-cr-hint">${pick('style')} draws buttons and fields as pills, which stay round; corner shapes apply to cards, dialogs and menus.</p>` : ''}`;
+    }
+    // Pill styles (Maia, Luma): controls are pills, which keep round corners.
+    function pill() {
+      return ['Maia', 'Luma'].includes(pick('style'));
     }
     function boxy() {
       return ['Lyra', 'Sera'].includes(pick('style'));
