@@ -10,6 +10,9 @@
     // Tailwind 600 (500 for the light hues, which take a dark foreground).
     const THEMES = [['Default'], ['Red', 0.577, 0.245, 27.3], ['Orange', 0.646, 0.222, 41.1], ['Amber', 0.769, 0.188, 70.1, 1], ['Yellow', 0.795, 0.184, 86, 1], ['Lime', 0.768, 0.233, 130.9, 1], ['Green', 0.627, 0.194, 149.2], ['Emerald', 0.596, 0.145, 163.2], ['Teal', 0.6, 0.118, 184.7], ['Cyan', 0.609, 0.126, 221.7], ['Sky', 0.588, 0.158, 242], ['Blue', 0.546, 0.245, 262.9], ['Indigo', 0.511, 0.262, 277], ['Violet', 0.541, 0.281, 293], ['Purple', 0.558, 0.288, 302.3], ['Fuchsia', 0.591, 0.293, 322.9], ['Pink', 0.592, 0.249, 0.6], ['Rose', 0.586, 0.253, 17.6]];
     const FONTS = [['Geist', 'sans-serif'], ['Inter', 'sans-serif'], ['Figtree', 'sans-serif'], ['Manrope', 'sans-serif'], ['DM Sans', 'sans-serif'], ['Outfit', 'sans-serif'], ['Plus Jakarta Sans', 'sans-serif'], ['Public Sans', 'sans-serif'], ['Noto Sans', 'sans-serif'], ['Nunito Sans', 'sans-serif'], ['IBM Plex Sans', 'sans-serif'], ['Space Grotesk', 'sans-serif'], ['Lora', 'serif'], ['Playfair Display', 'serif'], ['Merriweather', 'serif'], ['JetBrains Mono', 'monospace'], ['System', 'system']];
+    // Monospace families for code, kbd and the mono utility (--font-mono). "Default" keeps the bundle's Geist Mono.
+    const MONOS = ['Geist Mono', 'JetBrains Mono', 'IBM Plex Mono', 'Fira Code', 'Roboto Mono', 'Source Code Pro', 'Space Mono', 'DM Mono'];
+    const monoStack = (name) => `"${name}", ui-monospace, SFMono-Regular, Menlo, monospace`;
     // Label -> icons.js set key. Inline icons are Lucide; icons.js swaps the others in.
     const ICON_LIBS = [['Lucide', 'lucide'], ['Tabler', 'tabler'], ['HugeIcons', 'hugeicons'], ['Phosphor', 'ph'], ['Remix', 'ri']];
     // ---- theme presets: complete light + dark themes (colors, font, radius, shadows), like tweakcn's.
@@ -107,6 +110,7 @@
       chart: { label: 'Chart Color', items: THEMES.map((t) => t[0]) },
       heading: { label: 'Heading', items: ['Inherit', ...FONTS.map((f) => f[0])] },
       font: { label: 'Font', items: FONTS.map((f) => f[0]) },
+      mono: { label: 'Mono Font', items: ['Default', ...MONOS] },
       icons: { label: 'Icon Library', items: ICON_LIBS.map((l) => l[0]) },
       radius: { label: 'Radius', items: ['0', '0.3', '0.45', '0.625', '0.75', '1'], fmt: (v) => (v === '0' ? 'None' : v + 'rem') },
       corners: { label: 'Corners', items: ['Round', 'Squircle', 'Smooth', 'Bevel', 'Scoop', 'Notch'] },
@@ -114,8 +118,10 @@
       accent: { label: 'Menu Accent', items: ['Subtle', 'Bold'] },
     };
     const KEYS = Object.keys(OPTS);
+    // Preset code order: options added later go at the end, so older codes still decode.
+    const CODE_KEYS = ['style', 'base', 'theme', 'chart', 'heading', 'font', 'icons', 'radius', 'corners', 'menu', 'accent', 'mono'];
     const CORNER_CSS = { Round: 'round', Squircle: 'squircle', Smooth: 'superellipse(1.5)', Bevel: 'bevel', Scoop: 'scoop', Notch: 'notch' };
-    const DEFAULT = { style: 0, base: 0, theme: 0, chart: 0, heading: 0, font: 1, icons: 0, radius: 3, corners: 1, menu: 0, accent: 0, smoothing: 1, fontSize: 16, fontWeight: 0 };
+    const DEFAULT = { style: 0, base: 0, theme: 0, chart: 0, heading: 0, font: 1, icons: 0, radius: 3, corners: 1, menu: 0, accent: 0, smoothing: 1, fontSize: 16, fontWeight: 0, mono: 0, tracking: 0 };
     // Corner smoothing (0–1) for Squircle and Smooth corners. Native: superellipse(1 + s)
     // for Squircle (1 is squircle, the default) and superellipse(1 + s/2) for Smooth;
     // Monoco reads --corner-smoothing. Kept out of the preset code (like the editor).
@@ -128,7 +134,8 @@
     // slider shifts all four; the editor sets each one. Google Fonts serves each family's
     // whole weight axis (WEIGHT_AXIS), so any weight in range renders with real glyphs.
     const WEIGHTS = { normal: 400, medium: 500, semibold: 600, bold: 700 };
-    const WEIGHT_AXIS = { Geist: '100..900', Inter: '100..900', 'IBM Plex Sans': '100..700', 'Space Grotesk': '300..700', Lora: '400..700', 'Playfair Display': '400..900', Merriweather: '300..900', 'JetBrains Mono': '100..800' };
+    const WEIGHT_AXIS = { Geist: '100..900', Inter: '100..900', 'IBM Plex Sans': '100..700', 'Space Grotesk': '300..700', Lora: '400..700', 'Playfair Display': '400..900', Merriweather: '300..900', 'JetBrains Mono': '100..800',
+      'Geist Mono': '100..900', 'IBM Plex Mono': '100..700', 'Fira Code': '300..700', 'Roboto Mono': '100..700', 'Source Code Pro': '200..900', 'Space Mono': '400;700', 'DM Mono': '300;400;500' };
     const weightAxis = (name) => WEIGHT_AXIS[name] || (FONTS.some(([f]) => f === name) ? '300..800' : '400;500;600;700');
     const clampWeight = (w) => Math.min(900, Math.max(100, Math.round(w / 50) * 50));
     // Locks: a locked option keeps its value when a theme preset or an imported
@@ -146,12 +153,18 @@
     const fmt = (k, v) => (OPTS[k].fmt ? OPTS[k].fmt(v) : v);
 
     // ---- preset codes: one base36 digit per option
-    const encode = () => KEYS.map((k) => state[k].toString(36)).join('');
+    const encode = () => CODE_KEYS.map((k) => (state[k] ?? DEFAULT[k]).toString(36)).join('');
     function decode(code) {
       const c = String(code).trim().replace(/^--preset\s+/, '').toLowerCase();
-      if (!/^[0-9a-z]+$/.test(c) || c.length !== KEYS.length) return null;
+      // Shorter codes come from before an option existed: the missing ones take their default.
+      if (!/^[0-9a-z]+$/.test(c) || c.length < 11 || c.length > CODE_KEYS.length) return null;
       const out = {};
-      for (const [n, k] of KEYS.entries()) { const v = parseInt(c[n], 36); if (v >= OPTS[k].items.length) return null; out[k] = v; }
+      for (const [n, k] of CODE_KEYS.entries()) {
+        if (n >= c.length) { out[k] = DEFAULT[k]; continue; }
+        const v = parseInt(c[n], 36);
+        if (v >= OPTS[k].items.length) return null;
+        out[k] = v;
+      }
       return out;
     }
 
@@ -193,6 +206,7 @@
       const shared = { radius: boxy() ? '0' : pick('radius') + 'rem', 'corner-shape': CORNER_CSS[pick('corners')], 'font-sans': fontStack(pick('font')) };
       if (state.fontWeight) for (const [k, w] of Object.entries(WEIGHTS)) shared[`font-weight-${k}`] = String(clampWeight(w + state.fontWeight));
       if (state.heading) shared['font-heading'] = fontStack(pick('heading'));
+      if (state.mono) shared['font-mono'] = monoStack(pick('mono'));
       if (state.imported) {
         Object.assign(shared, state.imported.theme);
         Object.assign(light, state.imported.light);
@@ -200,6 +214,8 @@
         // tweakcn puts fonts/radius in :root next to the colors; keep them shared.
         for (const k of Object.keys(light)) if (/^(font-|radius$|tracking-|letter-spacing$|spacing$|shadow)/.test(k)) { shared[k] = light[k]; delete light[k]; }
         for (const k of Object.keys(dark)) if (/^(font-|radius$|tracking-|letter-spacing$|spacing$)/.test(k)) delete dark[k];
+        // tweakcn names it --letter-spacing; the body reads --tracking-normal (themes.css).
+        if (shared['letter-spacing'] && !shared['tracking-normal']) shared['tracking-normal'] = shared['letter-spacing'];
         if (boxy()) shared.radius = '0';
         // Locked options keep the user's choice over the imported theme.
         const L = state.locks || {};
@@ -215,6 +231,7 @@
         }
         if (L.chart) { Object.assign(light, chartVars(false)); Object.assign(dark, chartVars(true)); }
         if (L.font) shared['font-sans'] = fontStack(pick('font'));
+        if (L.mono) { if (state.mono) shared['font-mono'] = monoStack(pick('mono')); else delete shared['font-mono']; }
         if (L.heading) { if (state.heading) shared['font-heading'] = fontStack(pick('heading')); else delete shared['font-heading']; }
         if (L.radius) shared.radius = boxy() ? '0' : pick('radius') + 'rem';
       }
@@ -224,6 +241,7 @@
         shared['corner-shape'] = `superellipse(${+(1 + s * f).toFixed(3)})`;
         shared['corner-smoothing'] = s;
       }
+      if (state.tracking) shared['tracking-normal'] = `${state.tracking}em`;
       if (textScale() !== 1) for (const [k, v] of Object.entries(TEXT)) shared[`text-${k}`] = `${+(v * textScale()).toFixed(4)}rem`;
       return { shared, light, dark };
     }
@@ -397,7 +415,7 @@
     }
     function hasImported(k) {
       const all = { ...state.imported.theme, ...state.imported.light };
-      return { base: 'background', theme: 'primary', font: 'font-sans', heading: 'font-sans', radius: 'radius' }[k] in all;
+      return { base: 'background', theme: 'primary', font: 'font-sans', heading: 'font-sans', mono: 'font-mono', radius: 'radius' }[k] in all;
     }
     const presetDots = (p) => `<span class="d-cr-dots">${[p.light.primary, p.light.accent, p.dark.background].map((c) => `<span class="d-sw" style="background:${c}"></span>`).join('')}</span>`;
     function presetRow() {
@@ -456,6 +474,7 @@
     // Panel sliders write straight to state (not part of the preset code).
     const SLIDE = {
       fontSize: { label: 'Font Size', min: 12, max: 20, step: 0.5, show: (v) => `${v}px` },
+      tracking: { label: 'Letter Spacing', min: -0.05, max: 0.1, step: 0.005, show: (v) => (v ? `${v > 0 ? '+' : ''}${+v.toFixed(3)}em` : 'Default') },
       fontWeight: { label: 'Font Weight', min: -200, max: 200, step: 50, show: (v) => (v ? `${v > 0 ? '+' : ''}${v}` : 'Default') },
       smoothing: { label: 'Corner Smoothing', min: 0, max: 1, step: 0.05, show: (v) => `${Math.round(v * 100)}%` },
     };
@@ -465,7 +484,7 @@
     }
     function sliderRows() {
       const off = !SMOOTH[pick('corners')] ? 'Pick Squircle or Smooth corners' : !parseFloat(tokens().shared.radius) ? 'Set a radius first' : '';
-      return slider('fontSize', 'Base text size; every text size scales with it.') + slider('fontWeight', 'Lighter or bolder: shifts regular, medium, semibold and bold together.') + slider('smoothing', 'Native corner-shape in Chrome 139+; drawn with Monoco elsewhere.', off);
+      return slider('fontSize', 'Base text size; every text size scales with it.') + slider('tracking', 'Letter spacing for body text; headings and labels follow.') + slider('fontWeight', 'Lighter or bolder: shifts regular, medium, semibold and bold together.') + slider('smoothing', 'Native corner-shape in Chrome 139+; drawn with Monoco elsewhere.', off);
     }
     const dlg = (id, title, desc, body, foot = '') => `<dialog id="${id}" class="dialog d-cr-dialog" closedby="any" aria-labelledby="${id}-t"><div><header><h2 id="${id}-t">${title}</h2><p>${desc}</p></header><section>${body}</section><footer>${foot}<button type="button" class="btn" data-variant="outline" commandfor="${id}" command="close">Close</button></footer></div></dialog>`;
     function page() {
