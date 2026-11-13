@@ -479,6 +479,8 @@
   .properties > div { @apply min-h-9 gap-x-3 gap-y-0.5 py-1; }
   .properties dt { @apply text-muted-foreground gap-2 [&>svg]:size-4; }
   .properties dd { @apply text-foreground; }
+  .properties dd:has(> :is(button, [data-actions]):last-child) { @apply -my-1 gap-2; }
+  .properties dd > [data-actions] { @apply gap-1; }
 
   /* Pagination */
   .pagination { @apply gap-x-4 gap-y-2; }
@@ -515,6 +517,13 @@
   .alert[data-variant='warning'] { @apply text-warning; }
   .alert[data-variant='info'] { @apply text-info; }
   .alert:is([data-variant='success'], [data-variant='warning'], [data-variant='info']) > section { @apply text-current/90; }
+
+  /* Item: link and icon box */
+  .item:has(> section > :is(h2, h3, h4) a) { @apply hover:bg-muted; }
+  .item:has(> section > :is(h2, h3, h4) a:focus-visible) { @apply border-ring ring-ring/50 ring-[3px]; }
+  .item > section > :is(h2, h3, h4) a { @apply text-foreground no-underline; }
+  .item > figure[data-variant='icon'] { @apply bg-muted text-foreground size-8 rounded-(--auvyx-r-control) border [&_svg:not([class*='size-'])]:size-4; }
+  .item[data-size='xs'] > figure[data-variant='icon'] { @apply size-6 [&_svg:not([class*='size-'])]:size-3.5; }
 
   /* Calendar */
   .calendar { @apply p-3; }

@@ -26,6 +26,8 @@ Upgrading from 0.1: pages that use `<auvyx-data-table>` now load `js/data-table.
 
 ### Added
 
+- Properties: a `<button>` (or a `[data-actions]` group) last in a `<dd>` is a row action placed beside the value, such as a copy button. Long unbroken values (ids, URLs, paths) wrap instead of overflowing.
+- Item: a link in the title covers the whole item while the buttons in `<aside>`, `<header>` and `<footer>` and links in the description stay clickable, so a navigation card with a quick action is valid HTML (an `<a class="item">` cannot contain buttons). `figure[data-variant="icon"]` draws the icon in a soft box.
 - Admin primitives, CSS only:
   - `.stat`: a KPI card with a label, a value, and an optional note, icon or badge; `data-trend="up|down"` colors a delta.
   - `.status-dot`: a colored dot before a label, `data-variant="success|warning|destructive|info"` (muted without), on its own, in a table cell or in a badge.

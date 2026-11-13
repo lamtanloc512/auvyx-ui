@@ -237,7 +237,7 @@ await writeTypes(dist, version);
   const names = [...Object.keys(docs), 'chart'];
   const sizes = await splitCss(root, dist, names, linkShadows);
   // Behavior per component, from the same sources as dist/js/ (not minified).
-  const UI_JS = { 'code-block': ['copy'], menubar: ['menu'], 'navigation-menu': ['menu'], 'range-calendar': ['calendar'], kanban: ['sortable'], 'message-actions': ['copy'] };
+  const UI_JS = { 'code-block': ['copy'], menubar: ['menu'], 'navigation-menu': ['menu'], 'range-calendar': ['calendar'], kanban: ['sortable'], 'message-actions': ['copy'], properties: ['copy'] };
   const jsFor = (name) => UI_JS[name] ?? (JS_MODULES[name] ? [name] : []);
   const core = await fs.readFile(path.join(root, 'src/js/basecoat.js'), 'utf8');
   for (const mod of new Set(names.flatMap(jsFor))) {

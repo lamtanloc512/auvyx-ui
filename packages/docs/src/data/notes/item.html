@@ -5,13 +5,13 @@
     The item root. Use <code>data-variant="outline|muted"</code> and <code>data-size="sm|xs"</code> when needed.
     <dl>
       <dt><code>&lt;figure&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-      <dd>Media: icon, avatar, or image.</dd>
+      <dd>Media: icon, avatar, or image. <code>data-variant="icon"</code> draws the icon in a soft box.</dd>
       <dt><code>&lt;section&gt;</code></dt>
       <dd>
         Primary content. Headings and paragraphs are styled automatically.
         <dl>
           <dt><code>&lt;h2&gt;</code>, <code>&lt;h3&gt;</code>, or <code>&lt;h4&gt;</code></dt>
-          <dd>The item title.</dd>
+          <dd>The item title. A link inside it covers the whole item, so a navigation card can still hold buttons in its <code>&lt;aside&gt;</code> (an <code>&lt;a class="item"&gt;</code> cannot contain them). Links in the description and the controls in <code>&lt;aside&gt;</code>, <code>&lt;header&gt;</code> and <code>&lt;footer&gt;</code> stay clickable above it.</dd>
           <dt><code>&lt;p&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
           <dd>The item description.</dd>
         </dl>

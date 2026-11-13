@@ -23,6 +23,7 @@
 @import "./components/sortable.css";
 @import "./components/properties.css";
 @import "./components/tile.css";
+@import "./components/item.css";
 @import "./components/pagination.css";
 @import "./components/spinner.css";
 @import "./components/skeleton.css";

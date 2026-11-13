@@ -192,7 +192,9 @@
     "native-select",
     "suggestions"
   ],
-  "properties": [],
+  "properties": [
+    "button"
+  ],
   "questionnaire": [
     "button",
     "radio-group"
