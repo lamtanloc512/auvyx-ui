@@ -2,8 +2,10 @@
 
 Built by packages/docs/build.py next to llms.txt, from the same sources as the
 docs, so it cannot drift from them:
-  - components.json + notes: title, description, examples
+  - components.json + notes: title, description, examples, and which children
+    the HTML structure marks Optional
   - dist/ui/src/<component>.css (the CLI split): the classes a component owns
+    and the values its [data-*] selectors accept
   - dist/custom-elements.json: custom element attributes, properties, events
   - dist/js/manifest.json: which script a component needs
 
@@ -13,6 +15,7 @@ direct children of the root, its script and element, and one canonical
 snippet. Top level: the design rules, the theme tokens and intent groups, so a
 caller can classify a request and send only the relevant contracts.
 """
+import html
 import json
 import re
 from html.parser import HTMLParser
@@ -131,6 +134,29 @@ def owned_classes(css):
     return out
 
 
+def css_values(css):
+    """data-* attribute values the component's selectors match: [data-variant='ghost']."""
+    out = {}
+    for name, value in re.findall(r"\[(data-[\w-]+)=['\"]([^'\"]+)['\"]\]", re.sub(r"/\*.*?\*/", "", css, flags=re.S)):
+        out.setdefault(name, set()).add(value)
+    return out
+
+
+def optional_children(notes, owned):
+    """Children the notes' HTML structure marks with an Optional badge."""
+    out = set()
+    for dt in re.findall(r"<dt>(.*?)</dt>", notes or "", re.S):
+        if ">Optional<" not in dt:
+            continue
+        for code in re.findall(r"<code>(.*?)</code>", dt, re.S):
+            markup = html.unescape(code).strip()
+            if markup.startswith("<") and not markup.startswith("</"):
+                tree = Tree(markup)
+                if tree.root.children:
+                    out.add(describe_child(tree.root.children[0], owned))
+    return out
+
+
 def describe_child(n, owned):
     cls = [c for c in n.classes if c in owned]
     data = sorted(k for k in n.attrs if k.startswith(("data-", "role", "aria-")) and k not in ("aria-hidden",))
@@ -181,9 +207,14 @@ def contract(key, comp, css, element, js, site, other_roots=frozenset()):
                         vals.add(v)
                 elif k.startswith("aria-") and k != "aria-hidden":
                     aria.add(k)
+    # Values the CSS accepts for an attribute the examples use (a variant no
+    # example shows is still part of the API).
+    for k, vals in css_values(css or "").items():
+        if k in attrs:
+            attrs[k].update(v for v in vals if len(v) <= 40 and " " not in v)
     first = next((n for n in roots if root_class and root_class in n.classes), roots[0] if roots else None)
     children = []
-    if first is not None:
+    if first is not None and first.tag != "svg":
         for c in first.children:
             d = describe_child(c, owned)
             if d not in children:
@@ -199,6 +230,7 @@ def contract(key, comp, css, element, js, site, other_roots=frozenset()):
         "attributes": {k: sorted(v)[:MAX_VALUES] for k, v in sorted(attrs.items())},
         "aria": sorted(aria),
         "children": children,
+        "optionalChildren": [c for c in children if c in optional_children(comp.get("notes"), owned)],
         "install": f"npx @auvyx/cli add {key}",
         "docs": f"{site}/md/components/{key}.md",
         "examples": [ex["title"] for ex in comp["examples"]],

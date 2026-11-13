@@ -14,6 +14,7 @@ Upgrading from 0.1: pages that use `<auvyx-data-table>` now load `js/data-table.
 
 ### Fixed
 
+- `auvyx.ai.json`: attribute values come from the component's CSS as well as its examples, so Bubble lists `ghost`; each contract has `optionalChildren`, the children its HTML structure marks Optional, so Prompt Input's `div[data-files]` is no longer required.
 - The warning alerts in the Drawer, Table and Toast docs (`data-variant="warning"`, which had no rule) now look like warnings.
 - Pagination and Spinner had no CSS on the CDN channel: their docs examples, and Skeleton's, sized and laid out everything with Tailwind utilities that `auvyx.min.css` does not contain. They now work with the CDN files alone:
   - `.pagination` on the `<nav>`: a list of `.btn` pages (the current one `aria-current="page"`), inert `aria-disabled` links, a `<span>` ellipsis, and an optional `<p>` summary ("11–20 of 42") that moves the list to the end.
