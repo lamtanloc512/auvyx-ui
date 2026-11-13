@@ -1,0 +1,31 @@
+/* Spinner (fork addition), CSS only: a loading indicator. An inline SVG icon
+ * (any loader icon) spins; an empty element draws a ring.
+ *
+ *   <svg class="spinner" role="status" aria-label="Loading" …>…</svg>
+ *   <span class="spinner" role="status" aria-label="Loading"></span>
+ *
+ * data-size="sm | lg | xl" (default 1rem). Inside .btn, .badge and the other
+ * components it takes their icon size. With reduced motion it pulses instead
+ * of turning.
+ */
+@layer components {
+  .spinner {
+    @apply inline-block size-4 shrink-0 animate-spin;
+
+    &:not(svg) {
+      @apply rounded-full border-2 border-current border-e-transparent;
+    }
+
+    &[data-size='sm'] { @apply size-3; }
+    &[data-size='lg'] { @apply size-6; }
+    &[data-size='xl'] { @apply size-8; }
+
+    &:not(svg)[data-size='xl'] {
+      @apply border-3;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      @apply animate-pulse;
+    }
+  }
+}

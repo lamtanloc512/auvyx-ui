@@ -1,0 +1,21 @@
+<h3 class="d-h3">HTML structure</h3>
+<dl>
+  <dt><code>&lt;nav class="pagination" aria-label="Pagination"&gt;</code></dt>
+  <dd>
+    The landmark. Centered, or spread to both ends when it has a summary.
+    <dl>
+      <dt><code>&lt;p&gt;</code>, <code>&lt;small&gt;</code> or <code>&lt;output&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+      <dd>A summary such as "11–20 of 42".</dd>
+      <dt><code>&lt;ul&gt;</code> + <code>&lt;li&gt;</code></dt>
+      <dd>
+        The pages.
+        <dl>
+          <dt><code>&lt;a class="btn" data-variant="ghost" data-size="icon"&gt;</code></dt>
+          <dd>A page. The current one has <code>aria-current="page"</code> and <code>data-variant="outline"</code>. <code>aria-disabled="true"</code> on a link (or <code>disabled</code> on a button) makes it inert, such as Previous on the first page.</dd>
+          <dt><code>&lt;span aria-hidden="true"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+          <dd>An ellipsis between page ranges.</dd>
+        </dl>
+      </dd>
+    </dl>
+  </dd>
+</dl>

@@ -1,0 +1,59 @@
+/* Action Bar (fork addition), CSS only: the floating bar of bulk actions shown
+ * while rows are selected. The app toggles `hidden` and updates the count.
+ *
+ *   <div class="action-bar" role="region" aria-label="Selection" hidden>
+ *     <output>3 selected</output>
+ *     <button type="button" class="btn" data-variant="ghost" data-size="sm"><svg …/><span>Archive</span></button>
+ *     <button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Clear selection">…</button>
+ *   </div>
+ *
+ * Fixed at the bottom center of the viewport, above the safe area, and it
+ * rises in when shown (no movement with reduced motion). The <output> announces
+ * count changes. On narrow viewports a button with an icon keeps only the
+ * icon: its <span> label stays as the accessible name. data-position="sticky"
+ * keeps it at the bottom of its scrolling container instead.
+ */
+@layer components {
+  .action-bar {
+    @apply fixed z-40 mx-auto flex w-max max-w-[calc(100%-2rem)] items-center overflow-x-auto;
+    inset-inline: 0;
+    inset-block-end: calc(1rem + env(safe-area-inset-bottom, 0px));
+    scrollbar-width: none;
+    transition:
+      opacity var(--motion-base) var(--motion-ease-enter),
+      translate var(--motion-base) var(--motion-ease-enter),
+      display var(--motion-base) allow-discrete;
+
+    @starting-style {
+      opacity: 0;
+      translate: 0 var(--motion-rise);
+    }
+
+    &[hidden] {
+      @apply hidden;
+    }
+
+    &[data-position='sticky'] {
+      @apply sticky;
+      inset-block-end: 1rem;
+    }
+
+    > output {
+      @apply shrink-0 whitespace-nowrap tabular-nums;
+    }
+
+    > .btn {
+      @apply shrink-0;
+    }
+
+    > hr {
+      @apply m-0 h-5 w-px shrink-0 self-center border-0;
+    }
+
+    @media (width < 40rem) {
+      > .btn:has(> svg) > span {
+        @apply sr-only;
+      }
+    }
+  }
+}

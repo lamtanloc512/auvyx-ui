@@ -15,7 +15,12 @@
  *     </form>
  *   </auvyx-prompt-input>
  *
- * data-state="streaming" on the form swaps Send for Stop; data-dragover marks a file drag.
+ * data-state="streaming" on the form swaps Send for Stop; data-state="busy"
+ * (work that cannot be stopped) disables the field and Send and shows
+ * [data-busy]; data-dragover marks a file drag. A <small> or [data-hint] first
+ * in the footer is helper text lined up with the prompt. data-variant="raised"
+ * is a card-like composer for the center of a page. .suggestions may sit
+ * before or after the form inside the element.
  */
 @layer components {
   :where(auvyx-prompt-input) {
@@ -45,13 +50,31 @@
       @apply ms-auto;
     }
 
+    > footer > :is(small, [data-hint]) {
+      @apply min-w-0 flex-1;
+    }
+
     [data-stop],
+    [data-busy],
     &[data-state='streaming'] [type='submit'] {
       @apply hidden;
     }
 
-    &[data-state='streaming'] [data-stop] {
+    &[data-state='streaming'] [data-stop],
+    &[data-state='busy'] [data-busy] {
       @apply inline-flex;
     }
+
+    &[data-state='busy'] > textarea {
+      @apply cursor-progress;
+    }
+  }
+
+  :where(auvyx-prompt-input) > .suggestions:first-child {
+    @apply mb-3;
+  }
+
+  :where(auvyx-prompt-input) > .suggestions:last-child {
+    @apply mt-3;
   }
 }

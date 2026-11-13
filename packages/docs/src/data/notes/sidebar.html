@@ -12,7 +12,7 @@
 <dl>
   <dt><code>&lt;aside class="sidebar"&gt;</code></dt>
   <dd>
-    Sidebar root. Supports <code>id</code>, <code>data-side="left|right"</code>, <code>data-initial-open="false"</code>, <code>data-initial-mobile-open="true"</code>, and <code>data-breakpoint</code>. JavaScript manages <code>aria-hidden</code>, <code>inert</code>, and the internal <code>data-sidebar-initialized</code> flag.
+    Sidebar root. Supports <code>id</code>, <code>data-side="left|right"</code>, <code>data-initial-open="false"</code>, <code>data-initial-mobile-open="true"</code>, <code>data-breakpoint</code>, and <code>data-persist="&lt;key&gt;"</code>, which keeps the desktop open or collapsed state in <code>localStorage</code> under that key and restores it on the next load without the slide animation (load <code>auvyx.min.js</code> with <code>defer</code> in the <code>&lt;head&gt;</code> so it applies before the page shows; the mobile overlay state is never stored). JavaScript manages <code>aria-hidden</code>, <code>inert</code>, and the internal <code>data-sidebar-initialized</code> flag.
     <dl>
       <dt><code>&lt;nav aria-label="..."&gt;</code></dt>
       <dd>

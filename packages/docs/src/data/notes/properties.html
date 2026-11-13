@@ -1,0 +1,21 @@
+<h3 class="d-h3">HTML structure</h3>
+<dl>
+  <dt><code>&lt;dl class="properties"&gt;</code></dt>
+  <dd>
+    The list. Rows stack label over value when it is narrower than 18rem.
+    <dl>
+      <dt><code>&lt;div&gt;</code></dt>
+      <dd>
+        A row.
+        <dl>
+          <dt><code>&lt;dt&gt;</code></dt>
+          <dd>The label, with an optional leading <code>&lt;svg&gt;</code>.</dd>
+          <dt><code>&lt;dd&gt;</code></dt>
+          <dd>The value. Long unbroken values (ids, URLs, paths) wrap instead of overflowing.</dd>
+          <dt><code>&lt;button&gt;</code> or <code>[data-actions]</code> last in the <code>&lt;dd&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+          <dd>A row action, such as a copy button (<code>data-copy-text</code>, in <code>auvyx.min.js</code>). It sits at the end of the row, beside the value; wrap the value in an element so it wraps on its own.</dd>
+        </dl>
+      </dd>
+    </dl>
+  </dd>
+</dl>

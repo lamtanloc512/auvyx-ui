@@ -2,13 +2,24 @@
 
 ## [Unreleased]
 
+## @auvyx/ui 0.2.0 - 2026-11-13
+
+Upgrading from 0.1: pages that use `<auvyx-data-table>` now load `js/data-table.min.js` next to `auvyx.min.js` (see Changed). CDN links pinned to `@auvyx/ui@0.1` keep serving 0.1.4; move them to `@auvyx/ui@0.2`.
+
 ### Changed
 
+- `auvyx.min.css` is 42.6 kB gzip (was 41.0 kB) with the components and variants added in 0.2.0; its budget is now 44 kB.
 - `auvyx.min.js` no longer includes `<auvyx-data-table>` (21.9 kB gzip, was 23.1 kB). Load `js/data-table.min.js` on pages with a data table; `js/manifest.json` marks such modules `"bundled": false`.
 - Blocks page: categories grouped under Application, Authentication, Commerce and Content, with category chips and counts. The Agent, Blog and Error categories now show (they were missing).
 
 ### Fixed
 
+- `auvyx.ai.json`: attribute values come from the component's CSS as well as its examples, so Bubble lists `ghost`; each contract has `optionalChildren`, the children its HTML structure marks Optional, so Prompt Input's `div[data-files]` is no longer required.
+- The warning alerts in the Drawer, Table and Toast docs (`data-variant="warning"`, which had no rule) now look like warnings.
+- Pagination and Spinner had no CSS on the CDN channel: their docs examples, and Skeleton's, sized and laid out everything with Tailwind utilities that `auvyx.min.css` does not contain. They now work with the CDN files alone:
+  - `.pagination` on the `<nav>`: a list of `.btn` pages (the current one `aria-current="page"`), inert `aria-disabled` links, a `<span>` ellipsis, and an optional `<p>` summary ("11–20 of 42") that moves the list to the end.
+  - `.spinner` on a loader `<svg>` (or an empty `<span>`, drawn as a ring) with `role="status"`: `data-size="sm|lg|xl"`, the icon size inside buttons, badges and input groups, and a pulse instead of a turn under reduced motion.
+  - Skeleton shapes: `data-variant="text"` (a line), `"circle"` (a 2.5rem avatar) and `"block"` (a 16:9 media box).
 - Corner shapes in Maia and Luma: buttons, fields, badges, tab lists, chips and progress bars are pills there, and Notch or Scoop squared them off into rectangles. They now stay round, as switches and radios already did; corner shapes apply to cards, dialogs and menus, and the Create page says so for those styles. The global `corner-shape` rule moved into `@layer base` so a style pack's component rules can override it.
 - Tile: the caption's menu button is clickable before hover (only the preview overlay lets clicks through until it shows).
 - React blocks: `chat-01` model select and `projects-02` column headers now render like the HTML blocks.
@@ -17,6 +28,19 @@
 
 ### Added
 
+- Prompt Input:
+  - `busy` attribute and property for work that cannot be stopped: the field, Send and attach are disabled, Enter and suggestion chips do nothing, the form gets `aria-busy="true"` and `data-state="busy"`, `[data-busy]` content shows, and focus returns to the field afterwards. `streaming` keeps its meaning.
+  - A `<small>` or `[data-hint]` first in the footer is helper text lined up with the prompt.
+  - `data-variant="raised"` on the form: a card surface with a larger radius and a soft shadow, for a composer at the center of a page; the focus ring still shows.
+  - `.suggestions` may sit before or after the form and gets its margin on the side facing it.
+- Properties: a `<button>` (or a `[data-actions]` group) last in a `<dd>` is a row action placed beside the value, such as a copy button. Long unbroken values (ids, URLs, paths) wrap instead of overflowing.
+- Item: a link in the title covers the whole item while the buttons in `<aside>`, `<header>` and `<footer>` and links in the description stay clickable, so a navigation card with a quick action is valid HTML (an `<a class="item">` cannot contain buttons). `figure[data-variant="icon"]` draws the icon in a soft box.
+- Admin primitives, CSS only:
+  - `.stat`: a KPI card with a label, a value, and an optional note, icon or badge; `data-trend="up|down"` colors a delta.
+  - `.status-dot`: a colored dot before a label, `data-variant="success|warning|destructive|info"` (muted without), on its own, in a table cell or in a badge.
+  - `.action-bar`: the bulk action bar shown while rows are selected, fixed bottom center above the safe area, with an `<output>` count; it rises in when `hidden` is removed, and below 40rem its buttons keep only their icons. `data-position="sticky"` pins it inside a scrolling panel instead.
+- Sidebar `data-persist="<key>"`: the desktop open or collapsed state is kept in `localStorage` and restored on load without the slide animation. The mobile overlay state is never stored.
+- Alert `data-variant="success"`, `"warning"` and `"info"` next to the default and `destructive`. They read three new theme tokens, `--success`, `--warning` and `--info` (light and dark values; a theme overrides them like any other color), which `auvyx.ai.json` lists with the other tokens.
 - `auvyx.ai.json` on the docs site (linked from `llms.txt`): component contracts for agents. Per component: the root selector, owned classes, the data-* and aria-* attributes its examples use with their values, the root's children, the script it needs, its custom element API and a canonical snippet. Top level: design rules, theme tokens and intent groups, so a caller can route a request and send only the relevant contracts. Generated from the same sources as the docs and checked by `packages/tests/ai-contract.test.mjs`.
 - `.flyout-menu`, CSS only: a vertical category menu whose panels fly out to the side on hover or keyboard focus, with a short hide delay for diagonal pointer moves; works inside a popover.
 - Create page: a Mono Font option (Geist Mono, JetBrains Mono, IBM Plex Mono, Fira Code, Roboto Mono, Source Code Pro, Space Mono, DM Mono) that sets `--font-mono`, and a Letter Spacing slider that sets `--tracking-normal`. Preset codes gain a 12th digit for the mono font; 11-digit codes still open. Imported tweakcn themes' `--letter-spacing` now applies.

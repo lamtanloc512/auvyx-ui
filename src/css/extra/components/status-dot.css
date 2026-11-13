@@ -1,0 +1,19 @@
+/* Status Dot (fork addition), CSS only: a small colored dot before a label,
+ * for a state in a table cell, a list or a badge.
+ *
+ *   <span class="status-dot" data-variant="success">Active</span>
+ *   <span class="badge" data-variant="outline"><span class="status-dot" data-variant="warning">Degraded</span></span>
+ *
+ * data-variant="success | warning | destructive | info"; without it the dot
+ * is muted (idle, draft, offline). The label carries the meaning: the color
+ * only repeats it.
+ */
+@layer components {
+  .status-dot {
+    @apply inline-flex min-w-0 items-center;
+
+    &::before {
+      @apply block shrink-0 rounded-full bg-current content-[''];
+    }
+  }
+}

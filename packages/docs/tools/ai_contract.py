@@ -2,8 +2,10 @@
 
 Built by packages/docs/build.py next to llms.txt, from the same sources as the
 docs, so it cannot drift from them:
-  - components.json + notes: title, description, examples
+  - components.json + notes: title, description, examples, and which children
+    the HTML structure marks Optional
   - dist/ui/src/<component>.css (the CLI split): the classes a component owns
+    and the values its [data-*] selectors accept
   - dist/custom-elements.json: custom element attributes, properties, events
   - dist/js/manifest.json: which script a component needs
 
@@ -13,6 +15,7 @@ direct children of the root, its script and element, and one canonical
 snippet. Top level: the design rules, the theme tokens and intent groups, so a
 caller can classify a request and send only the relevant contracts.
 """
+import html
 import json
 import re
 from html.parser import HTMLParser
@@ -21,13 +24,13 @@ from html.parser import HTMLParser
 # components' contracts in the prompt. Every component must be in one group
 # (packages/tests/ai-contract.test.mjs checks it).
 GROUPS = {
-    "action": ["button", "button-group", "toggle", "toggle-group", "kbd"],
+    "action": ["button", "button-group", "toggle", "toggle-group", "kbd", "action-bar"],
     "form": ["field", "label", "input", "input-group", "input-otp", "textarea", "checkbox", "radio-group", "switch", "slider",
              "select", "native-select", "combobox", "calendar", "range-calendar", "date-picker", "questionnaire"],
     "overlay": ["dialog", "alert-dialog", "sheet", "drawer", "popover", "hover-card", "tooltip", "dropdown-menu", "context-menu", "command", "toast"],
     "navigation": ["tabs", "breadcrumb", "pagination", "menubar", "navigation-menu", "flyout-menu", "sidebar"],
-    "data": ["table", "data-table", "kanban", "properties", "item", "tile", "carousel", "aspect-ratio", "avatar", "badge"],
-    "feedback": ["alert", "empty", "progress", "skeleton", "spinner", "separator"],
+    "data": ["table", "data-table", "kanban", "properties", "item", "tile", "stat", "carousel", "aspect-ratio", "avatar", "badge"],
+    "feedback": ["alert", "status-dot", "empty", "progress", "skeleton", "spinner", "separator"],
     "content": ["card", "accordion", "typography", "code-block", "scroll-area", "resizable"],
     "chat": ["message", "bubble", "marker", "message-scroller", "prompt-input", "suggestions", "message-actions", "attachment", "trace"],
 }
@@ -50,7 +53,7 @@ RULES = [
 
 COLOR_TOKENS = ["background", "foreground", "card", "card-foreground", "popover", "popover-foreground", "primary", "primary-foreground",
                 "secondary", "secondary-foreground", "muted", "muted-foreground", "accent", "accent-foreground", "destructive",
-                "border", "input", "ring", "chart-1", "chart-2", "chart-3", "chart-4", "chart-5",
+                "success", "warning", "info", "border", "input", "ring", "chart-1", "chart-2", "chart-3", "chart-4", "chart-5",
                 "sidebar", "sidebar-foreground", "sidebar-primary", "sidebar-primary-foreground", "sidebar-accent",
                 "sidebar-accent-foreground", "sidebar-border", "sidebar-ring"]
 OTHER_TOKENS = ["radius", "font-sans", "font-serif", "font-mono", "font-heading", "spacing", "tracking-normal", "corner-shape",
@@ -62,13 +65,12 @@ MAX_VALUES = 16
 # composition of other components, or a mode of another element.
 OVERRIDES = {
     "alert-dialog": {"css": "dialog", "root": {"class": "alert-dialog", "tags": ["dialog"], "selector": "dialog.alert-dialog"}},
-    "pagination": {"root": {"class": None, "tags": ["nav"], "selector": "nav[aria-label] > ul"}, "composedOf": ["button"],
-                   "pattern": "A nav with a list of .btn links (data-variant=\"ghost\"); the current page has aria-current=\"page\" and data-variant=\"outline\"."},
+    "pagination": {"composedOf": ["button"],
+                   "pattern": "A nav.pagination with a list of .btn links (data-variant=\"ghost\"); the current page has aria-current=\"page\" and data-variant=\"outline\"."},
     "range-calendar": {"element": "calendar", "root": {"class": "calendar", "tags": ["auvyx-calendar"], "selector": "auvyx-calendar[mode=range]"},
                        "pattern": "<auvyx-calendar mode=\"range\"> with value=\"start/end\" (ISO dates)."},
     "separator": {"root": {"class": None, "tags": ["hr"], "selector": "hr"}, "pattern": "A native <hr>; add role=\"separator\" and aria-orientation=\"vertical\" for a vertical one."},
-    "spinner": {"root": {"class": None, "tags": ["svg"], "selector": "svg.animate-spin[role=status]"},
-                "pattern": "An inline loader SVG with class=\"animate-spin\", role=\"status\" and aria-label=\"Loading\"."},
+    "spinner": {"pattern": "An inline loader SVG (or an empty span, drawn as a ring) with class=\"spinner\", role=\"status\" and aria-label=\"Loading\"."},
     "toast": {"root": {"class": "toaster", "tags": ["div"], "selector": ".toaster"},
               "snippet": '<div id="toaster" class="toaster"></div>\n<button type="button" class="btn" data-variant="outline" onclick="document.getElementById(\'toaster\').toast({ category: \'success\', title: \'Saved\', description: \'Your changes are live.\' })">Save</button>',
               "pattern": "One <div id=\"toaster\" class=\"toaster\"> per page; show a toast with document.getElementById('toaster').toast({ category, title, description })."},
@@ -132,6 +134,29 @@ def owned_classes(css):
     return out
 
 
+def css_values(css):
+    """data-* attribute values the component's selectors match: [data-variant='ghost']."""
+    out = {}
+    for name, value in re.findall(r"\[(data-[\w-]+)=['\"]([^'\"]+)['\"]\]", re.sub(r"/\*.*?\*/", "", css, flags=re.S)):
+        out.setdefault(name, set()).add(value)
+    return out
+
+
+def optional_children(notes, owned):
+    """Children the notes' HTML structure marks with an Optional badge."""
+    out = set()
+    for dt in re.findall(r"<dt>(.*?)</dt>", notes or "", re.S):
+        if ">Optional<" not in dt:
+            continue
+        for code in re.findall(r"<code>(.*?)</code>", dt, re.S):
+            markup = html.unescape(code).strip()
+            if markup.startswith("<") and not markup.startswith("</"):
+                tree = Tree(markup)
+                if tree.root.children:
+                    out.add(describe_child(tree.root.children[0], owned))
+    return out
+
+
 def describe_child(n, owned):
     cls = [c for c in n.classes if c in owned]
     data = sorted(k for k in n.attrs if k.startswith(("data-", "role", "aria-")) and k not in ("aria-hidden",))
@@ -182,9 +207,14 @@ def contract(key, comp, css, element, js, site, other_roots=frozenset()):
                         vals.add(v)
                 elif k.startswith("aria-") and k != "aria-hidden":
                     aria.add(k)
+    # Values the CSS accepts for an attribute the examples use (a variant no
+    # example shows is still part of the API).
+    for k, vals in css_values(css or "").items():
+        if k in attrs:
+            attrs[k].update(v for v in vals if len(v) <= 40 and " " not in v)
     first = next((n for n in roots if root_class and root_class in n.classes), roots[0] if roots else None)
     children = []
-    if first is not None:
+    if first is not None and first.tag != "svg":
         for c in first.children:
             d = describe_child(c, owned)
             if d not in children:
@@ -200,6 +230,7 @@ def contract(key, comp, css, element, js, site, other_roots=frozenset()):
         "attributes": {k: sorted(v)[:MAX_VALUES] for k, v in sorted(attrs.items())},
         "aria": sorted(aria),
         "children": children,
+        "optionalChildren": [c for c in children if c in optional_children(comp.get("notes"), owned)],
         "install": f"npx @auvyx/cli add {key}",
         "docs": f"{site}/md/components/{key}.md",
         "examples": [ex["title"] for ex in comp["examples"]],

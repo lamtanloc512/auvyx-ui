@@ -4,16 +4,24 @@
 <dl>
   <dt><code>&lt;auvyx-prompt-input&gt;</code> around <code>&lt;form class="prompt-input"&gt;</code></dt>
   <dd>
-    Add the <code>streaming</code> attribute while a reply streams: Stop replaces Send.
+    Add the <code>streaming</code> attribute while a reply streams: Stop replaces Send. Add <code>busy</code> instead for work that cannot be stopped (uploading, indexing): the field, Send and the attach button are disabled, Enter does nothing, the form gets <code>aria-busy="true"</code> and <code>data-state="busy"</code> for your CSS. <code>data-variant="raised"</code> on the form gives a card-like composer with a soft shadow, for a prompt that is the center of a page.
     <dl>
       <dt><code>&lt;textarea&gt;</code></dt>
       <dd>Grows with its content (CSS <code>field-sizing</code>). Enter sends, Shift+Enter adds a line.</dd>
-      <dt><code>&lt;div class="attachment-group" data-files hidden&gt;</code></dt>
-      <dd>Optional. Files from the picker, a drop or a paste are listed here as <code>.attachment</code> items with a remove button.</dd>
+      <dt><code>&lt;div class="attachment-group" data-files hidden&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+      <dd>Files from the picker, a drop or a paste are listed here as <code>.attachment</code> items with a remove button.</dd>
       <dt><code>&lt;footer&gt;</code></dt>
-      <dd>Toolbar. <code>[data-attach]</code> opens the <code>&lt;input type="file" hidden&gt;</code>; <code>[type="submit"]</code> sends and is disabled while empty; <code>[data-stop]</code> shows while streaming.</dd>
-      <dt><code>.suggestions</code> inside the element</dt>
-      <dd>A click fills the prompt with the chip's <code>data-prompt</code> or text; <code>data-send</code> sends it straight away.</dd>
+      <dd>
+        Toolbar. <code>[data-attach]</code> opens the <code>&lt;input type="file" hidden&gt;</code>; <code>[type="submit"]</code> sends and is disabled while empty or busy; <code>[data-stop]</code> shows while streaming.
+        <dl>
+          <dt><code>&lt;small&gt;</code> or <code>[data-hint]</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+          <dd>Helper text. First in the footer, it lines up with the prompt text and takes the free space.</dd>
+          <dt><code>&lt;span data-busy&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+          <dd>Shown only while <code>busy</code>, for a spinner and a word on what is happening.</dd>
+        </dl>
+      </dd>
+      <dt><code>.suggestions</code> inside the element <span class="badge" data-variant="secondary">Optional</span></dt>
+      <dd>Before or after the form (it gets a margin on the side facing the form). A click fills the prompt with the chip's <code>data-prompt</code> or text; <code>data-send</code> sends it straight away.</dd>
     </dl>
   </dd>
 </dl>
@@ -41,6 +49,11 @@
 <td><code>el.streaming</code></td>
 <td>Property</td>
 <td>Mirrors the <code>streaming</code> attribute.</td>
+</tr>
+<tr>
+<td><code>el.busy</code></td>
+<td>Property</td>
+<td>Mirrors the <code>busy</code> attribute.</td>
 </tr>
 <tr>
 <td><code>el.value</code></td>

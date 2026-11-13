@@ -3,7 +3,12 @@
  *
  *   <dl class="properties">
  *     <div><dt><svg …/>Website</dt><dd><a href="#">acme.com</a></dd></div>
+ *     <div><dt>ID</dt><dd><code>cus_9s6XKzkNRiz8i3</code><button class="btn" data-copy-text="…" …>…</button></dd></div>
  *   </dl>
+ *
+ * A <button> (or a [data-actions] group) last in a <dd> is a row action: it
+ * sits at the end, beside the value. Long unbroken values (ids, URLs, paths)
+ * wrap instead of overflowing.
  */
 @layer components {
   .properties {
@@ -21,7 +26,23 @@
     }
 
     dd {
-      @apply m-0 min-w-0 break-words;
+      @apply m-0 min-w-0 wrap-anywhere;
+    }
+
+    dd:has(> :is(button, [data-actions]):last-child) {
+      @apply flex items-center;
+
+      > :not(button, [data-actions]) {
+        @apply min-w-0;
+      }
+
+      > :is(button, [data-actions]):last-child {
+        @apply ms-auto shrink-0;
+      }
+    }
+
+    dd > [data-actions] {
+      @apply flex items-center;
     }
 
     dt > svg {

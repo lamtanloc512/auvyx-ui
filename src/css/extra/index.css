@@ -23,6 +23,13 @@
 @import "./components/sortable.css";
 @import "./components/properties.css";
 @import "./components/tile.css";
+@import "./components/item.css";
+@import "./components/pagination.css";
+@import "./components/spinner.css";
+@import "./components/skeleton.css";
+@import "./components/stat.css";
+@import "./components/status-dot.css";
+@import "./components/action-bar.css";
 @import "./components/flyout-menu.css";
 @import "./components/calendar.css";
 @import "./components/sidebar.css";

@@ -2,6 +2,9 @@
   "accordion": [
     "card"
   ],
+  "action-bar": [
+    "button"
+  ],
   "alert": [
     "button"
   ],
@@ -187,9 +190,12 @@
     "attachment",
     "button",
     "native-select",
+    "spinner",
     "suggestions"
   ],
-  "properties": [],
+  "properties": [
+    "button"
+  ],
   "questionnaire": [
     "button",
     "radio-group"
@@ -228,6 +234,13 @@
     "empty",
     "input-group",
     "item"
+  ],
+  "stat": [
+    "badge"
+  ],
+  "status-dot": [
+    "badge",
+    "table"
   ],
   "suggestions": [],
   "switch": [

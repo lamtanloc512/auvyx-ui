@@ -18,8 +18,8 @@ A drop-in design system with the shadcn/ui look: plain HTML and CSS classes, opt
 ## Install
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@auvyx/ui@0.1/dist/auvyx.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@auvyx/ui@0.1/dist/auvyx.min.js" defer></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@auvyx/ui@0.2/dist/auvyx.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@auvyx/ui@0.2/dist/auvyx.min.js" defer></script>
 ```
 
 ```bash

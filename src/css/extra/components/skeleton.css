@@ -1,0 +1,25 @@
+/* Skeleton shapes (fork addition), so placeholders need no utility classes:
+ *
+ *   <div class="skeleton" data-variant="circle"></div>
+ *   <div class="skeleton" data-variant="text" style="width: 60%"></div>
+ *   <div class="skeleton" data-variant="block"></div>
+ *
+ * text: a line of body text, full width. circle: an avatar (2.5rem).
+ * block: a 16:9 media box, full width. Without data-variant the skeleton
+ * takes the size you give it.
+ */
+@layer components {
+  .skeleton {
+    &[data-variant='text'] {
+      @apply block h-4 w-full;
+    }
+
+    &[data-variant='circle'] {
+      @apply block size-10 shrink-0 rounded-full;
+    }
+
+    &[data-variant='block'] {
+      @apply block aspect-video w-full;
+    }
+  }
+}

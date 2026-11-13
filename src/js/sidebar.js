@@ -12,12 +12,24 @@
     const initialMobileOpen = sidebarComponent.dataset.initialMobileOpen === 'true';
     const breakpoint = parseInt(sidebarComponent.dataset.breakpoint) || 768;
 
-    let open = breakpoint > 0
-      ? (window.innerWidth >= breakpoint ? initialOpen : initialMobileOpen)
-      : initialOpen;
+    const isDesktop = () => breakpoint <= 0 || window.innerWidth >= breakpoint;
+
+    // data-persist="<key>": the desktop open/collapsed state survives reloads.
+    const persistKey = sidebarComponent.dataset.persist;
+    const stored = () => {
+      try { return persistKey ? localStorage.getItem(persistKey) : null; } catch { return null; }
+    };
+    const store = () => {
+      if (!persistKey || !isDesktop()) return;
+      try { localStorage.setItem(persistKey, open ? 'open' : 'collapsed'); } catch { /* storage unavailable */ }
+    };
+
+    let open = isDesktop() ? initialOpen : initialMobileOpen;
+    const restored = isDesktop() && ['open', 'collapsed'].includes(stored());
+    if (restored) open = stored() === 'open';
 
     // Collapsing to an icon rail keeps the sidebar usable on desktop.
-    const isIconRail = () => sidebarComponent.dataset.collapsible === 'icon' && (breakpoint <= 0 || window.innerWidth >= breakpoint);
+    const isIconRail = () => sidebarComponent.dataset.collapsible === 'icon' && isDesktop();
 
     const updateState = () => {
       const rail = isIconRail();
@@ -38,6 +50,7 @@
     const setState = (state) => {
       open = Boolean(state);
       updateState();
+      store();
     };
 
     sidebarComponent.open = () => setState(true);
@@ -78,7 +91,16 @@
       delete sidebarComponent.toggle;
     };
 
-    updateState();
+    if (restored && open !== initialOpen) {
+      // A restored state applies at once: no slide from the markup's default.
+      const moving = [sidebarComponent.querySelector(':scope > nav'), sidebarComponent.nextElementSibling].filter(Boolean);
+      moving.forEach((el) => { el.style.transition = 'none'; });
+      updateState();
+      sidebarComponent.offsetWidth;
+      requestAnimationFrame(() => moving.forEach((el) => { el.style.transition = ''; }));
+    } else {
+      updateState();
+    }
     sidebarComponent.dataset.sidebarInitialized = 'true';
     sidebarComponent.dispatchEvent(new CustomEvent('basecoat:initialized'));
   };

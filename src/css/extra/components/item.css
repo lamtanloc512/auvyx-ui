@@ -1,0 +1,33 @@
+/* Item extensions (fork addition).
+ *
+ * A link in the title covers the whole item, so a navigation card can still
+ * hold buttons (an <a class="item"> cannot contain them). Links in the
+ * description and the <aside>, <header> and <footer> controls stay clickable
+ * above it.
+ *
+ *   <article class="item" data-variant="outline">
+ *     <figure data-variant="icon"><svg …/></figure>
+ *     <section><h3><a href="/orders">Orders</a></h3><p>Track and refund orders.</p></section>
+ *     <aside><button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="New order">…</button></aside>
+ *   </article>
+ *
+ * figure[data-variant="icon"] draws the icon in a soft box.
+ */
+@layer components {
+  .item:has(> section > :is(h2, h3, h4) a) {
+    @apply relative;
+
+    > section > :is(h2, h3, h4) a {
+      @apply outline-none after:absolute after:inset-0 after:content-[''];
+    }
+
+    > section p a,
+    > :is(aside, header, footer) {
+      @apply relative z-10;
+    }
+  }
+
+  .item > figure[data-variant='icon'] {
+    @apply shrink-0;
+  }
+}

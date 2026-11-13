@@ -23,8 +23,9 @@ const jsComponents = ['basecoat', 'accordion', 'carousel', 'combobox', 'command'
 
 // Size budgets (gzip bytes). CI fails when a change blows past them.
 // CSS budget sized for the full shadcn component set (~61 components); tighten once complete.
-// CSS raised 41 → 42 kB for the AI chat primitives (prompt input, suggestions, message actions).
-const budgets = { 'auvyx.min.css': 42_000, 'auvyx.min.js': 24_000 };
+// CSS raised 41 → 42 kB for the AI chat primitives (prompt input, suggestions, message actions),
+// 42 → 44 kB for the 0.2 admin primitives (stat, status dot, action bar, pagination, spinner, status tokens).
+const budgets = { 'auvyx.min.css': 44_000, 'auvyx.min.js': 24_000 };
 
 // Elements in auvyx.min.js. Larger, page-specific ones ship only as their own
 // module (dist/js/<name>.min.js): data-table, sortable, prompt-input.
@@ -236,7 +237,7 @@ await writeTypes(dist, version);
   const names = [...Object.keys(docs), 'chart'];
   const sizes = await splitCss(root, dist, names, linkShadows);
   // Behavior per component, from the same sources as dist/js/ (not minified).
-  const UI_JS = { 'code-block': ['copy'], menubar: ['menu'], 'navigation-menu': ['menu'], 'range-calendar': ['calendar'], kanban: ['sortable'], 'message-actions': ['copy'] };
+  const UI_JS = { 'code-block': ['copy'], menubar: ['menu'], 'navigation-menu': ['menu'], 'range-calendar': ['calendar'], kanban: ['sortable'], 'message-actions': ['copy'], properties: ['copy'] };
   const jsFor = (name) => UI_JS[name] ?? (JS_MODULES[name] ? [name] : []);
   const core = await fs.readFile(path.join(root, 'src/js/basecoat.js'), 'utf8');
   for (const mod of new Set(names.flatMap(jsFor))) {
