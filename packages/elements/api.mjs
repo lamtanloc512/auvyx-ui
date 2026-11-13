@@ -93,10 +93,14 @@ export const ELEMENTS = [
     ],
     methods: [{ name: 'refresh', signature: '() => void', description: 'Re-read rows after replacing tbody content' }] },
   { tag: 'auvyx-prompt-input', className: 'AuvyxPromptInputElement', module: 'js/prompt-input.min.js', key: 'prompt-input', description: 'Chat composer behavior for a .prompt-input form: Enter to send, files, suggestions, stop. Not in auvyx.min.js.',
-    attributes: [{ name: 'streaming', type: 'boolean', description: 'A reply is streaming: Stop replaces Send' }],
+    attributes: [
+      { name: 'streaming', type: 'boolean', description: 'A reply is streaming: Stop replaces Send' },
+      { name: 'busy', type: 'boolean', description: 'Work that cannot be stopped is running: the field, Send and attach are disabled and the form gets aria-busy' },
+    ],
     properties: [
       { name: 'value', type: 'string', description: 'The prompt text' },
       { name: 'streaming', type: 'boolean', description: 'Mirrors the streaming attribute' },
+      { name: 'busy', type: 'boolean', description: 'Mirrors the busy attribute' },
       { name: 'files', type: 'File[]', description: 'Files waiting to be sent', readonly: true },
     ],
     events: [

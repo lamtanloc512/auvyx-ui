@@ -8,6 +8,7 @@ Upgrading from 0.1: pages that use `<auvyx-data-table>` now load `js/data-table.
 
 ### Changed
 
+- `auvyx.min.css` is 42.6 kB gzip (was 41.0 kB) with the components and variants added in 0.2.0; its budget is now 44 kB.
 - `auvyx.min.js` no longer includes `<auvyx-data-table>` (21.9 kB gzip, was 23.1 kB). Load `js/data-table.min.js` on pages with a data table; `js/manifest.json` marks such modules `"bundled": false`.
 - Blocks page: categories grouped under Application, Authentication, Commerce and Content, with category chips and counts. The Agent, Blog and Error categories now show (they were missing).
 
@@ -26,6 +27,11 @@ Upgrading from 0.1: pages that use `<auvyx-data-table>` now load `js/data-table.
 
 ### Added
 
+- Prompt Input:
+  - `busy` attribute and property for work that cannot be stopped: the field, Send and attach are disabled, Enter and suggestion chips do nothing, the form gets `aria-busy="true"` and `data-state="busy"`, `[data-busy]` content shows, and focus returns to the field afterwards. `streaming` keeps its meaning.
+  - A `<small>` or `[data-hint]` first in the footer is helper text lined up with the prompt.
+  - `data-variant="raised"` on the form: a card surface with a larger radius and a soft shadow, for a composer at the center of a page; the focus ring still shows.
+  - `.suggestions` may sit before or after the form and gets its margin on the side facing it.
 - Properties: a `<button>` (or a `[data-actions]` group) last in a `<dd>` is a row action placed beside the value, such as a copy button. Long unbroken values (ids, URLs, paths) wrap instead of overflowing.
 - Item: a link in the title covers the whole item while the buttons in `<aside>`, `<header>` and `<footer>` and links in the description stay clickable, so a navigation card with a quick action is valid HTML (an `<a class="item">` cannot contain buttons). `figure[data-variant="icon"]` draws the icon in a soft box.
 - Admin primitives, CSS only:

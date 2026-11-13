@@ -444,6 +444,12 @@
   .prompt-input > textarea { @apply placeholder:text-muted-foreground px-2 py-1.5 text-base md:text-sm; }
   .prompt-input > [data-files] { @apply gap-2 px-1 pt-1; }
   .prompt-input > footer { @apply gap-1; }
+  .prompt-input > footer > :is(small, [data-hint]) { @apply text-muted-foreground text-xs; }
+  .prompt-input > footer > :is(small, [data-hint]):first-child { @apply ps-2; }
+  .prompt-input > footer > [data-busy] { @apply text-muted-foreground items-center gap-1.5 px-1 text-xs [&>svg]:size-4; }
+  .prompt-input[data-state='busy'] > textarea { @apply opacity-60; }
+  .prompt-input[data-variant='raised'] { @apply bg-card text-card-foreground rounded-(--auvyx-r-card) p-3 shadow-lg; }
+  .prompt-input[data-variant='raised'] > textarea { @apply min-h-16 text-base; }
 
   /* Suggestions */
   .suggestions { @apply gap-2; }

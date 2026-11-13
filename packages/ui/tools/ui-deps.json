@@ -190,6 +190,7 @@
     "attachment",
     "button",
     "native-select",
+    "spinner",
     "suggestions"
   ],
   "properties": [
