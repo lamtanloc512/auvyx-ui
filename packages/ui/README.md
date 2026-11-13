@@ -7,8 +7,8 @@ Docs: https://ui.auvyx.org
 ## CDN
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@auvyx/ui@0.1/dist/auvyx.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@auvyx/ui@0.1/dist/auvyx.min.js" defer></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@auvyx/ui@0.2/dist/auvyx.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@auvyx/ui@0.2/dist/auvyx.min.js" defer></script>
 ```
 
 The JavaScript is only needed by components with behavior (select, tabs, dropdown menu…); each component page says so.
@@ -44,8 +44,8 @@ With Tailwind v4, import the source instead so your build compiles it: `@import 
 For pages whose own CSS already uses names like `.btn`, `.card`, `.alert` or `.dropdown-menu` (Bootstrap, WordPress themes, legacy apps), load the prefixed build. Every Auvyx class becomes `ax-…` in the CSS and in the JavaScript, so neither side styles the other:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@auvyx/ui@0.1/dist/ax/auvyx.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@auvyx/ui@0.1/dist/ax/auvyx.min.js" defer></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@auvyx/ui@0.2/dist/ax/auvyx.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@auvyx/ui@0.2/dist/ax/auvyx.min.js" defer></script>
 
 <button class="ax-btn" data-variant="outline">Save</button>
 <div class="ax-card">…</div>

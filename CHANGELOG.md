@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## @auvyx/ui 0.2.0 - 2026-11-13
+
+Upgrading from 0.1: pages that use `<auvyx-data-table>` now load `js/data-table.min.js` next to `auvyx.min.js` (see Changed). CDN links pinned to `@auvyx/ui@0.1` keep serving 0.1.4; move them to `@auvyx/ui@0.2`.
+
 ### Changed
 
 - `auvyx.min.js` no longer includes `<auvyx-data-table>` (21.9 kB gzip, was 23.1 kB). Load `js/data-table.min.js` on pages with a data table; `js/manifest.json` marks such modules `"bundled": false`.
