@@ -486,6 +486,13 @@
   .pagination > ul { @apply gap-1; }
   .pagination > ul > li > span { @apply text-muted-foreground size-9 [&>svg]:size-4; }
 
+  /* Alert: status variants */
+  .alert:is([data-variant='success'], [data-variant='warning'], [data-variant='info']) { @apply bg-card [&>svg]:text-current; }
+  .alert[data-variant='success'] { @apply text-success; }
+  .alert[data-variant='warning'] { @apply text-warning; }
+  .alert[data-variant='info'] { @apply text-info; }
+  .alert:is([data-variant='success'], [data-variant='warning'], [data-variant='info']) > section { @apply text-current/90; }
+
   /* Calendar */
   .calendar { @apply p-3; }
   .calendar-month > header > h2 { @apply text-sm font-medium; }

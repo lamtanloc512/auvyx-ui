@@ -13,6 +13,7 @@ Upgrading from 0.1: pages that use `<auvyx-data-table>` now load `js/data-table.
 
 ### Fixed
 
+- The warning alerts in the Drawer, Table and Toast docs (`data-variant="warning"`, which had no rule) now look like warnings.
 - Pagination and Spinner had no CSS on the CDN channel: their docs examples, and Skeleton's, sized and laid out everything with Tailwind utilities that `auvyx.min.css` does not contain. They now work with the CDN files alone:
   - `.pagination` on the `<nav>`: a list of `.btn` pages (the current one `aria-current="page"`), inert `aria-disabled` links, a `<span>` ellipsis, and an optional `<p>` summary ("11–20 of 42") that moves the list to the end.
   - `.spinner` on a loader `<svg>` (or an empty `<span>`, drawn as a ring) with `role="status"`: `data-size="sm|lg|xl"`, the icon size inside buttons, badges and input groups, and a pulse instead of a turn under reduced motion.
@@ -25,6 +26,7 @@ Upgrading from 0.1: pages that use `<auvyx-data-table>` now load `js/data-table.
 
 ### Added
 
+- Alert `data-variant="success"`, `"warning"` and `"info"` next to the default and `destructive`. They read three new theme tokens, `--success`, `--warning` and `--info` (light and dark values; a theme overrides them like any other color), which `auvyx.ai.json` lists with the other tokens.
 - `auvyx.ai.json` on the docs site (linked from `llms.txt`): component contracts for agents. Per component: the root selector, owned classes, the data-* and aria-* attributes its examples use with their values, the root's children, the script it needs, its custom element API and a canonical snippet. Top level: design rules, theme tokens and intent groups, so a caller can route a request and send only the relevant contracts. Generated from the same sources as the docs and checked by `packages/tests/ai-contract.test.mjs`.
 - `.flyout-menu`, CSS only: a vertical category menu whose panels fly out to the side on hover or keyboard focus, with a short hide delay for diagonal pointer moves; works inside a popover.
 - Create page: a Mono Font option (Geist Mono, JetBrains Mono, IBM Plex Mono, Fira Code, Roboto Mono, Source Code Pro, Space Mono, DM Mono) that sets `--font-mono`, and a Letter Spacing slider that sets `--tracking-normal`. Preset codes gain a 12th digit for the mono font; 11-digit codes still open. Imported tweakcn themes' `--letter-spacing` now applies.
