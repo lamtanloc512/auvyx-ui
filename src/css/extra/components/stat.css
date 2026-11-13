@@ -1,0 +1,38 @@
+/* Stat (fork addition), CSS only: a KPI card with a label, a value and an
+ * optional note, delta and icon. Lay several out with .auto-grid.
+ *
+ *   <article class="stat">
+ *     <header><h3>Revenue</h3><svg …/></header>
+ *     <strong>$45,231.89</strong>
+ *     <p><span data-trend="up">+20.1%</span> from last month</p>
+ *   </article>
+ *
+ * The label is a heading or <p> in the <header>; an <svg> or .badge there sits
+ * at the end. The value is a <strong> (or <data>). data-trend="up | down" on
+ * a delta colors it for a rise or a fall.
+ */
+@layer components {
+  .stat {
+    @apply flex min-w-0 flex-col;
+
+    > header {
+      @apply flex min-w-0 items-center;
+
+      > :is(h2, h3, h4, p) {
+        @apply m-0 min-w-0 truncate;
+      }
+
+      > :is(svg, .badge) {
+        @apply ms-auto shrink-0;
+      }
+    }
+
+    > :is(strong, data) {
+      @apply block wrap-anywhere tabular-nums;
+    }
+
+    > :is(p, footer) {
+      @apply m-0;
+    }
+  }
+}

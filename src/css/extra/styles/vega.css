@@ -486,6 +486,29 @@
   .pagination > ul { @apply gap-1; }
   .pagination > ul > li > span { @apply text-muted-foreground size-9 [&>svg]:size-4; }
 
+  /* Stat */
+  .stat { @apply bg-card text-card-foreground gap-1 rounded-(--auvyx-r-card) border p-5 shadow-xs; }
+  .stat > header { @apply text-muted-foreground gap-2 text-sm; }
+  .stat > header > :is(h2, h3, h4, p) { @apply text-sm font-medium; }
+  .stat > header > svg { @apply size-4; }
+  .stat > :is(strong, data) { @apply text-2xl leading-tight font-semibold tracking-tight; }
+  .stat > :is(p, footer) { @apply text-muted-foreground text-xs; }
+  .stat [data-trend] { @apply font-medium; }
+  .stat [data-trend='up'] { @apply text-success; }
+  .stat [data-trend='down'] { @apply text-destructive; }
+
+  /* Status Dot */
+  .status-dot { @apply gap-1.5 before:size-2 before:text-muted-foreground; }
+  .status-dot[data-variant='success'] { @apply before:text-success; }
+  .status-dot[data-variant='warning'] { @apply before:text-warning; }
+  .status-dot[data-variant='destructive'] { @apply before:text-destructive; }
+  .status-dot[data-variant='info'] { @apply before:text-info; }
+
+  /* Action Bar */
+  .action-bar { @apply bg-popover text-popover-foreground gap-1 rounded-(--auvyx-r-card) border p-1.5 ps-3 text-sm shadow-lg; }
+  .action-bar > output { @apply pe-1 font-medium; }
+  .action-bar > hr { @apply bg-border mx-1; }
+
   /* Alert: status variants */
   .alert:is([data-variant='success'], [data-variant='warning'], [data-variant='info']) { @apply bg-card [&>svg]:text-current; }
   .alert[data-variant='success'] { @apply text-success; }

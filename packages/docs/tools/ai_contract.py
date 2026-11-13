@@ -21,13 +21,13 @@ from html.parser import HTMLParser
 # components' contracts in the prompt. Every component must be in one group
 # (packages/tests/ai-contract.test.mjs checks it).
 GROUPS = {
-    "action": ["button", "button-group", "toggle", "toggle-group", "kbd"],
+    "action": ["button", "button-group", "toggle", "toggle-group", "kbd", "action-bar"],
     "form": ["field", "label", "input", "input-group", "input-otp", "textarea", "checkbox", "radio-group", "switch", "slider",
              "select", "native-select", "combobox", "calendar", "range-calendar", "date-picker", "questionnaire"],
     "overlay": ["dialog", "alert-dialog", "sheet", "drawer", "popover", "hover-card", "tooltip", "dropdown-menu", "context-menu", "command", "toast"],
     "navigation": ["tabs", "breadcrumb", "pagination", "menubar", "navigation-menu", "flyout-menu", "sidebar"],
-    "data": ["table", "data-table", "kanban", "properties", "item", "tile", "carousel", "aspect-ratio", "avatar", "badge"],
-    "feedback": ["alert", "empty", "progress", "skeleton", "spinner", "separator"],
+    "data": ["table", "data-table", "kanban", "properties", "item", "tile", "stat", "carousel", "aspect-ratio", "avatar", "badge"],
+    "feedback": ["alert", "status-dot", "empty", "progress", "skeleton", "spinner", "separator"],
     "content": ["card", "accordion", "typography", "code-block", "scroll-area", "resizable"],
     "chat": ["message", "bubble", "marker", "message-scroller", "prompt-input", "suggestions", "message-actions", "attachment", "trace"],
 }

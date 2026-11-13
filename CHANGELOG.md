@@ -26,6 +26,11 @@ Upgrading from 0.1: pages that use `<auvyx-data-table>` now load `js/data-table.
 
 ### Added
 
+- Admin primitives, CSS only:
+  - `.stat`: a KPI card with a label, a value, and an optional note, icon or badge; `data-trend="up|down"` colors a delta.
+  - `.status-dot`: a colored dot before a label, `data-variant="success|warning|destructive|info"` (muted without), on its own, in a table cell or in a badge.
+  - `.action-bar`: the bulk action bar shown while rows are selected, fixed bottom center above the safe area, with an `<output>` count; it rises in when `hidden` is removed, and below 40rem its buttons keep only their icons. `data-position="sticky"` pins it inside a scrolling panel instead.
+- Sidebar `data-persist="<key>"`: the desktop open or collapsed state is kept in `localStorage` and restored on load without the slide animation. The mobile overlay state is never stored.
 - Alert `data-variant="success"`, `"warning"` and `"info"` next to the default and `destructive`. They read three new theme tokens, `--success`, `--warning` and `--info` (light and dark values; a theme overrides them like any other color), which `auvyx.ai.json` lists with the other tokens.
 - `auvyx.ai.json` on the docs site (linked from `llms.txt`): component contracts for agents. Per component: the root selector, owned classes, the data-* and aria-* attributes its examples use with their values, the root's children, the script it needs, its custom element API and a canonical snippet. Top level: design rules, theme tokens and intent groups, so a caller can route a request and send only the relevant contracts. Generated from the same sources as the docs and checked by `packages/tests/ai-contract.test.mjs`.
 - `.flyout-menu`, CSS only: a vertical category menu whose panels fly out to the side on hover or keyboard focus, with a short hide delay for diagonal pointer moves; works inside a popover.

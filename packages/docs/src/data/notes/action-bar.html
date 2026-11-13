@@ -1,0 +1,17 @@
+<p class="d-note">CSS only: your code shows the bar (remove <code>hidden</code>) when rows are selected, updates the count, and hides it again.</p>
+
+<h3 class="d-h3">HTML structure</h3>
+<dl>
+  <dt><code>&lt;div class="action-bar" role="region" aria-label="Selection" hidden&gt;</code></dt>
+  <dd>
+    Fixed at the bottom center of the viewport, above the safe area (<code>env(safe-area-inset-bottom)</code>), at most the viewport width minus 2rem; it scrolls sideways if the actions do not fit. It rises in when shown, without movement under reduced motion. <code>data-position="sticky"</code> keeps it at the bottom of its scrolling container instead (a table in a panel).
+    <dl>
+      <dt><code>&lt;output&gt;</code></dt>
+      <dd>The count, such as "3 selected". As a live region it announces changes.</dd>
+      <dt><code>&lt;button class="btn"&gt;</code></dt>
+      <dd>The actions, usually <code>data-variant="ghost" data-size="sm"</code>, and a clear-selection button last. Put a button's label in a <code>&lt;span&gt;</code> after its icon: below 40rem only the icon shows and the label remains its accessible name.</dd>
+      <dt><code>&lt;hr&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+      <dd>A vertical divider between groups of actions.</dd>
+    </dl>
+  </dd>
+</dl>

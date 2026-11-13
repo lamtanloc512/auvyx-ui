@@ -35,6 +35,17 @@
   "source": "basecoat",
   "native": true
  },
+ "action-bar": {
+  "title": "Action Bar",
+  "description": "The floating bar of bulk actions shown while rows are selected: a count and actions, bottom center above the safe area. CSS only; the app toggles hidden.",
+  "examples": [
+   {
+    "title": "Default",
+    "html": "<div style=\"width: 100%; max-width: 32rem; height: 9rem; overflow: auto; border: 1px dashed var(--border); border-radius: var(--radius)\">\n  <div style=\"height: 12rem\"></div>\n  <div class=\"action-bar\" data-position=\"sticky\" role=\"region\" aria-label=\"Selection\">\n    <output>3 selected</output>\n    <button type=\"button\" class=\"btn\" data-variant=\"ghost\" data-size=\"sm\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect width=\"20\" height=\"5\" x=\"2\" y=\"3\" rx=\"1\"></rect><path d=\"M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8\"></path><path d=\"M10 12h4\"></path></svg><span>Archive</span></button>\n    <button type=\"button\" class=\"btn\" data-variant=\"ghost\" data-size=\"sm\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"></path><polyline points=\"7 10 12 15 17 10\"></polyline><line x1=\"12\" x2=\"12\" y1=\"15\" y2=\"3\"></line></svg><span>Export</span></button>\n    <button type=\"button\" class=\"btn\" data-variant=\"ghost\" data-size=\"sm\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 6h18\"></path><path d=\"M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6\"></path><path d=\"M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2\"></path></svg><span>Delete</span></button>\n    <hr />\n    <button type=\"button\" class=\"btn\" data-variant=\"ghost\" data-size=\"icon-sm\" aria-label=\"Clear selection\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button>\n  </div>\n</div>"
+   }
+  ],
+  "source": "auvyx"
+ },
  "alert": {
   "title": "Alert",
   "description": "Displays a callout for user attention.",
@@ -1320,6 +1331,40 @@
    }
   ],
   "source": "basecoat"
+ },
+ "stat": {
+  "title": "Stat",
+  "description": "A KPI card: a label, a value, and an optional delta, note and icon. CSS only; lay several out with .auto-grid.",
+  "examples": [
+   {
+    "title": "Default",
+    "html": "<div class=\"auto-grid\" data-min=\"sm\" style=\"width: 100%\">\n  <article class=\"stat\">\n    <header><h3>Revenue</h3><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><line x1=\"12\" x2=\"12\" y1=\"2\" y2=\"22\"></line><path d=\"M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6\"></path></svg></header>\n    <strong>$45,231.89</strong>\n    <p><span data-trend=\"up\">+20.1%</span> from last month</p>\n  </article>\n  <article class=\"stat\">\n    <header><h3>Subscriptions</h3><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"></path><circle cx=\"9\" cy=\"7\" r=\"4\"></circle><path d=\"M22 21v-2a4 4 0 0 0-3-3.87\"></path><path d=\"M16 3.13a4 4 0 0 1 0 7.75\"></path></svg></header>\n    <strong>+2,350</strong>\n    <p><span data-trend=\"up\">+180.1%</span> from last month</p>\n  </article>\n  <article class=\"stat\">\n    <header><h3>Refunds</h3><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect width=\"20\" height=\"14\" x=\"2\" y=\"5\" rx=\"2\"></rect><line x1=\"2\" x2=\"22\" y1=\"10\" y2=\"10\"></line></svg></header>\n    <strong>$1,204</strong>\n    <p><span data-trend=\"down\">+4.3%</span> from last month</p>\n  </article>\n</div>"
+   },
+   {
+    "title": "With a badge",
+    "html": "<div class=\"auto-grid\" data-min=\"sm\" style=\"width: 100%\">\n  <article class=\"stat\">\n    <header><h3>Response rate</h3><span class=\"badge\" data-variant=\"secondary\">Very good</span></header>\n    <strong>92%</strong>\n    <p>Emails and calls answered within two days.</p>\n  </article>\n  <article class=\"stat\">\n    <header><h3>Open tickets</h3><span class=\"badge\" data-variant=\"outline\">3 urgent</span></header>\n    <strong>18</strong>\n    <p>Across 7 customers.</p>\n  </article>\n</div>"
+   }
+  ],
+  "source": "auvyx"
+ },
+ "status-dot": {
+  "title": "Status Dot",
+  "description": "A small colored dot before a label, for a state in a table cell, a list or a badge. CSS only.",
+  "examples": [
+   {
+    "title": "Default",
+    "html": "<div class=\"cluster\" data-gap=\"6\">\n  <span class=\"status-dot\" data-variant=\"success\">Operational</span>\n  <span class=\"status-dot\" data-variant=\"warning\">Degraded</span>\n  <span class=\"status-dot\" data-variant=\"destructive\">Down</span>\n  <span class=\"status-dot\" data-variant=\"info\">Deploying</span>\n  <span class=\"status-dot\">Paused</span>\n</div>"
+   },
+   {
+    "title": "In a badge",
+    "html": "<div class=\"cluster\">\n  <span class=\"badge\" data-variant=\"outline\"><span class=\"status-dot\" data-variant=\"success\">Live</span></span>\n  <span class=\"badge\" data-variant=\"outline\"><span class=\"status-dot\" data-variant=\"warning\">Pending review</span></span>\n  <span class=\"badge\" data-variant=\"outline\"><span class=\"status-dot\">Draft</span></span>\n</div>"
+   },
+   {
+    "title": "In a table",
+    "html": "<table class=\"table\" style=\"max-width: 28rem\">\n  <thead>\n    <tr><th>Service</th><th>Status</th></tr>\n  </thead>\n  <tbody>\n    <tr><td>API</td><td><span class=\"status-dot\" data-variant=\"success\">Operational</span></td></tr>\n    <tr><td>Webhooks</td><td><span class=\"status-dot\" data-variant=\"warning\">Degraded</span></td></tr>\n    <tr><td>Search</td><td><span class=\"status-dot\" data-variant=\"destructive\">Down</span></td></tr>\n  </tbody>\n</table>"
+   }
+  ],
+  "source": "auvyx"
  },
  "suggestions": {
   "title": "Suggestions",
