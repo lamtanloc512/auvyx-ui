@@ -10,7 +10,7 @@ import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { root, dist, registry, cli, bin, freshDir, run, serve, browser, open, shot, stableDiff, keep, blockNames, componentDocs, requireBuild } from './lib/env.mjs';
+import { root, dist, registry, cli, bin, freshDir, run, serve, browser, open, shot, stableDiff, keep, blockNames, componentDocs, requireBuild, pool } from './lib/env.mjs';
 
 // Rendering noise between two loads of the same page stays below this
 // (antialiasing of images and text at sub-pixel offsets).
@@ -40,8 +40,7 @@ test('blocks render identically with the split files', async () => {
   }
   files.sort((x, y) => x[0] - y[0]);
   const links = files.map(([, f]) => `<link rel="stylesheet" href="/packages/ui/dist/ui/${f}" />`).join('');
-  const failures = [];
-  for (const n of await blockNames()) {
+  const failures = await pool(await blockNames(), async (n) => {
     const html = await fs.readFile(path.join(root, 'packages/blocks', `${n}.html`), 'utf8');
     const split = html.replace('<link rel="stylesheet" href="../ui/dist/auvyx.min.css" />', links).replace('<head>', '<head><base href="/packages/blocks/">');
     assert.ok(split.includes(links), `${n}: bundle link not found`);
@@ -55,9 +54,11 @@ test('blocks render identically with the split files', async () => {
       }
       return shots;
     }, { tolerance: BLOCK_NOISE });
-    if (d.pixels > BLOCK_NOISE) { failures.push(`${n}: ${d.size ?? `${d.pixels} px`}`); await keep(`split-${n}`, ...d.shots); }
-  }
-  assert.deepEqual(failures, []);
+    if (d.pixels <= BLOCK_NOISE) return null;
+    await keep(`split-${n}`, ...d.shots);
+    return `${n}: ${d.size ?? `${d.pixels} px`}`;
+  });
+  assert.deepEqual(failures.filter(Boolean), []);
 });
 
 // The bundle, plus the modules outside auvyx.min.js (data-table, sortable) a
@@ -76,8 +77,7 @@ test('components installed with the CLI render like the bundle', async () => {
   const dir = await freshDir('split-components');
   const docs = await componentDocs();
   const template = path.join(registry, '{framework}/{icons}/{name}.json');
-  const failures = [];
-  for (const [name, c] of Object.entries(docs)) {
+  const failures = await pool(Object.entries(docs), async ([name, c]) => {
     const bundle = await bundleFor(c);
     const project = path.join(dir, name);
     await fs.mkdir(project);
@@ -109,12 +109,11 @@ test('components installed with the CLI render like the bundle', async () => {
     };
     const d1 = await stableDiff(b, capture(false), { tolerance: NOISE });
     const d2 = await stableDiff(b, capture(true), { tolerance: NOISE });
-    if (d1.pixels > NOISE || d2.pixels > NOISE || errors.length) {
-      failures.push(`${name}: load ${d1.size ?? d1.pixels} px, after a click ${d2.size ?? d2.pixels} px ${[...new Set(errors)].join(' | ')}`);
-      await keep(`component-${name}`, ...(d2.pixels > NOISE ? d2.shots : d1.shots));
-    }
-  }
-  assert.deepEqual(failures, []);
+    if (d1.pixels <= NOISE && d2.pixels <= NOISE && !errors.length) return null;
+    await keep(`component-${name}`, ...(d2.pixels > NOISE ? d2.shots : d1.shots));
+    return `${name}: load ${d1.size ?? d1.pixels} px, after a click ${d2.size ?? d2.pixels} px ${[...new Set(errors)].join(' | ')}`;
+  });
+  assert.deepEqual(failures.filter(Boolean), []);
 });
 
 test('components installed as Tailwind source render like the bundle', async () => {
@@ -126,8 +125,7 @@ test('components installed as Tailwind source render like the bundle', async () 
   // The project's own build; source(none) so it emits no utilities, like auvyx.min.css.
   await fs.writeFile(path.join(dir, 'app.css'), '@import "tailwindcss" source(none);\n@import "./auvyx/ui/index.css";\n');
   run(bin('tailwindcss'), ['-i', path.join(dir, 'app.css'), '-o', path.join(dir, 'app.out.css')]);
-  const failures = [];
-  for (const [name, c] of Object.entries(docs)) {
+  const failures = await pool(Object.entries(docs), async ([name, c]) => {
     const examples = c.examples.map((e) => `<section class="t-ex">${e.html}</section>`).join('\n');
     const page = (head) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">${head}${PAGE_STYLE}</head><body>${examples}</body></html>`;
     await fs.writeFile(path.join(dir, `${name}.full.html`), page(await bundleFor(c)));
@@ -152,12 +150,11 @@ test('components installed as Tailwind source render like the bundle', async () 
     };
     const d1 = await stableDiff(b, capture(false), { tolerance: NOISE });
     const d2 = await stableDiff(b, capture(true), { tolerance: NOISE });
-    if (d1.pixels > NOISE || d2.pixels > NOISE || errors.length) {
-      failures.push(`${name}: load ${d1.size ?? d1.pixels} px, after a click ${d2.size ?? d2.pixels} px ${[...new Set(errors)].join(' | ')}`);
-      await keep(`tailwind-${name}`, ...(d2.pixels > NOISE ? d2.shots : d1.shots));
-    }
-  }
-  assert.deepEqual(failures, []);
+    if (d1.pixels <= NOISE && d2.pixels <= NOISE && !errors.length) return null;
+    await keep(`tailwind-${name}`, ...(d2.pixels > NOISE ? d2.shots : d1.shots));
+    return `${name}: load ${d1.size ?? d1.pixels} px, after a click ${d2.size ?? d2.pixels} px ${[...new Set(errors)].join(' | ')}`;
+  });
+  assert.deepEqual(failures.filter(Boolean), []);
 });
 
 test('tools/ui-deps.json is up to date', () => {

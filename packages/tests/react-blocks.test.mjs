@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { build } from 'esbuild';
-import { root, dist, registry, freshDir, run, bin, json, serve, browser, open, shot, stableDiff, keep, blockNames, requireBuild } from './lib/env.mjs';
+import { root, dist, registry, freshDir, run, bin, json, serve, browser, open, shot, stableDiff, keep, blockNames, requireBuild, pool } from './lib/env.mjs';
 
 let dir, server, b, names;
 before(async () => {
@@ -57,8 +57,7 @@ test('React blocks type-check (strict)', () => {
 
 test('React blocks render like the HTML blocks', async () => {
   await build({ entryPoints: [path.join(dir, 'src/main.tsx')], bundle: true, format: 'esm', outfile: path.join(dir, 'app.js'), define: { 'process.env.NODE_ENV': '"development"' }, logLevel: 'error' });
-  const failures = [];
-  for (const n of names) {
+  const failures = await pool(names, async (n) => {
     const errors = [];
     const d = await stableDiff(b, async () => {
       const shots = [];
@@ -71,9 +70,11 @@ test('React blocks render like the HTML blocks', async () => {
       }
       return shots;
     });
-    if (d.pixels > 0 || errors.length) { failures.push(`${n}: ${d.size ?? `${d.pixels} px`} ${[...new Set(errors)].join(' | ')}`); await keep(`react-${n}`, ...d.shots); }
-  }
-  assert.deepEqual(failures, []);
+    if (d.pixels === 0 && !errors.length) return null;
+    await keep(`react-${n}`, ...d.shots);
+    return `${n}: ${d.size ?? `${d.pixels} px`} ${[...new Set(errors)].join(' | ')}`;
+  });
+  assert.deepEqual(failures.filter(Boolean), []);
 });
 
 // The same action on both editions must leave the same picture.
@@ -128,8 +129,7 @@ const INTERACTIONS = [
 ];
 
 test('React blocks behave like the HTML blocks', async () => {
-  const failures = [];
-  for (const [n, act] of INTERACTIONS) {
+  const failures = await pool(INTERACTIONS, async ([n, act], i) => {
     const errors = [];
     const d = await stableDiff(b, async () => {
       const shots = [];
@@ -143,7 +143,9 @@ test('React blocks behave like the HTML blocks', async () => {
       }
       return shots;
     });
-    if (d.pixels > 0 || errors.length) { failures.push(`${n} (${act}): ${d.size ?? `${d.pixels} px`} ${[...new Set(errors)].join(' | ')}`); await keep(`react-act-${n}`, ...d.shots); }
-  }
-  assert.deepEqual(failures, []);
+    if (d.pixels === 0 && !errors.length) return null;
+    await keep(`react-act-${n}-${i}`, ...d.shots);
+    return `${n} (${act}): ${d.size ?? `${d.pixels} px`} ${[...new Set(errors)].join(' | ')}`;
+  });
+  assert.deepEqual(failures.filter(Boolean), []);
 });

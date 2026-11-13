@@ -126,4 +126,30 @@ export const blockNames = async () => {
   const only = process.env.AUVYX_BLOCKS?.split(',').filter(Boolean);
   return only ? all.filter((n) => only.includes(n)) : all;
 };
-export const componentDocs = () => json(path.join(root, 'packages/docs/src/data/components.json'));
+// AUVYX_COMPONENTS=pagination,spinner limits the component checks the same way.
+export const componentDocs = async () => {
+  const all = await json(path.join(root, 'packages/docs/src/data/components.json'));
+  const only = process.env.AUVYX_COMPONENTS?.split(',').filter(Boolean);
+  return only ? Object.fromEntries(Object.entries(all).filter(([n]) => only.includes(n))) : all;
+};
+
+// Pages compared at once by the block and component loops. Every comparison
+// still loads its own pages in fresh contexts and retries as before; only
+// independent comparisons overlap. AUVYX_CONCURRENCY=1 runs them one by one.
+export const CONCURRENCY = Math.max(1, Number(process.env.AUVYX_CONCURRENCY) || 4);
+
+// Runs fn over items, CONCURRENCY at a time, and returns the results in item
+// order. The first error stops new work, waits for the running items, then throws.
+export async function pool(items, fn, size = CONCURRENCY) {
+  const results = new Array(items.length);
+  let next = 0, error;
+  const worker = async () => {
+    while (next < items.length && !error) {
+      const i = next++;
+      try { results[i] = await fn(items[i], i); } catch (e) { error ??= e; }
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(size, items.length) }, worker));
+  if (error) throw error;
+  return results;
+}
