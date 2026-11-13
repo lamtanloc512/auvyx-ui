@@ -13,6 +13,10 @@ Upgrading from 0.1: pages that use `<auvyx-data-table>` now load `js/data-table.
 
 ### Fixed
 
+- Pagination and Spinner had no CSS on the CDN channel: their docs examples, and Skeleton's, sized and laid out everything with Tailwind utilities that `auvyx.min.css` does not contain. They now work with the CDN files alone:
+  - `.pagination` on the `<nav>`: a list of `.btn` pages (the current one `aria-current="page"`), inert `aria-disabled` links, a `<span>` ellipsis, and an optional `<p>` summary ("11–20 of 42") that moves the list to the end.
+  - `.spinner` on a loader `<svg>` (or an empty `<span>`, drawn as a ring) with `role="status"`: `data-size="sm|lg|xl"`, the icon size inside buttons, badges and input groups, and a pulse instead of a turn under reduced motion.
+  - Skeleton shapes: `data-variant="text"` (a line), `"circle"` (a 2.5rem avatar) and `"block"` (a 16:9 media box).
 - Corner shapes in Maia and Luma: buttons, fields, badges, tab lists, chips and progress bars are pills there, and Notch or Scoop squared them off into rectangles. They now stay round, as switches and radios already did; corner shapes apply to cards, dialogs and menus, and the Create page says so for those styles. The global `corner-shape` rule moved into `@layer base` so a style pack's component rules can override it.
 - Tile: the caption's menu button is clickable before hover (only the preview overlay lets clicks through until it shows).
 - React blocks: `chat-01` model select and `projects-02` column headers now render like the HTML blocks.

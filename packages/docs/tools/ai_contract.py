@@ -62,13 +62,12 @@ MAX_VALUES = 16
 # composition of other components, or a mode of another element.
 OVERRIDES = {
     "alert-dialog": {"css": "dialog", "root": {"class": "alert-dialog", "tags": ["dialog"], "selector": "dialog.alert-dialog"}},
-    "pagination": {"root": {"class": None, "tags": ["nav"], "selector": "nav[aria-label] > ul"}, "composedOf": ["button"],
-                   "pattern": "A nav with a list of .btn links (data-variant=\"ghost\"); the current page has aria-current=\"page\" and data-variant=\"outline\"."},
+    "pagination": {"composedOf": ["button"],
+                   "pattern": "A nav.pagination with a list of .btn links (data-variant=\"ghost\"); the current page has aria-current=\"page\" and data-variant=\"outline\"."},
     "range-calendar": {"element": "calendar", "root": {"class": "calendar", "tags": ["auvyx-calendar"], "selector": "auvyx-calendar[mode=range]"},
                        "pattern": "<auvyx-calendar mode=\"range\"> with value=\"start/end\" (ISO dates)."},
     "separator": {"root": {"class": None, "tags": ["hr"], "selector": "hr"}, "pattern": "A native <hr>; add role=\"separator\" and aria-orientation=\"vertical\" for a vertical one."},
-    "spinner": {"root": {"class": None, "tags": ["svg"], "selector": "svg.animate-spin[role=status]"},
-                "pattern": "An inline loader SVG with class=\"animate-spin\", role=\"status\" and aria-label=\"Loading\"."},
+    "spinner": {"pattern": "An inline loader SVG (or an empty span, drawn as a ring) with class=\"spinner\", role=\"status\" and aria-label=\"Loading\"."},
     "toast": {"root": {"class": "toaster", "tags": ["div"], "selector": ".toaster"},
               "snippet": '<div id="toaster" class="toaster"></div>\n<button type="button" class="btn" data-variant="outline" onclick="document.getElementById(\'toaster\').toast({ category: \'success\', title: \'Saved\', description: \'Your changes are live.\' })">Save</button>',
               "pattern": "One <div id=\"toaster\" class=\"toaster\"> per page; show a toast with document.getElementById('toaster').toast({ category, title, description })."},

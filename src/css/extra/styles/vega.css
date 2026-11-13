@@ -480,6 +480,12 @@
   .properties dt { @apply text-muted-foreground gap-2 [&>svg]:size-4; }
   .properties dd { @apply text-foreground; }
 
+  /* Pagination */
+  .pagination { @apply gap-x-4 gap-y-2; }
+  .pagination > :is(p, small, output) { @apply text-muted-foreground text-sm; }
+  .pagination > ul { @apply gap-1; }
+  .pagination > ul > li > span { @apply text-muted-foreground size-9 [&>svg]:size-4; }
+
   /* Calendar */
   .calendar { @apply p-3; }
   .calendar-month > header > h2 { @apply text-sm font-medium; }

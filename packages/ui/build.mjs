@@ -23,8 +23,9 @@ const jsComponents = ['basecoat', 'accordion', 'carousel', 'combobox', 'command'
 
 // Size budgets (gzip bytes). CI fails when a change blows past them.
 // CSS budget sized for the full shadcn component set (~61 components); tighten once complete.
-// CSS raised 41 → 42 kB for the AI chat primitives (prompt input, suggestions, message actions).
-const budgets = { 'auvyx.min.css': 42_000, 'auvyx.min.js': 24_000 };
+// CSS raised 41 → 42 kB for the AI chat primitives (prompt input, suggestions, message actions),
+// 42 → 44 kB for the 0.2 admin primitives (stat, status dot, action bar, pagination, spinner, status tokens).
+const budgets = { 'auvyx.min.css': 44_000, 'auvyx.min.js': 24_000 };
 
 // Elements in auvyx.min.js. Larger, page-specific ones ship only as their own
 // module (dist/js/<name>.min.js): data-table, sortable, prompt-input.

@@ -1,0 +1,40 @@
+/* Pagination (fork addition), CSS only: a nav with a list of .btn page links.
+ *
+ *   <nav class="pagination" aria-label="Pagination">
+ *     <p>1–10 of 42</p>
+ *     <ul>
+ *       <li><a href="#" class="btn" data-variant="ghost" aria-disabled="true">…Previous</a></li>
+ *       <li><a href="#" class="btn" data-variant="outline" data-size="icon" aria-current="page">1</a></li>
+ *       <li><span aria-hidden="true">…</span></li>
+ *       <li><a href="#" class="btn" data-variant="ghost">Next…</a></li>
+ *     </ul>
+ *   </nav>
+ *
+ * The <p> (or <small>, <output>) is an optional summary: with it the list moves
+ * to the end. A <span> item is an ellipsis; aria-disabled links are inert.
+ */
+@layer components {
+  .pagination {
+    @apply flex w-full min-w-0 flex-wrap items-center justify-center;
+
+    &:has(> :is(p, small, output)) {
+      @apply justify-between;
+    }
+
+    > :is(p, small, output) {
+      @apply m-0 tabular-nums;
+    }
+
+    > ul {
+      @apply m-0 flex list-none flex-wrap items-center p-0;
+    }
+
+    > ul > li > span {
+      @apply flex items-center justify-center;
+    }
+
+    a[aria-disabled='true'] {
+      @apply pointer-events-none opacity-50;
+    }
+  }
+}
